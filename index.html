@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Syriac Text Editor</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        @font-face {
+            font-family: 'East Syriac Adiabene';
+            src: url('fonts/SyrCOMAdiabene.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #syriacInput {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            font-size: 36px;
+            line-height: 1.6;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+            direction: rtl;
+            text-align: right;
+            font-family: 'East Syriac Adiabene', Arial, sans-serif;
+            unicode-bidi: embed;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            writing-mode: horizontal-tb;
+            text-orientation: mixed;
+            font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "pnum" 1, "tnum" 0, "onum" 0, "lnum" 0, "dlig" 1;
+        }
+        #syriacInput:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+        .instructions {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            border-left: 4px solid #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Syriac Text Editor</h1>
+        <textarea id="syriacInput" placeholder="Type your Syriac text here..."></textarea>
+        <div class="instructions">
+            <h3>Instructions:</h3>
+            <ul>
+                <li>Switch to the Syriac phonetic keyboard on your system</li>
+                <li>Type Syriac text in the textbox above</li>
+                <li>The text will automatically flow from right to left</li>
+                <li>You can copy and paste text from other sources</li>
+                <li>The text is displayed in the East Syriac Adiabene font</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            const textarea = $('#syriacInput');
+            
+            // Set initial properties
+            textarea.css({
+                'direction': 'rtl',
+                'font-family': 'East Syriac Adiabene'
+            });
+            
+            // Set input attributes
+            textarea.attr({
+                'inputmode': 'text',
+                'lang': 'syr',
+                'dir': 'rtl'
+            });
+        });
+    </script>
+</body>
+</html> 
