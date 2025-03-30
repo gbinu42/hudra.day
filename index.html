@@ -13,29 +13,135 @@
             font-style: normal;
             font-display: swap;
         }
+        :root {
+            --font-size: 36px;
+            --container-padding: 15px;
+            --border-radius: 8px;
+            --text-color: #000000;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
         body {
             font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
+            margin: 0;
+            padding: var(--container-padding);
             background-color: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         .container {
             background-color: white;
-            padding: 20px;
-            border-radius: 8px;
+            padding: var(--container-padding);
+            border-radius: var(--border-radius);
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            flex: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
         }
         h1 {
             color: #333;
             text-align: center;
-            margin-bottom: 20px;
+            margin: 20px 0;
+            font-size: 1.5rem;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            border-left: 4px solid #4CAF50;
+        }
+        .font-size-control, .color-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .font-size-control label, .color-control label {
+            font-size: 0.9rem;
+            color: #666;
+            min-width: 80px;
+        }
+        .font-size-control select, .color-control select {
+            padding: 4px 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            min-width: 150px;
+        }
+        .color-control {
+            position: relative;
+        }
+        .color-selector {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+        .color-selector.active {
+            display: block;
+        }
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
+            width: 200px;
+        }
+        .color-option {
+            width: 30px;
+            height: 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+        .color-option.active {
+            transform: scale(1.1);
+            box-shadow: 0 0 0 2px #4CAF50;
+        }
+        .color-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+        }
+        .color-preview {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+            display: inline-block;
         }
         #syriacInput {
             width: 100%;
-            min-height: 200px;
+            min-height: 300px;
+            height: 300px;
             padding: 15px;
-            font-size: 36px;
+            font-size: var(--font-size);
+            color: var(--text-color);
             line-height: 1.6;
             border: 2px solid #ddd;
             border-radius: 4px;
@@ -50,6 +156,7 @@
             writing-mode: horizontal-tb;
             text-orientation: mixed;
             font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "pnum" 1, "tnum" 0, "onum" 0, "lnum" 0, "dlig" 1;
+            overflow-y: auto;
         }
         #syriacInput:focus {
             outline: none;
@@ -62,12 +169,81 @@
             border-radius: 4px;
             border-left: 4px solid #4CAF50;
         }
+        .instructions h3 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .instructions ul {
+            list-style-position: inside;
+            padding-left: 0;
+        }
+        .instructions li {
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        @media (min-width: 768px) {
+            :root {
+                --container-padding: 20px;
+            }
+            body {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            .instructions h3 {
+                font-size: 1.2rem;
+            }
+            .instructions li {
+                font-size: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Syriac Text Editor</h1>
         <textarea id="syriacInput" placeholder="Type your Syriac text here..."></textarea>
+        <div class="controls">
+            <div class="font-size-control">
+                <label for="fontSize">Font Size:</label>
+                <select id="fontSize">
+                    <option value="16">Extra Small (16px)</option>
+                    <option value="20">Very Small (20px)</option>
+                    <option value="24">Small (24px)</option>
+                    <option value="28">Medium Small (28px)</option>
+                    <option value="32">Medium (32px)</option>
+                    <option value="36" selected>Medium Large (36px)</option>
+                    <option value="40">Large (40px)</option>
+                    <option value="44">Very Large (44px)</option>
+                    <option value="48">Extra Large (48px)</option>
+                    <option value="52">Huge (52px)</option>
+                </select>
+            </div>
+            <div class="color-control">
+                <label>Text Color:</label>
+                <div class="color-label">
+                    <span class="color-preview" style="background-color: #000000;"></span>
+                    <span>Select Color</span>
+                </div>
+                <div class="color-selector">
+                    <div class="color-grid">
+                        <button class="color-option" style="background-color: #000000;" data-color="#000000"></button>
+                        <button class="color-option" style="background-color: #4CAF50;" data-color="#4CAF50"></button>
+                        <button class="color-option" style="background-color: #2196F3;" data-color="#2196F3"></button>
+                        <button class="color-option" style="background-color: #F44336;" data-color="#F44336"></button>
+                        <button class="color-option" style="background-color: #FF9800;" data-color="#FF9800"></button>
+                        <button class="color-option" style="background-color: #9C27B0;" data-color="#9C27B0"></button>
+                        <button class="color-option" style="background-color: #795548;" data-color="#795548"></button>
+                        <button class="color-option" style="background-color: #607D8B;" data-color="#607D8B"></button>
+                        <button class="color-option" style="background-color: #FFC107;" data-color="#FFC107"></button>
+                        <button class="color-option" style="background-color: #E91E63;" data-color="#E91E63"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h1>Syriac Text Editor</h1>
         <div class="instructions">
             <h3>Instructions:</h3>
             <ul>
@@ -83,6 +259,10 @@
     <script>
         $(document).ready(function() {
             const textarea = $('#syriacInput');
+            const fontSizeSelect = $('#fontSize');
+            const colorSelector = $('.color-selector');
+            const colorLabel = $('.color-label');
+            const colorOptions = $('.color-option');
             
             // Set initial properties
             textarea.css({
@@ -96,6 +276,62 @@
                 'lang': 'syr',
                 'dir': 'rtl'
             });
+
+            // Handle font size changes
+            fontSizeSelect.on('change', function() {
+                const newSize = $(this).val();
+                textarea.css('font-size', newSize + 'px');
+                document.documentElement.style.setProperty('--font-size', newSize + 'px');
+                adjustTextareaHeight();
+            });
+
+            // Toggle color selector
+            colorLabel.on('click', function(e) {
+                e.stopPropagation();
+                colorSelector.toggleClass('active');
+            });
+
+            // Close color selector when clicking outside
+            $(document).on('click', function(e) {
+                if (!$(e.target).closest('.color-control').length) {
+                    colorSelector.removeClass('active');
+                }
+            });
+
+            // Handle color selection
+            colorOptions.on('click', function() {
+                const newColor = $(this).data('color');
+                textarea.css('color', newColor);
+                document.documentElement.style.setProperty('--text-color', newColor);
+                
+                // Update preview and active state
+                colorLabel.find('.color-preview').css('background-color', newColor);
+                colorOptions.removeClass('active');
+                $(this).addClass('active');
+                
+                // Close selector
+                colorSelector.removeClass('active');
+            });
+
+            // Set initial active color (black)
+            colorOptions.first().addClass('active');
+
+            // Function to adjust textarea height
+            function adjustTextareaHeight() {
+                const textarea = $('#syriacInput');
+                textarea.height('auto');
+                const scrollHeight = textarea[0].scrollHeight;
+                const minHeight = 300; // Minimum height in pixels
+                const newHeight = Math.max(scrollHeight, minHeight);
+                textarea.height(newHeight);
+            }
+
+            // Adjust height on input and window resize
+            textarea.on('input', adjustTextareaHeight);
+            $(window).on('resize', adjustTextareaHeight);
+
+            // Initial height adjustment
+            adjustTextareaHeight();
         });
     </script>
 </body>
