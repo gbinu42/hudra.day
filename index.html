@@ -218,17 +218,6 @@
         .keyboard-toggle:hover {
             background: #f8f9fa;
         }
-        .keyboard-toggle .toggle-icon {
-            width: 20px;
-            height: 20px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.3s ease;
-        }
-        .keyboard-toggle.active .toggle-icon {
-            transform: rotate(180deg);
-        }
         .keyboard .keyboard-toggle {
             display: none;
         }
@@ -283,7 +272,7 @@
                 left: 0;
                 right: 0;
                 margin: 0;
-                padding: 10px 10px 0 10px;
+                padding: 10px 10px 5px 10px;
                 border-radius: 0;
                 z-index: 1000;
                 display: block;
@@ -314,8 +303,16 @@
             .keyboard-section-title {
                 display: none;
             }
+            .keyboard-section {
+                margin-bottom: 5px;
+            }
+            .keyboard-grid {
+                gap: 2px;
+                margin-bottom: 5px;
+            }
             .keyboard-section.special-keys {
                 display: block;
+                margin-bottom: 3px;
             }
             #syriacInput {
                 margin: 0;
@@ -489,6 +486,123 @@
             padding: 4px 8px;
             font-size: 1.2rem;
         }
+        .instructions li.touch-tip {
+            margin-top: 10px;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        .instructions li.touch-tip code {
+            background: #f5f5f5;
+            padding: 2px 4px;
+            border-radius: 3px;
+            border: 1px solid #ddd;
+            font-family: monospace;
+        }
+        
+        /* Touch device specific styles */
+        body.touch-device {
+            padding: 0;
+            margin: 0;
+            background-color: white;
+        }
+        
+        body.touch-device .container {
+            padding: 0;
+            margin: 0;
+            max-width: 100%;
+            border-radius: 0;
+            box-shadow: none;
+        }
+        
+        body.touch-device #syriacInput {
+            margin: 0;
+            border-radius: 0;
+            border: none;
+            border-bottom: 1px solid #ddd;
+            height: calc(100vh - 220px);
+            min-height: calc(100vh - 220px);
+        }
+        
+        body.touch-device .keyboard {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: 0;
+            padding: 10px 10px 5px 10px;
+            border-radius: 0;
+            border-left: none;
+            border-right: none;
+            border-bottom: none;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            display: block;
+        }
+        
+        body.touch-device .keyboard-header {
+            display: none;
+        }
+        
+        body.touch-device .keyboard-section-title {
+            display: none;
+        }
+        
+        body.touch-device .keyboard-section {
+            margin-bottom: 5px;
+        }
+        
+        body.touch-device .keyboard-grid {
+            gap: 2px;
+            margin-bottom: 5px;
+        }
+        
+        body.touch-device .keyboard-section.special-keys {
+            display: block;
+            margin-bottom: 3px;
+        }
+        
+        body.touch-device .controls .keyboard-toggle {
+            display: none !important;
+        }
+        
+        body.touch-device .keyboard.collapsed {
+            transform: translateY(calc(100% - 10px));
+            padding-bottom: 0;
+        }
+        
+        body.touch-device .keyboard.collapsed .keyboard-section:not(:first-child) {
+            display: none;
+        }
+        
+        body.touch-device .keyboard.collapsed .keyboard-section {
+            margin-bottom: 0;
+        }
+        
+        body.touch-device .keyboard.collapsed .keyboard-grid {
+            margin-bottom: 0;
+        }
+        
+        body.touch-device .keyboard.collapsed .keyboard-section:first-child {
+            height: 30px;
+            overflow: hidden;
+            padding-bottom: 0;
+        }
+        
+        body.touch-device .keyboard-collapse {
+            display: block !important;
+            position: absolute;
+            top: -32px;
+            right: 10px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 2px 10px;
+            color: #333;
+            background-color: transparent;
+            border: 1px solid rgba(221, 221, 221, 0.5);
+            border-radius: 4px 4px 0 0;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
+            z-index: 1001;
+        }
     </style>
 </head>
 <body>
@@ -577,9 +691,9 @@
             <div class="keyboard-section special-keys">
                 <div class="keyboard-section-title">Special Keys</div>
                 <div class="keyboard-grid">
-                    <button class="keyboard-key special" data-syriac=" " title="U+0020 - SPACE">Space</button>
-                    <button class="keyboard-key special" data-syriac="\b" title="U+0008 - BACKSPACE">Backspace</button>
-                    <button class="keyboard-key special" data-syriac="\r" title="U+000D - CARRIAGE RETURN">Enter</button>
+                    <button class="keyboard-key special" data-syriac=" " title="SPACE">Space</button>
+                    <button class="keyboard-key special backspace-key" title="BACKSPACE">Backspace</button>
+                    <button class="keyboard-key special enter-key" title="ENTER">Enter</button>
                 </div>
             </div>
         </div>
@@ -640,6 +754,7 @@
                     <li>The text will automatically flow from right to left</li>
                     <li>You can copy and paste text from other sources</li>
                     <li>The text is displayed in the East Syriac Adiabene font</li>
+                    <li class="touch-tip">On mobile devices: If keyboard doesn't appear, add <code>?forceTouch=true</code> to the URL</li>
                 </ul>
             </div>
         </div>
@@ -657,65 +772,97 @@
             const keyboardKeys = $('.keyboard-key');
             const contentSection = $('.content-section');
             
-            // Check if device is touch-enabled
-            const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0 || window.matchMedia("(pointer: coarse)").matches;
-            
-            // Set initial properties
-            textarea.css({
-                'direction': 'rtl',
-                'font-family': 'East Syriac Adiabene'
-            });
-            
-            // Set input attributes
-            textarea.attr({
-                'inputmode': 'none', // Prevent hardware keyboard on mobile
-                'lang': 'syr',
-                'dir': 'rtl'
-            });
-
-            // Init for touch devices
-            if (isTouchDevice) {
-                console.log("Touch device detected");
-                keyboardToggle.hide();
-                keyboard.removeClass('hidden');
-                $('.keyboard-header').hide();
+            // Determine if the app should run in touch mode
+            function detectTouchDevice() {
+                // 1. Check URL parameter first
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.has('forceTouch')) {
+                    const value = urlParams.get('forceTouch');
+                    localStorage.setItem('forceTouch', value === '1' || value === 'true');
+                    return value === '1' || value === 'true';
+                }
                 
-                // Create a new collapse button since the existing one might be hidden by CSS
-                const collapseButton = $('<button class="keyboard-collapse" title="Collapse Keyboard">▼</button>');
-                collapseButton.css({
-                    'display': 'block',
-                    'position': 'absolute',
-                    'top': '-30px',
-                    'right': '10px',
-                    'font-size': '1.5rem',
-                    'font-weight': 'bold',
-                    'padding': '2px 10px',
-                    'color': '#333',
-                    'background-color': 'transparent',
-                    'border': '1px solid rgba(221, 221, 221, 0.5)',
-                    'border-radius': '4px 4px 0 0',
-                    'box-shadow': '0 -2px 5px rgba(0, 0, 0, 0.05)',
-                    'z-index': '1001',
-                    'cursor': 'pointer'
-                });
+                // 2. Check localStorage next
+                const savedPreference = localStorage.getItem('forceTouch');
+                if (savedPreference !== null) {
+                    return savedPreference === 'true';
+                }
                 
-                // Append the new button directly to the keyboard
-                keyboard.append(collapseButton);
-                contentSection.addClass('hidden');
+                // 3. Force touch mode for specific devices/browsers
+                if (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent)) {
+                    return true;
+                }
                 
-                // Handle keyboard collapse on touch devices
-                collapseButton.on('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log("Collapse button clicked");
-                    keyboard.toggleClass('collapsed');
-                    $(this).text(keyboard.hasClass('collapsed') ? '▲' : '▼');
-                });
+                // 4. Additional reliable touch detection
+                if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+                    return true;
+                }
                 
-                // Initial state - show expanded on mobile
-                keyboard.removeClass('collapsed');
+                // 5. Media query checks
+                if (window.matchMedia && (
+                    window.matchMedia('(hover: none)').matches || 
+                    window.matchMedia('(pointer: coarse)').matches
+                )) {
+                    return true;
+                }
+                
+                // 6. For smaller screens, default to touch mode
+                if (window.innerWidth < 768) {
+                    return true;
+                }
+                
+                return false;
             }
-
+            
+            const isTouchDevice = detectTouchDevice();
+            console.log("Touch device detected:", isTouchDevice);
+            
+            // Apply touch mode styles directly to the body
+            if (isTouchDevice) {
+                $('body').addClass('touch-device');
+            }
+            
+            // Set up the environment based on device type
+            function setupEnvironment() {
+                // Set initial text properties
+                textarea.css({
+                    'direction': 'rtl',
+                    'font-family': 'East Syriac Adiabene'
+                });
+                
+                textarea.attr({
+                    'inputmode': 'none',
+                    'lang': 'syr',
+                    'dir': 'rtl'
+                });
+                
+                // Touch device specific setup
+                if (isTouchDevice) {
+                    // Hide keyboard toggle, show keyboard
+                    keyboardToggle.hide();
+                    keyboard.removeClass('hidden');
+                    
+                    // Create collapse button
+                    const collapseButton = $('<button class="keyboard-collapse" title="Collapse Keyboard">▼</button>');
+                    
+                    // Append the button directly to the keyboard
+                    keyboard.append(collapseButton);
+                    contentSection.addClass('hidden');
+                    
+                    // Handle keyboard collapse
+                    collapseButton.on('click', function() {
+                        keyboard.toggleClass('collapsed');
+                        $(this).text(keyboard.hasClass('collapsed') ? '▲' : '▼');
+                    });
+                    
+                    // Set initial state (expanded)
+                    keyboard.removeClass('collapsed');
+                }
+            }
+            
+            // Call setup function
+            setupEnvironment();
+            
             // Handle font size changes
             fontSizeSelect.on('change', function() {
                 const newSize = $(this).val();
@@ -743,47 +890,65 @@
                 textarea.css('color', newColor);
                 document.documentElement.style.setProperty('--text-color', newColor);
                 
-                // Update preview and active state
                 colorLabel.find('.color-preview').css('background-color', newColor);
                 colorOptions.removeClass('active');
                 $(this).addClass('active');
                 
-                // Close selector
                 colorSelector.removeClass('active');
             });
 
-            // Set initial active color (black)
+            // Set initial active color
             colorOptions.first().addClass('active');
 
             // Toggle keyboard and content section
             $('#keyboardToggleShow, #keyboardToggleHide').on('change', function() {
                 keyboard.toggleClass('hidden');
                 contentSection.toggleClass('hidden');
-                keyboardToggle.toggleClass('active');
                 
-                // Sync the state of both toggle switches
                 const isChecked = $(this).is(':checked');
                 $('#keyboardToggleShow, #keyboardToggleHide').prop('checked', isChecked);
             });
 
             // Handle keyboard key clicks
             keyboardKeys.on('click', function() {
-                const syriacChar = $(this).data('syriac');
+                const $key = $(this);
                 const cursorPos = textarea[0].selectionStart;
                 const text = textarea.val();
-                const newText = text.slice(0, cursorPos) + syriacChar + text.slice(cursorPos);
-                textarea.val(newText);
-                textarea[0].selectionStart = cursorPos + 1;
-                textarea[0].selectionEnd = cursorPos + 1;
+                
+                // Handle special function keys
+                if ($key.hasClass('backspace-key')) {
+                    // Backspace - delete the character before cursor
+                    if (cursorPos > 0) {
+                        const newText = text.slice(0, cursorPos - 1) + text.slice(cursorPos);
+                        textarea.val(newText);
+                        textarea[0].selectionStart = cursorPos - 1;
+                        textarea[0].selectionEnd = cursorPos - 1;
+                    }
+                } else if ($key.hasClass('enter-key')) {
+                    // Enter - insert a new line
+                    const newText = text.slice(0, cursorPos) + '\n' + text.slice(cursorPos);
+                    textarea.val(newText);
+                    textarea[0].selectionStart = cursorPos + 1;
+                    textarea[0].selectionEnd = cursorPos + 1;
+                } else {
+                    // Regular character - insert at cursor position
+                    const syriacChar = $key.data('syriac');
+                    if (syriacChar) {
+                        const newText = text.slice(0, cursorPos) + syriacChar + text.slice(cursorPos);
+                        textarea.val(newText);
+                        textarea[0].selectionStart = cursorPos + 1;
+                        textarea[0].selectionEnd = cursorPos + 1;
+                    }
+                }
+                
                 textarea.focus();
             });
 
             // Function to adjust textarea height
             function adjustTextareaHeight() {
-                const textarea = $('#syriacInput');
                 textarea.height('auto');
                 const scrollHeight = textarea[0].scrollHeight;
-                const minHeight = 300; // Minimum height in pixels
+                const minHeight = 300;
                 const newHeight = Math.max(scrollHeight, minHeight);
                 textarea.height(newHeight);
             }
