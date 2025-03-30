@@ -39,9 +39,9 @@
             border-radius: var(--border-radius);
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             flex: 1;
+            width: 100%;
             max-width: 800px;
             margin: 0 auto;
-            width: 100%;
         }
         h1 {
             color: #333;
@@ -61,22 +61,26 @@
             background-color: #f8f9fa;
             border-radius: 4px;
             border-left: 4px solid #4CAF50;
+            justify-content: space-between;
+        }
+        .controls-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
         }
         .font-size-control, .color-control {
             display: flex;
             align-items: center;
             gap: 8px;
+            min-width: 200px;
         }
         .font-size-control label, .color-control label {
             font-size: 0.9rem;
             color: #666;
             min-width: 80px;
         }
-        .font-size-control select, .color-control select {
-            padding: 4px 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 0.9rem;
+        .font-size-control select {
             min-width: 150px;
         }
         .color-control {
@@ -157,6 +161,7 @@
             text-orientation: mixed;
             font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "pnum" 1, "tnum" 0, "onum" 0, "lnum" 0, "dlig" 1;
             overflow-y: auto;
+            margin-bottom: 10px;
         }
         #syriacInput:focus {
             outline: none;
@@ -200,59 +205,443 @@
                 font-size: 1rem;
             }
         }
+        .keyboard-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+        }
+        .keyboard-toggle:hover {
+            background: #f8f9fa;
+        }
+        .keyboard-toggle .toggle-icon {
+            width: 20px;
+            height: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+        }
+        .keyboard-toggle.active .toggle-icon {
+            transform: rotate(180deg);
+        }
+        .keyboard .keyboard-toggle {
+            display: none;
+        }
+        .keyboard:not(.hidden) .keyboard-toggle {
+            display: flex;
+        }
+        .controls .keyboard-toggle {
+            display: flex;
+        }
+        .keyboard:not(.hidden) ~ .controls .keyboard-toggle {
+            display: none;
+        }
+        .keyboard {
+            display: block;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 10px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 100%;
+        }
+        .keyboard.hidden {
+            display: none;
+        }
+        .keyboard-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 3px;
+            margin-bottom: 10px;
+            width: 100%;
+            direction: rtl;
+        }
+        .keyboard-section {
+            margin-bottom: 15px;
+            width: 100%;
+        }
+        .keyboard-section.special-keys {
+            display: none;
+        }
+        @media (hover: none) and (pointer: coarse) {
+            body {
+                padding: 0;
+                margin: 0;
+                background-color: white;
+            }
+            .keyboard {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                margin: 0;
+                padding: 10px 10px 0 10px;
+                border-radius: 0;
+                z-index: 1000;
+                display: block;
+                transition: transform 0.3s ease;
+            }
+            .keyboard.hidden {
+                display: none;
+            }
+            .keyboard-header {
+                display: none;
+                border-bottom: none;
+            }
+            .keyboard-collapse {
+                display: block !important;
+                position: absolute;
+                top: -30px;
+                right: 10px;
+                font-size: 1.5rem;
+                font-weight: bold;
+                padding: 2px 10px;
+                color: #333;
+                background-color: rgba(255, 255, 255, 0.9);
+                border: 1px solid #ddd;
+                border-radius: 4px 4px 0 0;
+                box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+                z-index: 1001;
+            }
+            .keyboard-section-title {
+                display: none;
+            }
+            .keyboard-section.special-keys {
+                display: block;
+            }
+            #syriacInput {
+                margin: 0;
+                border-radius: 0;
+                border: none;
+                border-bottom: 1px solid #ddd;
+                height: calc(100vh - 200px);
+                min-height: calc(100vh - 200px);
+            }
+            .container {
+                padding: 0;
+                margin: 0;
+                max-width: 100%;
+            }
+            .keyboard.collapsed {
+                transform: translateY(calc(100% - 10px));
+                padding-bottom: 0;
+            }
+            .keyboard.collapsed .keyboard-section:not(:first-child) {
+                display: none;
+            }
+            .keyboard.collapsed .keyboard-section {
+                margin-bottom: 0;
+            }
+            .keyboard.collapsed .keyboard-grid {
+                margin-bottom: 0;
+            }
+            .keyboard.collapsed .keyboard-section:first-child {
+                height: 40px;
+                overflow: hidden;
+                padding-bottom: 0;
+            }
+            .controls .keyboard-toggle {
+                display: none !important;
+            }
+        }
+        .keyboard-section-title {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 5px;
+            padding-left: 5px;
+        }
+        .keyboard-key {
+            padding: 2px 1px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            font-family: 'East Syriac Adiabene', Arial, sans-serif;
+            font-size: 1.5rem;
+            transition: background-color 0.2s;
+            min-height: 35px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            direction: ltr;
+        }
+        .keyboard-key.special {
+            font-family: Arial, sans-serif;
+            font-size: 0.9rem;
+            background-color: #f0f0f0;
+            grid-column: span 2;
+        }
+        .keyboard-key:hover {
+            background: #f8f9fa;
+        }
+        .keyboard-key .phonetic {
+            font-size: 0.6rem;
+            color: #666;
+            font-family: Arial, sans-serif;
+            margin-top: 1px;
+        }
+        @media (max-width: 768px) {
+            .container {
+                max-width: 100%;
+                margin: 0;
+            }
+            .keyboard-grid {
+                grid-template-columns: repeat(8, 1fr);
+                direction: rtl;
+            }
+            .keyboard-key {
+                font-size: 1.2rem;
+                min-height: 30px;
+                direction: ltr;
+            }
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .controls-left {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .font-size-control, .color-control {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .font-size-control select {
+                flex: 1;
+            }
+        }
+        .content-section {
+            display: block;
+            transition: all 0.3s ease;
+        }
+        .content-section.hidden {
+            display: none;
+        }
+        /* Add new toggle switch styles */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+            margin-left: 8px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .toggle-slider {
+            background-color: #4CAF50;
+        }
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+        .keyboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+        .keyboard-header-title {
+            font-size: 1rem;
+            color: #333;
+            font-weight: bold;
+        }
+        .keyboard-collapse {
+            display: none !important;
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            padding: 4px 8px;
+            font-size: 1.2rem;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <textarea id="syriacInput" placeholder="Type your Syriac text here..."></textarea>
-        <div class="controls">
-            <div class="font-size-control">
-                <label for="fontSize">Font Size:</label>
-                <select id="fontSize">
-                    <option value="16">Extra Small (16px)</option>
-                    <option value="20">Very Small (20px)</option>
-                    <option value="24">Small (24px)</option>
-                    <option value="28">Medium Small (28px)</option>
-                    <option value="32">Medium (32px)</option>
-                    <option value="36" selected>Medium Large (36px)</option>
-                    <option value="40">Large (40px)</option>
-                    <option value="44">Very Large (44px)</option>
-                    <option value="48">Extra Large (48px)</option>
-                    <option value="52">Huge (52px)</option>
-                </select>
-            </div>
-            <div class="color-control">
-                <label>Text Color:</label>
-                <div class="color-label">
-                    <span class="color-preview" style="background-color: #000000;"></span>
-                    <span>Select Color</span>
+        <div class="keyboard hidden">
+            <div class="keyboard-header">
+                <div class="keyboard-header-title">On-Screen Keyboard</div>
+                <div class="keyboard-toggle">
+                    <span>Hide Keyboard</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="keyboardToggleHide">
+                        <span class="toggle-slider"></span>
+                    </label>
                 </div>
-                <div class="color-selector">
-                    <div class="color-grid">
-                        <button class="color-option" style="background-color: #000000;" data-color="#000000"></button>
-                        <button class="color-option" style="background-color: #4CAF50;" data-color="#4CAF50"></button>
-                        <button class="color-option" style="background-color: #2196F3;" data-color="#2196F3"></button>
-                        <button class="color-option" style="background-color: #F44336;" data-color="#F44336"></button>
-                        <button class="color-option" style="background-color: #FF9800;" data-color="#FF9800"></button>
-                        <button class="color-option" style="background-color: #9C27B0;" data-color="#9C27B0"></button>
-                        <button class="color-option" style="background-color: #795548;" data-color="#795548"></button>
-                        <button class="color-option" style="background-color: #607D8B;" data-color="#607D8B"></button>
-                        <button class="color-option" style="background-color: #FFC107;" data-color="#FFC107"></button>
-                        <button class="color-option" style="background-color: #E91E63;" data-color="#E91E63"></button>
-                    </div>
+                <button class="keyboard-collapse" title="Collapse Keyboard">▼</button>
+            </div>
+            <div class="keyboard-section">
+                <div class="keyboard-section-title">Basic Letters</div>
+                <div class="keyboard-grid">
+                    <!-- Basic Letters -->
+                    <button class="keyboard-key" data-syriac="ܐ" title="U+0710 - SYRIAC LETTER ALAPH">ܐ</button>
+                    <button class="keyboard-key" data-syriac="ܒ" title="U+0712 - SYRIAC LETTER BETH">ܒ</button>
+                    <button class="keyboard-key" data-syriac="ܓ" title="U+0713 - SYRIAC LETTER GAMAL">ܓ</button>
+                    <button class="keyboard-key" data-syriac="ܕ" title="U+0715 - SYRIAC LETTER DALATH">ܕ</button>
+                    <button class="keyboard-key" data-syriac="ܗ" title="U+0717 - SYRIAC LETTER HE">ܗ</button>
+                    <button class="keyboard-key" data-syriac="ܘ" title="U+0718 - SYRIAC LETTER WAW">ܘ</button>
+                    <button class="keyboard-key" data-syriac="ܙ" title="U+0719 - SYRIAC LETTER ZAIN">ܙ</button>
+                    <button class="keyboard-key" data-syriac="ܚ" title="U+071A - SYRIAC LETTER HETH">ܚ</button>
+                    <button class="keyboard-key" data-syriac="ܛ" title="U+071B - SYRIAC LETTER TETH">ܛ</button>
+                    <button class="keyboard-key" data-syriac="ܝ" title="U+071D - SYRIAC LETTER YUDH">ܝ</button>
+                    <button class="keyboard-key" data-syriac="ܟ" title="U+071F - SYRIAC LETTER KAPH">ܟ</button>
+                    <button class="keyboard-key" data-syriac="ܠ" title="U+0720 - SYRIAC LETTER LAMADH">ܠ</button>
+                    <button class="keyboard-key" data-syriac="ܡ" title="U+0721 - SYRIAC LETTER MIM">ܡ</button>
+                    <button class="keyboard-key" data-syriac="ܢ" title="U+0722 - SYRIAC LETTER NUN">ܢ</button>
+                    <button class="keyboard-key" data-syriac="ܣ" title="U+0723 - SYRIAC LETTER SEMKATH">ܣ</button>
+                    <button class="keyboard-key" data-syriac="ܥ" title="U+0725 - SYRIAC LETTER E">ܥ</button>
+                    <button class="keyboard-key" data-syriac="ܦ" title="U+0726 - SYRIAC LETTER PE">ܦ</button>
+                    <button class="keyboard-key" data-syriac="ܨ" title="U+0728 - SYRIAC LETTER SADHE">ܨ</button>
+                    <button class="keyboard-key" data-syriac="ܩ" title="U+0729 - SYRIAC LETTER QAPH">ܩ</button>
+                    <button class="keyboard-key" data-syriac="ܪ" title="U+072A - SYRIAC LETTER RISH">ܪ</button>
+                    <button class="keyboard-key" data-syriac="ܫ" title="U+072B - SYRIAC LETTER SHIN">ܫ</button>
+                    <button class="keyboard-key" data-syriac="ܬ" title="U+072C - SYRIAC LETTER TAW">ܬ</button>
+                    <button class="keyboard-key" data-syriac="ܑ" title="U+0711 - SYRIAC LETTER SUPERSCRIPT ALAPH">ܑ◌</button>
+                    <button class="keyboard-key" data-syriac="ܞ" title="U+071E - SYRIAC LETTER YUDH HE">ܞ</button>
+                </div>
+            </div>
+            <div class="keyboard-section">
+                <div class="keyboard-section-title">Vowels and Diacritics</div>
+                <div class="keyboard-grid">
+                    <!-- Vowels and Diacritics -->
+                    <button class="keyboard-key" data-syriac="ܲ" title="U+0732 - SYRIAC PTHAHA DOTTED">◌ܲ</button>
+                    <button class="keyboard-key" data-syriac="ܵ" title="U+0735 - SYRIAC ZQAPHA DOTTED">◌ܵ</button>
+                    <button class="keyboard-key" data-syriac="ܸ" title="U+0738 - SYRIAC DOTTED ZLAMA HORIZONTAL">◌ܸ</button>
+                    <button class="keyboard-key" data-syriac="ܹ" title="U+0739 - SYRIAC DOTTED ZLAMA ANGULAR">◌ܹ</button>
+                    <button class="keyboard-key" data-syriac="ܼ" title="U+073C - SYRIAC HBASA-ESASA DOTTED">◌ܼ</button>
+                    <button class="keyboard-key" data-syriac="ܿ" title="U+073F - SYRIAC RWAHA">◌ܿ</button>
+                    <button class="keyboard-key" data-syriac="̈" title="U+0308 - COMBINING DIAERESIS (SYAME)">̈</button>
+                    <button class="keyboard-key" data-syriac="݀" title="U+0740 - SYRIAC FEMININE DOT">◌݀</button>
+                    <button class="keyboard-key" data-syriac="݁" title="U+0741 - SYRIAC QUSHAYA">◌݁</button>
+                    <button class="keyboard-key" data-syriac="݂" title="U+0742 - SYRIAC RUKKAKHA">◌݂</button>
+                    <button class="keyboard-key" data-syriac="݇" title="U+0747 - SYRIAC OBLIQUE LINE ABOVE">◌݇</button>
+                    <button class="keyboard-key" data-syriac="݈" title="U+0748 - SYRIAC OBLIQUE LINE BELOW">◌݈</button>
+                    <button class="keyboard-key" data-syriac="̇" title="U+0307 - COMBINING DOT ABOVE">̇</button>
+                    <button class="keyboard-key" data-syriac="̣" title="U+0323 - COMBINING DOT BELOW">̣</button>
+                    <button class="keyboard-key" data-syriac="̮" title="U+032E - COMBINING BREVE BELOW">̮</button>
+                </div>
+            </div>
+            <div class="keyboard-section">
+                <div class="keyboard-section-title">Punctuation and Marks</div>
+                <div class="keyboard-grid">
+                    <!-- Punctuation and Marks -->
+                    <button class="keyboard-key" data-syriac="܀" title="U+0700 - SYRIAC END OF PARAGRAPH">܀</button>
+                    <button class="keyboard-key" data-syriac="." title="U+002E - FULL STOP">.</button>
+                    <button class="keyboard-key" data-syriac=":" title="U+003A - COLON">:</button>
+                    <button class="keyboard-key" data-syriac="[" title="U+005B - LEFT SQUARE BRACKET">[</button>
+                    <button class="keyboard-key" data-syriac="]" title="U+005D - RIGHT SQUARE BRACKET">]</button>
+                    <button class="keyboard-key" data-syriac="!" title="U+0021 - EXCLAMATION MARK">!</button>
+                    <button class="keyboard-key" data-syriac="(" title="U+0028 - LEFT PARENTHESIS">(</button>
+                    <button class="keyboard-key" data-syriac=")" title="U+0029 - RIGHT PARENTHESIS">)</button>
+                    <button class="keyboard-key" data-syriac="؟" title="U+061F - ARABIC QUESTION MARK">؟</button>
+                    <button class="keyboard-key" data-syriac="ـ" title="U+0640 - ARABIC TATWEEL (EXTENSION)">ـ</button>
+                    <button class="keyboard-key" data-syriac="♱" title="U+2671 - EAST SYRIAC CROSS">♱</button>
+                </div>
+            </div>
+            <div class="keyboard-section special-keys">
+                <div class="keyboard-section-title">Special Keys</div>
+                <div class="keyboard-grid">
+                    <button class="keyboard-key special" data-syriac=" " title="U+0020 - SPACE">Space</button>
+                    <button class="keyboard-key special" data-syriac="\b" title="U+0008 - BACKSPACE">Backspace</button>
+                    <button class="keyboard-key special" data-syriac="\r" title="U+000D - CARRIAGE RETURN">Enter</button>
                 </div>
             </div>
         </div>
-        <h1>Syriac Text Editor</h1>
-        <div class="instructions">
-            <h3>Instructions:</h3>
-            <ul>
-                <li>Switch to the Syriac phonetic keyboard on your system</li>
-                <li>Type Syriac text in the textbox above</li>
-                <li>The text will automatically flow from right to left</li>
-                <li>You can copy and paste text from other sources</li>
-                <li>The text is displayed in the East Syriac Adiabene font</li>
-            </ul>
+        <div class="controls">
+            <div class="controls-left">
+                <div class="font-size-control">
+                    <label for="fontSize">Font Size:</label>
+                    <select id="fontSize">
+                        <option value="16">Extra Small (16px)</option>
+                        <option value="20">Very Small (20px)</option>
+                        <option value="24">Small (24px)</option>
+                        <option value="28">Medium Small (28px)</option>
+                        <option value="32">Medium (32px)</option>
+                        <option value="36" selected>Medium Large (36px)</option>
+                        <option value="40">Large (40px)</option>
+                        <option value="44">Very Large (44px)</option>
+                        <option value="48">Extra Large (48px)</option>
+                        <option value="52">Huge (52px)</option>
+                    </select>
+                </div>
+                <div class="color-control">
+                    <label>Text Color:</label>
+                    <div class="color-label">
+                        <span class="color-preview" style="background-color: #000000;"></span>
+                        <span>Select Color</span>
+                    </div>
+                    <div class="color-selector">
+                        <div class="color-grid">
+                            <button class="color-option" style="background-color: #000000;" data-color="#000000"></button>
+                            <button class="color-option" style="background-color: #4CAF50;" data-color="#4CAF50"></button>
+                            <button class="color-option" style="background-color: #2196F3;" data-color="#2196F3"></button>
+                            <button class="color-option" style="background-color: #F44336;" data-color="#F44336"></button>
+                            <button class="color-option" style="background-color: #FF9800;" data-color="#FF9800"></button>
+                            <button class="color-option" style="background-color: #9C27B0;" data-color="#9C27B0"></button>
+                            <button class="color-option" style="background-color: #795548;" data-color="#795548"></button>
+                            <button class="color-option" style="background-color: #607D8B;" data-color="#607D8B"></button>
+                            <button class="color-option" style="background-color: #FFC107;" data-color="#FFC107"></button>
+                            <button class="color-option" style="background-color: #E91E63;" data-color="#E91E63"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="keyboard-toggle">
+                <span>Show Keyboard</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="keyboardToggleShow">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+        </div>
+        <div class="content-section">
+            <h1>Syriac Text Editor</h1>
+            <div class="instructions">
+                <h3>Instructions:</h3>
+                <ul>
+                    <li>Switch to the Syriac phonetic keyboard on your system</li>
+                    <li>Type Syriac text in the textbox above</li>
+                    <li>The text will automatically flow from right to left</li>
+                    <li>You can copy and paste text from other sources</li>
+                    <li>The text is displayed in the East Syriac Adiabene font</li>
+                </ul>
+            </div>
         </div>
     </div>
 
@@ -263,6 +652,13 @@
             const colorSelector = $('.color-selector');
             const colorLabel = $('.color-label');
             const colorOptions = $('.color-option');
+            const keyboardToggle = $('.keyboard-toggle');
+            const keyboard = $('.keyboard');
+            const keyboardKeys = $('.keyboard-key');
+            const contentSection = $('.content-section');
+            
+            // Check if device is touch-enabled
+            const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0 || window.matchMedia("(pointer: coarse)").matches;
             
             // Set initial properties
             textarea.css({
@@ -272,10 +668,29 @@
             
             // Set input attributes
             textarea.attr({
-                'inputmode': 'text',
+                'inputmode': 'none', // Prevent hardware keyboard on mobile
                 'lang': 'syr',
                 'dir': 'rtl'
             });
+
+            // Init for touch devices
+            if (isTouchDevice) {
+                console.log("Touch device detected");
+                keyboardToggle.hide();
+                keyboard.removeClass('hidden');
+                $('.keyboard-header').hide();
+                $('.keyboard-collapse').show();
+                contentSection.addClass('hidden');
+                
+                // Make sure the collapse button is properly positioned and visible
+                $('.keyboard-collapse').css({
+                    'display': 'block',
+                    'position': 'absolute'
+                });
+                
+                // Append the collapse button directly to the keyboard since the header is hidden
+                keyboard.append($('.keyboard-collapse').detach());
+            }
 
             // Handle font size changes
             fontSizeSelect.on('change', function() {
@@ -316,6 +731,29 @@
             // Set initial active color (black)
             colorOptions.first().addClass('active');
 
+            // Toggle keyboard and content section
+            $('#keyboardToggleShow, #keyboardToggleHide').on('change', function() {
+                keyboard.toggleClass('hidden');
+                contentSection.toggleClass('hidden');
+                keyboardToggle.toggleClass('active');
+                
+                // Sync the state of both toggle switches
+                const isChecked = $(this).is(':checked');
+                $('#keyboardToggleShow, #keyboardToggleHide').prop('checked', isChecked);
+            });
+
+            // Handle keyboard key clicks
+            keyboardKeys.on('click', function() {
+                const syriacChar = $(this).data('syriac');
+                const cursorPos = textarea[0].selectionStart;
+                const text = textarea.val();
+                const newText = text.slice(0, cursorPos) + syriacChar + text.slice(cursorPos);
+                textarea.val(newText);
+                textarea[0].selectionStart = cursorPos + 1;
+                textarea[0].selectionEnd = cursorPos + 1;
+                textarea.focus();
+            });
+
             // Function to adjust textarea height
             function adjustTextareaHeight() {
                 const textarea = $('#syriacInput');
@@ -332,6 +770,24 @@
 
             // Initial height adjustment
             adjustTextareaHeight();
+
+            // Handle keyboard collapse on touch devices
+            if (isTouchDevice) {
+                console.log("Setting up collapse button");
+                $('.keyboard-collapse').css('display', 'block');
+                
+                $('.keyboard-collapse').on('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log("Collapse button clicked");
+                    keyboard.toggleClass('collapsed');
+                    $(this).text(keyboard.hasClass('collapsed') ? '▲' : '▼');
+                });
+                
+                // Initial state - show expanded on mobile
+                keyboard.removeClass('collapsed');
+                $('.keyboard-collapse').text('▼');
+            }
         });
     </script>
 </body>
