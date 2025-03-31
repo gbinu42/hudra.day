@@ -375,7 +375,7 @@
             font-family: Arial, sans-serif;
             font-size: 0.9rem;
             background-color: #f0f0f0;
-            grid-column: span 2;
+            grid-column: span 1;
         }
         .keyboard-key:hover {
             background: #f8f9fa;
@@ -673,7 +673,7 @@
             font-family: Arial, sans-serif;
             font-size: 0.9rem;
             background-color: #f0f0f0;
-            grid-column: span 2;
+            grid-column: span 1;
         }
         
         .keyboard-key.clear-key {
@@ -688,21 +688,48 @@
         .hidden {
             display: none;
         }
-        .numeric-toggle-key {
-            background-color: #e8f5e9;
-            border: 1px solid #81c784;
-            color: #388e3c;
+        .numeric-toggle-key, .abc-toggle-key {
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            color: #333;
+            width: 50px !important;
         }
-        .numeric-toggle-key:hover {
+        
+        .numeric-toggle-key:hover, .abc-toggle-key:hover {
             background-color: #c8e6c9;
         }
-        .abc-toggle-key {
-            background-color: #e8f5e9;
-            border: 1px solid #81c784;
-            color: #388e3c;
+        .space-key {
+            flex-grow: 1;
         }
-        .abc-toggle-key:hover {
-            background-color: #c8e6c9;
+        .backspace-key, .clear-key, .enter-key, .numeric-toggle-key {
+            font-size: 1.2rem !important;
+            width: 50px;
+            height: 45px;
+        }
+        .keyboard-section.special-keys .keyboard-grid {
+            display: flex;
+            justify-content: space-between;
+            gap: 5px;
+            width: 100%;
+            direction: ltr;
+        }
+        
+        .keyboard-key.clear-key {
+            background-color: #fff5f5;
+            border: 1px solid #ffcccc;
+            color: #e53935;
+        }
+
+        /* Hide punctuation section on touch devices */
+        body.touch-device .keyboard-section:not(.numeric-section):has(.keyboard-section-title:contains("Punctuation")) {
+            display: none;
+        }
+
+        /* Alternative method to hide punctuation section */
+        @media (hover: none) and (pointer: coarse) {
+            .keyboard-section:not(.numeric-section):has(.keyboard-section-title:contains("Punctuation")) {
+                display: none;
+            }
         }
     </style>
 </head>
@@ -793,16 +820,6 @@
                 <div class="keyboard-section-title">Numbers</div>
                 <div class="keyboard-grid">
                     <!-- Numbers -->
-                    <button class="keyboard-key" data-syriac="١" title="U+0661 - ARABIC-INDIC DIGIT ONE">١</button>
-                    <button class="keyboard-key" data-syriac="٢" title="U+0662 - ARABIC-INDIC DIGIT TWO">٢</button>
-                    <button class="keyboard-key" data-syriac="٣" title="U+0663 - ARABIC-INDIC DIGIT THREE">٣</button>
-                    <button class="keyboard-key" data-syriac="٤" title="U+0664 - ARABIC-INDIC DIGIT FOUR">٤</button>
-                    <button class="keyboard-key" data-syriac="٥" title="U+0665 - ARABIC-INDIC DIGIT FIVE">٥</button>
-                    <button class="keyboard-key" data-syriac="٦" title="U+0666 - ARABIC-INDIC DIGIT SIX">٦</button>
-                    <button class="keyboard-key" data-syriac="٧" title="U+0667 - ARABIC-INDIC DIGIT SEVEN">٧</button>
-                    <button class="keyboard-key" data-syriac="٨" title="U+0668 - ARABIC-INDIC DIGIT EIGHT">٨</button>
-                    <button class="keyboard-key" data-syriac="٩" title="U+0669 - ARABIC-INDIC DIGIT NINE">٩</button>
-                    <button class="keyboard-key" data-syriac="٠" title="U+0660 - ARABIC-INDIC DIGIT ZERO">٠</button>
                     <button class="keyboard-key" data-syriac="1" title="DIGIT ONE">1</button>
                     <button class="keyboard-key" data-syriac="2" title="DIGIT TWO">2</button>
                     <button class="keyboard-key" data-syriac="3" title="DIGIT THREE">3</button>
@@ -814,15 +831,40 @@
                     <button class="keyboard-key" data-syriac="9" title="DIGIT NINE">9</button>
                     <button class="keyboard-key" data-syriac="0" title="DIGIT ZERO">0</button>
                 </div>
+                <div class="keyboard-section-title">Punctuation and Marks</div>
+                <div class="keyboard-grid">
+                    <!-- Punctuation -->
+                    <button class="keyboard-key" data-syriac="܀" title="U+0700 - SYRIAC END OF PARAGRAPH">܀</button>
+                    <button class="keyboard-key" data-syriac="." title="U+002E - FULL STOP">.</button>
+                    <button class="keyboard-key" data-syriac=":" title="U+003A - COLON">:</button>
+                    <button class="keyboard-key" data-syriac="[" title="U+005B - LEFT SQUARE BRACKET">[</button>
+                    <button class="keyboard-key" data-syriac="]" title="U+005D - RIGHT SQUARE BRACKET">]</button>
+                    <button class="keyboard-key" data-syriac="!" title="U+0021 - EXCLAMATION MARK">!</button>
+                    <button class="keyboard-key" data-syriac="(" title="U+0028 - LEFT PARENTHESIS">(</button>
+                    <button class="keyboard-key" data-syriac=")" title="U+0029 - RIGHT PARENTHESIS">)</button>
+                    <button class="keyboard-key" data-syriac="؟" title="U+061F - ARABIC QUESTION MARK">؟</button>
+                    <button class="keyboard-key" data-syriac="ـ" title="U+0640 - ARABIC TATWEEL (EXTENSION)">ـ</button>
+                    <button class="keyboard-key" data-syriac="♱" title="U+2671 - EAST SYRIAC CROSS">♱</button>
+                </div>
             </div>
             <div class="keyboard-section special-keys">
                 <div class="keyboard-section-title">Special Keys</div>
                 <div class="keyboard-grid">
                     <button class="keyboard-key special numeric-toggle-key" title="SWITCH TO NUMBERS">123</button>
-                    <button class="keyboard-key special backspace-key" title="BACKSPACE">Backspace</button>
-                    <button class="keyboard-key special" data-syriac=" " title="SPACE">Space</button>
-                    <button class="keyboard-key special enter-key" title="ENTER">Enter</button>
-                    <button class="keyboard-key special clear-key" title="CLEAR">Clear</button>
+                    <button class="keyboard-key special clear-key" title="CLEAR">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
+                            <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/>
+                        </svg>
+                    </button>
+                    <button class="keyboard-key special space-key" data-syriac=" " title="SPACE">Space</button>
+                    <button class="keyboard-key special enter-key" title="ENTER">
+                        <span style="font-size: 1.5rem;">↵</span>
+                    </button>
+                    <button class="keyboard-key special backspace-key" title="BACKSPACE">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
+                            <path d="M360-200q-20 0-37.5-9T296-233L120-480l176-247q10-14 27.5-23.5T360-760h400q33 0 56.5 23.5T840-680v400q0 33-23.5 56.5T760-200H360Zm396-80v-400H360L208-480l152 200h396ZM580-440l76 76 56-56-76-76 76-76-56-56-76 76-76-76-56 56 76 76-76 76 56 56 76-76Z"/>
+                        </svg>
+                    </button>
                 </div>
             </div>
         </div>
@@ -949,6 +991,14 @@
             // Apply touch mode styles directly to the body
             if (isTouchDevice) {
                 $('body').addClass('touch-device');
+                
+                // Hide punctuation section on touch devices
+                $('.keyboard-section').each(function() {
+                    const title = $(this).find('.keyboard-section-title').text();
+                    if (title.includes('Punctuation') && !$(this).hasClass('numeric-section')) {
+                        $(this).addClass('hidden');
+                    }
+                });
             }
             
             // Set up the environment based on device type
@@ -1154,8 +1204,18 @@
                         .text('ABC');
                 } else {
                     // Show regular sections, hide numeric section
-                    $('.keyboard-section').not('.special-keys').removeClass('hidden');
                     $('.numeric-section').addClass('hidden');
+                    
+                    // Show all sections except punctuation on touch devices
+                    $('.keyboard-section').not('.special-keys, .numeric-section').each(function() {
+                        const title = $(this).find('.keyboard-section-title').text();
+                        if (isTouchDevice && title.includes('Punctuation')) {
+                            $(this).addClass('hidden');
+                        } else {
+                            $(this).removeClass('hidden');
+                        }
+                    });
+                    
                     // Change ABC key back to numeric toggle key
                     $('.abc-toggle-key')
                         .removeClass('abc-toggle-key')
