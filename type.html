@@ -1490,7 +1490,7 @@
             
             // Function to create and share/download image
             function createAndShareImage(shouldShare) {
-                // Create a temporary div to render the text
+                // Create a temporary div to render the text with improved styling
                 const tempDiv = $('<div>').css({
                     'position': 'absolute',
                     'left': '-9999px',
@@ -1499,27 +1499,77 @@
                     'color': textarea.css('color'),
                     'direction': 'rtl',
                     'white-space': 'pre-wrap',
-                    'padding': '20px',
+                    'padding': '10px',
                     'background': 'white',
-                    'border': '1px solid #ddd',
-                    'border-radius': '4px',
-                    'max-width': '800px',
-                    'width': 'fit-content'
+                    // 'border': '1px solid #ddd',
+                    // 'border-radius': '8px',
+                    'max-width': '1000px',
+                    'width': 'fit-content',
+                    // 'box-shadow': '0 2px 10px rgba(0,0,0,0.1)',
+                    'line-height': '1.6',
+                    'text-rendering': 'optimizeLegibility',
+                    '-webkit-font-smoothing': 'antialiased'
                 }).text(textarea.val());
 
                 // Add the div to the document temporarily
                 $('body').append(tempDiv);
 
-                // Convert the div to canvas
+                // Show a small loading indicator
+                const loadingIndicator = $('<div>').css({
+                    'position': 'fixed',
+                    'top': '50%',
+                    'left': '50%',
+                    'transform': 'translate(-50%, -50%)',
+                    'background': 'rgba(255,255,255,0.9)',
+                    'padding': '15px 20px',
+                    'border-radius': '8px',
+                    'box-shadow': '0 2px 10px rgba(0,0,0,0.2)',
+                    'z-index': '9999',
+                    'font-family': 'Arial, sans-serif',
+                    'font-size': '14px'
+                }).text('Creating high-quality image...');
+                
+                $('body').append(loadingIndicator);
+
+                // Convert the div to canvas with higher quality settings
                 html2canvas(tempDiv[0], {
-                    scale: 2,
+                    scale: 4, // Increased from 2 to 4 for higher resolution
                     useCORS: true,
-                    backgroundColor: 'white'
+                    backgroundColor: 'white',
+                    logging: false,
+                    allowTaint: true,
+                    letterRendering: true,
+                    renderSettings: {
+                        quality: 1.0
+                    }
                 }).then(canvas => {
-                    // Convert canvas to blob
-                    canvas.toBlob(blob => {
+                    // Create higher-quality version for better display
+                    const highQualityCanvas = document.createElement('canvas');
+                    const ctx = highQualityCanvas.getContext('2d');
+                    
+                    // Set larger canvas dimensions for better quality
+                    const scaleFactor = 1.2; // Additional scaling for better image quality
+                    highQualityCanvas.width = canvas.width * scaleFactor;
+                    highQualityCanvas.height = canvas.height * scaleFactor;
+                    
+                    // Enable image smoothing for better rendering
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = 'high';
+                    
+                    // Fill with white background
+                    ctx.fillStyle = 'white';
+                    ctx.fillRect(0, 0, highQualityCanvas.width, highQualityCanvas.height);
+                    
+                    // Draw the original canvas content at higher resolution
+                    ctx.drawImage(canvas, 0, 0, highQualityCanvas.width, highQualityCanvas.height);
+                    
+                    // Convert the enhanced canvas to blob with higher quality
+                    highQualityCanvas.toBlob(blob => {
                         // Create a file from the blob
                         const file = new File([blob], 'syriac-text.png', { type: 'image/png' });
+
+                        // Remove loading indicator
+                        loadingIndicator.remove();
 
                         // Check if we should share or download
                         if (shouldShare && isTouchDevice && navigator.share) {
@@ -1528,23 +1578,32 @@
                                 title: 'Syriac Text',
                                 text: 'Shared from East Syriac Text Editor',
                                 files: [file]
-                            }).catch(console.error);
+                            }).catch(error => {
+                                console.error('Error sharing:', error);
+                                // Fallback to download if sharing fails
+                                downloadImage(blob);
+                            });
                         } else {
                             // Download the file
-                            const url = URL.createObjectURL(blob);
-                            const a = document.createElement('a');
-                            a.href = url;
-                            a.download = 'syriac-text.png';
-                            document.body.appendChild(a);
-                            a.click();
-                            document.body.removeChild(a);
-                            URL.revokeObjectURL(url);
+                            downloadImage(blob);
                         }
-                    }, 'image/png');
+                    }, 'image/png', 1.0); // Maximum quality (1.0)
 
                     // Remove the temporary div
                     tempDiv.remove();
                 });
+            }
+            
+            // Helper function to download image
+            function downloadImage(blob) {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'syriac-text.png';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
             }
 
             // Set keyboard height CSS variable for touch devices
