@@ -930,15 +930,15 @@
 
         /* Show download button only on touch devices by default */
         .download-button {
-            display: flex; /* Changed from display: none to always show */
+            display: none;
         }
         
-        /* Show download button on touch devices - removed since we now show it everywhere */
-        /* @media (hover: none) {
+        /* Show download button on touch devices */
+        @media (hover: none) {
             .download-button {
                 display: flex;
             }
-        } */
+        }
     </style>
 </head>
 <body>
