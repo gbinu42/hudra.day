@@ -1490,6 +1490,9 @@
             
             // Function to create and share/download image
             function createAndShareImage(shouldShare) {
+                // Get the computed width of the textarea
+                const textareaWidth = textarea.width();
+                
                 // Create a temporary div to render the text with improved styling
                 const tempDiv = $('<div>').css({
                     'position': 'absolute',
@@ -1503,8 +1506,9 @@
                     'background': 'white',
                     // 'border': '1px solid #ddd',
                     // 'border-radius': '8px',
-                    'max-width': '1000px',
-                    'width': 'fit-content',
+                    'width': textareaWidth + 'px', // Set the width to match textarea
+                    'max-width': 'none', // Remove max-width constraint
+                    'box-sizing': 'border-box',
                     // 'box-shadow': '0 2px 10px rgba(0,0,0,0.1)',
                     'line-height': '1.6',
                     'text-rendering': 'optimizeLegibility',
