@@ -3,8 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Syriac Text Editor</title>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <meta name="description" content="Digital collection of East Syriac liturgical texts (Hudra) from the Assyrian Church of the East, Chaldean Catholic Church, and Syro-Malabar Church.">
+    <meta name="keywords" content="East Syriac, Hudra, Breviary, Assyrian Church, Chaldean Church, Syro-Malabar Church, liturgical texts">
+    <meta name="author" content="East Syriac Breviary Project">
+    <meta name="theme-color" content="#D1001F">
+    <meta property="og:title" content="East Syriac Breviary (Hudra)">
+    <meta property="og:description" content="Digital collection of East Syriac liturgical texts from three major churches.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.hudra.day">
+    <title>East Syriac Breviary (Hudra)</title>
     <style>
         @font-face {
             font-family: 'East Syriac Adiabene';
@@ -13,1167 +20,635 @@
             font-style: normal;
             font-display: swap;
         }
+        
         :root {
-            --font-size: 36px;
-            --container-padding: 15px;
-            --border-radius: 8px;
-            --text-color: #000000;
+            --primary-color: #D1001F;
+            --text-color: #333;
+            --background-color: #f5f5f5;
+            --card-background: #ffffff;
+            --nav-height: 60px;
         }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
+
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: var(--container-padding);
-            background-color: #f5f5f5;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            padding-top: var(--nav-height);
         }
-        .container {
-            background-color: white;
-            padding: var(--container-padding);
-            border-radius: var(--border-radius);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            flex: 1;
-            width: 100%;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-            margin: 20px 0;
-            font-size: 1.5rem;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-        }
-        .controls {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin: 20px 0;
-            flex-wrap: wrap;
-            padding: 15px;
-            background-color: #f8f9fa;
-            border-radius: 4px;
-            border-left: 4px solid #4CAF50;
-            justify-content: space-between;
-        }
-        .controls-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        .font-size-control, .color-control {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            min-width: 200px;
-        }
-        .font-size-control label, .color-control label {
-            font-size: 0.9rem;
-            color: #666;
-            min-width: 80px;
-        }
-        .font-size-control select {
-            min-width: 150px;
-        }
-        .color-control {
-            position: relative;
-        }
-        .color-selector {
-            display: none;
-            position: absolute;
-            top: 100%;
+
+        .navbar {
+            position: fixed;
+            top: 0;
             left: 0;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 10px;
+            right: 0;
+            height: var(--nav-height);
+            background-color: var(--card-background);
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
             z-index: 1000;
         }
-        .color-selector.active {
-            display: block;
-        }
-        .color-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 5px;
-            width: 200px;
-        }
-        .color-option {
-            width: 30px;
-            height: 30px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: transform 0.2s;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-        }
-        .color-option:hover {
-            transform: scale(1.1);
-        }
-        .color-option.active {
-            transform: scale(1.1);
-            box-shadow: 0 0 0 2px #4CAF50;
-        }
-        .color-label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            padding: 4px 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background: white;
-        }
-        .color-preview {
-            width: 20px;
-            height: 20px;
-            border-radius: 3px;
-            display: inline-block;
-        }
-        #syriacInput {
-            width: 100%;
-            min-height: 300px;
-            height: 300px;
-            padding: 15px;
-            font-size: var(--font-size);
-            color: var(--text-color);
-            line-height: 1.6;
-            border: 2px solid #ddd;
-            border-radius: 4px;
-            resize: vertical;
-            direction: rtl;
-            text-align: right;
-            font-family: 'East Syriac Adiabene', Arial, sans-serif;
-            unicode-bidi: embed;
-            text-rendering: optimizeLegibility;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            writing-mode: horizontal-tb;
-            text-orientation: mixed;
-            font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "pnum" 1, "tnum" 0, "onum" 0, "lnum" 0, "dlig" 1;
-            overflow-y: auto;
-            margin-bottom: 10px;
-        }
-        #syriacInput:focus {
-            outline: none;
-            border-color: #4CAF50;
-        }
-        #syriacInput::placeholder {
-            font-size: 0.7em;
-            opacity: 0.7;
-            font-family: Arial, sans-serif;
-        }
-        .instructions {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #f8f9fa;
-            border-radius: 4px;
-            border-left: 4px solid #4CAF50;
-        }
-        .instructions h3 {
-            font-size: 1.1rem;
-            margin-bottom: 10px;
-            color: #333;
-        }
-        .instructions ul {
-            list-style-position: inside;
-            padding-left: 0;
-        }
-        .instructions li {
-            margin-bottom: 5px;
-            font-size: 0.9rem;
-            color: #666;
-        }
-        @media (min-width: 768px) {
-            :root {
-                --container-padding: 20px;
-            }
-            body {
-                padding: 20px;
-            }
-            h1 {
-                font-size: 2rem;
-            }
-            .instructions h3 {
-                font-size: 1.2rem;
-            }
-            .instructions li {
-                font-size: 1rem;
-            }
-        }
-        .keyboard-toggle {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            padding: 4px 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background: white;
-        }
-        .keyboard-toggle:hover {
-            background: #f8f9fa;
-        }
-        .keyboard .keyboard-toggle {
-            display: none;
-        }
-        .keyboard:not(.hidden) .keyboard-toggle {
-            display: flex;
-        }
-        .controls .keyboard-toggle {
-            display: flex;
-        }
-        .keyboard:not(.hidden) ~ .controls .keyboard-toggle {
-            display: none;
-        }
-        .keyboard {
-            display: block;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 10px;
-            margin: 10px 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-            width: 100%;
-            max-width: 100%;
-        }
-        .keyboard.hidden {
-            display: none;
-        }
-        .keyboard-grid {
-            display: grid;
-            grid-template-columns: repeat(10, 1fr);
-            gap: 3px;
-            margin-bottom: 10px;
-            width: 100%;
-            direction: rtl;
-        }
-        .keyboard-section {
-            margin-bottom: 15px;
-            width: 100%;
-        }
-        .keyboard-section.special-keys {
-            display: none;
-        }
-        @media (hover: none) and (pointer: coarse) {
-            body {
-                padding: 0;
-                margin: 0;
-                background-color: white;
-            }
-            .keyboard {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                margin: 0;
-                padding: 10px 10px 5px 10px;
-                border-radius: 0;
-                z-index: 1000;
-                display: block;
-                transition: transform 0.3s ease;
-            }
-            .keyboard.hidden {
-                display: none;
-            }
-            .keyboard-header {
-                display: none;
-                border-bottom: none;
-            }
-            .keyboard-collapse {
-                display: block !important;
-                position: absolute;
-                top: -30px;
-                right: 10px;
-                font-size: 1.5rem;
-                font-weight: bold;
-                padding: 2px 10px;
-                color: #333;
-                background-color: transparent;
-                border: 1px solid rgba(221, 221, 221, 0.5);
-                border-radius: 4px 4px 0 0;
-                box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
-                z-index: 1001;
-            }
-            .keyboard-section-title {
-                display: none;
-            }
-            .keyboard-section {
-                margin-bottom: 5px;
-            }
-            .keyboard-grid {
-                gap: 2px;
-                margin-bottom: 5px;
-            }
-            .keyboard-section.special-keys {
-                display: block;
-                margin-bottom: 3px;
-            }
-            #syriacInput {
-                margin: 0;
-                border-radius: 0;
-                border: none;
-                border-bottom: 1px solid #ddd;
-                height: calc(100vh - 200px);
-                min-height: calc(100vh - 200px);
-            }
-            .container {
-                padding: 0;
-                margin: 0;
-                max-width: 100%;
-            }
-            .keyboard.collapsed {
-                transform: translateY(calc(100% - 10px));
-                padding-bottom: 0;
-            }
-            .keyboard.collapsed .keyboard-section:not(:first-child) {
-                display: none;
-            }
-            .keyboard.collapsed .keyboard-section {
-                margin-bottom: 0;
-            }
-            .keyboard.collapsed .keyboard-grid {
-                margin-bottom: 0;
-            }
-            .keyboard.collapsed .keyboard-section:first-child {
-                height: 40px;
-                overflow: hidden;
-                padding-bottom: 0;
-            }
-            .controls .keyboard-toggle {
-                display: none !important;
-            }
-        }
-        .keyboard-section-title {
-            font-size: 0.8rem;
-            color: #666;
-            margin-bottom: 5px;
-            padding-left: 5px;
-        }
-        .keyboard-key {
-            padding: 2px 1px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background: white;
-            cursor: pointer;
-            text-align: center;
-            font-family: 'East Syriac Adiabene', Arial, sans-serif;
+
+        .navbar-brand {
             font-size: 1.5rem;
-            transition: background-color 0.2s;
-            min-height: 35px;
+            font-weight: bold;
+            color: #D1001F;
+            text-decoration: none;
+        }
+
+        .navbar-brand .syriac {
+            font-family: 'East Syriac Adiabene', serif;
+        }
+
+        .navbar-nav {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            direction: ltr;
+            gap: 2rem;
+            list-style: none;
         }
-        .keyboard-key.special {
-            font-family: Arial, sans-serif;
-            font-size: 0.9rem;
-            background-color: #f0f0f0;
-            grid-column: span 1;
+
+        .navbar-nav a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
         }
-        .keyboard-key:hover {
-            background: #f8f9fa;
+
+        .navbar-nav a:hover {
+            color: #D1001F;
         }
-        .keyboard-key .phonetic {
-            font-size: 0.6rem;
-            color: #666;
-            font-family: Arial, sans-serif;
-            margin-top: 1px;
+
+        .navbar-nav a.active {
+            color: #D1001F;
+            font-weight: bold;
         }
-        @media (max-width: 768px) {
-            .container {
-                max-width: 100%;
-                margin: 0;
-            }
-            .keyboard-grid {
-                grid-template-columns: repeat(8, 1fr);
-                direction: rtl;
-            }
-            .keyboard-key {
-                font-size: 1.2rem;
-                min-height: 30px;
-                direction: ltr;
-            }
-            .controls {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .controls-left {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .font-size-control, .color-control {
-                width: 100%;
-                justify-content: space-between;
-            }
-            .font-size-control select {
-                flex: 1;
-            }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
         }
-        .content-section {
-            display: block;
-            transition: all 0.3s ease;
-        }
-        .content-section.hidden {
-            display: none;
-        }
-        /* Add new toggle switch styles */
-        .toggle-switch {
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+            background-color: var(--card-background);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background-image: linear-gradient(135deg, rgba(209, 0, 31, 0.05) 25%, transparent 25%, transparent 50%, rgba(209, 0, 31, 0.05) 50%, rgba(209, 0, 31, 0.05) 75%, transparent 75%, transparent);
+            background-size: 40px 40px;
             position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 24px;
-            margin-left: 8px;
+            border-radius: 8px;
+            overflow: hidden;
         }
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        .toggle-slider {
+
+        header::before {
+            content: '';
             position: absolute;
-            cursor: pointer;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 24px;
-        }
-        .toggle-slider:before {
-            position: absolute;
-            content: "";
-            height: 16px;
-            width: 16px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-        input:checked + .toggle-slider {
-            background-color: #4CAF50;
-        }
-        input:checked + .toggle-slider:before {
-            transform: translateX(26px);
-        }
-        .keyboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            padding-bottom: 5px;
-            border-bottom: 1px solid #ddd;
-        }
-        .keyboard-header-title {
-            font-size: 1rem;
-            color: #333;
-            font-weight: bold;
-        }
-        .keyboard-collapse {
-            display: none;
-            background: none;
-            border: none;
-            color: #666;
-            cursor: pointer;
-            padding: 4px 8px;
-            font-size: 1.2rem;
-        }
-        .instructions li.touch-tip {
-            margin-top: 10px;
-            color: #4CAF50;
-            font-weight: bold;
-        }
-        .instructions li.touch-tip code {
-            background: #f5f5f5;
-            padding: 2px 4px;
-            border-radius: 3px;
-            border: 1px solid #ddd;
-            font-family: monospace;
-        }
-        
-        /* Touch device specific styles */
-        body.touch-device {
-            padding: 0;
-            margin: 0;
-            background-color: white;
-        }
-        
-        body.touch-device .container {
-            padding: 0;
-            margin: 0;
-            max-width: 100%;
-            border-radius: 0;
-            box-shadow: none;
-        }
-        
-        body.touch-device #syriacInput {
-            margin: 0;
-            border-radius: 0;
-            border: none;
-            border-bottom: 1px solid #ddd;
-            height: calc(100vh - 220px);
-            min-height: calc(100vh - 220px);
-        }
-        
-        body.touch-device .keyboard {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            margin: 0;
-            padding: 10px 10px 5px 10px;
-            border-radius: 0;
-            border-left: none;
-            border-right: none;
-            border-bottom: none;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-            z-index: 1000;
-            display: block;
-        }
-        
-        body.touch-device .keyboard-header {
-            display: none;
-        }
-        
-        body.touch-device .keyboard-section-title {
-            display: none;
-        }
-        
-        body.touch-device .keyboard-section {
-            margin-bottom: 5px;
-        }
-        
-        body.touch-device .keyboard-grid {
-            gap: 2px;
-            margin-bottom: 5px;
-        }
-        
-        body.touch-device .keyboard-section.special-keys {
-            display: block;
-            margin-bottom: 3px;
-        }
-        
-        body.touch-device .controls .keyboard-toggle {
-            display: none !important;
-        }
-        
-        body.touch-device .keyboard.collapsed {
-            transform: translateY(calc(100% - 10px));
-            padding-bottom: 0;
-        }
-        
-        body.touch-device .keyboard.collapsed .keyboard-section:not(:first-child) {
-            display: none;
-        }
-        
-        body.touch-device .keyboard.collapsed .keyboard-section {
-            margin-bottom: 0;
-        }
-        
-        body.touch-device .keyboard.collapsed .keyboard-grid {
-            margin-bottom: 0;
-        }
-        
-        body.touch-device .keyboard.collapsed .keyboard-section:first-child {
-            height: 30px;
-            overflow: hidden;
-            padding-bottom: 0;
-        }
-        
-        body.touch-device .keyboard-collapse {
-            display: block !important;
-            position: absolute;
-            top: -24px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 48px;
-            height: 24px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            padding: 0;
-            text-align: center;
-            line-height: 18px;
-            color: #333;
-            background: linear-gradient(to bottom, #fff, #f5f5f5);
-            border: 1px solid rgba(221, 221, 221, 0.8);
-            border-radius: 30px 30px 0 0;
-            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-            z-index: 1001;
-        }
-        
-        body.touch-device .keyboard-collapse:active {
-            background: linear-gradient(to top, #fff, #f5f5f5);
-            box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.1);
-            line-height: 20px;
-            top: -23px;
-        }
-        
-        body.touch-device .keyboard-key {
-            font-size: 1.6rem;  /* Increased from 1.5rem for regular keys */
-        }
-        
-        body.touch-device .keyboard-key.special {
-            font-size: 1rem;  /* Increased from 0.9rem for special keys */
-        }
-        
-        body.touch-device .keyboard-key.enter-key:active {
-            background-color: #c8e6c9; /* Darker shade for active state */
-        }
-        
-        body.touch-device .keyboard-key.clear-key {
-            border: 1px solid #ddd;
-            color: #333;
-        }
-        
-        body.touch-device .keyboard-key.clear-key:active {
-            background-color: #f0f0f0;
-        }
-        
-        .hidden {
-            display: none;
-        }
-        .numeric-toggle-key, .abc-toggle-key {
-            border: 1px solid #ddd;
-            color: #333;
-            width: 50px !important;
-        }
-        
-        .numeric-toggle-key:hover, .abc-toggle-key:hover {
-            background-color: #f8f9fa;
-        }
-        .space-key {
-            flex-grow: 1;
-        }
-        .backspace-key, .clear-key, .enter-key, .numeric-toggle-key {
-            font-size: 1.2rem !important;
-            width: 50px;
-            height: 45px;
-        }
-        .keyboard-section.special-keys .keyboard-grid {
-            display: flex;
-            justify-content: space-between;
-            gap: 5px;
-            width: 100%;
-            direction: ltr;
-        }
-        
-        /* Hide punctuation section on touch devices */
-        body.touch-device .keyboard-section:not(.numeric-section):has(.keyboard-section-title:contains("Punctuation")) {
-            display: none;
+            background-color: rgba(255, 255, 255, 0.85);
+            z-index: 1;
         }
 
-        /* Alternative method to hide punctuation section */
-        @media (hover: none) and (pointer: coarse) {
-            .keyboard-section:not(.numeric-section):has(.keyboard-section-title:contains("Punctuation")) {
-                display: none;
+        header * {
+            position: relative;
+            z-index: 2;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        h1 .syriac {
+            font-family: 'East Syriac Adiabene', serif;
+            margin-right: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .work-in-progress {
+            display: inline-block;
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .churches {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .church-card {
+            background-color: var(--card-background);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .church-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .church-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, #D1001F, #ff6b6b);
+            transform: scaleX(0);
+            transform-origin: bottom right;
+            transition: transform 0.3s ease;
+        }
+
+        .church-card:hover::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+
+        .church-image {
+            height: 180px;
+            margin: -2rem -2rem 1.5rem;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+
+        .church-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+
+        .church-image .icon {
+            position: relative;
+            z-index: 2;
+        }
+
+        .icon {
+            font-size: 4rem;
+            color: white;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 2;
+        }
+
+        .icon-assyrian {
+            font-family: serif;
+        }
+
+        .icon-chaldean {
+            font-family: serif;
+        }
+
+        .icon-syro {
+            font-family: serif;
+        }
+
+        .church-image::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 30px;
+            background: linear-gradient(to top, rgba(0,0,0,0.4), transparent);
+        }
+
+        .assyrian-church-image {
+            background: linear-gradient(45deg, #8A1612, #D1001F);
+        }
+
+        .chaldean-church-image {
+            background: linear-gradient(45deg, #7D1D3F, #D1001F);
+        }
+
+        .syro-malabar-church-image {
+            background: linear-gradient(45deg, #8A1538, #D1001F);
+        }
+
+        .church-card h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .church-card p {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .coming-soon {
+            display: inline-block;
+            background-color: #e9ecef;
+            color: #495057;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-weight: bold;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .coming-soon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: shine 2s infinite;
+        }
+
+        @keyframes shine {
+            100% {
+                left: 100%;
             }
+        }
+
+        .text-editor-link {
+            text-align: center;
+            margin: 3rem 0;
+            background: linear-gradient(135deg, #f5f5f5 25%, #e9e9e9 25%, #e9e9e9 50%, #f5f5f5 50%, #f5f5f5 75%, #e9e9e9 75%, #e9e9e9);
+            background-size: 20px 20px;
+            padding: 3rem;
+            border-radius: 8px;
+            position: relative;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .text-editor-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.75);
+            border-radius: 8px;
+        }
+        
+        .text-editor-link-content {
+            position: relative;
+            z-index: 2;
+            padding: 1.5rem;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 0 auto;
+            border-top: 3px solid var(--primary-color);
+        }
+
+        .text-editor-link h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .text-editor-link p {
+            color: #666;
+            margin-bottom: 1.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .text-editor-link a {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .text-editor-link a:hover {
+            background-color: #A00000;
+        }
+
+        footer {
+            background-color: var(--card-background);
+            padding: 3rem 2rem;
+            margin-top: 3rem;
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            color: #D1001F;
+            margin-bottom: 1rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: #D1001F;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .churches {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar {
+                padding: 0 1rem;
+            }
+
+            .navbar-nav {
+                gap: 1rem;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+        }
+
+        /* Decorative elements */
+        .decorative-line {
+            height: 3px;
+            width: 80px;
+            background: linear-gradient(to right, var(--primary-color), transparent);
+            margin: 0 auto 1.5rem;
+        }
+
+        .separator {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 2rem 0;
+            color: #777;
+        }
+
+        .separator::before,
+        .separator::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .separator::before {
+            margin-right: 1rem;
+        }
+
+        .separator::after {
+            margin-left: 1rem;
+        }
+
+        .highlight-box {
+            background-color: rgba(209, 0, 31, 0.05);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .highlight-box h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .quote-section {
+            background-color: var(--card-background);
+            padding: 2rem;
+            margin: 3rem 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quote-section::before {
+            content: '"';
+            position: absolute;
+            top: -20px;
+            left: 20px;
+            font-size: 8rem;
+            font-family: serif;
+            color: rgba(209, 0, 31, 0.1);
+        }
+
+        .quote-section::after {
+            content: '"';
+            position: absolute;
+            bottom: -80px;
+            right: 20px;
+            font-size: 8rem;
+            font-family: serif;
+            color: rgba(209, 0, 31, 0.1);
+        }
+
+        .quote {
+            font-size: 1.2rem;
+            font-style: italic;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .quote-source {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .footer-title {
+            font-family: 'East Syriac Adiabene', serif;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .footer-section h3::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -5px;
+            width: 40px;
+            height: 2px;
+            background-color: var(--primary-color);
+        }
+
+        .text-editor-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
         }
     </style>
 </head>
 <body>
+    <nav class="navbar">
+        <a href="/" class="navbar-brand"><span class="syriac">ܚܘܼܕܪܵܐ</span></a>
+        <ul class="navbar-nav">
+            <li><a href="/" class="active">Home</a></li>
+            <li><a href="./type">Text Editor</a></li>
+            <li><a href="./about">About</a></li>
+            <li><a href="./contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <header>
+        <h1><span class="syriac">ܚܘܼܕܪܵܐ</span> Hudra</h1>
+        <div class="subtitle">A Digital Collection of Liturgical Texts</div>
+        <div class="work-in-progress">🚧 Work in Progress 🚧</div>
+    </header>
+
     <div class="container">
-        <textarea id="syriacInput" placeholder="Type your East Syriac text here..." spellcheck="false"></textarea>
-        <div class="keyboard hidden">
-            <div class="keyboard-header">
-                <div class="keyboard-header-title">On-Screen Keyboard</div>
-                <div class="keyboard-toggle">
-                    <span>Hide Keyboard</span>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="keyboardToggleHide">
-                        <span class="toggle-slider"></span>
-                    </label>
+        <div class="highlight-box">
+            <h3>Welcome to the East Syriac Breviary Project</h3>
+            <p>We are digitizing and preserving the liturgical texts of the East Syriac tradition to make them accessible to scholars, clergy, and faithful around the world.</p>
+        </div>
+        
+        <div class="separator">Traditions</div>
+        
+        <div class="churches">
+            <div class="church-card">
+                <div class="church-image assyrian-church-image">
+                    <div class="icon icon-assyrian">✝</div>
                 </div>
-                <button class="keyboard-collapse" title="Collapse Keyboard">▼</button>
+                <h2>Assyrian Church of the East</h2>
+                <div class="decorative-line"></div>
+                <p>The liturgical texts of the Holy Apostolic Catholic Assyrian Church of the East, preserving the ancient East Syriac tradition.</p>
+                <div class="coming-soon">Coming Soon</div>
             </div>
-            <div class="keyboard-section">
-                <div class="keyboard-section-title">Basic Letters</div>
-                <div class="keyboard-grid">
-                    <!-- Basic Letters -->
-                    <button class="keyboard-key" data-syriac="ܐ" title="U+0710 - SYRIAC LETTER ALAPH">ܐ</button>
-                    <button class="keyboard-key" data-syriac="ܒ" title="U+0712 - SYRIAC LETTER BETH">ܒ</button>
-                    <button class="keyboard-key" data-syriac="ܓ" title="U+0713 - SYRIAC LETTER GAMAL">ܓ</button>
-                    <button class="keyboard-key" data-syriac="ܕ" title="U+0715 - SYRIAC LETTER DALATH">ܕ</button>
-                    <button class="keyboard-key" data-syriac="ܗ" title="U+0717 - SYRIAC LETTER HE">ܗ</button>
-                    <button class="keyboard-key" data-syriac="ܘ" title="U+0718 - SYRIAC LETTER WAW">ܘ</button>
-                    <button class="keyboard-key" data-syriac="ܙ" title="U+0719 - SYRIAC LETTER ZAIN">ܙ</button>
-                    <button class="keyboard-key" data-syriac="ܚ" title="U+071A - SYRIAC LETTER HETH">ܚ</button>
-                    <button class="keyboard-key" data-syriac="ܛ" title="U+071B - SYRIAC LETTER TETH">ܛ</button>
-                    <button class="keyboard-key" data-syriac="ܝ" title="U+071D - SYRIAC LETTER YUDH">ܝ</button>
-                    <button class="keyboard-key" data-syriac="ܟ" title="U+071F - SYRIAC LETTER KAPH">ܟ</button>
-                    <button class="keyboard-key" data-syriac="ܠ" title="U+0720 - SYRIAC LETTER LAMADH">ܠ</button>
-                    <button class="keyboard-key" data-syriac="ܡ" title="U+0721 - SYRIAC LETTER MIM">ܡ</button>
-                    <button class="keyboard-key" data-syriac="ܢ" title="U+0722 - SYRIAC LETTER NUN">ܢ</button>
-                    <button class="keyboard-key" data-syriac="ܣ" title="U+0723 - SYRIAC LETTER SEMKATH">ܣ</button>
-                    <button class="keyboard-key" data-syriac="ܥ" title="U+0725 - SYRIAC LETTER E">ܥ</button>
-                    <button class="keyboard-key" data-syriac="ܦ" title="U+0726 - SYRIAC LETTER PE">ܦ</button>
-                    <button class="keyboard-key" data-syriac="ܨ" title="U+0728 - SYRIAC LETTER SADHE">ܨ</button>
-                    <button class="keyboard-key" data-syriac="ܩ" title="U+0729 - SYRIAC LETTER QAPH">ܩ</button>
-                    <button class="keyboard-key" data-syriac="ܪ" title="U+072A - SYRIAC LETTER RISH">ܪ</button>
-                    <button class="keyboard-key" data-syriac="ܫ" title="U+072B - SYRIAC LETTER SHIN">ܫ</button>
-                    <button class="keyboard-key" data-syriac="ܬ" title="U+072C - SYRIAC LETTER TAW">ܬ</button>
-                    <button class="keyboard-key" data-syriac="ܑ" title="U+0711 - SYRIAC LETTER SUPERSCRIPT ALAPH">ܑ◌</button>
-                    <button class="keyboard-key" data-syriac="ܞ" title="U+071E - SYRIAC LETTER YUDH HE">ܞ</button>
+
+            <div class="church-card">
+                <div class="church-image chaldean-church-image">
+                    <div class="icon icon-chaldean">✝</div>
                 </div>
+                <h2>Chaldean Catholic Church</h2>
+                <div class="decorative-line"></div>
+                <p>The liturgical texts of the Chaldean Catholic Church, maintaining the East Syriac rite while in communion with the Roman Catholic Church.</p>
+                <div class="coming-soon">Coming Soon</div>
             </div>
-            <div class="keyboard-section">
-                <div class="keyboard-section-title">Vowels and Diacritics</div>
-                <div class="keyboard-grid">
-                    <!-- Vowels and Diacritics -->
-                    <button class="keyboard-key" data-syriac="ܲ" title="U+0732 - SYRIAC PTHAHA DOTTED">◌ܲ</button>
-                    <button class="keyboard-key" data-syriac="ܵ" title="U+0735 - SYRIAC ZQAPHA DOTTED">◌ܵ</button>
-                    <button class="keyboard-key" data-syriac="ܸ" title="U+0738 - SYRIAC DOTTED ZLAMA HORIZONTAL">◌ܸ</button>
-                    <button class="keyboard-key" data-syriac="ܹ" title="U+0739 - SYRIAC DOTTED ZLAMA ANGULAR">◌ܹ</button>
-                    <button class="keyboard-key" data-syriac="ܼ" title="U+073C - SYRIAC HBASA-ESASA DOTTED">◌ܼ</button>
-                    <button class="keyboard-key" data-syriac="ܿ" title="U+073F - SYRIAC RWAHA">◌ܿ</button>
-                    <button class="keyboard-key" data-syriac="̈" title="U+0308 - COMBINING DIAERESIS (SYAME)">̈</button>
-                    <button class="keyboard-key" data-syriac="݀" title="U+0740 - SYRIAC FEMININE DOT">◌݀</button>
-                    <button class="keyboard-key" data-syriac="݁" title="U+0741 - SYRIAC QUSHAYA">◌݁</button>
-                    <button class="keyboard-key" data-syriac="݂" title="U+0742 - SYRIAC RUKKAKHA">◌݂</button>
-                    <button class="keyboard-key" data-syriac="݇" title="U+0747 - SYRIAC OBLIQUE LINE ABOVE">◌݇</button>
-                    <button class="keyboard-key" data-syriac="݈" title="U+0748 - SYRIAC OBLIQUE LINE BELOW">◌݈</button>
-                    <button class="keyboard-key" data-syriac="̇" title="U+0307 - COMBINING DOT ABOVE">̇</button>
-                    <button class="keyboard-key" data-syriac="̣" title="U+0323 - COMBINING DOT BELOW">̣</button>
-                    <button class="keyboard-key" data-syriac="̮" title="U+032E - COMBINING BREVE BELOW">̮</button>
+
+            <div class="church-card">
+                <div class="church-image syro-malabar-church-image">
+                    <div class="icon icon-syro">✝</div>
                 </div>
-            </div>
-            <div class="keyboard-section">
-                <div class="keyboard-section-title">Punctuation and Marks</div>
-                <div class="keyboard-grid">
-                    <!-- Punctuation and Marks -->
-                    <button class="keyboard-key" data-syriac="܀" title="U+0700 - SYRIAC END OF PARAGRAPH">܀</button>
-                    <button class="keyboard-key" data-syriac="." title="U+002E - FULL STOP">.</button>
-                    <button class="keyboard-key" data-syriac=":" title="U+003A - COLON">:</button>
-                    <button class="keyboard-key" data-syriac="[" title="U+005B - LEFT SQUARE BRACKET">[</button>
-                    <button class="keyboard-key" data-syriac="]" title="U+005D - RIGHT SQUARE BRACKET">]</button>
-                    <button class="keyboard-key" data-syriac="!" title="U+0021 - EXCLAMATION MARK">!</button>
-                    <button class="keyboard-key" data-syriac="(" title="U+0028 - LEFT PARENTHESIS">(</button>
-                    <button class="keyboard-key" data-syriac=")" title="U+0029 - RIGHT PARENTHESIS">)</button>
-                    <button class="keyboard-key" data-syriac="؟" title="U+061F - ARABIC QUESTION MARK">؟</button>
-                    <button class="keyboard-key" data-syriac="ـ" title="U+0640 - ARABIC TATWEEL (EXTENSION)">ـ</button>
-                    <button class="keyboard-key" data-syriac="♱" title="U+2671 - EAST SYRIAC CROSS">♱</button>
-                </div>
-            </div>
-            <div class="keyboard-section numeric-section hidden">
-                <div class="keyboard-section-title">Numbers</div>
-                <div class="keyboard-grid">
-                    <!-- Numbers -->
-                    <button class="keyboard-key" data-syriac="1" title="DIGIT ONE">1</button>
-                    <button class="keyboard-key" data-syriac="2" title="DIGIT TWO">2</button>
-                    <button class="keyboard-key" data-syriac="3" title="DIGIT THREE">3</button>
-                    <button class="keyboard-key" data-syriac="4" title="DIGIT FOUR">4</button>
-                    <button class="keyboard-key" data-syriac="5" title="DIGIT FIVE">5</button>
-                    <button class="keyboard-key" data-syriac="6" title="DIGIT SIX">6</button>
-                    <button class="keyboard-key" data-syriac="7" title="DIGIT SEVEN">7</button>
-                    <button class="keyboard-key" data-syriac="8" title="DIGIT EIGHT">8</button>
-                    <button class="keyboard-key" data-syriac="9" title="DIGIT NINE">9</button>
-                    <button class="keyboard-key" data-syriac="0" title="DIGIT ZERO">0</button>
-                </div>
-                <div class="keyboard-section-title">Punctuation and Marks</div>
-                <div class="keyboard-grid">
-                    <!-- Punctuation -->
-                    <button class="keyboard-key" data-syriac="܀" title="U+0700 - SYRIAC END OF PARAGRAPH">܀</button>
-                    <button class="keyboard-key" data-syriac="." title="U+002E - FULL STOP">.</button>
-                    <button class="keyboard-key" data-syriac=":" title="U+003A - COLON">:</button>
-                    <button class="keyboard-key" data-syriac="[" title="U+005B - LEFT SQUARE BRACKET">[</button>
-                    <button class="keyboard-key" data-syriac="]" title="U+005D - RIGHT SQUARE BRACKET">]</button>
-                    <button class="keyboard-key" data-syriac="!" title="U+0021 - EXCLAMATION MARK">!</button>
-                    <button class="keyboard-key" data-syriac="(" title="U+0028 - LEFT PARENTHESIS">(</button>
-                    <button class="keyboard-key" data-syriac=")" title="U+0029 - RIGHT PARENTHESIS">)</button>
-                    <button class="keyboard-key" data-syriac="؟" title="U+061F - ARABIC QUESTION MARK">؟</button>
-                    <button class="keyboard-key" data-syriac="ـ" title="U+0640 - ARABIC TATWEEL (EXTENSION)">ـ</button>
-                    <button class="keyboard-key" data-syriac="♱" title="U+2671 - EAST SYRIAC CROSS">♱</button>
-                </div>
-            </div>
-            <div class="keyboard-section special-keys">
-                <div class="keyboard-section-title">Special Keys</div>
-                <div class="keyboard-grid">
-                    <button class="keyboard-key special numeric-toggle-key" title="SWITCH TO NUMBERS">123</button>
-                    <button class="keyboard-key special clear-key" title="CLEAR">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
-                            <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/>
-                        </svg>
-                    </button>
-                    <button class="keyboard-key special space-key" data-syriac=" " title="SPACE">Space</button>
-                    <button class="keyboard-key special enter-key" title="ENTER">
-                        <span style="font-size: 1.5rem;">↵</span>
-                    </button>
-                    <button class="keyboard-key special backspace-key" title="BACKSPACE">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
-                            <path d="M360-200q-20 0-37.5-9T296-233L120-480l176-247q10-14 27.5-23.5T360-760h400q33 0 56.5 23.5T840-680v400q0 33-23.5 56.5T760-200H360Zm396-80v-400H360L208-480l152 200h396ZM580-440l76 76 56-56-76-76 76-76-56-56-76 76-76-76-56 56 76 76-76 76 56 56 76-76Z"/>
-                        </svg>
-                    </button>
-                </div>
+                <h2>Syro-Malabar Church</h2>
+                <div class="decorative-line"></div>
+                <p>The liturgical texts of the Syro-Malabar Catholic Church, preserving the East Syriac tradition in India.</p>
+                <div class="coming-soon">Coming Soon</div>
             </div>
         </div>
-        <div class="controls">
-            <div class="controls-left">
-                <div class="font-size-control">
-                    <label for="fontSize">Font Size:</label>
-                    <select id="fontSize">
-                        <option value="16">Extra Small (16px)</option>
-                        <option value="20">Very Small (20px)</option>
-                        <option value="24">Small (24px)</option>
-                        <option value="28">Medium Small (28px)</option>
-                        <option value="32">Medium (32px)</option>
-                        <option value="36" selected>Medium Large (36px)</option>
-                        <option value="40">Large (40px)</option>
-                        <option value="44">Very Large (44px)</option>
-                        <option value="48">Extra Large (48px)</option>
-                        <option value="52">Huge (52px)</option>
-                    </select>
-                </div>
-                <div class="color-control">
-                    <label>Text Color:</label>
-                    <div class="color-label">
-                        <span class="color-preview" style="background-color: #000000;"></span>
-                        <span>Select Color</span>
-                    </div>
-                    <div class="color-selector">
-                        <div class="color-grid">
-                            <button class="color-option" style="background-color: #000000;" data-color="#000000"></button>
-                            <button class="color-option" style="background-color: #4CAF50;" data-color="#4CAF50"></button>
-                            <button class="color-option" style="background-color: #2196F3;" data-color="#2196F3"></button>
-                            <button class="color-option" style="background-color: #F44336;" data-color="#F44336"></button>
-                            <button class="color-option" style="background-color: #FF9800;" data-color="#FF9800"></button>
-                            <button class="color-option" style="background-color: #9C27B0;" data-color="#9C27B0"></button>
-                            <button class="color-option" style="background-color: #795548;" data-color="#795548"></button>
-                            <button class="color-option" style="background-color: #607D8B;" data-color="#607D8B"></button>
-                            <button class="color-option" style="background-color: #FFC107;" data-color="#FFC107"></button>
-                            <button class="color-option" style="background-color: #E91E63;" data-color="#E91E63"></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="keyboard-toggle">
-                <span>Show Keyboard</span>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="keyboardToggleShow">
-                    <span class="toggle-slider"></span>
-                </label>
+        
+        <div class="separator">Tools</div>
+
+        <div class="text-editor-link">
+            <div class="text-editor-link-content">
+                <div class="text-editor-icon">✍</div>
+                <h3>East Syriac Text Editor</h3>
+                <p>Create, edit, and view East Syriac text with our specialized editor. Designed for scholars, clergy, and students studying the rich tradition of East Syriac manuscripts.</p>
+                <a href="./type.html">Open Text Editor</a>
             </div>
         </div>
-        <div class="content-section">
-            <h1>Syriac Text Editor</h1>
-            <div class="instructions">
-                <h3>Instructions:</h3>
-                <ul>
-                    <li>Switch to the Syriac phonetic keyboard on your system</li>
-                    <li>Type Syriac text in the textbox above</li>
-                    <li>The text will automatically flow from right to left</li>
-                    <li>You can copy and paste text from other sources</li>
-                    <li>The text is displayed in the East Syriac Adiabene font</li>
-                    <li class="touch-tip">On mobile devices: If keyboard doesn't appear, add <code>?forceTouch=true</code> to the URL</li>
-                </ul>
+        
+        <div class="quote-section">
+            <div class="quote">
+                "The East Syriac liturgical tradition represents one of the most ancient forms of Christian worship, preserving texts and melodies that date back to the earliest centuries of Christianity. This digital breviary project helps ensure these treasures are preserved for future generations."
             </div>
+            <div class="quote-source">— East Syriac Breviary Project</div>
         </div>
     </div>
 
-    <script>
-        $(document).ready(function() {
-            const textarea = $('#syriacInput');
-            const fontSizeSelect = $('#fontSize');
-            const colorSelector = $('.color-selector');
-            const colorLabel = $('.color-label');
-            const colorOptions = $('.color-option');
-            const keyboardToggle = $('.keyboard-toggle');
-            const keyboard = $('.keyboard');
-            const keyboardKeys = $('.keyboard-key');
-            const contentSection = $('.content-section');
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <div class="footer-title">ܗܘܕܪܐ</div>
+                <p>The East Syriac Breviary Project aims to digitize and preserve the liturgical texts of the East Syriac tradition, making them accessible to scholars and the faithful worldwide.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="./type.html">Text Editor</a></li>
+                    <li><a href="./about">About</a></li>
+                    <li><a href="./contact">Contact</a></li>
+                </ul>
+            </div>
             
-            // Determine if the app should run in touch mode
-            function detectTouchDevice() {
-                // 1. Check URL parameter first
-                const urlParams = new URLSearchParams(window.location.search);
-                if (urlParams.has('forceTouch')) {
-                    const value = urlParams.get('forceTouch');
-                    localStorage.setItem('forceTouch', value === '1' || value === 'true');
-                    return value === '1' || value === 'true';
-                }
-                
-                // 2. Check localStorage next
-                const savedPreference = localStorage.getItem('forceTouch');
-                if (savedPreference !== null) {
-                    return savedPreference === 'true';
-                }
-                
-                // 3. Force touch mode for specific devices/browsers
-                if (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent)) {
-                    return true;
-                }
-                
-                // 4. Additional reliable touch detection
-                if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
-                    return true;
-                }
-                
-                // 5. Media query checks
-                if (window.matchMedia && (
-                    window.matchMedia('(hover: none)').matches || 
-                    window.matchMedia('(pointer: coarse)').matches
-                )) {
-                    return true;
-                }
-                
-                // 6. For smaller screens, default to touch mode
-                if (window.innerWidth < 768) {
-                    return true;
-                }
-                
-                return false;
-            }
-            
-            const isTouchDevice = detectTouchDevice();
-            console.log("Touch device detected:", isTouchDevice);
-            
-            // Apply touch mode styles directly to the body
-            if (isTouchDevice) {
-                $('body').addClass('touch-device');
-                
-                // Hide punctuation section on touch devices
-                $('.keyboard-section').each(function() {
-                    const title = $(this).find('.keyboard-section-title').text();
-                    if (title.includes('Punctuation') && !$(this).hasClass('numeric-section')) {
-                        $(this).addClass('hidden');
-                    }
-                });
-            }
-            
-            // Set up the environment based on device type
-            function setupEnvironment() {
-                // Set initial text properties
-                textarea.css({
-                    'direction': 'rtl',
-                    'font-family': 'East Syriac Adiabene'
-                });
-                
-                textarea.attr({
-                    'inputmode': 'none',
-                    'lang': 'syr',
-                    'dir': 'rtl',
-                    'spellcheck': 'false',
-                    'autocorrect': 'off',
-                    'autocapitalize': 'off',
-                    'autocomplete': 'off'
-                });
-                
-                // Touch device specific setup
-                if (isTouchDevice) {
-                    // Hide keyboard toggle, show keyboard
-                    keyboardToggle.hide();
-                    keyboard.removeClass('hidden');
-                    
-                    // Create collapse button
-                    const collapseButton = $('<button class="keyboard-collapse" title="Collapse Keyboard">▼</button>');
-                    
-                    // Append the button directly to the keyboard
-                    keyboard.append(collapseButton);
-                    contentSection.addClass('hidden');
-                    
-                    // Handle keyboard collapse
-                    collapseButton.on('click', function() {
-                        keyboard.toggleClass('collapsed');
-                        $(this).text(keyboard.hasClass('collapsed') ? '▲' : '▼');
-                        
-                        // Update textarea inputmode based on keyboard state
-                        if (keyboard.hasClass('collapsed')) {
-                            textarea.attr('inputmode', 'text');
-                        } else {
-                            textarea.attr('inputmode', 'none');
-                        }
-                    });
-                    
-                    // Handle textarea focus
-                    textarea.on('focus', function() {
-                        if (keyboard.hasClass('collapsed')) {
-                            // When collapsed, ensure inputmode is set to text to bring up hardware keyboard
-                            $(this).attr('inputmode', 'text');
-                        }
-                    });
-                    
-                    // Handle textarea blur
-                    textarea.on('blur', function() {
-                        if (!keyboard.hasClass('collapsed')) {
-                            // If keyboard is expanded, reset inputmode to none
-                            $(this).attr('inputmode', 'none');
-                        }
-                    });
-                    
-                    // Set initial state (expanded)
-                    keyboard.removeClass('collapsed');
-                }
-            }
-            
-            // Call setup function
-            setupEnvironment();
-            
-            // Handle font size changes
-            fontSizeSelect.on('change', function() {
-                const newSize = $(this).val();
-                textarea.css('font-size', newSize + 'px');
-                document.documentElement.style.setProperty('--font-size', newSize + 'px');
-                adjustTextareaHeight();
-            });
-
-            // Toggle color selector
-            colorLabel.on('click', function(e) {
-                e.stopPropagation();
-                colorSelector.toggleClass('active');
-            });
-
-            // Close color selector when clicking outside
-            $(document).on('click', function(e) {
-                if (!$(e.target).closest('.color-control').length) {
-                    colorSelector.removeClass('active');
-                }
-            });
-
-            // Handle color selection
-            colorOptions.on('click', function() {
-                const newColor = $(this).data('color');
-                textarea.css('color', newColor);
-                document.documentElement.style.setProperty('--text-color', newColor);
-                
-                colorLabel.find('.color-preview').css('background-color', newColor);
-                colorOptions.removeClass('active');
-                $(this).addClass('active');
-                
-                colorSelector.removeClass('active');
-            });
-
-            // Set initial active color
-            colorOptions.first().addClass('active');
-
-            // Toggle keyboard and content section
-            $('#keyboardToggleShow, #keyboardToggleHide').on('change', function() {
-                keyboard.toggleClass('hidden');
-                contentSection.toggleClass('hidden');
-                
-                const isChecked = $(this).is(':checked');
-                $('#keyboardToggleShow, #keyboardToggleHide').prop('checked', isChecked);
-            });
-
-            // Handle keyboard key clicks
-            keyboardKeys.on('click', function() {
-                const $key = $(this);
-                const cursorPos = textarea[0].selectionStart;
-                const text = textarea.val();
-                
-                // Handle special function keys
-                if ($key.hasClass('backspace-key')) {
-                    // Backspace - delete the character before cursor
-                    if (cursorPos > 0) {
-                        const newText = text.slice(0, cursorPos - 1) + text.slice(cursorPos);
-                        textarea.val(newText);
-                        textarea[0].selectionStart = cursorPos - 1;
-                        textarea[0].selectionEnd = cursorPos - 1;
-                    }
-                } else if ($key.hasClass('enter-key')) {
-                    // Enter - insert a new line
-                    const newText = text.slice(0, cursorPos) + '\n' + text.slice(cursorPos);
-                    textarea.val(newText);
-                    textarea[0].selectionStart = cursorPos + 1;
-                    textarea[0].selectionEnd = cursorPos + 1;
-                } else if ($key.hasClass('clear-key')) {
-                    // Clear - clear all text with confirmation
-                    if (confirm('Are you sure you want to clear all text? This cannot be undone.')) {
-                        textarea.val('');
-                        localStorage.removeItem('syriacText');
-                        adjustTextareaHeight();
-                    }
-                } else if ($key.hasClass('numeric-toggle-key')) {
-                    // Toggle numeric keyboard
-                    toggleNumericKeyboard(true);
-                } else if ($key.hasClass('abc-toggle-key')) {
-                    // Toggle back to regular keyboard
-                    toggleNumericKeyboard(false);
-                } else {
-                    // Regular character - insert at cursor position
-                    const syriacChar = $key.data('syriac');
-                    if (syriacChar) {
-                        const newText = text.slice(0, cursorPos) + syriacChar + text.slice(cursorPos);
-                        textarea.val(newText);
-                        textarea[0].selectionStart = cursorPos + 1;
-                        textarea[0].selectionEnd = cursorPos + 1;
-                    }
-                }
-                
-                textarea.focus();
-            });
-
-            // Function to adjust textarea height
-            function adjustTextareaHeight() {
-                textarea.height('auto');
-                const scrollHeight = textarea[0].scrollHeight;
-                const minHeight = 300;
-                const newHeight = Math.max(scrollHeight, minHeight);
-                textarea.height(newHeight);
-            }
-
-            // Adjust height on input and window resize
-            textarea.on('input', adjustTextareaHeight);
-            $(window).on('resize', adjustTextareaHeight);
-
-            // Initial height adjustment
-            adjustTextareaHeight();
-            
-            // Save text to localStorage whenever it changes
-            textarea.on('input', function() {
-                localStorage.setItem('syriacText', $(this).val());
-            });
-            
-            // Load saved text from localStorage when page loads
-            const savedText = localStorage.getItem('syriacText');
-            if (savedText) {
-                textarea.val(savedText);
-                adjustTextareaHeight();
-            }
-
-            // Function to toggle between numeric and regular keyboard
-            function toggleNumericKeyboard(showNumeric) {
-                if (showNumeric) {
-                    // Hide regular sections, show numeric section
-                    $('.keyboard-section').not('.special-keys, .numeric-section').addClass('hidden');
-                    $('.numeric-section').removeClass('hidden');
-                    // Change numeric toggle key to ABC key
-                    $('.numeric-toggle-key')
-                        .removeClass('numeric-toggle-key')
-                        .addClass('abc-toggle-key')
-                        .text('ABC');
-                } else {
-                    // Show regular sections, hide numeric section
-                    $('.numeric-section').addClass('hidden');
-                    
-                    // Show all sections except punctuation on touch devices
-                    $('.keyboard-section').not('.special-keys, .numeric-section').each(function() {
-                        const title = $(this).find('.keyboard-section-title').text();
-                        if (isTouchDevice && title.includes('Punctuation')) {
-                            $(this).addClass('hidden');
-                        } else {
-                            $(this).removeClass('hidden');
-                        }
-                    });
-                    
-                    // Change ABC key back to numeric toggle key
-                    $('.abc-toggle-key')
-                        .removeClass('abc-toggle-key')
-                        .addClass('numeric-toggle-key')
-                        .text('123');
-                }
-            }
-        });
-    </script>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 East Syriac Breviary Project. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html> 
