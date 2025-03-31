@@ -830,10 +830,9 @@
             border-top: none;
         }
 
-        /* Share/Download button styles */
+        /* Share/Download button styles - common styles */
         .share-button, .download-button {
             position: absolute;
-            bottom: 25px;
             border-radius: 50%;
             background-color: rgba(128, 128, 128, 0.5);
             color: #fff;
@@ -849,12 +848,38 @@
             height: 36px;
         }
         
-        .share-button {
+        /* Regular buttons (non-touch) */
+        .non-touch-button.share-button {
+            bottom: 25px;
             right: 10px;
         }
         
-        .download-button {
+        .non-touch-button.download-button {
+            bottom: 25px;
             right: 56px; /* Position to the left of share button */
+        }
+        
+        /* Touch buttons inside keyboard */
+        .touch-button.share-button {
+            top: -42px;
+            right: 10px;
+            z-index: 1020;
+        }
+        
+        .touch-button.download-button {
+            top: -42px;
+            right: 56px;
+            z-index: 1020;
+        }
+        
+        /* Hide touch buttons on non-touch devices */
+        body:not(.touch-device) .touch-button {
+            display: none !important;
+        }
+        
+        /* Hide non-touch buttons on touch devices */
+        body.touch-device .non-touch-button {
+            display: none !important;
         }
         
         /* Desktop styles - hide when empty */
@@ -896,68 +921,34 @@
             width: 20px;
             height: 20px;
         }
-
-        /* Position for touch devices - above keyboard */
-        @media (hover: none) and (pointer: coarse), (max-width: 1024px) and (orientation: portrait) {
-            .share-button, .download-button {
-                position: fixed;
-                bottom: 60px;
-                z-index: 1010;
-            }
-            
-            .share-button {
-                right: 15px;
-            }
-            
-            .download-button {
-                right: 61px;
-            }
-            
-            body.touch-device .share-button, 
-            body.touch-device .download-button {
-                position: fixed;
-                bottom: calc(var(--keyboard-height, 250px) + 10px);
-                z-index: 1010;
-            }
-            
-            body.touch-device .share-button {
-                right: 15px;
-            }
-            
-            body.touch-device .download-button {
-                right: 61px;
-            }
-        }
-
-        /* Show download button only on touch devices by default */
-        .download-button {
-            display: flex; /* Changed from display: none to always show */
-        }
-        
-        /* Show download button on touch devices - removed since we now show it everywhere */
-        /* @media (hover: none) {
-            .download-button {
-                display: flex;
-            }
-        } */
     </style>
 </head>
 <body>
     <div class="container">
         <div style="position: relative;">
             <textarea id="syriacInput" placeholder="Type your East Syriac text here..." spellcheck="false"></textarea>
-            <button class="share-button" title="Share as Image">
+            <button class="share-button non-touch-button" title="Share as Image">
                 <svg class="share-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/>
                 </svg>
             </button>
-            <button class="download-button" title="Download as Image">
+            <button class="download-button non-touch-button" title="Download as Image">
                 <svg class="download-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
                 </svg>
             </button>
         </div>
         <div class="keyboard hidden">
+            <button class="share-button touch-button" title="Share as Image">
+                <svg class="share-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/>
+                </svg>
+            </button>
+            <button class="download-button touch-button" title="Download as Image">
+                <svg class="download-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                </svg>
+            </button>
             <div class="keyboard-header">
                 <div class="keyboard-header-title">On-Screen Keyboard</div>
                 <div class="keyboard-toggle">
@@ -1558,12 +1549,8 @@
 
             // Set keyboard height CSS variable for touch devices
             if (isTouchDevice) {
-                // Measure the keyboard height once it's visible
+                // No longer need to reposition buttons since they're inside the keyboard
                 function updateKeyboardHeightVar() {
-                    const keyboardHeight = keyboard.outerHeight();
-                    // Add extra padding for Android devices
-                    const extraPadding = /android/i.test(navigator.userAgent) ? 50 : 10;
-                    document.documentElement.style.setProperty('--keyboard-height', (keyboardHeight + extraPadding) + 'px');
                     // Force update the share button visibility
                     updateButtonsVisibility();
                 }
@@ -1576,31 +1563,11 @@
                 setTimeout(updateKeyboardHeightVar, 100);
                 setTimeout(updateKeyboardHeightVar, 500);
                 setTimeout(updateKeyboardHeightVar, 1000);
-                setTimeout(updateKeyboardHeightVar, 2000); // Extra delayed check
                 
                 // Also update when keyboard is toggled
                 $('.keyboard-collapse').on('click', function() {
                     setTimeout(updateKeyboardHeightVar, 300);
                 });
-                
-                // Additional specific Android detection
-                if (/android/i.test(navigator.userAgent)) {
-                    console.log("Android device detected - applying specific button positioning");
-                    
-                    // Force the buttons to be fixed position with higher bottom value
-                    $('.share-button, .download-button').css({
-                        'position': 'fixed',
-                        'bottom': (keyboard.outerHeight() + 20) + 'px',
-                        'z-index': '1020'
-                    });
-                    
-                    // Reposition buttons on scroll and resize
-                    $(window).on('scroll resize', function() {
-                        $('.share-button, .download-button').css({
-                            'bottom': (keyboard.outerHeight() + 20) + 'px'
-                        });
-                    });
-                }
             }
         });
     </script>
