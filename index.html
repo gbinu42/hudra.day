@@ -685,6 +685,25 @@
         .keyboard-key.clear-key:hover {
             background-color: #ffebee;
         }
+        .hidden {
+            display: none;
+        }
+        .numeric-toggle-key {
+            background-color: #e8f5e9;
+            border: 1px solid #81c784;
+            color: #388e3c;
+        }
+        .numeric-toggle-key:hover {
+            background-color: #c8e6c9;
+        }
+        .abc-toggle-key {
+            background-color: #e8f5e9;
+            border: 1px solid #81c784;
+            color: #388e3c;
+        }
+        .abc-toggle-key:hover {
+            background-color: #c8e6c9;
+        }
     </style>
 </head>
 <body>
@@ -770,9 +789,36 @@
                     <button class="keyboard-key" data-syriac="♱" title="U+2671 - EAST SYRIAC CROSS">♱</button>
                 </div>
             </div>
+            <div class="keyboard-section numeric-section hidden">
+                <div class="keyboard-section-title">Numbers</div>
+                <div class="keyboard-grid">
+                    <!-- Numbers -->
+                    <button class="keyboard-key" data-syriac="١" title="U+0661 - ARABIC-INDIC DIGIT ONE">١</button>
+                    <button class="keyboard-key" data-syriac="٢" title="U+0662 - ARABIC-INDIC DIGIT TWO">٢</button>
+                    <button class="keyboard-key" data-syriac="٣" title="U+0663 - ARABIC-INDIC DIGIT THREE">٣</button>
+                    <button class="keyboard-key" data-syriac="٤" title="U+0664 - ARABIC-INDIC DIGIT FOUR">٤</button>
+                    <button class="keyboard-key" data-syriac="٥" title="U+0665 - ARABIC-INDIC DIGIT FIVE">٥</button>
+                    <button class="keyboard-key" data-syriac="٦" title="U+0666 - ARABIC-INDIC DIGIT SIX">٦</button>
+                    <button class="keyboard-key" data-syriac="٧" title="U+0667 - ARABIC-INDIC DIGIT SEVEN">٧</button>
+                    <button class="keyboard-key" data-syriac="٨" title="U+0668 - ARABIC-INDIC DIGIT EIGHT">٨</button>
+                    <button class="keyboard-key" data-syriac="٩" title="U+0669 - ARABIC-INDIC DIGIT NINE">٩</button>
+                    <button class="keyboard-key" data-syriac="٠" title="U+0660 - ARABIC-INDIC DIGIT ZERO">٠</button>
+                    <button class="keyboard-key" data-syriac="1" title="DIGIT ONE">1</button>
+                    <button class="keyboard-key" data-syriac="2" title="DIGIT TWO">2</button>
+                    <button class="keyboard-key" data-syriac="3" title="DIGIT THREE">3</button>
+                    <button class="keyboard-key" data-syriac="4" title="DIGIT FOUR">4</button>
+                    <button class="keyboard-key" data-syriac="5" title="DIGIT FIVE">5</button>
+                    <button class="keyboard-key" data-syriac="6" title="DIGIT SIX">6</button>
+                    <button class="keyboard-key" data-syriac="7" title="DIGIT SEVEN">7</button>
+                    <button class="keyboard-key" data-syriac="8" title="DIGIT EIGHT">8</button>
+                    <button class="keyboard-key" data-syriac="9" title="DIGIT NINE">9</button>
+                    <button class="keyboard-key" data-syriac="0" title="DIGIT ZERO">0</button>
+                </div>
+            </div>
             <div class="keyboard-section special-keys">
                 <div class="keyboard-section-title">Special Keys</div>
                 <div class="keyboard-grid">
+                    <button class="keyboard-key special numeric-toggle-key" title="SWITCH TO NUMBERS">123</button>
                     <button class="keyboard-key special backspace-key" title="BACKSPACE">Backspace</button>
                     <button class="keyboard-key special" data-syriac=" " title="SPACE">Space</button>
                     <button class="keyboard-key special enter-key" title="ENTER">Enter</button>
@@ -1047,6 +1093,12 @@
                         localStorage.removeItem('syriacText');
                         adjustTextareaHeight();
                     }
+                } else if ($key.hasClass('numeric-toggle-key')) {
+                    // Toggle numeric keyboard
+                    toggleNumericKeyboard(true);
+                } else if ($key.hasClass('abc-toggle-key')) {
+                    // Toggle back to regular keyboard
+                    toggleNumericKeyboard(false);
                 } else {
                     // Regular character - insert at cursor position
                     const syriacChar = $key.data('syriac');
@@ -1087,6 +1139,29 @@
             if (savedText) {
                 textarea.val(savedText);
                 adjustTextareaHeight();
+            }
+
+            // Function to toggle between numeric and regular keyboard
+            function toggleNumericKeyboard(showNumeric) {
+                if (showNumeric) {
+                    // Hide regular sections, show numeric section
+                    $('.keyboard-section').not('.special-keys, .numeric-section').addClass('hidden');
+                    $('.numeric-section').removeClass('hidden');
+                    // Change numeric toggle key to ABC key
+                    $('.numeric-toggle-key')
+                        .removeClass('numeric-toggle-key')
+                        .addClass('abc-toggle-key')
+                        .text('ABC');
+                } else {
+                    // Show regular sections, hide numeric section
+                    $('.keyboard-section').not('.special-keys').removeClass('hidden');
+                    $('.numeric-section').addClass('hidden');
+                    // Change ABC key back to numeric toggle key
+                    $('.abc-toggle-key')
+                        .removeClass('abc-toggle-key')
+                        .addClass('numeric-toggle-key')
+                        .text('123');
+                }
             }
         });
     </script>
