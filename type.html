@@ -30,7 +30,7 @@
     <style>
         @font-face {
             font-family: 'East Syriac Adiabene';
-            src: url('fonts/SyrCOMAdiabene.otf') format('opentype');
+            src: url('fonts/Karshon.ttf') format('truetype');
             font-weight: normal;
             font-style: normal;
             font-display: swap;
@@ -990,6 +990,25 @@
                     <button class="keyboard-key" data-syriac="ܞ" title="U+071E - SYRIAC LETTER YUDH HE">ܞ</button>
                 </div>
             </div>
+            
+            <div class="keyboard-section">
+                <div class="keyboard-section-title">Syriac Supplement</div>
+                <div class="keyboard-grid">
+                    <!-- Syriac Supplement (0860-086A) -->
+                    <button class="keyboard-key" data-syriac="ࡠ" title="U+0860 - SYRIAC LETTER MALAYALAM NGA">ࡠ</button>
+                    <button class="keyboard-key" data-syriac="ࡡ" title="U+0861 - SYRIAC LETTER MALAYALAM JA">ࡡ</button>
+                    <button class="keyboard-key" data-syriac="ࡢ" title="U+0862 - SYRIAC LETTER MALAYALAM NYA">ࡢ</button>
+                    <button class="keyboard-key" data-syriac="ࡣ" title="U+0863 - SYRIAC LETTER MALAYALAM TTA">ࡣ</button>
+                    <button class="keyboard-key" data-syriac="ࡤ" title="U+0864 - SYRIAC LETTER MALAYALAM NNA">ࡤ</button>
+                    <button class="keyboard-key" data-syriac="ࡥ" title="U+0865 - SYRIAC LETTER MALAYALAM NNNA">ࡥ</button>
+                    <button class="keyboard-key" data-syriac="ࡦ" title="U+0866 - SYRIAC LETTER MALAYALAM BHA">ࡦ</button>
+                    <button class="keyboard-key" data-syriac="ࡧ" title="U+0867 - SYRIAC LETTER MALAYALAM RA">ࡧ</button>
+                    <button class="keyboard-key" data-syriac="ࡨ" title="U+0868 - SYRIAC LETTER MALAYALAM LLA">ࡨ</button>
+                    <button class="keyboard-key" data-syriac="ࡩ" title="U+0869 - SYRIAC LETTER MALAYALAM LLLA">ࡩ</button>
+                    <button class="keyboard-key" data-syriac="ࡪ" title="U+086A - SYRIAC LETTER MALAYALAM SSA">ࡪ</button>
+                </div>
+            </div>
+            
             <div class="keyboard-section">
                 <div class="keyboard-section-title">Vowels and Diacritics</div>
                 <div class="keyboard-grid">
@@ -1026,6 +1045,10 @@
                     <button class="keyboard-key" data-syriac="؟" title="U+061F - ARABIC QUESTION MARK">؟</button>
                     <button class="keyboard-key" data-syriac="ـ" title="U+0640 - ARABIC TATWEEL (EXTENSION)">ـ</button>
                     <button class="keyboard-key" data-syriac="♱" title="U+2671 - EAST SYRIAC CROSS">♱</button>
+                    <button class="keyboard-key" data-syriac="̄" title="U+0304 - COMBINING MACRON">̄</button>
+                    <button class="keyboard-key" data-syriac="̱" title="U+0331 - COMBINING MACRON BELOW">̱</button>
+                    <button class="keyboard-key special" data-syriac="‌" title="U+200C - ZERO WIDTH NON-JOINER">ZWNJ</button>
+                    <button class="keyboard-key special" data-syriac="‍" title="U+200D - ZERO WIDTH JOINER">ZWJ</button>
                 </div>
             </div>
             <div class="keyboard-section numeric-section hidden">
@@ -1057,6 +1080,10 @@
                     <button class="keyboard-key" data-syriac="؟" title="U+061F - ARABIC QUESTION MARK">؟</button>
                     <button class="keyboard-key" data-syriac="ـ" title="U+0640 - ARABIC TATWEEL (EXTENSION)">ـ</button>
                     <button class="keyboard-key" data-syriac="♱" title="U+2671 - EAST SYRIAC CROSS">♱</button>
+                    <button class="keyboard-key" data-syriac="̄" title="U+0304 - COMBINING MACRON">̄</button>
+                    <button class="keyboard-key" data-syriac="̱" title="U+0331 - COMBINING MACRON BELOW">̱</button>
+                    <button class="keyboard-key special" data-syriac="‌" title="U+200C - ZERO WIDTH NON-JOINER">ZWNJ</button>
+                    <button class="keyboard-key special" data-syriac="‍" title="U+200D - ZERO WIDTH JOINER">ZWJ</button>
                 </div>
             </div>
             <div class="keyboard-section special-keys">
@@ -1504,11 +1531,8 @@
                     'white-space': 'pre-wrap',
                     'padding': '10px',
                     'background': 'white',
-                    // 'border': '1px solid #ddd',
-                    // 'border-radius': '8px',
                     'max-width': textareaWidth + 'px', // Set the width to match textarea
                     'box-sizing': 'border-box',
-                    // 'box-shadow': '0 2px 10px rgba(0,0,0,0.1)',
                     'line-height': '1.6',
                     'text-rendering': 'optimizeLegibility',
                     '-webkit-font-smoothing': 'antialiased'
