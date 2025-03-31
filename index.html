@@ -20,6 +20,7 @@
     <meta property="og:description" content="Digital collection of East Syriac liturgical texts from three major churches.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.hudra.day">
+    <meta property="og:image" content="https://www.hudra.day/images/sliwa.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -394,6 +395,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 2rem;
+            align-items: center;
         }
 
         .footer-section h3 {
@@ -417,6 +419,18 @@
 
         .footer-section a:hover {
             color: #D1001F;
+        }
+
+        .footer-logo {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .footer-logo img {
+            max-width: 120px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .footer-bottom {
@@ -450,6 +464,11 @@
             .footer-content {
                 grid-template-columns: 1fr;
                 text-align: center;
+            }
+
+            .footer-logo {
+                justify-content: center;
+                margin-top: 1rem;
             }
         }
 
@@ -594,6 +613,16 @@
         
         <div class="churches">
             <div class="church-card">
+                <div class="church-image syro-malabar-church-image">
+                    <div class="icon icon-syro">✝</div>
+                </div>
+                <h2>Syro-Malabar Church</h2>
+                <div class="decorative-line"></div>
+                <p>The liturgical texts of the Syro-Malabar Catholic Church, preserving the East Syriac tradition in India.</p>
+                <div class="coming-soon">Coming Soon</div>
+            </div>
+
+            <div class="church-card">
                 <div class="church-image assyrian-church-image">
                     <div class="icon icon-assyrian">✝</div>
                 </div>
@@ -613,15 +642,6 @@
                 <div class="coming-soon">Coming Soon</div>
             </div>
 
-            <div class="church-card">
-                <div class="church-image syro-malabar-church-image">
-                    <div class="icon icon-syro">✝</div>
-                </div>
-                <h2>Syro-Malabar Church</h2>
-                <div class="decorative-line"></div>
-                <p>The liturgical texts of the Syro-Malabar Catholic Church, preserving the East Syriac tradition in India.</p>
-                <div class="coming-soon">Coming Soon</div>
-            </div>
         </div>
         
         <div class="separator">Tools</div>
@@ -658,7 +678,9 @@
                     <li><a href="./contact">Contact</a></li>
                 </ul>
             </div>
-            
+            <div class="footer-logo">
+                <img src="images/sliwa.png" alt="Mar Sliwa (Silas)" title="Mar Sliwa (Silas)">
+            </div>
         </div>
         <div class="footer-bottom">
             <p>© 2025 East Syriac Breviary Project. All rights reserved.</p>
