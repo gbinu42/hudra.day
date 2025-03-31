@@ -673,7 +673,7 @@
         body.touch-device .keyboard-key.clear-key:active {
             background-color: #f0f0f0;
         }
-        
+
         .hidden {
             display: none;
         }
@@ -898,9 +898,10 @@
         }
 
         /* Position for touch devices - above keyboard */
-        @media (hover: none) and (pointer: coarse) {
+        @media (hover: none) and (pointer: coarse), (max-width: 1024px) and (orientation: portrait) {
             .share-button, .download-button {
-                bottom: 50px;
+                position: fixed;
+                bottom: 60px;
                 z-index: 1010;
             }
             
@@ -915,7 +916,7 @@
             body.touch-device .share-button, 
             body.touch-device .download-button {
                 position: fixed;
-                bottom: calc(var(--keyboard-height, 220px) + 10px);
+                bottom: calc(var(--keyboard-height, 250px) + 10px);
                 z-index: 1010;
             }
             
@@ -930,15 +931,15 @@
 
         /* Show download button only on touch devices by default */
         .download-button {
-            display: none;
+            display: flex; /* Changed from display: none to always show */
         }
         
-        /* Show download button on touch devices */
-        @media (hover: none) {
+        /* Show download button on touch devices - removed since we now show it everywhere */
+        /* @media (hover: none) {
             .download-button {
                 display: flex;
             }
-        }
+        } */
     </style>
 </head>
 <body>
@@ -1560,22 +1561,46 @@
                 // Measure the keyboard height once it's visible
                 function updateKeyboardHeightVar() {
                     const keyboardHeight = keyboard.outerHeight();
-                    document.documentElement.style.setProperty('--keyboard-height', keyboardHeight + 'px');
+                    // Add extra padding for Android devices
+                    const extraPadding = /android/i.test(navigator.userAgent) ? 50 : 10;
+                    document.documentElement.style.setProperty('--keyboard-height', (keyboardHeight + extraPadding) + 'px');
                     // Force update the share button visibility
                     updateButtonsVisibility();
                 }
                 
                 // Update on window resize and after keyboard is shown
                 $(window).on('resize', updateKeyboardHeightVar);
+                $(window).on('orientationchange', updateKeyboardHeightVar);
+                
                 // Run multiple times initially to ensure it captures the right height
                 setTimeout(updateKeyboardHeightVar, 100);
                 setTimeout(updateKeyboardHeightVar, 500);
                 setTimeout(updateKeyboardHeightVar, 1000);
+                setTimeout(updateKeyboardHeightVar, 2000); // Extra delayed check
                 
                 // Also update when keyboard is toggled
                 $('.keyboard-collapse').on('click', function() {
                     setTimeout(updateKeyboardHeightVar, 300);
                 });
+                
+                // Additional specific Android detection
+                if (/android/i.test(navigator.userAgent)) {
+                    console.log("Android device detected - applying specific button positioning");
+                    
+                    // Force the buttons to be fixed position with higher bottom value
+                    $('.share-button, .download-button').css({
+                        'position': 'fixed',
+                        'bottom': (keyboard.outerHeight() + 20) + 'px',
+                        'z-index': '1020'
+                    });
+                    
+                    // Reposition buttons on scroll and resize
+                    $(window).on('scroll resize', function() {
+                        $('.share-button, .download-button').css({
+                            'bottom': (keyboard.outerHeight() + 20) + 'px'
+                        });
+                    });
+                }
             }
         });
     </script>
