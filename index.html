@@ -618,7 +618,6 @@
         
         body.touch-device .keyboard-key {
             font-size: 1.6rem;  /* Increased from 1.5rem for regular keys */
-            
         }
         
         body.touch-device .keyboard-key.special {
@@ -630,73 +629,25 @@
         }
         
         body.touch-device .keyboard-key.clear-key {
-            background-color: #ffebee; /* Light red background */
-            border: 1px solid #e57373;
-            color: #d32f2f;
+            border: 1px solid #ddd;
+            color: #333;
         }
         
         body.touch-device .keyboard-key.clear-key:active {
-            background-color: #ffcdd2; /* Darker shade for active state */
-        }
-        
-        .clear-button {
-            margin-left: auto;
-            padding: 6px 12px;
-            background: #f8f9fa;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-        
-        .clear-button:hover {
-            background: #e9ecef;
-        }
-        
-        body.touch-device .clear-button {
-            padding: 10px 15px;
-            font-size: 1rem;
-            margin-top: 10px;
-            background: #f1f3f4;
-            display: block;
-            width: 100%;
-            text-align: center;
-            font-weight: bold;
-            border-radius: 6px;
-        }
-        
-        body.touch-device .clear-button:active {
-            background: #e0e0e0;
-        }
-        
-        .keyboard-key.special {
-            font-family: Arial, sans-serif;
-            font-size: 0.9rem;
             background-color: #f0f0f0;
-            grid-column: span 1;
         }
         
-        .keyboard-key.clear-key {
-            background-color: #fff5f5;
-            border: 1px solid #ffcccc;
-            color: #e53935;
-        }
-        
-        .keyboard-key.clear-key:hover {
-            background-color: #ffebee;
-        }
         .hidden {
             display: none;
         }
         .numeric-toggle-key, .abc-toggle-key {
-            background-color: #f0f0f0;
             border: 1px solid #ddd;
             color: #333;
             width: 50px !important;
         }
         
         .numeric-toggle-key:hover, .abc-toggle-key:hover {
-            background-color: #c8e6c9;
+            background-color: #f8f9fa;
         }
         .space-key {
             flex-grow: 1;
@@ -714,12 +665,6 @@
             direction: ltr;
         }
         
-        .keyboard-key.clear-key {
-            background-color: #fff5f5;
-            border: 1px solid #ffcccc;
-            color: #e53935;
-        }
-
         /* Hide punctuation section on touch devices */
         body.touch-device .keyboard-section:not(.numeric-section):has(.keyboard-section-title:contains("Punctuation")) {
             display: none;
