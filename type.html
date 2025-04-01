@@ -1491,7 +1491,7 @@
             // Function to create and share/download image
             function createAndShareImage(shouldShare) {
                 // Get the computed width of the textarea
-                const textareaWidth = textarea.width();
+                const textareaWidth = textarea.width() + 20;
                 
                 // Create a temporary div to render the text with improved styling
                 const tempDiv = $('<div>').css({
