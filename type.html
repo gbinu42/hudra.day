@@ -12,8 +12,8 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Online East Syriac text editor with on-screen keyboard for typing Syriac text. Supports East Syriac Adiabene font and RTL text direction.">
-    <meta name="keywords" content="East Syriac, text editor, Syriac keyboard, East Syriac Adiabene, RTL text">
+    <meta name="description" content="Online East Syriac text editor with on-screen keyboard for typing Syriac text. Supports Karshon font and RTL text direction.">
+    <meta name="keywords" content="East Syriac, text editor, Syriac keyboard, Karshon, RTL text">
     <meta name="author" content="East Syriac Breviary Project">
     <meta name="theme-color" content="#8A1612">
     <meta property="og:title" content="East Syriac Text Editor">
@@ -29,7 +29,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <style>
         @font-face {
-            font-family: 'East Syriac Adiabene';
+            font-family: 'Karshon';
             src: url('fonts/Karshon.ttf') format('truetype');
             font-weight: normal;
             font-style: normal;
@@ -183,7 +183,7 @@
             resize: vertical;
             direction: rtl;
             text-align: right;
-            font-family: 'East Syriac Adiabene', Arial, sans-serif;
+            font-family: 'Karshon', Arial, sans-serif;
             unicode-bidi: embed;
             text-rendering: optimizeLegibility;
             -webkit-font-smoothing: antialiased;
@@ -399,7 +399,7 @@
             background: white;
             cursor: pointer;
             text-align: center;
-            font-family: 'East Syriac Adiabene', Arial, sans-serif;
+            font-family: 'Karshon', Arial, sans-serif;
             font-size: 1.5rem;
             transition: background-color 0.2s;
             min-height: 35px;
@@ -1163,7 +1163,7 @@
                     <li>Type Syriac text in the textbox above</li>
                     <li>The text will automatically flow from right to left</li>
                     <li>You can copy and paste text from other sources</li>
-                    <li>The text is displayed in the East Syriac Adiabene font</li>
+                    <li>The text is displayed in the Karshon font</li>
                     <li class="touch-tip">On mobile devices: If keyboard doesn't appear, add <code>?forceTouch=true</code> to the URL</li>
                 </ul>
             </div>
@@ -1251,7 +1251,7 @@
                 // Set initial text properties
                 textarea.css({
                     'direction': 'rtl',
-                    'font-family': 'East Syriac Adiabene'
+                    'font-family': 'Karshon'
                 });
                 
                 textarea.attr({
@@ -1430,7 +1430,96 @@
                 $('.share-button, .download-button').toggleClass('visible', hasText);
             }
 
-            // Update textarea on input with debouncing
+            // Storage system with fallbacks
+            const Storage = {
+                save(key, value) {
+                    try {
+                        // Try localStorage first (synchronous)
+                        localStorage.setItem(key, value);
+                        console.log(`Saved to localStorage: ${key}`);
+                        return true;
+                    } catch (e) {
+                        console.warn('localStorage failed:', e);
+                        // Fallback to cookies for maximum compatibility
+                        this.setCookie(key, value, 365); // Store for 1 year
+                        return true;
+                    }
+                },
+
+                load(key) {
+                    try {
+                        // Try localStorage first
+                        const value = localStorage.getItem(key);
+                        if (value !== null) {
+                            console.log(`Loaded from localStorage: ${key}`);
+                            return value;
+                        }
+                        
+                        // Try cookies as fallback
+                        const cookieValue = this.getCookie(key);
+                        if (cookieValue) {
+                            console.log(`Loaded from cookies: ${key}`);
+                            return cookieValue;
+                        }
+                        
+                        return null;
+                    } catch (e) {
+                        console.warn('Storage load failed:', e);
+                        
+                        // Try cookies as last resort
+                        const cookieValue = this.getCookie(key);
+                        if (cookieValue) {
+                            console.log(`Loaded from cookies: ${key}`);
+                            return cookieValue;
+                        }
+                        
+                        return null;
+                    }
+                },
+
+                remove(key) {
+                    try {
+                        localStorage.removeItem(key);
+                        this.eraseCookie(key);
+                        console.log(`Removed from storage: ${key}`);
+                        return true;
+                    } catch (e) {
+                        console.warn('Storage remove failed:', e);
+                        this.eraseCookie(key);
+                        return false;
+                    }
+                },
+
+                // Cookie helpers for maximum compatibility
+                setCookie(name, value, days) {
+                    let expires = "";
+                    if (days) {
+                        const date = new Date();
+                        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                        expires = "; expires=" + date.toUTCString();
+                    }
+                    document.cookie = name + "=" + encodeURIComponent(value || "") + expires + "; path=/; SameSite=Strict";
+                },
+
+                getCookie(name) {
+                    const nameEQ = name + "=";
+                    const ca = document.cookie.split(';');
+                    for (let i = 0; i < ca.length; i++) {
+                        let c = ca[i];
+                        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                        if (c.indexOf(nameEQ) === 0) {
+                            return decodeURIComponent(c.substring(nameEQ.length, c.length));
+                        }
+                    }
+                    return null;
+                },
+
+                eraseCookie(name) {
+                    document.cookie = name + '=; Max-Age=-99999999; path=/';
+                }
+            };
+            
+            // Update persistence related code to work with synchronous API
             let saveTimeout;
             textarea.on('input', function() {
                 // Clear previous timeout
@@ -1439,16 +1528,16 @@
                 }
 
                 // Set new timeout to save after 500ms of no typing
-                saveTimeout = setTimeout(async () => {
+                saveTimeout = setTimeout(() => {
                     const text = $(this).val();
-                    await Storage.save('syriacText', text);
+                    Storage.save('syriacText', text);
                     updateButtonsVisibility();
                 }, 500);
             });
 
-            // Load saved text when page loads
-            async function loadSavedText() {
-                const savedText = await Storage.load('syriacText');
+            // Load saved text when page loads (synchronous)
+            function loadSavedText() {
+                const savedText = Storage.load('syriacText');
                 if (savedText) {
                     textarea.val(savedText);
                     adjustTextareaHeight();
@@ -1459,11 +1548,11 @@
             // Call loadSavedText when document is ready
             loadSavedText();
 
-            // Update clear functionality to use new storage system
-            $('.clear-key').on('click', async function() {
+            // Update clear functionality to use the synchronous storage system
+            $('.clear-key').on('click', function() {
                 if (confirm('Are you sure you want to clear all text? This cannot be undone.')) {
                     textarea.val('');
-                    await Storage.remove('syriacText');
+                    Storage.remove('syriacText');
                     adjustTextareaHeight();
                     updateButtonsVisibility();
                 }
@@ -1545,7 +1634,7 @@
                 const tempDiv = $('<div contenteditable="true">').css({
                     'position': 'absolute',
                     'left': '-9999px',
-                    'font-family': 'East Syriac Adiabene',
+                    'font-family': 'Karshon',
                     'font-size': textarea.css('font-size'),
                     'color': textarea.css('color'),
                     'direction': 'rtl',
@@ -1764,107 +1853,6 @@
                     setTimeout(updateKeyboardHeightVar, 300);
                 });
             }
-
-            // Storage system with fallbacks
-            const Storage = {
-                async save(key, value) {
-                    try {
-                        // Try localStorage first
-                        localStorage.setItem(key, value);
-                        return true;
-                    } catch (e) {
-                        console.warn('localStorage failed, trying IndexedDB:', e);
-                        try {
-                            // Fallback to IndexedDB
-                            const db = await this.openDB();
-                            await this.saveToIndexedDB(db, key, value);
-                            return true;
-                        } catch (e) {
-                            console.error('All storage methods failed:', e);
-                            return false;
-                        }
-                    }
-                },
-
-                async load(key) {
-                    try {
-                        // Try localStorage first
-                        return localStorage.getItem(key);
-                    } catch (e) {
-                        console.warn('localStorage failed, trying IndexedDB:', e);
-                        try {
-                            // Fallback to IndexedDB
-                            const db = await this.openDB();
-                            return await this.loadFromIndexedDB(db, key);
-                        } catch (e) {
-                            console.error('All storage methods failed:', e);
-                            return null;
-                        }
-                    }
-                },
-
-                async remove(key) {
-                    try {
-                        localStorage.removeItem(key);
-                        return true;
-                    } catch (e) {
-                        console.warn('localStorage failed, trying IndexedDB:', e);
-                        try {
-                            const db = await this.openDB();
-                            await this.removeFromIndexedDB(db, key);
-                            return true;
-                        } catch (e) {
-                            console.error('All storage methods failed:', e);
-                            return false;
-                        }
-                    }
-                },
-
-                // IndexedDB helpers
-                async openDB() {
-                    return new Promise((resolve, reject) => {
-                        const request = indexedDB.open('SyriacEditorDB', 1);
-                        request.onerror = () => reject(request.error);
-                        request.onsuccess = () => resolve(request.result);
-                        request.onupgradeneeded = (event) => {
-                            const db = event.target.result;
-                            if (!db.objectStoreNames.contains('editorData')) {
-                                db.createObjectStore('editorData');
-                            }
-                        };
-                    });
-                },
-
-                async saveToIndexedDB(db, key, value) {
-                    return new Promise((resolve, reject) => {
-                        const transaction = db.transaction(['editorData'], 'readwrite');
-                        const store = transaction.objectStore('editorData');
-                        const request = store.put(value, key);
-                        request.onsuccess = () => resolve();
-                        request.onerror = () => reject(request.error);
-                    });
-                },
-
-                async loadFromIndexedDB(db, key) {
-                    return new Promise((resolve, reject) => {
-                        const transaction = db.transaction(['editorData'], 'readonly');
-                        const store = transaction.objectStore('editorData');
-                        const request = store.get(key);
-                        request.onsuccess = () => resolve(request.result);
-                        request.onerror = () => reject(request.error);
-                    });
-                },
-
-                async removeFromIndexedDB(db, key) {
-                    return new Promise((resolve, reject) => {
-                        const transaction = db.transaction(['editorData'], 'readwrite');
-                        const store = transaction.objectStore('editorData');
-                        const request = store.delete(key);
-                        request.onsuccess = () => resolve();
-                        request.onerror = () => reject(request.error);
-                    });
-                }
-            };
         });
     </script>
     <!-- Add html2canvas library -->
