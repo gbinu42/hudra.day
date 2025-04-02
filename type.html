@@ -1430,30 +1430,45 @@
                 $('.share-button, .download-button').toggleClass('visible', hasText);
             }
 
-            // Update buttons visibility on input, clear, and when loading saved text
+            // Update textarea on input with debouncing
+            let saveTimeout;
             textarea.on('input', function() {
-                // Store text in localStorage
-                localStorage.setItem('syriacText', $(this).val());
-                
-                // Immediate update of button visibility - no delay
-                updateButtonsVisibility();
+                // Clear previous timeout
+                if (saveTimeout) {
+                    clearTimeout(saveTimeout);
+                }
+
+                // Set new timeout to save after 500ms of no typing
+                saveTimeout = setTimeout(async () => {
+                    const text = $(this).val();
+                    await Storage.save('syriacText', text);
+                    updateButtonsVisibility();
+                }, 500);
             });
-            
-            // Load saved text from localStorage when page loads
-            const savedText = localStorage.getItem('syriacText');
-            if (savedText) {
-                textarea.val(savedText);
-                adjustTextareaHeight();
-                // Make sure buttons are visible if there's saved text
-                updateButtonsVisibility();
+
+            // Load saved text when page loads
+            async function loadSavedText() {
+                const savedText = await Storage.load('syriacText');
+                if (savedText) {
+                    textarea.val(savedText);
+                    adjustTextareaHeight();
+                    updateButtonsVisibility();
+                }
             }
-            
-            // Update visibility when text is cleared
-            $('.clear-key').on('click', function() {
-                // Faster response for touch devices
-                setTimeout(updateButtonsVisibility, 50);
+
+            // Call loadSavedText when document is ready
+            loadSavedText();
+
+            // Update clear functionality to use new storage system
+            $('.clear-key').on('click', async function() {
+                if (confirm('Are you sure you want to clear all text? This cannot be undone.')) {
+                    textarea.val('');
+                    await Storage.remove('syriacText');
+                    adjustTextareaHeight();
+                    updateButtonsVisibility();
+                }
             });
-            
+
             // Run visibility check after any keyboard interaction on touch devices
             if (isTouchDevice) {
                 $('.keyboard-key').on('click', function() {
@@ -1518,7 +1533,7 @@
             // Function to create and share/download image
             function createAndShareImage(shouldShare) {
                 // Get the computed width of the textarea
-                const textareaWidth = textarea.width();
+                const textareaWidth = textarea.width() + 20;
                 
                 // Create a temporary div to render the text with improved styling
                 const tempDiv = $('<div>').css({
@@ -1655,6 +1670,107 @@
                     setTimeout(updateKeyboardHeightVar, 300);
                 });
             }
+
+            // Storage system with fallbacks
+            const Storage = {
+                async save(key, value) {
+                    try {
+                        // Try localStorage first
+                        localStorage.setItem(key, value);
+                        return true;
+                    } catch (e) {
+                        console.warn('localStorage failed, trying IndexedDB:', e);
+                        try {
+                            // Fallback to IndexedDB
+                            const db = await this.openDB();
+                            await this.saveToIndexedDB(db, key, value);
+                            return true;
+                        } catch (e) {
+                            console.error('All storage methods failed:', e);
+                            return false;
+                        }
+                    }
+                },
+
+                async load(key) {
+                    try {
+                        // Try localStorage first
+                        return localStorage.getItem(key);
+                    } catch (e) {
+                        console.warn('localStorage failed, trying IndexedDB:', e);
+                        try {
+                            // Fallback to IndexedDB
+                            const db = await this.openDB();
+                            return await this.loadFromIndexedDB(db, key);
+                        } catch (e) {
+                            console.error('All storage methods failed:', e);
+                            return null;
+                        }
+                    }
+                },
+
+                async remove(key) {
+                    try {
+                        localStorage.removeItem(key);
+                        return true;
+                    } catch (e) {
+                        console.warn('localStorage failed, trying IndexedDB:', e);
+                        try {
+                            const db = await this.openDB();
+                            await this.removeFromIndexedDB(db, key);
+                            return true;
+                        } catch (e) {
+                            console.error('All storage methods failed:', e);
+                            return false;
+                        }
+                    }
+                },
+
+                // IndexedDB helpers
+                async openDB() {
+                    return new Promise((resolve, reject) => {
+                        const request = indexedDB.open('SyriacEditorDB', 1);
+                        request.onerror = () => reject(request.error);
+                        request.onsuccess = () => resolve(request.result);
+                        request.onupgradeneeded = (event) => {
+                            const db = event.target.result;
+                            if (!db.objectStoreNames.contains('editorData')) {
+                                db.createObjectStore('editorData');
+                            }
+                        };
+                    });
+                },
+
+                async saveToIndexedDB(db, key, value) {
+                    return new Promise((resolve, reject) => {
+                        const transaction = db.transaction(['editorData'], 'readwrite');
+                        const store = transaction.objectStore('editorData');
+                        const request = store.put(value, key);
+                        request.onsuccess = () => resolve();
+                        request.onerror = () => reject(request.error);
+                    });
+                },
+
+                async loadFromIndexedDB(db, key) {
+                    return new Promise((resolve, reject) => {
+                        const transaction = db.transaction(['editorData'], 'readonly');
+                        const store = transaction.objectStore('editorData');
+                        const request = store.get(key);
+                        request.onsuccess = () => resolve(request.result);
+                        request.onerror = () => reject(request.error);
+                    });
+                },
+
+                async removeFromIndexedDB(db, key) {
+                    return new Promise((resolve, reject) => {
+                        const transaction = db.transaction(['editorData'], 'readwrite');
+                        const store = transaction.objectStore('editorData');
+                        const request = store.delete(key);
+                        request.onsuccess = () => resolve();
+                        request.onerror = () => reject(request.error);
+                    });
+                }
+            };
         });
     </script>
     <!-- Add html2canvas library -->
