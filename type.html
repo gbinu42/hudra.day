@@ -25,7 +25,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="manifest" href="/site.webmanifest">
-    <title>East Syriac Text Editor</title>
+    <title>East Syriac + Karshon Text Editor</title>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <style>
         @font-face {
@@ -1532,6 +1532,12 @@
             
             // Function to create and share/download image
             function createAndShareImage(shouldShare) {
+                // Check if using iOS/iPadOS
+                if (isiOS()) {
+                    showIOSAlertDialog();
+                    return;
+                }
+                
                 // Get the computed width of the textarea
                 const textareaWidth = textarea.width() + 20;
                 
@@ -1638,6 +1644,12 @@
             
             // Helper function to download image
             function downloadImage(blob) {
+                // Check if using iOS/iPadOS again as fallback
+                if (isiOS()) {
+                    showIOSAlertDialog();
+                    return;
+                }
+                
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
@@ -1646,6 +1658,88 @@
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
+            }
+            
+            // Function to detect iOS/iPadOS devices
+            function isiOS() {
+                return /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                       (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            }
+            
+            // Function to show iOS alert dialog
+            function showIOSAlertDialog() {
+                // Create dialog background
+                const dialogOverlay = $('<div>').css({
+                    'position': 'fixed',
+                    'top': 0,
+                    'left': 0,
+                    'right': 0,
+                    'bottom': 0,
+                    'background': 'rgba(0,0,0,0.5)',
+                    'z-index': 9999,
+                    'display': 'flex',
+                    'justify-content': 'center',
+                    'align-items': 'center'
+                });
+                
+                // Create dialog content
+                const dialogContent = $('<div>').css({
+                    'background': 'white',
+                    'border-radius': '8px',
+                    'padding': '20px',
+                    'width': '80%',
+                    'max-width': '350px',
+                    'text-align': 'center',
+                    'box-shadow': '0 4px 12px rgba(0,0,0,0.15)'
+                });
+                
+                // Create dialog title
+                const dialogTitle = $('<h3>').text('Sorry!').css({
+                    'margin-top': 0,
+                    'color': '#D1001F',
+                    'font-size': '1.2rem'
+                });
+                
+                // Create dialog message
+                const dialogMessage = $('<p>').html(
+                    'Image download and sharing are not fully supported on iOS/iPadOS.<br><br>' +
+                    'Please take a screenshot manually, or switch to a PC or Android device for this feature.'
+                ).css({
+                    'margin': '15px 0',
+                    'line-height': '1.4',
+                    'color': '#333'
+                });
+                
+                // Create close button
+                const closeButton = $('<button>').text('OK').css({
+                    'background': '#D1001F',
+                    'color': 'white',
+                    'border': 'none',
+                    'border-radius': '4px',
+                    'padding': '10px 20px',
+                    'font-weight': 'bold',
+                    'cursor': 'pointer',
+                    'margin-top': '10px'
+                });
+                
+                // Add elements to dialog
+                dialogContent.append(dialogTitle, dialogMessage, closeButton);
+                dialogOverlay.append(dialogContent);
+                
+                // Add dialog to body
+                $('body').append(dialogOverlay);
+                
+                // Handle close button click
+                closeButton.on('click', function() {
+                    dialogOverlay.remove();
+                });
+                
+                // Also close on overlay click
+                dialogOverlay.on('click', function(e) {
+                    if (e.target === this) {
+                        dialogOverlay.remove();
+                    }
+                });
             }
 
             // Set keyboard height CSS variable for touch devices
