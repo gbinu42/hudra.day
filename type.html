@@ -1691,14 +1691,187 @@
                 createAndShareImage(false);
             });
             
+            // Function to show iOS alert dialog
+            function showIOSAlertDialog() {
+                // Create dialog background
+                const dialogOverlay = $('<div>').css({
+                    'position': 'fixed',
+                    'top': 0,
+                    'left': 0,
+                    'right': 0,
+                    'bottom': 0,
+                    'background': 'rgba(0,0,0,0.5)',
+                    'z-index': 9999,
+                    'display': 'flex',
+                    'justify-content': 'center',
+                    'align-items': 'center'
+                });
+                
+                // Create dialog content
+                const dialogContent = $('<div>').css({
+                    'background': 'white',
+                    'border-radius': '8px',
+                    'padding': '20px',
+                    'width': '80%',
+                    'max-width': '380px',
+                    'text-align': 'center',
+                    'box-shadow': '0 4px 12px rgba(0,0,0,0.15)'
+                });
+                
+                // Create dialog title
+                const dialogTitle = $('<h3>').text('Compatibility Notice').css({
+                    'margin-top': 0,
+                    'color': '#D1001F',
+                    'font-size': '1.2rem'
+                });
+                
+                // Create dialog message with detailed explanation
+                const dialogMessage = $('<div>').css({
+                    'margin': '15px 0',
+                    'line-height': '1.4',
+                    'color': '#333',
+                    'text-align': 'left'
+                });
+                
+                // Add main message paragraph
+                dialogMessage.append(
+                    $('<p>').html(
+                        'Your text contains <strong>Syriac supplement characters</strong> which may not display correctly in exported images on iOS devices.'
+                    )
+                );
+                
+                // Add the problematic characters section
+                dialogMessage.append(
+                    $('<p>').html('<strong>Potentially problematic characters:</strong>')
+                );
+                
+                // Add the character grid to show which characters are problematic
+                const charGrid = $('<div>').css({
+                    'display': 'grid',
+                    'grid-template-columns': 'repeat(5, 1fr)',
+                    'gap': '8px',
+                    'margin': '10px 0',
+                    'padding': '8px',
+                    'background': '#f8f8f8',
+                    'border-radius': '4px',
+                    'font-family': 'Karshon',
+                    'font-size': '1.5rem',
+                    'direction': 'rtl'
+                });
+                
+                // Add all Syriac supplement characters to the grid
+                const suppChars = ['ࡠ', 'ࡡ', 'ࡢ', 'ࡣ', 'ࡤ', 'ࡥ', 'ࡦ', 'ࡧ', 'ࡨ', 'ࡩ', 'ࡪ'];
+                suppChars.forEach(char => {
+                    charGrid.append(
+                        $('<div>').text(char).css({
+                            'text-align': 'center',
+                            'padding': '4px',
+                            'background': 'white',
+                            'border-radius': '4px',
+                            'border': '1px solid #ddd'
+                        })
+                    );
+                });
+                
+                dialogMessage.append(charGrid);
+                
+                // Add suggestion paragraph
+                dialogMessage.append(
+                    $('<p>').html(
+                        'You have these options:<br>' +
+                        '1. Remove these characters and try again<br>' +
+                        '2. Proceed anyway (characters may appear incorrectly)<br>' +
+                        '3. Take a screenshot manually<br>' +
+                        '4. Use a PC or Android device for better results'
+                    )
+                );
+                
+                // Create buttons container with flex layout
+                const buttonsContainer = $('<div>').css({
+                    'display': 'flex',
+                    'justify-content': 'center',
+                    'gap': '10px',
+                    'margin-top': '15px'
+                });
+                
+                // Create cancel button
+                const cancelButton = $('<button>').text('Cancel').css({
+                    'background': '#f5f5f5',
+                    'color': '#333',
+                    'border': '1px solid #ddd',
+                    'border-radius': '4px',
+                    'padding': '10px 15px',
+                    'font-weight': 'bold',
+                    'cursor': 'pointer',
+                    'flex': '1'
+                });
+                
+                // Create proceed button
+                const proceedButton = $('<button>').text('Proceed Anyway').css({
+                    'background': '#D1001F',
+                    'color': 'white',
+                    'border': 'none',
+                    'border-radius': '4px',
+                    'padding': '10px 15px',
+                    'font-weight': 'bold',
+                    'cursor': 'pointer',
+                    'flex': '1'
+                });
+                
+                // Add buttons to container
+                buttonsContainer.append(cancelButton, proceedButton);
+                
+                // Add elements to dialog
+                dialogContent.append(dialogTitle, dialogMessage, buttonsContainer);
+                dialogOverlay.append(dialogContent);
+                
+                // Add dialog to body
+                $('body').append(dialogOverlay);
+                
+                // Return a promise that resolves when the user makes a choice
+                return new Promise((resolve) => {
+                    // Handle cancel button click
+                    cancelButton.on('click', function() {
+                        dialogOverlay.remove();
+                        resolve(false); // User canceled
+                    });
+                    
+                    // Handle proceed button click
+                    proceedButton.on('click', function() {
+                        dialogOverlay.remove();
+                        resolve(true); // User wants to proceed
+                    });
+                    
+                    // Also close on overlay click (counts as cancel)
+                    dialogOverlay.on('click', function(e) {
+                        if (e.target === this) {
+                            dialogOverlay.remove();
+                            resolve(false); // User canceled
+                        }
+                    });
+                });
+            }
+            
             // Function to create and share/download image
             function createAndShareImage(shouldShare) {
                 // Check if using iOS/iPadOS and contains Syriac supplement characters
                 if (isiOS() && containsSyriacSupplement(textarea.val())) {
-                    showIOSAlertDialog();
+                    // Show dialog and wait for user decision
+                    showIOSAlertDialog().then(shouldProceed => {
+                        if (shouldProceed) {
+                            // User wants to proceed despite warning
+                            proceedWithImageCreation(shouldShare);
+                        }
+                    });
                     return;
                 }
                 
+                // No issues, proceed normally
+                proceedWithImageCreation(shouldShare);
+            }
+            
+            // Function to handle the actual image creation
+            function proceedWithImageCreation(shouldShare) {
                 // Get the computed width of the textarea
                 const textareaWidth = textarea.width() + 20;
                 
@@ -1805,12 +1978,7 @@
             
             // Helper function to download image
             function downloadImage(blob) {
-                // Check if using iOS/iPadOS and contains Syriac supplement chars
-                if (isiOS() && containsSyriacSupplement(textarea.val())) {
-                    showIOSAlertDialog();
-                    return;
-                }
-                
+                // No need to check iOS here anymore as the check is done in createAndShareImage
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
@@ -1832,131 +2000,6 @@
             function isiOS() {
                 return /iPad|iPhone|iPod/.test(navigator.userAgent) || 
                        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-            }
-            
-            // Function to show iOS alert dialog
-            function showIOSAlertDialog() {
-                // Create dialog background
-                const dialogOverlay = $('<div>').css({
-                    'position': 'fixed',
-                    'top': 0,
-                    'left': 0,
-                    'right': 0,
-                    'bottom': 0,
-                    'background': 'rgba(0,0,0,0.5)',
-                    'z-index': 9999,
-                    'display': 'flex',
-                    'justify-content': 'center',
-                    'align-items': 'center'
-                });
-                
-                // Create dialog content
-                const dialogContent = $('<div>').css({
-                    'background': 'white',
-                    'border-radius': '8px',
-                    'padding': '20px',
-                    'width': '80%',
-                    'max-width': '380px',
-                    'text-align': 'center',
-                    'box-shadow': '0 4px 12px rgba(0,0,0,0.15)'
-                });
-                
-                // Create dialog title
-                const dialogTitle = $('<h3>').text('Compatibility Notice').css({
-                    'margin-top': 0,
-                    'color': '#D1001F',
-                    'font-size': '1.2rem'
-                });
-                
-                // Create dialog message with detailed explanation
-                const dialogMessage = $('<div>').css({
-                    'margin': '15px 0',
-                    'line-height': '1.4',
-                    'color': '#333',
-                    'text-align': 'left'
-                });
-                
-                // Add main message paragraph
-                dialogMessage.append(
-                    $('<p>').html(
-                        'Your text contains <strong>Karshon characters</strong> which cannot be properly exported as images on iOS devices.'
-                    )
-                );
-                
-                // Add the problematic characters section
-                dialogMessage.append(
-                    $('<p>').html('<strong>Problematic characters:</strong>')
-                );
-                
-                // Add the character grid to show which characters are problematic
-                const charGrid = $('<div>').css({
-                    'display': 'grid',
-                    'grid-template-columns': 'repeat(5, 1fr)',
-                    'gap': '8px',
-                    'margin': '10px 0',
-                    'padding': '8px',
-                    'background': '#f8f8f8',
-                    'border-radius': '4px',
-                    'font-family': 'Karshon',
-                    'font-size': '1.5rem',
-                    'direction': 'rtl'
-                });
-                
-                // Add all Syriac supplement characters to the grid
-                const suppChars = ['ࡠ', 'ࡡ', 'ࡢ', 'ࡣ', 'ࡤ', 'ࡥ', 'ࡦ', 'ࡧ', 'ࡨ', 'ࡩ', 'ࡪ'];
-                suppChars.forEach(char => {
-                    charGrid.append(
-                        $('<div>').text(char).css({
-                            'text-align': 'center',
-                            'padding': '4px',
-                            'background': 'white',
-                            'border-radius': '4px',
-                            'border': '1px solid #ddd'
-                        })
-                    );
-                });
-                
-                dialogMessage.append(charGrid);
-                
-                // Add suggestion paragraph
-                dialogMessage.append(
-                    $('<p>').html(
-                        'You have two options:<br>' +
-                        '1. Take a screenshot manually<br>' +
-                        '2. Use a PC or Android device instead'
-                    )
-                );
-                
-                // Create close button
-                const closeButton = $('<button>').text('OK').css({
-                    'background': '#D1001F',
-                    'color': 'white',
-                    'border': 'none',
-                    'border-radius': '4px',
-                    'padding': '10px 20px',
-                    'font-weight': 'bold',
-                    'cursor': 'pointer',
-                    'margin-top': '10px'
-                });
-                
-                // Add elements to dialog
-                dialogContent.append(dialogTitle, dialogMessage, closeButton);
-                dialogOverlay.append(dialogContent);
-                
-                // Add dialog to body
-                $('body').append(dialogOverlay);
-                
-                // Handle close button click
-                closeButton.on('click', function() {
-                    dialogOverlay.remove();
-                });
-                
-                // Also close on overlay click
-                dialogOverlay.on('click', function(e) {
-                    if (e.target === this) {
-                        dialogOverlay.remove();
-                    }
-                });
             }
 
             // Set keyboard height CSS variable for touch devices
