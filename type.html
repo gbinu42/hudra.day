@@ -1719,13 +1719,13 @@
                 });
                 
                 // Create dialog title
-                const dialogTitle = $('<h3>').text('Compatibility Notice').css({
+                const dialogTitle = $('<h3>').text('iOS Compatibility Notice').css({
                     'margin-top': 0,
                     'color': '#D1001F',
                     'font-size': '1.2rem'
                 });
                 
-                // Create dialog message with detailed explanation
+                // Create dialog message with simplified explanation
                 const dialogMessage = $('<div>').css({
                     'margin': '15px 0',
                     'line-height': '1.4',
@@ -1733,56 +1733,20 @@
                     'text-align': 'left'
                 });
                 
-                // Add main message paragraph
+                // Add main message paragraph with simplified content
                 dialogMessage.append(
                     $('<p>').html(
-                        'Your text contains <strong>Syriac supplement characters</strong> which may not display correctly in exported images on iOS devices.'
+                        'Some Syriac characters may not display correctly in exported images on iOS devices.'
                     )
                 );
                 
-                // Add the problematic characters section
-                dialogMessage.append(
-                    $('<p>').html('<strong>Potentially problematic characters:</strong>')
-                );
-                
-                // Add the character grid to show which characters are problematic
-                const charGrid = $('<div>').css({
-                    'display': 'grid',
-                    'grid-template-columns': 'repeat(5, 1fr)',
-                    'gap': '8px',
-                    'margin': '10px 0',
-                    'padding': '8px',
-                    'background': '#f8f8f8',
-                    'border-radius': '4px',
-                    'font-family': 'Karshon',
-                    'font-size': '1.5rem',
-                    'direction': 'rtl'
-                });
-                
-                // Add all Syriac supplement characters to the grid
-                const suppChars = ['ࡠ', 'ࡡ', 'ࡢ', 'ࡣ', 'ࡤ', 'ࡥ', 'ࡦ', 'ࡧ', 'ࡨ', 'ࡩ', 'ࡪ'];
-                suppChars.forEach(char => {
-                    charGrid.append(
-                        $('<div>').text(char).css({
-                            'text-align': 'center',
-                            'padding': '4px',
-                            'background': 'white',
-                            'border-radius': '4px',
-                            'border': '1px solid #ddd'
-                        })
-                    );
-                });
-                
-                dialogMessage.append(charGrid);
-                
-                // Add suggestion paragraph
+                // Add suggestion paragraph with simplified options
                 dialogMessage.append(
                     $('<p>').html(
                         'You have these options:<br>' +
-                        '1. Remove these characters and try again<br>' +
-                        '2. Proceed anyway (characters may appear incorrectly)<br>' +
-                        '3. Take a screenshot manually<br>' +
-                        '4. Use a PC or Android device for better results'
+                        '1. Proceed anyway (some characters may appear incorrectly)<br>' +
+                        '2. Take a screenshot manually<br>' +
+                        '3. Use a PC or Android device for best results'
                     )
                 );
                 
@@ -1854,8 +1818,8 @@
             
             // Function to create and share/download image
             function createAndShareImage(shouldShare) {
-                // Check if using iOS/iPadOS and contains Syriac supplement characters
-                if (isiOS() && containsSyriacSupplement(textarea.val())) {
+                // Check if using iOS/iPadOS - show warning for all iOS users
+                if (isiOS()) {
                     // Show dialog and wait for user decision
                     showIOSAlertDialog().then(shouldProceed => {
                         if (shouldProceed) {
@@ -1987,13 +1951,6 @@
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
-            }
-            
-            // Function to detect if text contains Syriac supplement characters
-            function containsSyriacSupplement(text) {
-                // Syriac supplement Unicode range: U+0860 to U+086A
-                const syriacSupplementRegex = /[\u0860-\u086A]/;
-                return syriacSupplementRegex.test(text);
             }
             
             // Function to detect iOS/iPadOS devices
