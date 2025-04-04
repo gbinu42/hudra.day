@@ -11,7 +11,7 @@
     gtag('config', 'G-SC1ZGX8R64');
     </script>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="Online East Syriac text editor with on-screen keyboard for typing Syriac text. Supports Karshon font and RTL text direction.">
     <meta name="keywords" content="East Syriac, text editor, Syriac keyboard, Karshon, RTL text">
     <meta name="author" content="East Syriac Breviary Project">
@@ -921,6 +921,23 @@
             width: 20px;
             height: 20px;
         }
+        
+        /* Prevent iOS text selection and zoom */
+        body.touch-device .keyboard,
+        body.touch-device .keyboard * {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            touch-action: manipulation;
+        }
+        
+        /* Set minimum scale to prevent zooming on double tap */
+        meta[name="viewport"] {
+            content: "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no";
+        }
     </style>
 </head>
 <body>
@@ -1385,7 +1402,7 @@
                     // Clear - clear all text with confirmation
                     if (confirm('Are you sure you want to clear all text? This cannot be undone.')) {
                         textarea.val('');
-                        localStorage.removeItem('syriacText');
+                        Storage.remove('syriacText');
                         adjustTextareaHeight();
                     }
                 } else if ($key.hasClass('numeric-toggle-key')) {
@@ -1407,6 +1424,61 @@
                 
                 textarea.focus();
             });
+
+            // Add long-press functionality to backspace key
+            let backspaceInterval;
+            let backspaceDelay = 500; // Initial delay before rapid deletion starts
+            let backspaceSpeed = 75;  // Interval between deletions in ms
+            
+            // Mousedown/touchstart handler for backspace
+            $('.backspace-key').on('mousedown touchstart', function(e) {
+                e.preventDefault(); // Prevent default behavior
+                const $key = $(this);
+                
+                // First delete immediately
+                deleteChar();
+                
+                // Then set timeout for continuous deletion
+                backspaceInterval = setTimeout(function() {
+                    backspaceInterval = setInterval(deleteChar, backspaceSpeed);
+                }, backspaceDelay);
+                
+                // Visual feedback
+                $key.css('background-color', '#e6e6e6');
+            });
+            
+            // Mouseup/touchend handler to stop deleting
+            $(document).on('mouseup touchend mouseleave touchcancel', function() {
+                if (backspaceInterval) {
+                    clearTimeout(backspaceInterval);
+                    clearInterval(backspaceInterval);
+                    backspaceInterval = null;
+                    
+                    // Reset visual appearance
+                    $('.backspace-key').css('background-color', '');
+                }
+            });
+            
+            // Function to delete a character at cursor position
+            function deleteChar() {
+                const cursorPos = textarea[0].selectionStart;
+                const text = textarea.val();
+                
+                if (cursorPos > 0) {
+                    const newText = text.slice(0, cursorPos - 1) + text.slice(cursorPos);
+                    textarea.val(newText);
+                    textarea[0].selectionStart = cursorPos - 1;
+                    textarea[0].selectionEnd = cursorPos - 1;
+                    
+                    // Save after deletion with throttling
+                    if (saveTimeout) {
+                        clearTimeout(saveTimeout);
+                    }
+                    saveTimeout = setTimeout(() => {
+                        Storage.save('syriacText', textarea.val());
+                    }, 1000); // Less frequent saves during rapid deletion
+                }
+            }
 
             // Function to adjust textarea height
             function adjustTextareaHeight() {
