@@ -2120,11 +2120,11 @@
                     // Add the image to the PDF (positioned below the title)
                     pdf.addImage(imgData, 'PNG', 10, 25, imgWidth, imgHeight);
                     
-                    // Add footer with watermark
-                    pdf.setFont('helvetica', 'italic');
-                    pdf.setFontSize(10);
-                    pdf.setTextColor(150, 150, 150);
-                    pdf.text('hendoacademy.org', pdf.internal.pageSize.getWidth() / 2, pdf.internal.pageSize.getHeight() - 10, { align: 'center' });
+                    // // Add footer with watermark
+                    // pdf.setFont('helvetica', 'italic');
+                    // pdf.setFontSize(10);
+                    // pdf.setTextColor(150, 150, 150);
+                    // pdf.text('hendoacademy.org', pdf.internal.pageSize.getWidth() / 2, pdf.internal.pageSize.getHeight() - 10, { align: 'center' });
                     
                     // Remove loading indicator
                     loadingIndicator.remove();
