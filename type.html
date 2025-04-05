@@ -1893,10 +1893,17 @@
                     const highQualityCanvas = document.createElement('canvas');
                     const ctx = highQualityCanvas.getContext('2d');
                     
-                    // Set larger canvas dimensions for better quality
+                    // Set scaling factor for quality improvement
                     const scaleFactor = 1.2; // Additional scaling for better image quality
+                    
+                    // Scale font size for the watermark to calculate padding
+                    const watermark = "hendoacademy.org";
+                    const fontSize = Math.max(14, Math.round(canvas.height * scaleFactor * 0.025));
+                    const watermarkPadding = fontSize * 2; // Space for watermark (2x font size)
+                    
+                    // Set larger canvas dimensions with extra height for watermark
                     highQualityCanvas.width = canvas.width * scaleFactor;
-                    highQualityCanvas.height = canvas.height * scaleFactor;
+                    highQualityCanvas.height = (canvas.height * scaleFactor) + watermarkPadding;
                     
                     // Enable image smoothing for better rendering
                     ctx.imageSmoothingEnabled = true;
@@ -1906,22 +1913,17 @@
                     ctx.fillStyle = 'white';
                     ctx.fillRect(0, 0, highQualityCanvas.width, highQualityCanvas.height);
                     
-                    // Draw the original canvas content at higher resolution
-                    ctx.drawImage(canvas, 0, 0, highQualityCanvas.width, highQualityCanvas.height);
+                    // Draw the original canvas content at higher resolution (keep the same size, just add padding at bottom)
+                    ctx.drawImage(canvas, 0, 0, highQualityCanvas.width, canvas.height * scaleFactor);
                     
-                    // Add watermark text in bottom left with size scaling
-                    const watermark = "hendoacademy.org";
-                    
-                    // Scale font size based on canvas dimensions (2.5% of canvas height, minimum 20px)
-                    const fontSize = Math.max(14, Math.round(highQualityCanvas.height * 0.025));
-                    
+                    // Add watermark text in bottom center
                     ctx.font = `italic ${fontSize}px Arial`;
-                    ctx.fillStyle = "rgba(150, 150, 150, 0.6)"; // Light gray with higher opacity
+                    ctx.fillStyle = "rgba(150, 150, 150, 0.6)"; // Light gray with transparency
                     ctx.textAlign = "center";
                     ctx.textBaseline = "bottom";
                     
                     // Position at bottom center, with padding proportional to image size
-                    const paddingBottom = Math.max(15, Math.round(highQualityCanvas.height * 0.02));
+                    const paddingBottom = Math.max(15, Math.round(highQualityCanvas.height * 0.025));
                     ctx.fillText(watermark, highQualityCanvas.width / 2, highQualityCanvas.height - paddingBottom);
                     
                     // Convert the enhanced canvas to blob with higher quality
