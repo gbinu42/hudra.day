@@ -831,7 +831,7 @@
         }
 
         /* Share/Download button styles - common styles */
-        .share-button, .download-button {
+        .share-button, .download-button, .pdf-button {
             position: absolute;
             border-radius: 50%;
             background-color: rgba(128, 128, 128, 0.5);
@@ -859,6 +859,11 @@
             right: 56px; /* Position to the left of share button */
         }
         
+        .non-touch-button.pdf-button {
+            bottom: 25px;
+            right: 102px; /* Position to the left of download button */
+        }
+        
         /* Touch buttons inside keyboard */
         .touch-button.share-button {
             top: -42px;
@@ -869,6 +874,12 @@
         .touch-button.download-button {
             top: -42px;
             right: 56px;
+            z-index: 1020;
+        }
+        
+        .touch-button.pdf-button {
+            top: -42px;
+            right: 102px;
             z-index: 1020;
         }
         
@@ -884,12 +895,12 @@
         
         /* Desktop styles - hide when empty */
         @media (hover: hover) {
-            .share-button, .download-button {
+            .share-button, .download-button, .pdf-button {
                 opacity: 0;
                 visibility: hidden;
             }
             
-            .share-button.visible, .download-button.visible {
+            .share-button.visible, .download-button.visible, .pdf-button.visible {
                 opacity: 1;
                 visibility: visible;
             }
@@ -897,27 +908,27 @@
         
         /* Touch device styles - always show but disable when empty */
         @media (hover: none) {
-            .share-button, .download-button {
+            .share-button, .download-button, .pdf-button {
                 opacity: 0.4;
                 pointer-events: none; /* Disable interaction */
             }
             
-            .share-button.visible, .download-button.visible {
+            .share-button.visible, .download-button.visible, .pdf-button.visible {
                 opacity: 1;
                 pointer-events: auto; /* Enable interaction */
             }
         }
 
-        .share-button:hover, .download-button:hover {
+        .share-button:hover, .download-button:hover, .pdf-button:hover {
             background-color: rgba(209, 0, 31, 0.8);
             transform: scale(1.05);
         }
 
-        .share-button:active, .download-button:active {
+        .share-button:active, .download-button:active, .pdf-button:active {
             transform: scale(0.95);
         }
 
-        .share-button svg, .download-button svg {
+        .share-button svg, .download-button svg, .pdf-button svg {
             width: 20px;
             height: 20px;
         }
@@ -954,6 +965,11 @@
                     <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
                 </svg>
             </button>
+            <button class="pdf-button non-touch-button" title="Download as PDF">
+                <svg class="pdf-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/>
+                </svg>
+            </button>
         </div>
         <div class="keyboard hidden">
             <button class="share-button touch-button" title="Share as Image">
@@ -964,6 +980,11 @@
             <button class="download-button touch-button" title="Download as Image">
                 <svg class="download-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                </svg>
+            </button>
+            <button class="pdf-button touch-button" title="Download as PDF">
+                <svg class="pdf-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/>
                 </svg>
             </button>
             <div class="keyboard-header">
@@ -1499,7 +1520,7 @@
             // Show/hide share and download buttons based on textarea content
             function updateButtonsVisibility() {
                 const hasText = textarea.val().trim().length > 0;
-                $('.share-button, .download-button').toggleClass('visible', hasText);
+                $('.share-button, .download-button, .pdf-button').toggleClass('visible', hasText);
             }
 
             // Storage system with fallbacks
@@ -1902,7 +1923,7 @@
                     
                     // Scale font size for the watermark, but don't exceed the text font size
                     const watermark = "hendoacademy.org";
-                    const maxFontSize = originalFontSize*2; // Don't exceed the text font size
+                    const maxFontSize = originalFontSize * 2; // Don't exceed the text font size
                     const calculatedFontSize = Math.round(canvas.height * scaleFactor * 0.025);
                     const fontSize = Math.min(maxFontSize, Math.max(14, calculatedFontSize));
                     const watermarkPadding = fontSize * 2; // Space for watermark (2x font size)
@@ -2005,9 +2026,121 @@
                     setTimeout(updateKeyboardHeightVar, 300);
                 });
             }
+
+            // Add PDF functionality
+            $('.pdf-button').on('click', function() {
+                createAndDownloadPDF();
+            });
+
+            // Function to create and download PDF
+            function createAndDownloadPDF() {
+                // Check if using iOS/iPadOS - show warning for all iOS users
+                if (isiOS()) {
+                    // Show dialog and wait for user decision
+                    showIOSAlertDialog().then(shouldProceed => {
+                        if (shouldProceed) {
+                            // User wants to proceed despite warning
+                            proceedWithPDFCreation();
+                        }
+                    });
+                    return;
+                }
+                
+                // No issues, proceed normally
+                proceedWithPDFCreation();
+            }
+
+            // Function to handle the actual PDF creation
+            function proceedWithPDFCreation() {
+                // Show a small loading indicator
+                const loadingIndicator = $('<div>').css({
+                    'position': 'fixed',
+                    'top': '50%',
+                    'left': '50%',
+                    'transform': 'translate(-50%, -50%)',
+                    'background': 'rgba(255,255,255,0.9)',
+                    'padding': '15px 20px',
+                    'border-radius': '8px',
+                    'box-shadow': '0 2px 10px rgba(0,0,0,0.2)',
+                    'z-index': '9999',
+                    'font-family': 'Arial, sans-serif',
+                    'font-size': '14px'
+                }).text('Creating PDF...');
+                
+                $('body').append(loadingIndicator);
+                
+                // Create a temporary div to render the text with proper styling
+                const textContent = textarea.val();
+                const fontSize = textarea.css('font-size');
+                const textColor = textarea.css('color');
+                
+                // Get the computed width of the textarea
+                const textareaWidth = textarea.width();
+                
+                // Create a container for the content
+                const tempDiv = $('<div>').css({
+                    'position': 'absolute',
+                    'left': '-9999px',
+                    'font-family': 'Karshon',
+                    'font-size': fontSize,
+                    'color': textColor,
+                    'direction': 'rtl',
+                    'text-align': 'right',
+                    'white-space': 'pre-wrap',
+                    'padding': '20px',
+                    'background': 'white',
+                    'width': textareaWidth + 'px',
+                    'box-sizing': 'border-box',
+                    'line-height': '1.6'
+                }).text(textContent);
+                
+                // Add the div to the document temporarily
+                $('body').append(tempDiv);
+                
+                // Use html2canvas to convert the div to an image first
+                html2canvas(tempDiv[0], {
+                    scale: 2,
+                    useCORS: true,
+                    backgroundColor: 'white',
+                    logging: false
+                }).then(canvas => {
+                    // Initialize jsPDF
+                    const pdf = new jspdf.jsPDF({
+                        orientation: 'portrait',
+                        unit: 'mm'
+                    });
+                                        
+                    // Get the image as base64 string
+                    const imgData = canvas.toDataURL('image/png');
+                    
+                    // Calculate dimensions for the image in the PDF
+                    const imgWidth = pdf.internal.pageSize.getWidth() - 20; // 10mm margins on each side
+                    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                    
+                    // Add the image to the PDF (positioned below the title)
+                    pdf.addImage(imgData, 'PNG', 10, 25, imgWidth, imgHeight);
+                    
+                    // Add footer with watermark
+                    pdf.setFont('helvetica', 'italic');
+                    pdf.setFontSize(10);
+                    pdf.setTextColor(150, 150, 150);
+                    pdf.text('hendoacademy.org', pdf.internal.pageSize.getWidth() / 2, pdf.internal.pageSize.getHeight() - 10, { align: 'center' });
+                    
+                    // Remove loading indicator
+                    loadingIndicator.remove();
+                    
+                    // Remove the temporary div
+                    tempDiv.remove();
+                    
+                    // Save the PDF
+                    pdf.save('syriac-text.pdf');
+                });
+            }
         });
     </script>
     <!-- Add html2canvas library -->
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <!-- Add jsPDF library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </body>
 </html> 
