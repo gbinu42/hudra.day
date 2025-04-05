@@ -1896,10 +1896,17 @@
                     // Set scaling factor for quality improvement
                     const scaleFactor = 1.2; // Additional scaling for better image quality
                     
-                    // Scale font size for the watermark to calculate padding
+                    // Get the original text font size from the textarea and convert to number
+                    const originalFontSize = parseInt(textarea.css('font-size'));
+                    console.log(originalFontSize);
+                    
+                    // Scale font size for the watermark, but don't exceed the text font size
                     const watermark = "hendoacademy.org";
-                    const fontSize = Math.max(14, Math.round(canvas.height * scaleFactor * 0.025));
+                    const maxFontSize = originalFontSize*2; // Don't exceed the text font size
+                    const calculatedFontSize = Math.round(canvas.height * scaleFactor * 0.025);
+                    const fontSize = Math.min(maxFontSize, Math.max(14, calculatedFontSize));
                     const watermarkPadding = fontSize * 2; // Space for watermark (2x font size)
+                    console.log({fontSize, watermarkPadding});
                     
                     // Set larger canvas dimensions with extra height for watermark
                     highQualityCanvas.width = canvas.width * scaleFactor;
