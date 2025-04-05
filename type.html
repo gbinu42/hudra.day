@@ -2074,8 +2074,9 @@
                 const fontSize = textarea.css('font-size');
                 const textColor = textarea.css('color');
                 
-                // Get the computed width of the textarea
+                // Get the actual dimensions of the textarea
                 const textareaWidth = textarea.width();
+                const textareaHeight = textarea.height();
                 
                 // Create a container for the content
                 const tempDiv = $('<div>').css({
@@ -2087,12 +2088,16 @@
                     'direction': 'rtl',
                     'text-align': 'right',
                     'white-space': 'pre-wrap',
+                    'word-wrap': 'break-word',
+                    'word-break': 'normal',
                     'padding': '20px',
                     'background': 'white',
                     'width': textareaWidth + 'px',
+                    'max-width': '100%',
                     'box-sizing': 'border-box',
-                    'line-height': '1.6'
-                }).text(textContent);
+                    'line-height': '1.6',
+                    'overflow-wrap': 'break-word'
+                }).html(textContent.replace(/\n/g, '<br>').replace(/ /g, '&nbsp;'));
                 
                 // Add the div to the document temporarily
                 $('body').append(tempDiv);
@@ -2104,27 +2109,32 @@
                     backgroundColor: 'white',
                     logging: false
                 }).then(canvas => {
-                    // Initialize jsPDF
+                    // Calculate PDF dimensions based on canvas proportions
+                    const pdfWidth = 210; // A4 width in mm
+                    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+                    
+                    // Initialize jsPDF with custom dimensions
                     const pdf = new jspdf.jsPDF({
                         orientation: 'portrait',
-                        unit: 'mm'
+                        unit: 'mm',
+                        format: [pdfWidth, pdfHeight + 30] // Add margin for footer only
                     });
-                                        
+                    
                     // Get the image as base64 string
                     const imgData = canvas.toDataURL('image/png');
                     
                     // Calculate dimensions for the image in the PDF
-                    const imgWidth = pdf.internal.pageSize.getWidth() - 20; // 10mm margins on each side
+                    const imgWidth = pdfWidth - 20; // 10mm margins on each side
                     const imgHeight = (canvas.height * imgWidth) / canvas.width;
                     
-                    // Add the image to the PDF (positioned below the title)
-                    pdf.addImage(imgData, 'PNG', 10, 25, imgWidth, imgHeight);
+                    // Add the image to the PDF (positioned at the top with small margin)
+                    pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
                     
-                    // // Add footer with watermark
-                    // pdf.setFont('helvetica', 'italic');
-                    // pdf.setFontSize(10);
-                    // pdf.setTextColor(150, 150, 150);
-                    // pdf.text('hendoacademy.org', pdf.internal.pageSize.getWidth() / 2, pdf.internal.pageSize.getHeight() - 10, { align: 'center' });
+                    // Add footer with watermark
+                    pdf.setFont('helvetica', 'italic');
+                    pdf.setFontSize(10);
+                    pdf.setTextColor(150, 150, 150);
+                    pdf.text('hendoacademy.org', pdfWidth / 2, pdfHeight + 15, { align: 'center' });
                     
                     // Remove loading indicator
                     loadingIndicator.remove();
