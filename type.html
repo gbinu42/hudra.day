@@ -1909,13 +1909,20 @@
                     // Draw the original canvas content at higher resolution
                     ctx.drawImage(canvas, 0, 0, highQualityCanvas.width, highQualityCanvas.height);
                     
-                    // Add watermark text in bottom left
+                    // Add watermark text in bottom left with size scaling
                     const watermark = "hendoacademy.org";
-                    ctx.font = "italic 14px Arial";
-                    ctx.fillStyle = "rgba(150, 150, 150, 0.6)"; // Light gray with transparency
-                    ctx.textAlign = "left";
+                    
+                    // Scale font size based on canvas dimensions (2.5% of canvas height, minimum 20px)
+                    const fontSize = Math.max(14, Math.round(highQualityCanvas.height * 0.05));
+                    
+                    ctx.font = `italic ${fontSize}px Arial`;
+                    ctx.fillStyle = "rgba(150, 150, 150, 0.6)"; // Light gray with higher opacity
+                    ctx.textAlign = "center";
                     ctx.textBaseline = "bottom";
-                    ctx.fillText(watermark, 10, highQualityCanvas.height - 10); // 10px from left and bottom edges
+                    
+                    // Position at bottom center, with padding proportional to image size
+                    const paddingBottom = Math.max(15, Math.round(highQualityCanvas.height * 0.02));
+                    ctx.fillText(watermark, highQualityCanvas.width / 2, highQualityCanvas.height - paddingBottom);
                     
                     // Convert the enhanced canvas to blob with higher quality
                     highQualityCanvas.toBlob(blob => {
