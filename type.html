@@ -2088,16 +2088,12 @@
                     'direction': 'rtl',
                     'text-align': 'right',
                     'white-space': 'pre-wrap',
-                    'word-wrap': 'break-word',
-                    'word-break': 'normal',
                     'padding': '20px',
                     'background': 'white',
                     'width': textareaWidth + 'px',
-                    'max-width': '100%',
                     'box-sizing': 'border-box',
-                    'line-height': '1.6',
-                    'overflow-wrap': 'break-word'
-                }).html(textContent.replace(/\n/g, '<br>').replace(/ /g, '&nbsp;'));
+                    'line-height': '1.6'
+                }).text(textContent);
                 
                 // Add the div to the document temporarily
                 $('body').append(tempDiv);
