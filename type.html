@@ -2069,68 +2069,71 @@
                 
                 $('body').append(loadingIndicator);
                 
-                // Create a temporary div to render the text with proper styling
-                const textContent = textarea.val();
-                const fontSize = textarea.css('font-size');
-                const textColor = textarea.css('color');
+                // Get the computed width of the textarea
+                const textareaWidth = textarea.width() + 20;
                 
-                // Get the actual dimensions of the textarea
-                const textareaWidth = textarea.width();
-                const textareaHeight = textarea.height();
-                
-                // Create a container for the content
-                const tempDiv = $('<div>').css({
+                // Create a temporary div to render the text with improved styling
+                const tempDiv = $('<div contenteditable="true">').css({
                     'position': 'absolute',
                     'left': '-9999px',
                     'font-family': 'Karshon',
-                    'font-size': fontSize,
-                    'color': textColor,
+                    'font-size': textarea.css('font-size'),
+                    'color': textarea.css('color'),
                     'direction': 'rtl',
-                    'text-align': 'right',
                     'white-space': 'pre-wrap',
-                    'padding': '20px',
+                    'padding': '10px',
                     'background': 'white',
-                    'width': textareaWidth + 'px',
+                    'max-width': textareaWidth + 'px', // Set the width to match textarea
                     'box-sizing': 'border-box',
-                    'line-height': '1.6'
-                }).text(textContent);
-                
+                    'line-height': '1.6',
+                    'text-rendering': 'optimizeLegibility',
+                    '-webkit-font-smoothing': 'antialiased'
+                }).text(textarea.val());
+
                 // Add the div to the document temporarily
                 $('body').append(tempDiv);
                 
-                // Use html2canvas to convert the div to an image first
+                // Convert the div to canvas with higher quality settings
                 html2canvas(tempDiv[0], {
-                    scale: 2,
+                    scale: 4, // Increased from 2 to 4 for higher resolution
                     useCORS: true,
                     backgroundColor: 'white',
-                    logging: false
+                    logging: false,
+                    allowTaint: true,
+                    letterRendering: true,
+                    renderSettings: {
+                        quality: 1.0
+                    }
                 }).then(canvas => {
-                    // Calculate PDF dimensions based on canvas proportions
-                    const pdfWidth = 210; // A4 width in mm
-                    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+                    // Remove any 10px padding from the temp div that might affect dimensions
+                    tempDiv.css('padding', '0');
                     
-                    // Initialize jsPDF with custom dimensions
-                    const pdf = new jspdf.jsPDF({
-                        orientation: 'portrait',
-                        unit: 'mm',
-                        format: [pdfWidth, pdfHeight + 30] // Add margin for footer only
+                    // Log canvas dimensions
+                    console.log('Canvas dimensions:', {
+                        width: canvas.width,
+                        height: canvas.height
                     });
                     
-                    // Get the image as base64 string
-                    const imgData = canvas.toDataURL('image/png');
+                    // Determine orientation based on dimensions
+                    const isLandscape = canvas.width > canvas.height;
+                    const orientation = isLandscape ? 'landscape' : 'portrait';
                     
-                    // Calculate dimensions for the image in the PDF
-                    const imgWidth = pdfWidth - 20; // 10mm margins on each side
-                    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                    // Define margin size in pixels
+                    const margin = 48; 
                     
-                    // Add the image to the PDF (positioned at the top with small margin)
-                    pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+                    // Initialize jsPDF with pixel dimensions matching the canvas plus margins
+                    const pdf = new jspdf.jsPDF({
+                        orientation: orientation,
+                        unit: 'px',
+                        format: [canvas.width + (margin * 2), canvas.height + (margin * 2)], // Add margins to both dimensions
+                        compress: false
+                    });
                     
-                    // Add footer with watermark
-                    pdf.setFont('helvetica', 'italic');
-                    pdf.setFontSize(10);
-                    pdf.setTextColor(150, 150, 150);
-                    pdf.text('hendoacademy.org', pdfWidth / 2, pdfHeight + 15, { align: 'center' });
+                    // Get the image as base64 string at full resolution
+                    const imgData = canvas.toDataURL('image/png', 1.0);
+                    
+                    // Add the image to the PDF with margin on all sides
+                    pdf.addImage(imgData, 'PNG', margin, margin, canvas.width, canvas.height, undefined, 'FAST');
                     
                     // Remove loading indicator
                     loadingIndicator.remove();
