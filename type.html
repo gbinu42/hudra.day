@@ -893,6 +893,8 @@
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         width: 36px;
         height: 36px;
+        opacity: 1;
+        visibility: visible;
       }
 
       /* Regular buttons (non-touch) */
@@ -938,40 +940,6 @@
       /* Hide non-touch buttons on touch devices */
       body.touch-device .non-touch-button {
         display: none !important;
-      }
-
-      /* Desktop styles - hide when empty */
-      @media (hover: hover) {
-        .share-button,
-        .download-button,
-        .pdf-button {
-          opacity: 0;
-          visibility: hidden;
-        }
-
-        .share-button.visible,
-        .download-button.visible,
-        .pdf-button.visible {
-          opacity: 1;
-          visibility: visible;
-        }
-      }
-
-      /* Touch device styles - always show but disable when empty */
-      @media (hover: none) {
-        .share-button,
-        .download-button,
-        .pdf-button {
-          opacity: 0.4;
-          pointer-events: none; /* Disable interaction */
-        }
-
-        .share-button.visible,
-        .download-button.visible,
-        .pdf-button.visible {
-          opacity: 1;
-          pointer-events: auto; /* Enable interaction */
-        }
       }
 
       .share-button:hover,
@@ -2520,15 +2488,6 @@
         // Initial height adjustment
         adjustTextareaHeight();
 
-        // Show/hide share and download buttons based on textarea content
-        function updateButtonsVisibility() {
-          const hasText = textarea.val().trim().length > 0;
-          $(".share-button, .download-button, .pdf-button").toggleClass(
-            "visible",
-            hasText
-          );
-        }
-
         // Storage system with fallbacks
         const Storage = {
           save(key, value) {
@@ -2635,7 +2594,6 @@
           saveTimeout = setTimeout(() => {
             const text = $(this).val();
             Storage.save("syriacText", text);
-            updateButtonsVisibility();
           }, 500);
         });
 
@@ -2645,7 +2603,6 @@
           if (savedText) {
             textarea.val(savedText);
             adjustTextareaHeight();
-            updateButtonsVisibility();
           }
         }
 
@@ -2662,30 +2619,8 @@
             textarea.val("");
             Storage.remove("syriacText");
             adjustTextareaHeight();
-            updateButtonsVisibility();
           }
         });
-
-        // Run visibility check after any keyboard interaction on touch devices
-        if (isTouchDevice) {
-          $(".keyboard-key").on("click", function () {
-            // Very short timeout to allow for DOM updates
-            setTimeout(updateButtonsVisibility, 10);
-          });
-        }
-
-        // Initial visibility check - run immediately and again after a short delay
-        updateButtonsVisibility();
-        setTimeout(updateButtonsVisibility, 100);
-
-        // Expose this function globally for debugging
-        window.debugUpdateButtonsVisibility = function () {
-          updateButtonsVisibility();
-          console.log(
-            "Buttons visibility updated:",
-            textarea.val().trim().length > 0
-          );
-        };
 
         // Function to toggle between numeric and regular keyboard
         function toggleNumericKeyboard(showNumeric) {
@@ -3138,8 +3073,7 @@
         if (isTouchDevice) {
           // No longer need to reposition buttons since they're inside the keyboard
           function updateKeyboardHeightVar() {
-            // Force update the share button visibility
-            updateButtonsVisibility();
+            // Empty function now that we're showing buttons always
           }
 
           // Update on window resize and after keyboard is shown
