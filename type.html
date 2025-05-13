@@ -1,2155 +1,3329 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SC1ZGX8R64"></script>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-SC1ZGX8R64"
+    ></script>
     <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
 
-    gtag('config', 'G-SC1ZGX8R64');
+      gtag("config", "G-SC1ZGX8R64");
     </script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="Online East Syriac text editor with on-screen keyboard for typing Syriac text. Supports Karshon font and RTL text direction.">
-    <meta name="keywords" content="East Syriac, text editor, Syriac keyboard, Karshon, RTL text">
-    <meta name="author" content="East Syriac Breviary Project">
-    <meta name="theme-color" content="#8A1612">
-    <meta property="og:title" content="East Syriac Text Editor">
-    <meta property="og:description" content="Online text editor for typing East Syriac text with on-screen keyboard support.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://www.hudra.day/type">
-    <meta property="og:image" content="https://www.hudra.day/images/sliwa.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta
+      name="description"
+      content="Online East Syriac text editor with on-screen keyboard for typing Syriac text. Supports Karshon font and RTL text direction."
+    />
+    <meta
+      name="keywords"
+      content="East Syriac, text editor, Syriac keyboard, Karshon, RTL text"
+    />
+    <meta name="author" content="East Syriac Breviary Project" />
+    <meta name="theme-color" content="#8A1612" />
+    <meta property="og:title" content="East Syriac Text Editor" />
+    <meta
+      property="og:description"
+      content="Online text editor for typing East Syriac text with on-screen keyboard support."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.hudra.day/type" />
+    <meta
+      property="og:image"
+      content="https://www.hudra.day/images/sliwa.png"
+    />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <title>East Syriac + Karshon Text Editor</title>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <style>
-        @font-face {
-            font-family: 'Karshon';
-            src: url('fonts/Karshon.ttf') format('truetype');
-            font-weight: normal;
-            font-style: normal;
-            font-display: swap;
-        }
+      @font-face {
+        font-family: "Karshon";
+        src: url("fonts/Karshon.ttf") format("truetype");
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "EastSyriacMalankara";
+        src: url("fonts/EastSyriacMalankara.ttf") format("truetype");
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+      :root {
+        --font-size: 36px;
+        --container-padding: 15px;
+        --border-radius: 8px;
+        --text-color: #333;
+        --primary-color: #d1001f;
+        --background-color: #f5f5f5;
+        --card-background: #ffffff;
+        --nav-height: 60px;
+        --current-font: "Karshon";
+        --line-height: 1.5;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: var(--container-padding);
+        background-color: #f5f5f5;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        line-height: 1.6;
+        color: var(--text-color);
+        background-color: var(--background-color);
+        padding-top: var(--nav-height);
+      }
+      .container {
+        background-color: white;
+        padding: var(--container-padding);
+        border-radius: var(--border-radius);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        flex: 1;
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      h1 {
+        color: #333;
+        text-align: center;
+        margin: 20px 0;
+        font-size: 1.5rem;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+      }
+      .controls {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin: 20px 0;
+        flex-wrap: wrap;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 4px;
+        border-left: 4px solid #d1001f;
+        justify-content: space-between;
+      }
+      .controls-left {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+      }
+      .font-size-control,
+      .color-control {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 200px;
+      }
+      .font-size-control label,
+      .color-control label {
+        font-size: 0.9rem;
+        color: #666;
+        min-width: 80px;
+      }
+      .font-size-control select {
+        min-width: 150px;
+      }
+      .color-control {
+        position: relative;
+      }
+      .color-selector {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+      }
+      .color-selector.active {
+        display: block;
+      }
+      .color-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 5px;
+        width: 200px;
+      }
+      .color-option {
+        width: 30px;
+        height: 30px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: transform 0.2s;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+      }
+      .color-option:hover {
+        transform: scale(1.1);
+      }
+      .color-option.active {
+        transform: scale(1.1);
+        box-shadow: 0 0 0 2px #d1001f;
+      }
+      .color-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        padding: 4px 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background: white;
+      }
+      .color-preview {
+        width: 20px;
+        height: 20px;
+        border-radius: 3px;
+        display: inline-block;
+      }
+      #syriacInput {
+        width: 100%;
+        min-height: 300px;
+        height: 300px;
+        padding: 15px;
+        padding-bottom: 50px;
+        font-size: var(--font-size);
+        color: var(--text-color);
+        line-height: 1.6;
+        border: 2px solid #ddd;
+        border-radius: 4px;
+        resize: vertical;
+        direction: rtl;
+        text-align: right;
+        font-family: var(--current-font), Arial, sans-serif;
+        unicode-bidi: embed;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        writing-mode: horizontal-tb;
+        text-orientation: mixed;
+        font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "pnum" 1, "tnum" 0,
+          "onum" 0, "lnum" 0, "dlig" 1;
+        overflow-y: auto;
+        margin-bottom: 10px;
+        position: relative;
+      }
+      #syriacInput:focus {
+        outline: none;
+        border-color: #d1001f;
+      }
+      #syriacInput::placeholder {
+        font-size: 0.7em;
+        opacity: 0.7;
+        font-family: Arial, sans-serif;
+      }
+      .instructions {
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 4px;
+        border-left: 4px solid #d1001f;
+      }
+      .instructions h3 {
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+        color: #333;
+      }
+      .instructions ul {
+        list-style-position: inside;
+        padding-left: 0;
+      }
+      .instructions li {
+        margin-bottom: 5px;
+        font-size: 0.9rem;
+        color: #666;
+      }
+      @media (min-width: 768px) {
         :root {
-            --font-size: 36px;
-            --container-padding: 15px;
-            --border-radius: 8px;
-            --text-color: #333;
-            --primary-color: #D1001F;
-            --background-color: #f5f5f5;
-            --card-background: #ffffff;
-            --nav-height: 60px;
-        }
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+          --container-padding: 20px;
         }
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: var(--container-padding);
-            background-color: #f5f5f5;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            line-height: 1.6;
-            color: var(--text-color);
-            background-color: var(--background-color);
-            padding-top: var(--nav-height);
-        }
-        .container {
-            background-color: white;
-            padding: var(--container-padding);
-            border-radius: var(--border-radius);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            flex: 1;
-            width: 100%;
-            max-width: 800px;
-            margin: 0 auto;
+          padding: 20px;
         }
         h1 {
-            color: #333;
-            text-align: center;
-            margin: 20px 0;
-            font-size: 1.5rem;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-        }
-        .controls {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin: 20px 0;
-            flex-wrap: wrap;
-            padding: 15px;
-            background-color: #f8f9fa;
-            border-radius: 4px;
-            border-left: 4px solid #D1001F;
-            justify-content: space-between;
-        }
-        .controls-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        .font-size-control, .color-control {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            min-width: 200px;
-        }
-        .font-size-control label, .color-control label {
-            font-size: 0.9rem;
-            color: #666;
-            min-width: 80px;
-        }
-        .font-size-control select {
-            min-width: 150px;
-        }
-        .color-control {
-            position: relative;
-        }
-        .color-selector {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            z-index: 1000;
-        }
-        .color-selector.active {
-            display: block;
-        }
-        .color-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 5px;
-            width: 200px;
-        }
-        .color-option {
-            width: 30px;
-            height: 30px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: transform 0.2s;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-        }
-        .color-option:hover {
-            transform: scale(1.1);
-        }
-        .color-option.active {
-            transform: scale(1.1);
-            box-shadow: 0 0 0 2px #D1001F;
-        }
-        .color-label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            padding: 4px 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background: white;
-        }
-        .color-preview {
-            width: 20px;
-            height: 20px;
-            border-radius: 3px;
-            display: inline-block;
-        }
-        #syriacInput {
-            width: 100%;
-            min-height: 300px;
-            height: 300px;
-            padding: 15px;
-            padding-bottom: 50px;
-            font-size: var(--font-size);
-            color: var(--text-color);
-            line-height: 1.6;
-            border: 2px solid #ddd;
-            border-radius: 4px;
-            resize: vertical;
-            direction: rtl;
-            text-align: right;
-            font-family: 'Karshon', Arial, sans-serif;
-            unicode-bidi: embed;
-            text-rendering: optimizeLegibility;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            writing-mode: horizontal-tb;
-            text-orientation: mixed;
-            font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "pnum" 1, "tnum" 0, "onum" 0, "lnum" 0, "dlig" 1;
-            overflow-y: auto;
-            margin-bottom: 10px;
-            position: relative;
-        }
-        #syriacInput:focus {
-            outline: none;
-            border-color: #D1001F;
-        }
-        #syriacInput::placeholder {
-            font-size: 0.7em;
-            opacity: 0.7;
-            font-family: Arial, sans-serif;
-        }
-        .instructions {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #f8f9fa;
-            border-radius: 4px;
-            border-left: 4px solid #D1001F;
+          font-size: 2rem;
         }
         .instructions h3 {
-            font-size: 1.1rem;
-            margin-bottom: 10px;
-            color: #333;
-        }
-        .instructions ul {
-            list-style-position: inside;
-            padding-left: 0;
+          font-size: 1.2rem;
         }
         .instructions li {
-            margin-bottom: 5px;
-            font-size: 0.9rem;
-            color: #666;
+          font-size: 1rem;
         }
-        @media (min-width: 768px) {
-            :root {
-                --container-padding: 20px;
-            }
-            body {
-                padding: 20px;
-            }
-            h1 {
-                font-size: 2rem;
-            }
-            .instructions h3 {
-                font-size: 1.2rem;
-            }
-            .instructions li {
-                font-size: 1rem;
-            }
-        }
-        .keyboard-toggle {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            padding: 4px 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background: white;
-        }
-        .keyboard-toggle:hover {
-            background: #f8f9fa;
-        }
-        .keyboard .keyboard-toggle {
-            display: none;
-        }
-        .keyboard:not(.hidden) .keyboard-toggle {
-            display: flex;
-        }
-        .controls .keyboard-toggle {
-            display: flex;
-        }
-        .keyboard:not(.hidden) ~ .controls .keyboard-toggle {
-            display: none;
+      }
+      .keyboard-toggle {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        padding: 4px 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background: white;
+      }
+      .keyboard-toggle:hover {
+        background: #f8f9fa;
+      }
+      .keyboard .keyboard-toggle {
+        display: none;
+      }
+      .keyboard:not(.hidden) .keyboard-toggle {
+        display: flex;
+      }
+      .controls .keyboard-toggle {
+        display: flex;
+      }
+      .keyboard:not(.hidden) ~ .controls .keyboard-toggle {
+        display: none;
+      }
+      .keyboard {
+        display: block;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 10px;
+        margin: 10px 0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        width: 100%;
+        max-width: 100%;
+      }
+      .keyboard.hidden {
+        display: none;
+      }
+      .keyboard-grid {
+        display: grid;
+        grid-template-columns: repeat(10, 1fr);
+        gap: 3px;
+        margin-bottom: 10px;
+        width: 100%;
+        direction: rtl;
+      }
+      .keyboard-section {
+        margin-bottom: 15px;
+        width: 100%;
+      }
+      .keyboard-section.special-keys {
+        display: none;
+      }
+      @media (hover: none) and (pointer: coarse) {
+        body {
+          padding: 0;
+          margin: 0;
+          background-color: white;
         }
         .keyboard {
-            display: block;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 10px;
-            margin: 10px 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-            width: 100%;
-            max-width: 100%;
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          margin: 0;
+          padding: 10px 10px 5px 10px;
+          border-radius: 0;
+          z-index: 1000;
+          display: block;
+          transition: transform 0.3s ease;
         }
         .keyboard.hidden {
-            display: none;
-        }
-        .keyboard-grid {
-            display: grid;
-            grid-template-columns: repeat(10, 1fr);
-            gap: 3px;
-            margin-bottom: 10px;
-            width: 100%;
-            direction: rtl;
-        }
-        .keyboard-section {
-            margin-bottom: 15px;
-            width: 100%;
-        }
-        .keyboard-section.special-keys {
-            display: none;
-        }
-        @media (hover: none) and (pointer: coarse) {
-            body {
-                padding: 0;
-                margin: 0;
-                background-color: white;
-            }
-            .keyboard {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                margin: 0;
-                padding: 10px 10px 5px 10px;
-                border-radius: 0;
-                z-index: 1000;
-                display: block;
-                transition: transform 0.3s ease;
-            }
-            .keyboard.hidden {
-                display: none;
-            }
-            .keyboard-header {
-                display: none;
-                border-bottom: none;
-            }
-            .keyboard-collapse {
-                display: block !important;
-                position: absolute;
-                top: -30px;
-                right: 10px;
-                font-size: 1.5rem;
-                font-weight: bold;
-                padding: 2px 10px;
-                color: #333;
-                background-color: transparent;
-                border: 1px solid rgba(221, 221, 221, 0.5);
-                border-radius: 4px 4px 0 0;
-                box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
-                z-index: 1001;
-            }
-            .keyboard-section-title {
-                display: none;
-            }
-            .keyboard-section {
-                margin-bottom: 5px;
-            }
-            .keyboard-grid {
-                gap: 2px;
-                margin-bottom: 5px;
-            }
-            .keyboard-section.special-keys {
-                display: block;
-                margin-bottom: 3px;
-            }
-            #syriacInput {
-                margin: 0;
-                border-radius: 0;
-                border: none;
-                border-bottom: 1px solid #ddd;
-                height: calc(100vh - 200px);
-                min-height: calc(100vh - 200px);
-            }
-            .container {
-                padding: 0;
-                margin: 0;
-                max-width: 100%;
-            }
-            .keyboard.collapsed {
-                transform: translateY(calc(100% - 10px));
-                padding-bottom: 0;
-            }
-            .keyboard.collapsed .keyboard-section:not(:first-child) {
-                display: none;
-            }
-            .keyboard.collapsed .keyboard-section {
-                margin-bottom: 0;
-            }
-            .keyboard.collapsed .keyboard-grid {
-                margin-bottom: 0;
-            }
-            .keyboard.collapsed .keyboard-section:first-child {
-                height: 40px;
-                overflow: hidden;
-                padding-bottom: 0;
-            }
-            .controls .keyboard-toggle {
-                display: none !important;
-            }
-        }
-        .keyboard-section-title {
-            font-size: 0.8rem;
-            color: #666;
-            margin-bottom: 5px;
-            padding-left: 5px;
-        }
-        .keyboard-key {
-            padding: 2px 1px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background: white;
-            cursor: pointer;
-            text-align: center;
-            font-family: 'Karshon', Arial, sans-serif;
-            font-size: 1.5rem;
-            transition: background-color 0.2s;
-            min-height: 35px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            direction: ltr;
-        }
-        .keyboard-key.special {
-            font-family: Arial, sans-serif;
-            font-size: 0.9rem;
-            background-color: #f0f0f0;
-            grid-column: span 1;
-        }
-        .keyboard-key:hover {
-            background: #f8f9fa;
-        }
-        .keyboard-key .phonetic {
-            font-size: 0.6rem;
-            color: #666;
-            font-family: Arial, sans-serif;
-            margin-top: 1px;
-        }
-        @media (max-width: 768px) {
-            .container {
-                max-width: 100%;
-                margin: 0;
-            }
-            .keyboard-grid {
-                grid-template-columns: repeat(8, 1fr);
-                direction: rtl;
-            }
-            .keyboard-key {
-                font-size: 1.2rem;
-                min-height: 30px;
-                direction: ltr;
-            }
-            .controls {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .controls-left {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .font-size-control, .color-control {
-                width: 100%;
-                justify-content: space-between;
-            }
-            .font-size-control select {
-                flex: 1;
-            }
-        }
-        .content-section {
-            display: block;
-            transition: all 0.3s ease;
-        }
-        .content-section.hidden {
-            display: none;
-        }
-        /* Add new toggle switch styles */
-        .toggle-switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 24px;
-            margin-left: 8px;
-        }
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        .toggle-slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 24px;
-        }
-        .toggle-slider:before {
-            position: absolute;
-            content: "";
-            height: 16px;
-            width: 16px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-        input:checked + .toggle-slider {
-            background-color: #D1001F;
-        }
-        input:checked + .toggle-slider:before {
-            transform: translateX(26px);
+          display: none;
         }
         .keyboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            padding-bottom: 5px;
-            border-bottom: 1px solid #ddd;
-        }
-        .keyboard-header-title {
-            font-size: 1rem;
-            color: #333;
-            font-weight: bold;
+          display: none;
+          border-bottom: none;
         }
         .keyboard-collapse {
-            display: none;
-            background: none;
-            border: none;
-            color: #666;
-            cursor: pointer;
-            padding: 4px 8px;
-            font-size: 1.2rem;
+          display: block !important;
+          position: absolute;
+          top: -30px;
+          right: 10px;
+          font-size: 1.5rem;
+          font-weight: bold;
+          padding: 2px 10px;
+          color: #333;
+          background-color: transparent;
+          border: 1px solid rgba(221, 221, 221, 0.5);
+          border-radius: 4px 4px 0 0;
+          box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
+          z-index: 1001;
         }
-        .instructions li.touch-tip {
-            margin-top: 10px;
-            color: #D1001F;
-            font-weight: bold;
+        .keyboard-section-title {
+          display: none;
         }
-        .instructions li.touch-tip code {
-            background: #f5f5f5;
-            padding: 2px 4px;
-            border-radius: 3px;
-            border: 1px solid #ddd;
-            font-family: monospace;
+        .keyboard-section {
+          margin-bottom: 5px;
         }
-        
-        /* Touch device specific styles */
-        body.touch-device {
-            padding: 0;
-            margin: 0;
-            background-color: white;
+        .keyboard-grid {
+          gap: 2px;
+          margin-bottom: 5px;
         }
-        
-        body.touch-device .container {
-            padding: 0;
-            margin: 0;
-            max-width: 100%;
-            border-radius: 0;
-            box-shadow: none;
+        .keyboard-section.special-keys {
+          display: block;
+          margin-bottom: 3px;
         }
-        
-        body.touch-device #syriacInput {
-            margin: 0;
-            border-radius: 0;
-            border: none;
-            border-bottom: 1px solid #ddd;
-            height: calc(100vh - 220px);
-            min-height: calc(100vh - 220px);
+        #syriacInput {
+          margin: 0;
+          border-radius: 0;
+          border: none;
+          border-bottom: 1px solid #ddd;
+          height: calc(100vh - 200px);
+          min-height: calc(100vh - 200px);
         }
-        
-        body.touch-device .keyboard {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            margin: 0;
-            padding: 10px 10px 5px 10px;
-            border-radius: 0;
-            border-left: none;
-            border-right: none;
-            border-bottom: none;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-            z-index: 1000;
-            display: block;
+        .container {
+          padding: 0;
+          margin: 0;
+          max-width: 100%;
         }
-        
-        body.touch-device .keyboard-header {
-            display: none;
+        .keyboard.collapsed {
+          transform: translateY(calc(100% - 10px));
+          padding-bottom: 0;
         }
-        
-        body.touch-device .keyboard-section-title {
-            display: none;
+        .keyboard.collapsed .keyboard-section:not(:first-child) {
+          display: none;
         }
-        
-        body.touch-device .keyboard-section {
-            margin-bottom: 5px;
+        .keyboard.collapsed .keyboard-section {
+          margin-bottom: 0;
         }
-        
-        body.touch-device .keyboard-grid {
-            gap: 2px;
-            margin-bottom: 5px;
+        .keyboard.collapsed .keyboard-grid {
+          margin-bottom: 0;
         }
-        
-        body.touch-device .keyboard-section.special-keys {
-            display: block;
-            margin-bottom: 3px;
+        .keyboard.collapsed .keyboard-section:first-child {
+          height: 40px;
+          overflow: hidden;
+          padding-bottom: 0;
         }
-        
-        body.touch-device .controls .keyboard-toggle {
-            display: none !important;
+        .controls .keyboard-toggle {
+          display: none !important;
         }
-        
-        body.touch-device .keyboard.collapsed {
-            transform: translateY(calc(100% - 10px));
-            padding-bottom: 0;
+      }
+      .keyboard-section-title {
+        font-size: 0.8rem;
+        color: #666;
+        margin-bottom: 5px;
+        padding-left: 5px;
+      }
+      .keyboard-key {
+        padding: 2px 1px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background: white;
+        cursor: pointer;
+        text-align: center;
+        font-family: var(--current-font), Arial, sans-serif;
+        font-size: 1.5rem;
+        transition: background-color 0.2s;
+        min-height: 35px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        direction: ltr;
+      }
+      .keyboard-key.special {
+        font-family: Arial, sans-serif;
+        font-size: 0.9rem;
+        background-color: #f0f0f0;
+        grid-column: span 1;
+      }
+      .keyboard-key:hover {
+        background: #f8f9fa;
+      }
+      .keyboard-key .phonetic {
+        font-size: 0.6rem;
+        color: #666;
+        font-family: Arial, sans-serif;
+        margin-top: 1px;
+      }
+      @media (max-width: 768px) {
+        .container {
+          max-width: 100%;
+          margin: 0;
         }
-        
-        body.touch-device .keyboard.collapsed .keyboard-section:not(:first-child) {
-            display: none;
+        .keyboard-grid {
+          grid-template-columns: repeat(8, 1fr);
+          direction: rtl;
         }
-        
-        body.touch-device .keyboard.collapsed .keyboard-section {
-            margin-bottom: 0;
+        .keyboard-key {
+          font-size: 1.2rem;
+          min-height: 30px;
+          direction: ltr;
         }
-        
-        body.touch-device .keyboard.collapsed .keyboard-grid {
-            margin-bottom: 0;
+        .controls {
+          flex-direction: column;
+          align-items: stretch;
         }
-        
-        body.touch-device .keyboard.collapsed .keyboard-section:first-child {
-            height: 30px;
-            overflow: hidden;
-            padding-bottom: 0;
+        .controls-left {
+          flex-direction: column;
+          align-items: stretch;
         }
-        
-        body.touch-device .keyboard-collapse {
-            display: block !important;
-            position: absolute;
-            top: -24px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 48px;
-            height: 24px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            padding: 0;
-            text-align: center;
-            line-height: 18px;
-            color: #333;
-            background: linear-gradient(to bottom, #fff, #f5f5f5);
-            border: 1px solid rgba(221, 221, 221, 0.8);
-            border-radius: 30px 30px 0 0;
-            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-            z-index: 1001;
+        .font-size-control,
+        .color-control {
+          width: 100%;
+          justify-content: space-between;
         }
-        
-        body.touch-device .keyboard-collapse:active {
-            background: linear-gradient(to top, #fff, #f5f5f5);
-            box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.1);
-            line-height: 20px;
-            top: -23px;
+        .font-size-control select {
+          flex: 1;
         }
-        
-        body.touch-device .keyboard-key {
-            font-size: 1.6rem;  /* Increased from 1.5rem for regular keys */
-        }
-        
-        body.touch-device .keyboard-key.special {
-            font-size: 1rem;  /* Increased from 0.9rem for special keys */
-        }
-        
-        body.touch-device .keyboard-key.enter-key:active {
-            background-color: #c8e6c9; /* Darker shade for active state */
-        }
-        
-        body.touch-device .keyboard-key.clear-key {
-            border: 1px solid #ddd;
-            color: #333;
-        }
-        
-        body.touch-device .keyboard-key.clear-key:active {
-            background-color: #f0f0f0;
-        }
+      }
+      .content-section {
+        display: block;
+        transition: all 0.3s ease;
+      }
+      .content-section.hidden {
+        display: none;
+      }
+      /* Add new toggle switch styles */
+      .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 24px;
+        margin-left: 8px;
+      }
+      .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      .toggle-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: 0.4s;
+        border-radius: 24px;
+      }
+      .toggle-slider:before {
+        position: absolute;
+        content: "";
+        height: 16px;
+        width: 16px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: 0.4s;
+        border-radius: 50%;
+      }
+      input:checked + .toggle-slider {
+        background-color: #d1001f;
+      }
+      input:checked + .toggle-slider:before {
+        transform: translateX(26px);
+      }
+      .keyboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        padding-bottom: 5px;
+        border-bottom: 1px solid #ddd;
+      }
+      .keyboard-header-title {
+        font-size: 1rem;
+        color: #333;
+        font-weight: bold;
+      }
+      .keyboard-collapse {
+        display: none;
+        background: none;
+        border: none;
+        color: #666;
+        cursor: pointer;
+        padding: 4px 8px;
+        font-size: 1.2rem;
+      }
+      .instructions li.touch-tip {
+        margin-top: 10px;
+        color: #d1001f;
+        font-weight: bold;
+      }
+      .instructions li.touch-tip code {
+        background: #f5f5f5;
+        padding: 2px 4px;
+        border-radius: 3px;
+        border: 1px solid #ddd;
+        font-family: monospace;
+      }
 
-        .hidden {
-            display: none;
-        }
-        .numeric-toggle-key, .abc-toggle-key {
-            border: 1px solid #ddd;
-            color: #333;
-            width: 50px !important;
-        }
-        
-        .numeric-toggle-key:hover, .abc-toggle-key:hover {
-            background-color: #f8f9fa;
-        }
-        .space-key {
-            flex-grow: 1;
-        }
-        .backspace-key, .clear-key, .enter-key, .numeric-toggle-key {
-            font-size: 1.2rem !important;
-            width: 50px;
-            height: 45px;
-        }
-        .keyboard-section.special-keys .keyboard-grid {
-            display: flex;
-            justify-content: space-between;
-            gap: 5px;
-            width: 100%;
-            direction: ltr;
-        }
-        
-        /* Hide punctuation section on touch devices */
-        body.touch-device .keyboard-section:not(.numeric-section):has(.keyboard-section-title:contains("Punctuation")) {
-            display: none;
-        }
+      /* Touch device specific styles */
+      body.touch-device {
+        padding: 0;
+        margin: 0;
+        background-color: white;
+      }
 
-        /* Alternative method to hide punctuation section */
-        @media (hover: none) and (pointer: coarse) {
-            .keyboard-section:not(.numeric-section):has(.keyboard-section-title:contains("Punctuation")) {
-                display: none;
-            }
-        }
+      body.touch-device .container {
+        padding: 0;
+        margin: 0;
+        max-width: 100%;
+        border-radius: 0;
+        box-shadow: none;
+      }
 
+      body.touch-device #syriacInput {
+        margin: 0;
+        border-radius: 0;
+        border: none;
+        border-bottom: 1px solid #ddd;
+        height: calc(100vh - 220px);
+        min-height: calc(100vh - 220px);
+      }
+
+      body.touch-device .keyboard {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: 0;
+        padding: 10px 10px 5px 10px;
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+        border-bottom: none;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        display: block;
+      }
+
+      body.touch-device .keyboard-header {
+        display: none;
+      }
+
+      body.touch-device .keyboard-section-title {
+        display: none;
+      }
+
+      body.touch-device .keyboard-section {
+        margin-bottom: 5px;
+      }
+
+      body.touch-device .keyboard-grid {
+        gap: 2px;
+        margin-bottom: 5px;
+      }
+
+      body.touch-device .keyboard-section.special-keys {
+        display: block;
+        margin-bottom: 3px;
+      }
+
+      body.touch-device .controls .keyboard-toggle {
+        display: none !important;
+      }
+
+      body.touch-device .keyboard.collapsed {
+        transform: translateY(calc(100% - 10px));
+        padding-bottom: 0;
+      }
+
+      body.touch-device
+        .keyboard.collapsed
+        .keyboard-section:not(:first-child) {
+        display: none;
+      }
+
+      body.touch-device .keyboard.collapsed .keyboard-section {
+        margin-bottom: 0;
+      }
+
+      body.touch-device .keyboard.collapsed .keyboard-grid {
+        margin-bottom: 0;
+      }
+
+      body.touch-device .keyboard.collapsed .keyboard-section:first-child {
+        height: 30px;
+        overflow: hidden;
+        padding-bottom: 0;
+      }
+
+      body.touch-device .keyboard-collapse {
+        display: block !important;
+        position: absolute;
+        top: -24px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 48px;
+        height: 24px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        padding: 0;
+        text-align: center;
+        line-height: 18px;
+        color: #333;
+        background: linear-gradient(to bottom, #fff, #f5f5f5);
+        border: 1px solid rgba(221, 221, 221, 0.8);
+        border-radius: 30px 30px 0 0;
+        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+        z-index: 1001;
+      }
+
+      body.touch-device .keyboard-collapse:active {
+        background: linear-gradient(to top, #fff, #f5f5f5);
+        box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.1);
+        line-height: 20px;
+        top: -23px;
+      }
+
+      body.touch-device .keyboard-key {
+        font-size: 1.6rem; /* Increased from 1.5rem for regular keys */
+      }
+
+      body.touch-device .keyboard-key.special {
+        font-size: 1rem; /* Increased from 0.9rem for special keys */
+      }
+
+      body.touch-device .keyboard-key.enter-key:active {
+        background-color: #c8e6c9; /* Darker shade for active state */
+      }
+
+      body.touch-device .keyboard-key.clear-key {
+        border: 1px solid #ddd;
+        color: #333;
+      }
+
+      body.touch-device .keyboard-key.clear-key:active {
+        background-color: #f0f0f0;
+      }
+
+      .hidden {
+        display: none;
+      }
+      .numeric-toggle-key,
+      .abc-toggle-key {
+        border: 1px solid #ddd;
+        color: #333;
+        width: 50px !important;
+      }
+
+      .numeric-toggle-key:hover,
+      .abc-toggle-key:hover {
+        background-color: #f8f9fa;
+      }
+      .space-key {
+        flex-grow: 1;
+      }
+      .backspace-key,
+      .clear-key,
+      .enter-key,
+      .numeric-toggle-key {
+        font-size: 1.2rem !important;
+        width: 50px;
+        height: 45px;
+      }
+      .keyboard-section.special-keys .keyboard-grid {
+        display: flex;
+        justify-content: space-between;
+        gap: 5px;
+        width: 100%;
+        direction: ltr;
+      }
+
+      /* Hide punctuation section on touch devices */
+      body.touch-device
+        .keyboard-section:not(.numeric-section):has(
+          .keyboard-section-title:contains("Punctuation")
+        ) {
+        display: none;
+      }
+
+      /* Alternative method to hide punctuation section */
+      @media (hover: none) and (pointer: coarse) {
+        .keyboard-section:not(.numeric-section):has(
+            .keyboard-section-title:contains("Punctuation")
+          ) {
+          display: none;
+        }
+      }
+
+      .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: var(--nav-height);
+        background-color: var(--card-background);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 2rem;
+        z-index: 1000;
+      }
+
+      .navbar-brand {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--primary-color);
+        text-decoration: none;
+      }
+
+      .navbar-nav {
+        display: flex;
+        gap: 2rem;
+        list-style: none;
+      }
+
+      .navbar-nav a {
+        color: var(--text-color);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s;
+      }
+
+      .navbar-nav a:hover {
+        color: var(--primary-color);
+      }
+
+      .navbar-nav a.active {
+        color: var(--primary-color);
+        font-weight: bold;
+      }
+
+      footer {
+        background-color: var(--card-background);
+        padding: 1rem 2rem;
+        margin-top: 2rem;
+        box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .footer-content {
+        /* max-width: 1200px; */
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+      }
+
+      .footer-section h3 {
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+      }
+
+      .footer-section ul {
+        list-style: none;
+      }
+
+      .footer-section ul li {
+        margin-bottom: 0.5rem;
+      }
+
+      .footer-section a {
+        color: var(--text-color);
+        text-decoration: none;
+        transition: color 0.3s;
+      }
+
+      .footer-section a:hover {
+        color: var(--primary-color);
+      }
+
+      .footer-bottom {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid #eee;
+      }
+
+      @media (max-width: 768px) {
         .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: var(--nav-height);
-            background-color: var(--card-background);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 2rem;
-            z-index: 1000;
-        }
-
-        .navbar-brand {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--primary-color);
-            text-decoration: none;
+          padding: 0 1rem;
         }
 
         .navbar-nav {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-        }
-
-        .navbar-nav a {
-            color: var(--text-color);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        .navbar-nav a:hover {
-            color: var(--primary-color);
-        }
-
-        .navbar-nav a.active {
-            color: var(--primary-color);
-            font-weight: bold;
-        }
-
-        footer {
-            background-color: var(--card-background);
-            padding: 1rem 2rem;
-            margin-top: 2rem;
-            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+          gap: 1rem;
         }
 
         .footer-content {
-            /* max-width: 1200px; */
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
+          grid-template-columns: 1fr;
+          text-align: center;
+        }
+      }
+
+      body.touch-device footer {
+        padding: 0.5rem;
+        margin-top: 1rem;
+        box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      body.touch-device .footer-bottom {
+        margin-top: 0;
+        padding-top: 0;
+        border-top: none;
+      }
+
+      /* Share/Download button styles - common styles */
+      .share-button,
+      .download-button,
+      .pdf-button {
+        position: absolute;
+        border-radius: 50%;
+        background-color: rgba(128, 128, 128, 0.5);
+        color: #fff;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 1000;
+        transition: all 0.2s;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        width: 36px;
+        height: 36px;
+      }
+
+      /* Regular buttons (non-touch) */
+      .non-touch-button.share-button {
+        bottom: 25px;
+        right: 10px;
+      }
+
+      .non-touch-button.download-button {
+        bottom: 25px;
+        right: 56px; /* Position to the left of share button */
+      }
+
+      .non-touch-button.pdf-button {
+        bottom: 25px;
+        right: 102px; /* Position to the left of download button */
+      }
+
+      /* Touch buttons inside keyboard */
+      .touch-button.share-button {
+        top: -42px;
+        right: 10px;
+        z-index: 1020;
+      }
+
+      .touch-button.download-button {
+        top: -42px;
+        right: 56px;
+        z-index: 1020;
+      }
+
+      .touch-button.pdf-button {
+        top: -42px;
+        right: 102px;
+        z-index: 1020;
+      }
+
+      /* Hide touch buttons on non-touch devices */
+      body:not(.touch-device) .touch-button {
+        display: none !important;
+      }
+
+      /* Hide non-touch buttons on touch devices */
+      body.touch-device .non-touch-button {
+        display: none !important;
+      }
+
+      /* Desktop styles - hide when empty */
+      @media (hover: hover) {
+        .share-button,
+        .download-button,
+        .pdf-button {
+          opacity: 0;
+          visibility: hidden;
         }
 
-        .footer-section h3 {
-            color: var(--primary-color);
-            margin-bottom: 1rem;
+        .share-button.visible,
+        .download-button.visible,
+        .pdf-button.visible {
+          opacity: 1;
+          visibility: visible;
+        }
+      }
+
+      /* Touch device styles - always show but disable when empty */
+      @media (hover: none) {
+        .share-button,
+        .download-button,
+        .pdf-button {
+          opacity: 0.4;
+          pointer-events: none; /* Disable interaction */
         }
 
-        .footer-section ul {
-            list-style: none;
+        .share-button.visible,
+        .download-button.visible,
+        .pdf-button.visible {
+          opacity: 1;
+          pointer-events: auto; /* Enable interaction */
         }
+      }
 
-        .footer-section ul li {
-            margin-bottom: 0.5rem;
-        }
+      .share-button:hover,
+      .download-button:hover,
+      .pdf-button:hover {
+        background-color: rgba(209, 0, 31, 0.8);
+        transform: scale(1.05);
+      }
 
-        .footer-section a {
-            color: var(--text-color);
-            text-decoration: none;
-            transition: color 0.3s;
-        }
+      .share-button:active,
+      .download-button:active,
+      .pdf-button:active {
+        transform: scale(0.95);
+      }
 
-        .footer-section a:hover {
-            color: var(--primary-color);
-        }
+      .share-button svg,
+      .download-button svg,
+      .pdf-button svg {
+        width: 20px;
+        height: 20px;
+      }
 
-        .footer-bottom {
-            text-align: center;
-            margin-top: 2rem;
-            padding-top: 2rem;
-            border-top: 1px solid #eee;
-        }
+      /* Prevent iOS text selection and zoom */
+      body.touch-device .keyboard,
+      body.touch-device .keyboard * {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        touch-action: manipulation;
+      }
 
-        @media (max-width: 768px) {
-            .navbar {
-                padding: 0 1rem;
-            }
+      /* Set minimum scale to prevent zooming on double tap */
+      meta[name="viewport"] {
+        content: "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no";
+      }
 
-            .navbar-nav {
-                gap: 1rem;
-            }
+      /* Settings button styles */
+      .settings-button {
+        position: absolute;
+        border-radius: 50%;
+        background-color: rgba(128, 128, 128, 0.5);
+        color: #fff;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 1000;
+        transition: all 0.2s;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        width: 36px;
+        height: 36px;
+      }
 
-            .footer-content {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-        }
+      .settings-button:hover {
+        background-color: rgba(209, 0, 31, 0.8);
+        transform: scale(1.05);
+      }
 
-        body.touch-device footer {
-            padding: 0.5rem;
-            margin-top: 1rem;
-            box-shadow: 0 -1px 3px rgba(0,0,0,0.1);
-        }
-        
-        body.touch-device .footer-bottom {
-            margin-top: 0;
-            padding-top: 0;
-            border-top: none;
-        }
+      .settings-button:active {
+        transform: scale(0.95);
+      }
 
-        /* Share/Download button styles - common styles */
-        .share-button, .download-button, .pdf-button {
-            position: absolute;
-            border-radius: 50%;
-            background-color: rgba(128, 128, 128, 0.5);
-            color: #fff;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 1000;
-            transition: all 0.2s;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            width: 36px;
-            height: 36px;
-        }
-        
-        /* Regular buttons (non-touch) */
-        .non-touch-button.share-button {
-            bottom: 25px;
-            right: 10px;
-        }
-        
-        .non-touch-button.download-button {
-            bottom: 25px;
-            right: 56px; /* Position to the left of share button */
-        }
-        
-        .non-touch-button.pdf-button {
-            bottom: 25px;
-            right: 102px; /* Position to the left of download button */
-        }
-        
-        /* Touch buttons inside keyboard */
-        .touch-button.share-button {
-            top: -42px;
-            right: 10px;
-            z-index: 1020;
-        }
-        
-        .touch-button.download-button {
-            top: -42px;
-            right: 56px;
-            z-index: 1020;
-        }
-        
-        .touch-button.pdf-button {
-            top: -42px;
-            right: 102px;
-            z-index: 1020;
-        }
-        
-        /* Hide touch buttons on non-touch devices */
-        body:not(.touch-device) .touch-button {
-            display: none !important;
-        }
-        
-        /* Hide non-touch buttons on touch devices */
-        body.touch-device .non-touch-button {
-            display: none !important;
-        }
-        
-        /* Desktop styles - hide when empty */
-        @media (hover: hover) {
-            .share-button, .download-button, .pdf-button {
-                opacity: 0;
-                visibility: hidden;
-            }
-            
-            .share-button.visible, .download-button.visible, .pdf-button.visible {
-                opacity: 1;
-                visibility: visible;
-            }
-        }
-        
-        /* Touch device styles - always show but disable when empty */
-        @media (hover: none) {
-            .share-button, .download-button, .pdf-button {
-                opacity: 0.4;
-                pointer-events: none; /* Disable interaction */
-            }
-            
-            .share-button.visible, .download-button.visible, .pdf-button.visible {
-                opacity: 1;
-                pointer-events: auto; /* Enable interaction */
-            }
-        }
+      .settings-button svg {
+        width: 20px;
+        height: 20px;
+      }
 
-        .share-button:hover, .download-button:hover, .pdf-button:hover {
-            background-color: rgba(209, 0, 31, 0.8);
-            transform: scale(1.05);
-        }
+      /* Regular buttons (non-touch) */
+      .non-touch-button.settings-button {
+        bottom: 25px;
+        right: 148px; /* Position to the left of pdf button */
+      }
 
-        .share-button:active, .download-button:active, .pdf-button:active {
-            transform: scale(0.95);
-        }
+      /* Touch buttons inside keyboard */
+      .touch-button.settings-button {
+        top: -42px;
+        right: 148px;
+        z-index: 1020;
+      }
 
-        .share-button svg, .download-button svg, .pdf-button svg {
-            width: 20px;
-            height: 20px;
-        }
-        
-        /* Prevent iOS text selection and zoom */
-        body.touch-device .keyboard,
-        body.touch-device .keyboard * {
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            -khtml-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-            touch-action: manipulation;
-        }
-        
-        /* Set minimum scale to prevent zooming on double tap */
-        meta[name="viewport"] {
-            content: "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no";
-        }
+      /* Settings dialog styles */
+      .settings-dialog {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        z-index: 1100;
+        min-width: 320px;
+        max-width: 90%;
+      }
+
+      .settings-dialog.active {
+        display: block;
+      }
+
+      .settings-dialog-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1090;
+      }
+
+      .settings-dialog-overlay.active {
+        display: block;
+      }
+
+      .settings-dialog h3 {
+        margin: 0 0 20px 0;
+        color: var(--primary-color);
+        font-size: 1.2rem;
+      }
+
+      .settings-dialog .buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 20px;
+      }
+
+      .settings-dialog button {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 500;
+      }
+
+      .settings-dialog .save-button {
+        background: var(--primary-color);
+        color: white;
+      }
+
+      .settings-dialog .cancel-button {
+        background: #f5f5f5;
+        color: #333;
+      }
+
+      .settings-dialog button:hover {
+        opacity: 0.9;
+      }
+
+      .settings-dialog button:active {
+        transform: scale(0.98);
+      }
+
+      .settings-dialog .setting-group {
+        margin-bottom: 20px;
+        position: relative;
+      }
+
+      .settings-dialog .setting-group:last-of-type {
+        margin-bottom: 0;
+      }
+
+      .settings-dialog label {
+        display: block;
+        margin-bottom: 8px;
+        color: #666;
+        font-weight: 500;
+      }
+
+      .settings-dialog select {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 1rem;
+        background-color: white;
+        cursor: pointer;
+      }
+
+      .settings-dialog select:focus {
+        border-color: var(--primary-color);
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(209, 0, 31, 0.1);
+      }
+
+      .settings-dialog .color-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        cursor: pointer;
+        background: white;
+        width: 100%;
+      }
+
+      .settings-dialog .color-label:hover {
+        border-color: var(--primary-color);
+      }
+
+      .settings-dialog .color-preview {
+        width: 20px;
+        height: 20px;
+        border-radius: 3px;
+        border: 1px solid #ddd;
+      }
+
+      .settings-dialog .color-selector {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        z-index: 1101;
+        margin-top: 5px;
+      }
+
+      .settings-dialog .color-selector.active {
+        display: block;
+      }
+
+      .settings-dialog .color-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 5px;
+        width: 200px;
+      }
+
+      .settings-dialog .color-option {
+        width: 30px;
+        height: 30px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: transform 0.2s;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+      }
+
+      .settings-dialog .color-option:hover {
+        transform: scale(1.1);
+      }
+
+      .settings-dialog .color-option.active {
+        transform: scale(1.1);
+        box-shadow: 0 0 0 2px var(--primary-color);
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <div style="position: relative;">
-            <textarea id="syriacInput" placeholder="Type your East Syriac text here..." spellcheck="false"></textarea>
-            <button class="share-button non-touch-button" title="Share as Image">
-                <svg class="share-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/>
-                </svg>
-            </button>
-            <button class="download-button non-touch-button" title="Download as Image">
-                <svg class="download-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
-                </svg>
-            </button>
-            <button class="pdf-button non-touch-button" title="Download as PDF">
-                <svg class="pdf-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/>
-                </svg>
-            </button>
+      <div style="position: relative">
+        <textarea
+          id="syriacInput"
+          placeholder="Type your East Syriac text here..."
+          spellcheck="false"
+        ></textarea>
+        <button class="share-button non-touch-button" title="Share as Image">
+          <svg
+            class="share-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path
+              d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"
+            />
+          </svg>
+        </button>
+        <button
+          class="download-button non-touch-button"
+          title="Download as Image"
+        >
+          <svg
+            class="download-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+          </svg>
+        </button>
+        <button class="pdf-button non-touch-button" title="Download as PDF">
+          <svg
+            class="pdf-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path
+              d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"
+            />
+          </svg>
+        </button>
+        <button class="settings-button non-touch-button" title="Settings">
+          <svg
+            class="settings-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path
+              d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"
+            />
+          </svg>
+        </button>
+      </div>
+      <div class="keyboard hidden">
+        <button class="share-button touch-button" title="Share as Image">
+          <svg
+            class="share-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path
+              d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"
+            />
+          </svg>
+        </button>
+        <button class="download-button touch-button" title="Download as Image">
+          <svg
+            class="download-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+          </svg>
+        </button>
+        <button class="pdf-button touch-button" title="Download as PDF">
+          <svg
+            class="pdf-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path
+              d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"
+            />
+          </svg>
+        </button>
+        <button class="settings-button touch-button" title="Settings">
+          <svg
+            class="settings-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path
+              d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"
+            />
+          </svg>
+        </button>
+        <div class="keyboard-header">
+          <div class="keyboard-header-title">On-Screen Keyboard</div>
+          <div class="keyboard-toggle">
+            <span>Hide Keyboard</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="keyboardToggleHide" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <button class="keyboard-collapse" title="Collapse Keyboard">▼</button>
         </div>
-        <div class="keyboard hidden">
-            <button class="share-button touch-button" title="Share as Image">
-                <svg class="share-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/>
-                </svg>
+        <div class="keyboard-section">
+          <div class="keyboard-section-title">Basic Letters</div>
+          <div class="keyboard-grid">
+            <!-- Basic Letters -->
+            <button
+              class="keyboard-key"
+              data-syriac="ܐ"
+              title="U+0710 - SYRIAC LETTER ALAPH"
+            >
+              ܐ
             </button>
-            <button class="download-button touch-button" title="Download as Image">
-                <svg class="download-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
-                </svg>
+            <button
+              class="keyboard-key"
+              data-syriac="ܒ"
+              title="U+0712 - SYRIAC LETTER BETH"
+            >
+              ܒ
             </button>
-            <button class="pdf-button touch-button" title="Download as PDF">
-                <svg class="pdf-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/>
-                </svg>
+            <button
+              class="keyboard-key"
+              data-syriac="ܓ"
+              title="U+0713 - SYRIAC LETTER GAMAL"
+            >
+              ܓ
             </button>
-            <div class="keyboard-header">
-                <div class="keyboard-header-title">On-Screen Keyboard</div>
-                <div class="keyboard-toggle">
-                    <span>Hide Keyboard</span>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="keyboardToggleHide">
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-                <button class="keyboard-collapse" title="Collapse Keyboard">▼</button>
-            </div>
-            <div class="keyboard-section">
-                <div class="keyboard-section-title">Basic Letters</div>
-                <div class="keyboard-grid">
-                    <!-- Basic Letters -->
-                    <button class="keyboard-key" data-syriac="ܐ" title="U+0710 - SYRIAC LETTER ALAPH">ܐ</button>
-                    <button class="keyboard-key" data-syriac="ܒ" title="U+0712 - SYRIAC LETTER BETH">ܒ</button>
-                    <button class="keyboard-key" data-syriac="ܓ" title="U+0713 - SYRIAC LETTER GAMAL">ܓ</button>
-                    <button class="keyboard-key" data-syriac="ܕ" title="U+0715 - SYRIAC LETTER DALATH">ܕ</button>
-                    <button class="keyboard-key" data-syriac="ܗ" title="U+0717 - SYRIAC LETTER HE">ܗ</button>
-                    <button class="keyboard-key" data-syriac="ܘ" title="U+0718 - SYRIAC LETTER WAW">ܘ</button>
-                    <button class="keyboard-key" data-syriac="ܙ" title="U+0719 - SYRIAC LETTER ZAIN">ܙ</button>
-                    <button class="keyboard-key" data-syriac="ܚ" title="U+071A - SYRIAC LETTER HETH">ܚ</button>
-                    <button class="keyboard-key" data-syriac="ܛ" title="U+071B - SYRIAC LETTER TETH">ܛ</button>
-                    <button class="keyboard-key" data-syriac="ܝ" title="U+071D - SYRIAC LETTER YUDH">ܝ</button>
-                    <button class="keyboard-key" data-syriac="ܟ" title="U+071F - SYRIAC LETTER KAPH">ܟ</button>
-                    <button class="keyboard-key" data-syriac="ܠ" title="U+0720 - SYRIAC LETTER LAMADH">ܠ</button>
-                    <button class="keyboard-key" data-syriac="ܡ" title="U+0721 - SYRIAC LETTER MIM">ܡ</button>
-                    <button class="keyboard-key" data-syriac="ܢ" title="U+0722 - SYRIAC LETTER NUN">ܢ</button>
-                    <button class="keyboard-key" data-syriac="ܣ" title="U+0723 - SYRIAC LETTER SEMKATH">ܣ</button>
-                    <button class="keyboard-key" data-syriac="ܥ" title="U+0725 - SYRIAC LETTER E">ܥ</button>
-                    <button class="keyboard-key" data-syriac="ܦ" title="U+0726 - SYRIAC LETTER PE">ܦ</button>
-                    <button class="keyboard-key" data-syriac="ܨ" title="U+0728 - SYRIAC LETTER SADHE">ܨ</button>
-                    <button class="keyboard-key" data-syriac="ܩ" title="U+0729 - SYRIAC LETTER QAPH">ܩ</button>
-                    <button class="keyboard-key" data-syriac="ܪ" title="U+072A - SYRIAC LETTER RISH">ܪ</button>
-                    <button class="keyboard-key" data-syriac="ܫ" title="U+072B - SYRIAC LETTER SHIN">ܫ</button>
-                    <button class="keyboard-key" data-syriac="ܬ" title="U+072C - SYRIAC LETTER TAW">ܬ</button>
-                    <button class="keyboard-key" data-syriac="ܑ" title="U+0711 - SYRIAC LETTER SUPERSCRIPT ALAPH">ܑ◌</button>
-                    <button class="keyboard-key" data-syriac="ܞ" title="U+071E - SYRIAC LETTER YUDH HE">ܞ</button>
-                </div>
-            </div>
-            
-            <div class="keyboard-section">
-                <div class="keyboard-section-title">Syriac Supplement</div>
-                <div class="keyboard-grid">
-                    <!-- Syriac Supplement (0860-086A) -->
-                    <button class="keyboard-key" data-syriac="ࡠ" title="U+0860 - SYRIAC LETTER MALAYALAM NGA">ࡠ</button>
-                    <button class="keyboard-key" data-syriac="ࡡ" title="U+0861 - SYRIAC LETTER MALAYALAM JA">ࡡ</button>
-                    <button class="keyboard-key" data-syriac="ࡢ" title="U+0862 - SYRIAC LETTER MALAYALAM NYA">ࡢ</button>
-                    <button class="keyboard-key" data-syriac="ࡣ" title="U+0863 - SYRIAC LETTER MALAYALAM TTA">ࡣ</button>
-                    <button class="keyboard-key" data-syriac="ࡤ" title="U+0864 - SYRIAC LETTER MALAYALAM NNA">ࡤ</button>
-                    <button class="keyboard-key" data-syriac="ࡥ" title="U+0865 - SYRIAC LETTER MALAYALAM NNNA">ࡥ</button>
-                    <button class="keyboard-key" data-syriac="ࡦ" title="U+0866 - SYRIAC LETTER MALAYALAM BHA">ࡦ</button>
-                    <button class="keyboard-key" data-syriac="ࡧ" title="U+0867 - SYRIAC LETTER MALAYALAM RA">ࡧ</button>
-                    <button class="keyboard-key" data-syriac="ࡨ" title="U+0868 - SYRIAC LETTER MALAYALAM LLA">ࡨ</button>
-                    <button class="keyboard-key" data-syriac="ࡩ" title="U+0869 - SYRIAC LETTER MALAYALAM LLLA">ࡩ</button>
-                    <button class="keyboard-key" data-syriac="ࡪ" title="U+086A - SYRIAC LETTER MALAYALAM SSA">ࡪ</button>
-                </div>
-            </div>
-            
-            <div class="keyboard-section">
-                <div class="keyboard-section-title">Vowels and Diacritics</div>
-                <div class="keyboard-grid">
-                    <!-- Vowels and Diacritics -->
-                    <button class="keyboard-key" data-syriac="ܲ" title="U+0732 - SYRIAC PTHAHA DOTTED">◌ܲ</button>
-                    <button class="keyboard-key" data-syriac="ܵ" title="U+0735 - SYRIAC ZQAPHA DOTTED">◌ܵ</button>
-                    <button class="keyboard-key" data-syriac="ܸ" title="U+0738 - SYRIAC DOTTED ZLAMA HORIZONTAL">◌ܸ</button>
-                    <button class="keyboard-key" data-syriac="ܹ" title="U+0739 - SYRIAC DOTTED ZLAMA ANGULAR">◌ܹ</button>
-                    <button class="keyboard-key" data-syriac="ܼ" title="U+073C - SYRIAC HBASA-ESASA DOTTED">◌ܼ</button>
-                    <button class="keyboard-key" data-syriac="ܿ" title="U+073F - SYRIAC RWAHA">◌ܿ</button>
-                    <button class="keyboard-key" data-syriac="̈" title="U+0308 - COMBINING DIAERESIS (SYAME)">̈</button>
-                    <button class="keyboard-key" data-syriac="݀" title="U+0740 - SYRIAC FEMININE DOT">◌݀</button>
-                    <button class="keyboard-key" data-syriac="݁" title="U+0741 - SYRIAC QUSHAYA">◌݁</button>
-                    <button class="keyboard-key" data-syriac="݂" title="U+0742 - SYRIAC RUKKAKHA">◌݂</button>
-                    <button class="keyboard-key" data-syriac="݇" title="U+0747 - SYRIAC OBLIQUE LINE ABOVE">◌݇</button>
-                    <button class="keyboard-key" data-syriac="݈" title="U+0748 - SYRIAC OBLIQUE LINE BELOW">◌݈</button>
-                    <button class="keyboard-key" data-syriac="̄" title="U+0304 - COMBINING MACRON">̄</button>
-                    <button class="keyboard-key" data-syriac="̱" title="U+0331 - COMBINING MACRON BELOW">̱</button>
-                    <button class="keyboard-key" data-syriac="ـ" title="U+0640 - ARABIC TATWEEL (EXTENSION)">ـ</button>
-                </div>
-            </div>
-            <div class="keyboard-section">
-                <div class="keyboard-section-title">Punctuation and Marks</div>
-                <div class="keyboard-grid">
-                    <!-- Punctuation and Marks -->
-                    <button class="keyboard-key" data-syriac="܀" title="U+0700 - SYRIAC END OF PARAGRAPH">܀</button>
-                    <button class="keyboard-key" data-syriac="." title="U+002E - FULL STOP">.</button>
-                    <button class="keyboard-key" data-syriac=":" title="U+003A - COLON">:</button>
-                    <button class="keyboard-key" data-syriac="[" title="U+005B - LEFT SQUARE BRACKET">[</button>
-                    <button class="keyboard-key" data-syriac="]" title="U+005D - RIGHT SQUARE BRACKET">]</button>
-                    <button class="keyboard-key" data-syriac="!" title="U+0021 - EXCLAMATION MARK">!</button>
-                    <button class="keyboard-key" data-syriac="(" title="U+0028 - LEFT PARENTHESIS">(</button>
-                    <button class="keyboard-key" data-syriac=")" title="U+0029 - RIGHT PARENTHESIS">)</button>
-                    <button class="keyboard-key" data-syriac="؟" title="U+061F - ARABIC QUESTION MARK">؟</button>
-                    <button class="keyboard-key" data-syriac="♱" title="U+2671 - EAST SYRIAC CROSS">♱</button>
-                    <button class="keyboard-key" data-syriac="̇" title="U+0307 - COMBINING DOT ABOVE">̇</button>
-                    <button class="keyboard-key" data-syriac="̣" title="U+0323 - COMBINING DOT BELOW">̣</button>
-                    <button class="keyboard-key" data-syriac="̮" title="U+032E - COMBINING BREVE BELOW">̮</button>
-                    <button class="keyboard-key special" data-syriac="‌" title="U+200C - ZERO WIDTH NON-JOINER">ZWNJ</button>
-                    <button class="keyboard-key special" data-syriac="‍" title="U+200D - ZERO WIDTH JOINER">ZWJ</button>
-                </div>
-            </div>
-            <div class="keyboard-section numeric-section hidden">
-                <div class="keyboard-section-title">Numbers</div>
-                <div class="keyboard-grid">
-                    <!-- Numbers -->
-                    <button class="keyboard-key" data-syriac="1" title="DIGIT ONE">1</button>
-                    <button class="keyboard-key" data-syriac="2" title="DIGIT TWO">2</button>
-                    <button class="keyboard-key" data-syriac="3" title="DIGIT THREE">3</button>
-                    <button class="keyboard-key" data-syriac="4" title="DIGIT FOUR">4</button>
-                    <button class="keyboard-key" data-syriac="5" title="DIGIT FIVE">5</button>
-                    <button class="keyboard-key" data-syriac="6" title="DIGIT SIX">6</button>
-                    <button class="keyboard-key" data-syriac="7" title="DIGIT SEVEN">7</button>
-                    <button class="keyboard-key" data-syriac="8" title="DIGIT EIGHT">8</button>
-                    <button class="keyboard-key" data-syriac="9" title="DIGIT NINE">9</button>
-                    <button class="keyboard-key" data-syriac="0" title="DIGIT ZERO">0</button>
-                </div>
-                <div class="keyboard-section-title">Punctuation and Marks</div>
-                <div class="keyboard-grid">
-                    <!-- Punctuation -->
-                    <button class="keyboard-key" data-syriac="܀" title="U+0700 - SYRIAC END OF PARAGRAPH">܀</button>
-                    <button class="keyboard-key" data-syriac="." title="U+002E - FULL STOP">.</button>
-                    <button class="keyboard-key" data-syriac=":" title="U+003A - COLON">:</button>
-                    <button class="keyboard-key" data-syriac="[" title="U+005B - LEFT SQUARE BRACKET">[</button>
-                    <button class="keyboard-key" data-syriac="]" title="U+005D - RIGHT SQUARE BRACKET">]</button>
-                    <button class="keyboard-key" data-syriac="!" title="U+0021 - EXCLAMATION MARK">!</button>
-                    <button class="keyboard-key" data-syriac="(" title="U+0028 - LEFT PARENTHESIS">(</button>
-                    <button class="keyboard-key" data-syriac=")" title="U+0029 - RIGHT PARENTHESIS">)</button>
-                    <button class="keyboard-key" data-syriac="؟" title="U+061F - ARABIC QUESTION MARK">؟</button>
-                    <button class="keyboard-key" data-syriac="♱" title="U+2671 - EAST SYRIAC CROSS">♱</button>
-                    <button class="keyboard-key" data-syriac="̇" title="U+0307 - COMBINING DOT ABOVE">̇</button>
-                    <button class="keyboard-key" data-syriac="̣" title="U+0323 - COMBINING DOT BELOW">̣</button>
-                    <button class="keyboard-key" data-syriac="̮" title="U+032E - COMBINING BREVE BELOW">̮</button>
-                    <button class="keyboard-key special" data-syriac="‌" title="U+200C - ZERO WIDTH NON-JOINER">ZWNJ</button>
-                    <button class="keyboard-key special" data-syriac="‍" title="U+200D - ZERO WIDTH JOINER">ZWJ</button>
-                </div>
-            </div>
-            <div class="keyboard-section special-keys">
-                <div class="keyboard-section-title">Special Keys</div>
-                <div class="keyboard-grid">
-                    <button class="keyboard-key special numeric-toggle-key" title="SWITCH TO NUMBERS">123</button>
-                    <button class="keyboard-key special clear-key" title="CLEAR">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
-                            <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/>
-                        </svg>
-                    </button>
-                    <button class="keyboard-key special space-key" data-syriac=" " title="SPACE">Space</button>
-                    <button class="keyboard-key special enter-key" title="ENTER">
-                        <span style="font-size: 1.5rem;">↵</span>
-                    </button>
-                    <button class="keyboard-key special backspace-key" title="BACKSPACE">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
-                            <path d="M360-200q-20 0-37.5-9T296-233L120-480l176-247q10-14 27.5-23.5T360-760h400q33 0 56.5 23.5T840-680v400q0 33-23.5 56.5T760-200H360Zm396-80v-400H360L208-480l152 200h396ZM580-440l76 76 56-56-76-76 76-76-56-56-76 76-76-76-56 56 76 76-76 76 56 56 76-76Z"/>
-                        </svg>
-                    </button>
-                </div>
-            </div>
+            <button
+              class="keyboard-key"
+              data-syriac="ܕ"
+              title="U+0715 - SYRIAC LETTER DALATH"
+            >
+              ܕ
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="ܗ"
+              title="U+0717 - SYRIAC LETTER HE"
+            >
+              ܗ
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="ܘ"
+              title="U+0718 - SYRIAC LETTER WAW"
+            >
+              ܘ
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="ܙ"
+              title="U+0719 - SYRIAC LETTER ZAIN"
+            >
+              ܙ
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="ܚ"
+              title="U+071A - SYRIAC LETTER HETH"
+            >
+              ܚ
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="ܛ"
+              title="U+071B - SYRIAC LETTER TETH"
+            >
+              ܛ
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="ܝ"
+              title="U+071D - SYRIAC LETTER YUDH"
+            >
+              ܝ
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="ܟ"
+              title="U+071F - SYRIAC LETTER KAPH"
+            >
+              ܟ
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="ܠ"
+              title="U+0720 - SYRIAC LETTER LAMADH"
+            >
+              ܠ
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="ܡ"
+              title="U+0721 - SYRIAC LETTER MIM"
+            >
+              ܡ
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="ܢ"
+              title="U+0722 - SYRIAC LETTER NUN"
+            >
+              ܢ
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="ܣ"
+              title="U+0723 - SYRIAC LETTER SEMKATH"
+            >
+              ܣ
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="ܥ"
+              title="U+0725 - SYRIAC LETTER E"
+            >
+              ܥ
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="ܦ"
+              title="U+0726 - SYRIAC LETTER PE"
+            >
+              ܦ
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="ܨ"
+              title="U+0728 - SYRIAC LETTER SADHE"
+            >
+              ܨ
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="ܩ"
+              title="U+0729 - SYRIAC LETTER QAPH"
+            >
+              ܩ
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="ܪ"
+              title="U+072A - SYRIAC LETTER RISH"
+            >
+              ܪ
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="ܫ"
+              title="U+072B - SYRIAC LETTER SHIN"
+            >
+              ܫ
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="ܬ"
+              title="U+072C - SYRIAC LETTER TAW"
+            >
+              ܬ
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="ܑ"
+              title="U+0711 - SYRIAC LETTER SUPERSCRIPT ALAPH"
+            >
+              ܑ◌
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="ܞ"
+              title="U+071E - SYRIAC LETTER YUDH HE"
+            >
+              ܞ
+            </button>
+          </div>
         </div>
-        <div class="controls">
-            <div class="controls-left">
-                <div class="font-size-control">
-                    <label for="fontSize">Font Size:</label>
-                    <select id="fontSize">
-                        <option value="16">Extra Small (16px)</option>
-                        <option value="20">Very Small (20px)</option>
-                        <option value="24">Small (24px)</option>
-                        <option value="28">Medium Small (28px)</option>
-                        <option value="32">Medium (32px)</option>
-                        <option value="36" selected>Medium Large (36px)</option>
-                        <option value="40">Large (40px)</option>
-                        <option value="44">Very Large (44px)</option>
-                        <option value="48">Extra Large (48px)</option>
-                        <option value="52">Huge (52px)</option>
-                    </select>
-                </div>
-                <div class="color-control">
-                    <label>Text Color:</label>
-                    <div class="color-label">
-                        <span class="color-preview" style="background-color: #000000;"></span>
-                        <span>Select Color</span>
-                    </div>
-                    <div class="color-selector">
-                        <div class="color-grid">
-                            <button class="color-option" style="background-color: #000000;" data-color="#000000"></button>
-                            <button class="color-option" style="background-color: #4CAF50;" data-color="#4CAF50"></button>
-                            <button class="color-option" style="background-color: #2196F3;" data-color="#2196F3"></button>
-                            <button class="color-option" style="background-color: #F44336;" data-color="#F44336"></button>
-                            <button class="color-option" style="background-color: #FF9800;" data-color="#FF9800"></button>
-                            <button class="color-option" style="background-color: #9C27B0;" data-color="#9C27B0"></button>
-                            <button class="color-option" style="background-color: #795548;" data-color="#795548"></button>
-                            <button class="color-option" style="background-color: #607D8B;" data-color="#607D8B"></button>
-                            <button class="color-option" style="background-color: #FFC107;" data-color="#FFC107"></button>
-                            <button class="color-option" style="background-color: #E91E63;" data-color="#E91E63"></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="keyboard-toggle">
-                <span>Show Keyboard</span>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="keyboardToggleShow">
-                    <span class="toggle-slider"></span>
-                </label>
-            </div>
+
+        <div class="keyboard-section">
+          <div class="keyboard-section-title">Syriac Supplement</div>
+          <div class="keyboard-grid">
+            <!-- Syriac Supplement (0860-086A) -->
+            <button
+              class="keyboard-key"
+              data-syriac="ࡠ"
+              title="U+0860 - SYRIAC LETTER MALAYALAM NGA"
+            >
+              ࡠ
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="ࡡ"
+              title="U+0861 - SYRIAC LETTER MALAYALAM JA"
+            >
+              ࡡ
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="ࡢ"
+              title="U+0862 - SYRIAC LETTER MALAYALAM NYA"
+            >
+              ࡢ
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="ࡣ"
+              title="U+0863 - SYRIAC LETTER MALAYALAM TTA"
+            >
+              ࡣ
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="ࡤ"
+              title="U+0864 - SYRIAC LETTER MALAYALAM NNA"
+            >
+              ࡤ
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="ࡥ"
+              title="U+0865 - SYRIAC LETTER MALAYALAM NNNA"
+            >
+              ࡥ
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="ࡦ"
+              title="U+0866 - SYRIAC LETTER MALAYALAM BHA"
+            >
+              ࡦ
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="ࡧ"
+              title="U+0867 - SYRIAC LETTER MALAYALAM RA"
+            >
+              ࡧ
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="ࡨ"
+              title="U+0868 - SYRIAC LETTER MALAYALAM LLA"
+            >
+              ࡨ
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="ࡩ"
+              title="U+0869 - SYRIAC LETTER MALAYALAM LLLA"
+            >
+              ࡩ
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="ࡪ"
+              title="U+086A - SYRIAC LETTER MALAYALAM SSA"
+            >
+              ࡪ
+            </button>
+          </div>
         </div>
-        <div class="content-section">
-            <h1>East Syriac Text Editor</h1>
-            <div class="instructions">
-                <h3>Instructions:</h3>
-                <ul>
-                    <li>Switch to the Syriac phonetic keyboard on your system</li>
-                    <li>Type Syriac text in the textbox above</li>
-                    <li>The text will automatically flow from right to left</li>
-                    <li>You can copy and paste text from other sources</li>
-                    <li>The text is displayed in the Karshon font</li>
-                    <li class="touch-tip">On mobile devices: If keyboard doesn't appear, add <code>?forceTouch=true</code> to the URL</li>
-                </ul>
-            </div>
+
+        <div class="keyboard-section">
+          <div class="keyboard-section-title">Vowels and Diacritics</div>
+          <div class="keyboard-grid">
+            <!-- Vowels and Diacritics -->
+            <button
+              class="keyboard-key"
+              data-syriac="ܲ"
+              title="U+0732 - SYRIAC PTHAHA DOTTED"
+            >
+              ◌ܲ
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="ܵ"
+              title="U+0735 - SYRIAC ZQAPHA DOTTED"
+            >
+              ◌ܵ
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="ܸ"
+              title="U+0738 - SYRIAC DOTTED ZLAMA HORIZONTAL"
+            >
+              ◌ܸ
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="ܹ"
+              title="U+0739 - SYRIAC DOTTED ZLAMA ANGULAR"
+            >
+              ◌ܹ
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="ܼ"
+              title="U+073C - SYRIAC HBASA-ESASA DOTTED"
+            >
+              ◌ܼ
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="ܿ"
+              title="U+073F - SYRIAC RWAHA"
+            >
+              ◌ܿ
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="̈"
+              title="U+0308 - COMBINING DIAERESIS (SYAME)"
+            >
+              ̈
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="݀"
+              title="U+0740 - SYRIAC FEMININE DOT"
+            >
+              ◌݀
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="݁"
+              title="U+0741 - SYRIAC QUSHAYA"
+            >
+              ◌݁
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="݂"
+              title="U+0742 - SYRIAC RUKKAKHA"
+            >
+              ◌݂
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="݇"
+              title="U+0747 - SYRIAC OBLIQUE LINE ABOVE"
+            >
+              ◌݇
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="݈"
+              title="U+0748 - SYRIAC OBLIQUE LINE BELOW"
+            >
+              ◌݈
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="̄"
+              title="U+0304 - COMBINING MACRON"
+            >
+              ̄
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="̱"
+              title="U+0331 - COMBINING MACRON BELOW"
+            >
+              ̱
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="ـ"
+              title="U+0640 - ARABIC TATWEEL (EXTENSION)"
+            >
+              ـ
+            </button>
+          </div>
         </div>
+        <div class="keyboard-section">
+          <div class="keyboard-section-title">Punctuation and Marks</div>
+          <div class="keyboard-grid">
+            <!-- Punctuation and Marks -->
+            <button
+              class="keyboard-key"
+              data-syriac="܀"
+              title="U+0700 - SYRIAC END OF PARAGRAPH"
+            >
+              ܀
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="."
+              title="U+002E - FULL STOP"
+            >
+              .
+            </button>
+            <button class="keyboard-key" data-syriac=":" title="U+003A - COLON">
+              :
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="["
+              title="U+005B - LEFT SQUARE BRACKET"
+            >
+              [
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="]"
+              title="U+005D - RIGHT SQUARE BRACKET"
+            >
+              ]
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="!"
+              title="U+0021 - EXCLAMATION MARK"
+            >
+              !
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="("
+              title="U+0028 - LEFT PARENTHESIS"
+            >
+              (
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac=")"
+              title="U+0029 - RIGHT PARENTHESIS"
+            >
+              )
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="؟"
+              title="U+061F - ARABIC QUESTION MARK"
+            >
+              ؟
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="♱"
+              title="U+2671 - EAST SYRIAC CROSS"
+            >
+              ♱
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="̇"
+              title="U+0307 - COMBINING DOT ABOVE"
+            >
+              ̇
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="̣"
+              title="U+0323 - COMBINING DOT BELOW"
+            >
+              ̣
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="̮"
+              title="U+032E - COMBINING BREVE BELOW"
+            >
+              ̮
+            </button>
+            <button
+              class="keyboard-key special"
+              data-syriac="‌"
+              title="U+200C - ZERO WIDTH NON-JOINER"
+            >
+              ZWNJ
+            </button>
+            <button
+              class="keyboard-key special"
+              data-syriac="‍"
+              title="U+200D - ZERO WIDTH JOINER"
+            >
+              ZWJ
+            </button>
+          </div>
+        </div>
+        <div class="keyboard-section numeric-section hidden">
+          <div class="keyboard-section-title">Numbers</div>
+          <div class="keyboard-grid">
+            <!-- Numbers -->
+            <button class="keyboard-key" data-syriac="1" title="DIGIT ONE">
+              1
+            </button>
+            <button class="keyboard-key" data-syriac="2" title="DIGIT TWO">
+              2
+            </button>
+            <button class="keyboard-key" data-syriac="3" title="DIGIT THREE">
+              3
+            </button>
+            <button class="keyboard-key" data-syriac="4" title="DIGIT FOUR">
+              4
+            </button>
+            <button class="keyboard-key" data-syriac="5" title="DIGIT FIVE">
+              5
+            </button>
+            <button class="keyboard-key" data-syriac="6" title="DIGIT SIX">
+              6
+            </button>
+            <button class="keyboard-key" data-syriac="7" title="DIGIT SEVEN">
+              7
+            </button>
+            <button class="keyboard-key" data-syriac="8" title="DIGIT EIGHT">
+              8
+            </button>
+            <button class="keyboard-key" data-syriac="9" title="DIGIT NINE">
+              9
+            </button>
+            <button class="keyboard-key" data-syriac="0" title="DIGIT ZERO">
+              0
+            </button>
+          </div>
+          <div class="keyboard-section-title">Punctuation and Marks</div>
+          <div class="keyboard-grid">
+            <!-- Punctuation -->
+            <button
+              class="keyboard-key"
+              data-syriac="܀"
+              title="U+0700 - SYRIAC END OF PARAGRAPH"
+            >
+              ܀
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="."
+              title="U+002E - FULL STOP"
+            >
+              .
+            </button>
+            <button class="keyboard-key" data-syriac=":" title="U+003A - COLON">
+              :
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="["
+              title="U+005B - LEFT SQUARE BRACKET"
+            >
+              [
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="]"
+              title="U+005D - RIGHT SQUARE BRACKET"
+            >
+              ]
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="!"
+              title="U+0021 - EXCLAMATION MARK"
+            >
+              !
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="("
+              title="U+0028 - LEFT PARENTHESIS"
+            >
+              (
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac=")"
+              title="U+0029 - RIGHT PARENTHESIS"
+            >
+              )
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="؟"
+              title="U+061F - ARABIC QUESTION MARK"
+            >
+              ؟
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="♱"
+              title="U+2671 - EAST SYRIAC CROSS"
+            >
+              ♱
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="̇"
+              title="U+0307 - COMBINING DOT ABOVE"
+            >
+              ̇
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="̣"
+              title="U+0323 - COMBINING DOT BELOW"
+            >
+              ̣
+            </button>
+            <button
+              class="keyboard-key"
+              data-syriac="̮"
+              title="U+032E - COMBINING BREVE BELOW"
+            >
+              ̮
+            </button>
+            <button
+              class="keyboard-key special"
+              data-syriac="‌"
+              title="U+200C - ZERO WIDTH NON-JOINER"
+            >
+              ZWNJ
+            </button>
+            <button
+              class="keyboard-key special"
+              data-syriac="‍"
+              title="U+200D - ZERO WIDTH JOINER"
+            >
+              ZWJ
+            </button>
+          </div>
+        </div>
+        <div class="keyboard-section special-keys">
+          <div class="keyboard-section-title">Special Keys</div>
+          <div class="keyboard-grid">
+            <button
+              class="keyboard-key special numeric-toggle-key"
+              title="SWITCH TO NUMBERS"
+            >
+              123
+            </button>
+            <button class="keyboard-key special clear-key" title="CLEAR">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24"
+                viewBox="0 -960 960 960"
+                width="24"
+              >
+                <path
+                  d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"
+                />
+              </svg>
+            </button>
+            <button
+              class="keyboard-key special space-key"
+              data-syriac=" "
+              title="SPACE"
+            >
+              Space
+            </button>
+            <button class="keyboard-key special enter-key" title="ENTER">
+              <span style="font-size: 1.5rem">↵</span>
+            </button>
+            <button
+              class="keyboard-key special backspace-key"
+              title="BACKSPACE"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24"
+                viewBox="0 -960 960 960"
+                width="24"
+              >
+                <path
+                  d="M360-200q-20 0-37.5-9T296-233L120-480l176-247q10-14 27.5-23.5T360-760h400q33 0 56.5 23.5T840-680v400q0 33-23.5 56.5T760-200H360Zm396-80v-400H360L208-480l152 200h396ZM580-440l76 76 56-56-76-76 76-76-56-56-76 76-76-76-56 56 76 76-76 76 56 56 76-76Z"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="controls">
+        <div class="controls-left">
+          <div class="font-size-control">
+            <label for="fontSize">Font Size:</label>
+            <select id="fontSize">
+              <option value="16">Extra Small (16px)</option>
+              <option value="20">Very Small (20px)</option>
+              <option value="24">Small (24px)</option>
+              <option value="28">Medium Small (28px)</option>
+              <option value="32">Medium (32px)</option>
+              <option value="36" selected>Medium Large (36px)</option>
+              <option value="40">Large (40px)</option>
+              <option value="44">Very Large (44px)</option>
+              <option value="48">Extra Large (48px)</option>
+              <option value="52">Huge (52px)</option>
+            </select>
+          </div>
+          <div class="color-control">
+            <label>Text Color:</label>
+            <div class="color-label">
+              <span
+                class="color-preview"
+                style="background-color: #000000"
+              ></span>
+              <span>Select Color</span>
+            </div>
+            <div class="color-selector">
+              <div class="color-grid">
+                <button
+                  class="color-option"
+                  style="background-color: #000000"
+                  data-color="#000000"
+                ></button>
+                <button
+                  class="color-option"
+                  style="background-color: #4caf50"
+                  data-color="#4CAF50"
+                ></button>
+                <button
+                  class="color-option"
+                  style="background-color: #2196f3"
+                  data-color="#2196F3"
+                ></button>
+                <button
+                  class="color-option"
+                  style="background-color: #f44336"
+                  data-color="#F44336"
+                ></button>
+                <button
+                  class="color-option"
+                  style="background-color: #ff9800"
+                  data-color="#FF9800"
+                ></button>
+                <button
+                  class="color-option"
+                  style="background-color: #9c27b0"
+                  data-color="#9C27B0"
+                ></button>
+                <button
+                  class="color-option"
+                  style="background-color: #795548"
+                  data-color="#795548"
+                ></button>
+                <button
+                  class="color-option"
+                  style="background-color: #607d8b"
+                  data-color="#607D8B"
+                ></button>
+                <button
+                  class="color-option"
+                  style="background-color: #ffc107"
+                  data-color="#FFC107"
+                ></button>
+                <button
+                  class="color-option"
+                  style="background-color: #e91e63"
+                  data-color="#E91E63"
+                ></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="keyboard-toggle">
+          <span>Show Keyboard</span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="keyboardToggleShow" />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+      <div class="content-section">
+        <h1>East Syriac Text Editor</h1>
+        <div class="instructions">
+          <h3>Instructions:</h3>
+          <ul>
+            <li>Switch to the Syriac phonetic keyboard on your system</li>
+            <li>Type Syriac text in the textbox above</li>
+            <li>The text will automatically flow from right to left</li>
+            <li>You can copy and paste text from other sources</li>
+            <li>The text is displayed in the Karshon font</li>
+            <li class="touch-tip">
+              On mobile devices: If keyboard doesn't appear, add
+              <code>?forceTouch=true</code> to the URL
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings Dialog -->
+    <div class="settings-dialog-overlay"></div>
+    <div class="settings-dialog">
+      <h3>Settings</h3>
+      <div class="setting-group">
+        <label for="fontSelect">Syriac Font:</label>
+        <select id="fontSelect">
+          <option value="Karshon">East Syriac Adiabene</option>
+          <option value="EastSyriacMalankara">East Syriac Malankara</option>
+        </select>
+      </div>
+      <div class="setting-group">
+        <label for="lineHeight">Line Height:</label>
+        <select id="lineHeight">
+          <option value="1">Single (1.0)</option>
+          <option value="1.15">1.15</option>
+          <option value="1.5">1.5</option>
+          <option value="2">Double (2.0)</option>
+          <option value="2.5">2.5</option>
+          <option value="3">Triple (3.0)</option>
+        </select>
+      </div>
+      <div class="buttons">
+        <button class="cancel-button">Cancel</button>
+        <button class="save-button">Save</button>
+      </div>
     </div>
 
     <footer>
-        <div class="footer-bottom">
-            <p>© 2025 East Syriac Breviary Project. <a href="./" style="color: #D1001F; text-decoration: none;">Return to Home</a></p>
-        </div>
+      <div class="footer-bottom">
+        <p>
+          © 2025 East Syriac Breviary Project.
+          <a href="./" style="color: #d1001f; text-decoration: none"
+            >Return to Home</a
+          >
+        </p>
+      </div>
     </footer>
 
     <script>
-        $(document).ready(function() {
-            const textarea = $('#syriacInput');
-            const fontSizeSelect = $('#fontSize');
-            const colorSelector = $('.color-selector');
-            const colorLabel = $('.color-label');
-            const colorOptions = $('.color-option');
-            const keyboardToggle = $('.keyboard-toggle');
-            const keyboard = $('.keyboard');
-            const keyboardKeys = $('.keyboard-key');
-            const contentSection = $('.content-section');
-            
-            // Determine if the app should run in touch mode
-            function detectTouchDevice() {
-                // 1. Check URL parameter first
-                const urlParams = new URLSearchParams(window.location.search);
-                if (urlParams.has('forceTouch')) {
-                    const value = urlParams.get('forceTouch');
-                    localStorage.setItem('forceTouch', value === '1' || value === 'true');
-                    return value === '1' || value === 'true';
-                }
-                
-                // 2. Check localStorage next
-                const savedPreference = localStorage.getItem('forceTouch');
-                if (savedPreference !== null) {
-                    return savedPreference === 'true';
-                }
-                
-                // 3. Force touch mode for specific devices/browsers
-                if (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent)) {
-                    return true;
-                }
-                
-                // 4. Additional reliable touch detection
-                if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
-                    return true;
-                }
-                
-                // 5. Media query checks
-                if (window.matchMedia && (
-                    window.matchMedia('(hover: none)').matches || 
-                    window.matchMedia('(pointer: coarse)').matches
-                )) {
-                    return true;
-                }
-                
-                // 6. For smaller screens, default to touch mode
-                if (window.innerWidth < 768) {
-                    return true;
-                }
-                
-                return false;
-            }
-            
-            const isTouchDevice = detectTouchDevice();
-            console.log("Touch device detected:", isTouchDevice);
-            
-            // Apply touch mode styles directly to the body
-            if (isTouchDevice) {
-                $('body').addClass('touch-device');
-                
-                // Hide punctuation section on touch devices
-                $('.keyboard-section').each(function() {
-                    const title = $(this).find('.keyboard-section-title').text();
-                    if (title.includes('Punctuation') && !$(this).hasClass('numeric-section')) {
-                        $(this).addClass('hidden');
-                    }
-                });
-            }
-            
-            // Set up the environment based on device type
-            function setupEnvironment() {
-                // Set initial text properties
-                textarea.css({
-                    'direction': 'rtl',
-                    'font-family': 'Karshon'
-                });
-                
-                textarea.attr({
-                    'inputmode': 'none',
-                    'lang': 'syr',
-                    'dir': 'rtl',
-                    'spellcheck': 'false',
-                    'autocorrect': 'off',
-                    'autocapitalize': 'off',
-                    'autocomplete': 'off'
-                });
-                
-                // Touch device specific setup
-                if (isTouchDevice) {
-                    // Hide keyboard toggle, show keyboard
-                    keyboardToggle.hide();
-                    keyboard.removeClass('hidden');
-                    
-                    // Create collapse button
-                    const collapseButton = $('<button class="keyboard-collapse" title="Collapse Keyboard">▼</button>');
-                    
-                    // Append the button directly to the keyboard
-                    keyboard.append(collapseButton);
-                    contentSection.addClass('hidden');
-                    
-                    // Handle keyboard collapse
-                    collapseButton.on('click', function() {
-                        keyboard.toggleClass('collapsed');
-                        $(this).text(keyboard.hasClass('collapsed') ? '▲' : '▼');
-                        
-                        // Update textarea inputmode based on keyboard state
-                        if (keyboard.hasClass('collapsed')) {
-                            textarea.attr('inputmode', 'text');
-                        } else {
-                            textarea.attr('inputmode', 'none');
-                        }
-                    });
-                    
-                    // Handle textarea focus
-                    textarea.on('focus', function() {
-                        if (keyboard.hasClass('collapsed')) {
-                            // When collapsed, ensure inputmode is set to text to bring up hardware keyboard
-                            $(this).attr('inputmode', 'text');
-                        }
-                    });
-                    
-                    // Handle textarea blur
-                    textarea.on('blur', function() {
-                        if (!keyboard.hasClass('collapsed')) {
-                            // If keyboard is expanded, reset inputmode to none
-                            $(this).attr('inputmode', 'none');
-                        }
-                    });
-                    
-                    // Set initial state (expanded)
-                    keyboard.removeClass('collapsed');
-                }
-            }
-            
-            // Call setup function
-            setupEnvironment();
-            
-            // Handle font size changes
-            fontSizeSelect.on('change', function() {
-                const newSize = $(this).val();
-                textarea.css('font-size', newSize + 'px');
-                document.documentElement.style.setProperty('--font-size', newSize + 'px');
-                adjustTextareaHeight();
-            });
+      $(document).ready(function () {
+        const textarea = $("#syriacInput");
+        const fontSizeSelect = $("#fontSize");
+        const colorSelector = $(".color-selector");
+        const colorLabel = $(".color-label");
+        const colorOptions = $(".color-option");
+        const keyboardToggle = $(".keyboard-toggle");
+        const keyboard = $(".keyboard");
+        const keyboardKeys = $(".keyboard-key");
+        const contentSection = $(".content-section");
 
-            // Toggle color selector
-            colorLabel.on('click', function(e) {
-                e.stopPropagation();
-                colorSelector.toggleClass('active');
-            });
+        // Load saved font size and color from localStorage
+        const savedFontSize = localStorage.getItem("fontSize") || "36";
+        const savedColor = localStorage.getItem("textColor") || "#000000";
 
-            // Close color selector when clicking outside
-            $(document).on('click', function(e) {
-                if (!$(e.target).closest('.color-control').length) {
-                    colorSelector.removeClass('active');
-                }
-            });
+        // Apply saved font size and color
+        document.documentElement.style.setProperty(
+          "--font-size",
+          savedFontSize + "px"
+        );
+        document.documentElement.style.setProperty("--text-color", savedColor);
 
-            // Handle color selection
-            colorOptions.on('click', function() {
-                const newColor = $(this).data('color');
-                textarea.css('color', newColor);
-                document.documentElement.style.setProperty('--text-color', newColor);
-                
-                colorLabel.find('.color-preview').css('background-color', newColor);
-                colorOptions.removeClass('active');
-                $(this).addClass('active');
-                
-                colorSelector.removeClass('active');
-            });
-
-            // Set initial active color
-            colorOptions.first().addClass('active');
-
-            // Toggle keyboard and content section
-            $('#keyboardToggleShow, #keyboardToggleHide').on('change', function() {
-                keyboard.toggleClass('hidden');
-                contentSection.toggleClass('hidden');
-                
-                const isChecked = $(this).is(':checked');
-                $('#keyboardToggleShow, #keyboardToggleHide').prop('checked', isChecked);
-            });
-
-            // Handle keyboard key clicks
-            keyboardKeys.on('click', function() {
-                const $key = $(this);
-                const cursorPos = textarea[0].selectionStart;
-                const text = textarea.val();
-                
-                // Handle special function keys
-                if ($key.hasClass('backspace-key')) {
-                    // Backspace - delete the character before cursor
-                    if (cursorPos > 0) {
-                        const newText = text.slice(0, cursorPos - 1) + text.slice(cursorPos);
-                        textarea.val(newText);
-                        textarea[0].selectionStart = cursorPos - 1;
-                        textarea[0].selectionEnd = cursorPos - 1;
-                    }
-                } else if ($key.hasClass('enter-key')) {
-                    // Enter - insert a new line
-                    const newText = text.slice(0, cursorPos) + '\n' + text.slice(cursorPos);
-                    textarea.val(newText);
-                    textarea[0].selectionStart = cursorPos + 1;
-                    textarea[0].selectionEnd = cursorPos + 1;
-                } else if ($key.hasClass('clear-key')) {
-                    // Clear - clear all text with confirmation
-                    if (confirm('Are you sure you want to clear all text? This cannot be undone.')) {
-                        textarea.val('');
-                        Storage.remove('syriacText');
-                        adjustTextareaHeight();
-                    }
-                } else if ($key.hasClass('numeric-toggle-key')) {
-                    // Toggle numeric keyboard
-                    toggleNumericKeyboard(true);
-                } else if ($key.hasClass('abc-toggle-key')) {
-                    // Toggle back to regular keyboard
-                    toggleNumericKeyboard(false);
-                } else {
-                    // Regular character - insert at cursor position
-                    const syriacChar = $key.data('syriac');
-                    if (syriacChar) {
-                        const newText = text.slice(0, cursorPos) + syriacChar + text.slice(cursorPos);
-                        textarea.val(newText);
-                        textarea[0].selectionStart = cursorPos + 1;
-                        textarea[0].selectionEnd = cursorPos + 1;
-                    }
-                }
-                
-                textarea.focus();
-            });
-
-            // Add long-press functionality to backspace key
-            let backspaceInterval;
-            let backspaceDelay = 500; // Initial delay before rapid deletion starts
-            let backspaceSpeed = 75;  // Interval between deletions in ms
-            
-            // Mousedown/touchstart handler for backspace
-            $('.backspace-key').on('mousedown touchstart', function(e) {
-                e.preventDefault(); // Prevent default behavior
-                const $key = $(this);
-                
-                // First delete immediately
-                deleteChar();
-                
-                // Then set timeout for continuous deletion
-                backspaceInterval = setTimeout(function() {
-                    backspaceInterval = setInterval(deleteChar, backspaceSpeed);
-                }, backspaceDelay);
-                
-                // Visual feedback
-                $key.css('background-color', '#e6e6e6');
-            });
-            
-            // Mouseup/touchend handler to stop deleting
-            $(document).on('mouseup touchend mouseleave touchcancel', function() {
-                if (backspaceInterval) {
-                    clearTimeout(backspaceInterval);
-                    clearInterval(backspaceInterval);
-                    backspaceInterval = null;
-                    
-                    // Reset visual appearance
-                    $('.backspace-key').css('background-color', '');
-                }
-            });
-            
-            // Function to delete a character at cursor position
-            function deleteChar() {
-                const cursorPos = textarea[0].selectionStart;
-                const text = textarea.val();
-                
-                if (cursorPos > 0) {
-                    const newText = text.slice(0, cursorPos - 1) + text.slice(cursorPos);
-                    textarea.val(newText);
-                    textarea[0].selectionStart = cursorPos - 1;
-                    textarea[0].selectionEnd = cursorPos - 1;
-                    
-                    // Save after deletion with throttling
-                    if (saveTimeout) {
-                        clearTimeout(saveTimeout);
-                    }
-                    saveTimeout = setTimeout(() => {
-                        Storage.save('syriacText', textarea.val());
-                    }, 1000); // Less frequent saves during rapid deletion
-                }
-            }
-
-            // Function to adjust textarea height
-            function adjustTextareaHeight() {
-                textarea.height('auto');
-                const scrollHeight = textarea[0].scrollHeight;
-                const minHeight = 300;
-                const newHeight = Math.max(scrollHeight, minHeight);
-                textarea.height(newHeight);
-            }
-
-            // Adjust height on input and window resize
-            textarea.on('input', adjustTextareaHeight);
-            $(window).on('resize', adjustTextareaHeight);
-
-            // Initial height adjustment
-            adjustTextareaHeight();
-            
-            // Show/hide share and download buttons based on textarea content
-            function updateButtonsVisibility() {
-                const hasText = textarea.val().trim().length > 0;
-                $('.share-button, .download-button, .pdf-button').toggleClass('visible', hasText);
-            }
-
-            // Storage system with fallbacks
-            const Storage = {
-                save(key, value) {
-                    try {
-                        // Try localStorage first (synchronous)
-                        localStorage.setItem(key, value);
-                        console.log(`Saved to localStorage: ${key}`);
-                        return true;
-                    } catch (e) {
-                        console.warn('localStorage failed:', e);
-                        // Fallback to cookies for maximum compatibility
-                        this.setCookie(key, value, 365); // Store for 1 year
-                        return true;
-                    }
-                },
-
-                load(key) {
-                    try {
-                        // Try localStorage first
-                        const value = localStorage.getItem(key);
-                        if (value !== null) {
-                            console.log(`Loaded from localStorage: ${key}`);
-                            return value;
-                        }
-                        
-                        // Try cookies as fallback
-                        const cookieValue = this.getCookie(key);
-                        if (cookieValue) {
-                            console.log(`Loaded from cookies: ${key}`);
-                            return cookieValue;
-                        }
-                        
-                        return null;
-                    } catch (e) {
-                        console.warn('Storage load failed:', e);
-                        
-                        // Try cookies as last resort
-                        const cookieValue = this.getCookie(key);
-                        if (cookieValue) {
-                            console.log(`Loaded from cookies: ${key}`);
-                            return cookieValue;
-                        }
-                        
-                        return null;
-                    }
-                },
-
-                remove(key) {
-                    try {
-                        localStorage.removeItem(key);
-                        this.eraseCookie(key);
-                        console.log(`Removed from storage: ${key}`);
-                        return true;
-                    } catch (e) {
-                        console.warn('Storage remove failed:', e);
-                        this.eraseCookie(key);
-                        return false;
-                    }
-                },
-
-                // Cookie helpers for maximum compatibility
-                setCookie(name, value, days) {
-                    let expires = "";
-                    if (days) {
-                        const date = new Date();
-                        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-                        expires = "; expires=" + date.toUTCString();
-                    }
-                    document.cookie = name + "=" + encodeURIComponent(value || "") + expires + "; path=/; SameSite=Strict";
-                },
-
-                getCookie(name) {
-                    const nameEQ = name + "=";
-                    const ca = document.cookie.split(';');
-                    for (let i = 0; i < ca.length; i++) {
-                        let c = ca[i];
-                        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-                        if (c.indexOf(nameEQ) === 0) {
-                            return decodeURIComponent(c.substring(nameEQ.length, c.length));
-                        }
-                    }
-                    return null;
-                },
-
-                eraseCookie(name) {
-                    document.cookie = name + '=; Max-Age=-99999999; path=/';
-                }
-            };
-            
-            // Update persistence related code to work with synchronous API
-            let saveTimeout;
-            textarea.on('input', function() {
-                // Clear previous timeout
-                if (saveTimeout) {
-                    clearTimeout(saveTimeout);
-                }
-
-                // Set new timeout to save after 500ms of no typing
-                saveTimeout = setTimeout(() => {
-                    const text = $(this).val();
-                    Storage.save('syriacText', text);
-                    updateButtonsVisibility();
-                }, 500);
-            });
-
-            // Load saved text when page loads (synchronous)
-            function loadSavedText() {
-                const savedText = Storage.load('syriacText');
-                if (savedText) {
-                    textarea.val(savedText);
-                    adjustTextareaHeight();
-                    updateButtonsVisibility();
-                }
-            }
-
-            // Call loadSavedText when document is ready
-            loadSavedText();
-
-            // Update clear functionality to use the synchronous storage system
-            $('.clear-key').on('click', function() {
-                if (confirm('Are you sure you want to clear all text? This cannot be undone.')) {
-                    textarea.val('');
-                    Storage.remove('syriacText');
-                    adjustTextareaHeight();
-                    updateButtonsVisibility();
-                }
-            });
-
-            // Run visibility check after any keyboard interaction on touch devices
-            if (isTouchDevice) {
-                $('.keyboard-key').on('click', function() {
-                    // Very short timeout to allow for DOM updates
-                    setTimeout(updateButtonsVisibility, 10);
-                });
-            }
-            
-            // Initial visibility check - run immediately and again after a short delay
-            updateButtonsVisibility();
-            setTimeout(updateButtonsVisibility, 100);
-            
-            // Expose this function globally for debugging
-            window.debugUpdateButtonsVisibility = function() {
-                updateButtonsVisibility();
-                console.log("Buttons visibility updated:", textarea.val().trim().length > 0);
-            };
-
-            // Function to toggle between numeric and regular keyboard
-            function toggleNumericKeyboard(showNumeric) {
-                if (showNumeric) {
-                    // Hide regular sections, show numeric section
-                    $('.keyboard-section').not('.special-keys, .numeric-section').addClass('hidden');
-                    $('.numeric-section').removeClass('hidden');
-                    // Change numeric toggle key to ABC key
-                    $('.numeric-toggle-key')
-                        .removeClass('numeric-toggle-key')
-                        .addClass('abc-toggle-key')
-                        .text('ABC');
-                } else {
-                    // Show regular sections, hide numeric section
-                    $('.numeric-section').addClass('hidden');
-                    
-                    // Show all sections except punctuation on touch devices
-                    $('.keyboard-section').not('.special-keys, .numeric-section').each(function() {
-                        const title = $(this).find('.keyboard-section-title').text();
-                        if (isTouchDevice && title.includes('Punctuation')) {
-                            $(this).addClass('hidden');
-                        } else {
-                            $(this).removeClass('hidden');
-                        }
-                    });
-                    
-                    // Change ABC key back to numeric toggle key
-                    $('.abc-toggle-key')
-                        .removeClass('abc-toggle-key')
-                        .addClass('numeric-toggle-key')
-                        .text('123');
-                }
-            }
-
-            // Add share functionality
-            $('.share-button').on('click', function() {
-                createAndShareImage(true);
-            });
-            
-            // Add download functionality
-            $('.download-button').on('click', function() {
-                createAndShareImage(false);
-            });
-            
-            // Function to show iOS alert dialog
-            function showIOSAlertDialog() {
-                // Create dialog background
-                const dialogOverlay = $('<div>').css({
-                    'position': 'fixed',
-                    'top': 0,
-                    'left': 0,
-                    'right': 0,
-                    'bottom': 0,
-                    'background': 'rgba(0,0,0,0.5)',
-                    'z-index': 9999,
-                    'display': 'flex',
-                    'justify-content': 'center',
-                    'align-items': 'center'
-                });
-                
-                // Create dialog content
-                const dialogContent = $('<div>').css({
-                    'background': 'white',
-                    'border-radius': '8px',
-                    'padding': '20px',
-                    'width': '80%',
-                    'max-width': '380px',
-                    'text-align': 'center',
-                    'box-shadow': '0 4px 12px rgba(0,0,0,0.15)'
-                });
-                
-                // Create dialog title
-                const dialogTitle = $('<h3>').text('iOS Compatibility Notice').css({
-                    'margin-top': 0,
-                    'color': '#D1001F',
-                    'font-size': '1.2rem'
-                });
-                
-                // Create dialog message with simplified explanation
-                const dialogMessage = $('<div>').css({
-                    'margin': '15px 0',
-                    'line-height': '1.4',
-                    'color': '#333',
-                    'text-align': 'left'
-                });
-                
-                // Add main message paragraph with simplified content
-                dialogMessage.append(
-                    $('<p>').html(
-                        'Some Syriac characters may not display correctly in exported images on iOS devices.'
-                    )
-                );
-                
-                // Add suggestion paragraph with simplified options
-                dialogMessage.append(
-                    $('<p>').html(
-                        'You have these options:<br>' +
-                        '1. Proceed anyway (some characters may appear incorrectly)<br>' +
-                        '2. Take a screenshot manually<br>' +
-                        '3. Use a PC or Android device for best results'
-                    )
-                );
-                
-                // Create buttons container with flex layout
-                const buttonsContainer = $('<div>').css({
-                    'display': 'flex',
-                    'justify-content': 'center',
-                    'gap': '10px',
-                    'margin-top': '15px'
-                });
-                
-                // Create cancel button
-                const cancelButton = $('<button>').text('Cancel').css({
-                    'background': '#f5f5f5',
-                    'color': '#333',
-                    'border': '1px solid #ddd',
-                    'border-radius': '4px',
-                    'padding': '10px 15px',
-                    'font-weight': 'bold',
-                    'cursor': 'pointer',
-                    'flex': '1'
-                });
-                
-                // Create proceed button
-                const proceedButton = $('<button>').text('Proceed Anyway').css({
-                    'background': '#D1001F',
-                    'color': 'white',
-                    'border': 'none',
-                    'border-radius': '4px',
-                    'padding': '10px 15px',
-                    'font-weight': 'bold',
-                    'cursor': 'pointer',
-                    'flex': '1'
-                });
-                
-                // Add buttons to container
-                buttonsContainer.append(cancelButton, proceedButton);
-                
-                // Add elements to dialog
-                dialogContent.append(dialogTitle, dialogMessage, buttonsContainer);
-                dialogOverlay.append(dialogContent);
-                
-                // Add dialog to body
-                $('body').append(dialogOverlay);
-                
-                // Return a promise that resolves when the user makes a choice
-                return new Promise((resolve) => {
-                    // Handle cancel button click
-                    cancelButton.on('click', function() {
-                        dialogOverlay.remove();
-                        resolve(false); // User canceled
-                    });
-                    
-                    // Handle proceed button click
-                    proceedButton.on('click', function() {
-                        dialogOverlay.remove();
-                        resolve(true); // User wants to proceed
-                    });
-                    
-                    // Also close on overlay click (counts as cancel)
-                    dialogOverlay.on('click', function(e) {
-                        if (e.target === this) {
-                            dialogOverlay.remove();
-                            resolve(false); // User canceled
-                        }
-                    });
-                });
-            }
-            
-            // Function to create and share/download image
-            function createAndShareImage(shouldShare) {
-                // Check if using iOS/iPadOS - show warning for all iOS users
-                if (isiOS()) {
-                    // Show dialog and wait for user decision
-                    showIOSAlertDialog().then(shouldProceed => {
-                        if (shouldProceed) {
-                            // User wants to proceed despite warning
-                            proceedWithImageCreation(shouldShare);
-                        }
-                    });
-                    return;
-                }
-                
-                // No issues, proceed normally
-                proceedWithImageCreation(shouldShare);
-            }
-            
-            // Function to handle the actual image creation
-            function proceedWithImageCreation(shouldShare) {
-                // Get the computed width of the textarea
-                const textareaWidth = textarea.width() + 20;
-                
-                // Create a temporary div to render the text with improved styling
-                const tempDiv = $('<div contenteditable="true">').css({
-                    'position': 'absolute',
-                    'left': '-9999px',
-                    'font-family': 'Karshon',
-                    'font-size': textarea.css('font-size'),
-                    'color': textarea.css('color'),
-                    'direction': 'rtl',
-                    'white-space': 'pre-wrap',
-                    'padding': '10px',
-                    'background': 'white',
-                    'max-width': textareaWidth + 'px', // Set the width to match textarea
-                    'box-sizing': 'border-box',
-                    'line-height': '1.6',
-                    'text-rendering': 'optimizeLegibility',
-                    '-webkit-font-smoothing': 'antialiased'
-                }).text(textarea.val());
-
-                // Add the div to the document temporarily
-                $('body').append(tempDiv);
-
-                // Show a small loading indicator
-                const loadingIndicator = $('<div>').css({
-                    'position': 'fixed',
-                    'top': '50%',
-                    'left': '50%',
-                    'transform': 'translate(-50%, -50%)',
-                    'background': 'rgba(255,255,255,0.9)',
-                    'padding': '15px 20px',
-                    'border-radius': '8px',
-                    'box-shadow': '0 2px 10px rgba(0,0,0,0.2)',
-                    'z-index': '9999',
-                    'font-family': 'Arial, sans-serif',
-                    'font-size': '14px'
-                }).text('Creating high-quality image...');
-                
-                $('body').append(loadingIndicator);
-
-                // Convert the div to canvas with higher quality settings
-                html2canvas(tempDiv[0], {
-                    scale: 4, // Increased from 2 to 4 for higher resolution
-                    useCORS: true,
-                    backgroundColor: 'white',
-                    logging: false,
-                    allowTaint: true,
-                    letterRendering: true,
-                    renderSettings: {
-                        quality: 1.0
-                    }
-                }).then(canvas => {
-                    // Create higher-quality version for better display
-                    const highQualityCanvas = document.createElement('canvas');
-                    const ctx = highQualityCanvas.getContext('2d');
-                    
-                    // Set scaling factor for quality improvement
-                    const scaleFactor = 1.2; // Additional scaling for better image quality
-                    
-                    // Get the original text font size from the textarea and convert to number
-                    const originalFontSize = parseInt(textarea.css('font-size'));
-                    console.log(originalFontSize);
-                    
-                    // Scale font size for the watermark, but don't exceed the text font size
-                    const watermark = "hendoacademy.org";
-                    const maxFontSize = originalFontSize * 2; // Don't exceed the text font size
-                    const calculatedFontSize = Math.round(canvas.height * scaleFactor * 0.025);
-                    const fontSize = Math.min(maxFontSize, Math.max(14, calculatedFontSize));
-                    const watermarkPadding = fontSize * 2; // Space for watermark (2x font size)
-                    console.log({fontSize, watermarkPadding});
-                    
-                    // Set larger canvas dimensions with extra height for watermark
-                    highQualityCanvas.width = canvas.width * scaleFactor;
-                    highQualityCanvas.height = (canvas.height * scaleFactor) + watermarkPadding;
-                    
-                    // Enable image smoothing for better rendering
-                    ctx.imageSmoothingEnabled = true;
-                    ctx.imageSmoothingQuality = 'high';
-                    
-                    // Fill with white background
-                    ctx.fillStyle = 'white';
-                    ctx.fillRect(0, 0, highQualityCanvas.width, highQualityCanvas.height);
-                    
-                    // Draw the original canvas content at higher resolution (keep the same size, just add padding at bottom)
-                    ctx.drawImage(canvas, 0, 0, highQualityCanvas.width, canvas.height * scaleFactor);
-                    
-                    // Add watermark text in bottom center
-                    ctx.font = `italic ${fontSize}px Arial`;
-                    ctx.fillStyle = "rgba(150, 150, 150, 0.6)"; // Light gray with transparency
-                    ctx.textAlign = "center";
-                    ctx.textBaseline = "bottom";
-                    
-                    // Position at bottom center, with padding proportional to image size
-                    const paddingBottom = Math.max(15, Math.round(highQualityCanvas.height * 0.025));
-                    ctx.fillText(watermark, highQualityCanvas.width / 2, highQualityCanvas.height - paddingBottom);
-                    
-                    // Convert the enhanced canvas to blob with higher quality
-                    highQualityCanvas.toBlob(blob => {
-                        // Create a file from the blob
-                        const file = new File([blob], 'syriac-text.png', { type: 'image/png' });
-
-                        // Remove loading indicator
-                        loadingIndicator.remove();
-
-                        // Check if we should share or download
-                        if (shouldShare && isTouchDevice && navigator.share) {
-                            // Share the file if the Web Share API is available
-                            navigator.share({
-                                title: 'Syriac Text',
-                                text: 'Shared from East Syriac Text Editor',
-                                files: [file]
-                            }).catch(error => {
-                                console.error('Error sharing:', error);
-                                // Fallback to download if sharing fails
-                                downloadImage(blob);
-                            });
-                        } else {
-                            // Download the file
-                            downloadImage(blob);
-                        }
-                    }, 'image/png', 1.0); // Maximum quality (1.0)
-
-                    // Remove the temporary div
-                    tempDiv.remove();
-                });
-            }
-            
-            // Helper function to download image
-            function downloadImage(blob) {
-                // No need to check iOS here anymore as the check is done in createAndShareImage
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'syriac-text.png';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            }
-            
-            // Function to detect iOS/iPadOS devices
-            function isiOS() {
-                return /iPad|iPhone|iPod/.test(navigator.userAgent) || 
-                       (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-            }
-
-            // Set keyboard height CSS variable for touch devices
-            if (isTouchDevice) {
-                // No longer need to reposition buttons since they're inside the keyboard
-                function updateKeyboardHeightVar() {
-                    // Force update the share button visibility
-                    updateButtonsVisibility();
-                }
-                
-                // Update on window resize and after keyboard is shown
-                $(window).on('resize', updateKeyboardHeightVar);
-                $(window).on('orientationchange', updateKeyboardHeightVar);
-                
-                // Run multiple times initially to ensure it captures the right height
-                setTimeout(updateKeyboardHeightVar, 100);
-                setTimeout(updateKeyboardHeightVar, 500);
-                setTimeout(updateKeyboardHeightVar, 1000);
-                
-                // Also update when keyboard is toggled
-                $('.keyboard-collapse').on('click', function() {
-                    setTimeout(updateKeyboardHeightVar, 300);
-                });
-            }
-
-            // Add PDF functionality
-            $('.pdf-button').on('click', function() {
-                createAndDownloadPDF();
-            });
-
-            // Function to create and download PDF
-            function createAndDownloadPDF() {
-                // Check if using iOS/iPadOS - show warning for all iOS users
-                if (isiOS()) {
-                    // Show dialog and wait for user decision
-                    showIOSAlertDialog().then(shouldProceed => {
-                        if (shouldProceed) {
-                            // User wants to proceed despite warning
-                            proceedWithPDFCreation();
-                        }
-                    });
-                    return;
-                }
-                
-                // No issues, proceed normally
-                proceedWithPDFCreation();
-            }
-
-            // Function to handle the actual PDF creation
-            function proceedWithPDFCreation() {
-                // Show a small loading indicator
-                const loadingIndicator = $('<div>').css({
-                    'position': 'fixed',
-                    'top': '50%',
-                    'left': '50%',
-                    'transform': 'translate(-50%, -50%)',
-                    'background': 'rgba(255,255,255,0.9)',
-                    'padding': '15px 20px',
-                    'border-radius': '8px',
-                    'box-shadow': '0 2px 10px rgba(0,0,0,0.2)',
-                    'z-index': '9999',
-                    'font-family': 'Arial, sans-serif',
-                    'font-size': '14px'
-                }).text('Creating PDF...');
-                
-                $('body').append(loadingIndicator);
-                
-                // Get the computed width of the textarea
-                const textareaWidth = textarea.width() + 20;
-                
-                // Create a temporary div to render the text with improved styling
-                const tempDiv = $('<div contenteditable="true">').css({
-                    'position': 'absolute',
-                    'left': '-9999px',
-                    'font-family': 'Karshon',
-                    'font-size': textarea.css('font-size'),
-                    'color': textarea.css('color'),
-                    'direction': 'rtl',
-                    'white-space': 'pre-wrap',
-                    'padding': '10px',
-                    'background': 'white',
-                    'max-width': textareaWidth + 'px', // Set the width to match textarea
-                    'box-sizing': 'border-box',
-                    'line-height': '1.6',
-                    'text-rendering': 'optimizeLegibility',
-                    '-webkit-font-smoothing': 'antialiased'
-                }).text(textarea.val());
-
-                // Add the div to the document temporarily
-                $('body').append(tempDiv);
-                
-                // Convert the div to canvas with higher quality settings
-                html2canvas(tempDiv[0], {
-                    scale: 4, // Increased from 2 to 4 for higher resolution
-                    useCORS: true,
-                    backgroundColor: 'white',
-                    logging: false,
-                    allowTaint: true,
-                    letterRendering: true,
-                    renderSettings: {
-                        quality: 1.0
-                    }
-                }).then(canvas => {
-                    // Remove any 10px padding from the temp div that might affect dimensions
-                    tempDiv.css('padding', '0');
-                    
-                    // Log canvas dimensions
-                    console.log('Canvas dimensions:', {
-                        width: canvas.width,
-                        height: canvas.height
-                    });
-                    
-                    // Determine orientation based on dimensions
-                    const isLandscape = canvas.width > canvas.height;
-                    const orientation = isLandscape ? 'landscape' : 'portrait';
-                    
-                    // Define margin size in pixels
-                    const margin = 48; 
-                    
-                    // Initialize jsPDF with pixel dimensions matching the canvas plus margins
-                    const pdf = new jspdf.jsPDF({
-                        orientation: orientation,
-                        unit: 'px',
-                        format: [canvas.width + (margin * 2), canvas.height + (margin * 2)], // Add margins to both dimensions
-                        compress: false
-                    });
-                    
-                    // Get the image as base64 string at full resolution
-                    const imgData = canvas.toDataURL('image/png', 1.0);
-                    
-                    // Add the image to the PDF with margin on all sides
-                    pdf.addImage(imgData, 'PNG', margin, margin, canvas.width, canvas.height, undefined, 'FAST');
-                    
-                    // Remove loading indicator
-                    loadingIndicator.remove();
-                    
-                    // Remove the temporary div
-                    tempDiv.remove();
-                    
-                    // Save the PDF
-                    pdf.save('syriac-text.pdf');
-                });
-            }
+        // Update textarea
+        textarea.css({
+          "font-size": savedFontSize + "px",
+          color: savedColor,
         });
+
+        // Update controls to match saved values
+        fontSizeSelect.val(savedFontSize);
+        colorLabel.find(".color-preview").css("background-color", savedColor);
+        colorOptions
+          .removeClass("active")
+          .filter(`[data-color="${savedColor}"]`)
+          .addClass("active");
+
+        // Determine if the app should run in touch mode
+        function detectTouchDevice() {
+          // 1. Check URL parameter first
+          const urlParams = new URLSearchParams(window.location.search);
+          if (urlParams.has("forceTouch")) {
+            const value = urlParams.get("forceTouch");
+            localStorage.setItem(
+              "forceTouch",
+              value === "1" || value === "true"
+            );
+            return value === "1" || value === "true";
+          }
+
+          // 2. Check localStorage next
+          const savedPreference = localStorage.getItem("forceTouch");
+          if (savedPreference !== null) {
+            return savedPreference === "true";
+          }
+
+          // 3. Force touch mode for specific devices/browsers
+          if (
+            /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(
+              navigator.userAgent
+            )
+          ) {
+            return true;
+          }
+
+          // 4. Additional reliable touch detection
+          if ("ontouchstart" in window || navigator.maxTouchPoints > 0) {
+            return true;
+          }
+
+          // 5. Media query checks
+          if (
+            window.matchMedia &&
+            (window.matchMedia("(hover: none)").matches ||
+              window.matchMedia("(pointer: coarse)").matches)
+          ) {
+            return true;
+          }
+
+          // 6. For smaller screens, default to touch mode
+          if (window.innerWidth < 768) {
+            return true;
+          }
+
+          return false;
+        }
+
+        const isTouchDevice = detectTouchDevice();
+        console.log("Touch device detected:", isTouchDevice);
+
+        // Apply touch mode styles directly to the body
+        if (isTouchDevice) {
+          $("body").addClass("touch-device");
+
+          // Hide punctuation section on touch devices
+          $(".keyboard-section").each(function () {
+            const title = $(this).find(".keyboard-section-title").text();
+            if (
+              title.includes("Punctuation") &&
+              !$(this).hasClass("numeric-section")
+            ) {
+              $(this).addClass("hidden");
+            }
+          });
+        }
+
+        // Set up the environment based on device type
+        function setupEnvironment() {
+          // Set initial text properties
+          textarea.css({
+            direction: "rtl",
+            "font-family": "Karshon",
+          });
+
+          textarea.attr({
+            inputmode: "none",
+            lang: "syr",
+            dir: "rtl",
+            spellcheck: "false",
+            autocorrect: "off",
+            autocapitalize: "off",
+            autocomplete: "off",
+          });
+
+          // Touch device specific setup
+          if (isTouchDevice) {
+            // Hide keyboard toggle, show keyboard
+            keyboardToggle.hide();
+            keyboard.removeClass("hidden");
+
+            // Create collapse button
+            const collapseButton = $(
+              '<button class="keyboard-collapse" title="Collapse Keyboard">▼</button>'
+            );
+
+            // Append the button directly to the keyboard
+            keyboard.append(collapseButton);
+            contentSection.addClass("hidden");
+
+            // Handle keyboard collapse
+            collapseButton.on("click", function () {
+              keyboard.toggleClass("collapsed");
+              $(this).text(keyboard.hasClass("collapsed") ? "▲" : "▼");
+
+              // Update textarea inputmode based on keyboard state
+              if (keyboard.hasClass("collapsed")) {
+                textarea.attr("inputmode", "text");
+              } else {
+                textarea.attr("inputmode", "none");
+              }
+            });
+
+            // Handle textarea focus
+            textarea.on("focus", function () {
+              if (keyboard.hasClass("collapsed")) {
+                // When collapsed, ensure inputmode is set to text to bring up hardware keyboard
+                $(this).attr("inputmode", "text");
+              }
+            });
+
+            // Handle textarea blur
+            textarea.on("blur", function () {
+              if (!keyboard.hasClass("collapsed")) {
+                // If keyboard is expanded, reset inputmode to none
+                $(this).attr("inputmode", "none");
+              }
+            });
+
+            // Set initial state (expanded)
+            keyboard.removeClass("collapsed");
+          }
+        }
+
+        // Call setup function
+        setupEnvironment();
+
+        // Handle font size changes
+        fontSizeSelect.on("change", function () {
+          const newSize = $(this).val();
+          textarea.css("font-size", newSize + "px");
+          document.documentElement.style.setProperty(
+            "--font-size",
+            newSize + "px"
+          );
+          // Save font size to localStorage
+          localStorage.setItem("fontSize", newSize);
+          adjustTextareaHeight();
+        });
+
+        // Toggle color selector
+        colorLabel.on("click", function (e) {
+          e.stopPropagation();
+          colorSelector.toggleClass("active");
+        });
+
+        // Close color selector when clicking outside
+        $(document).on("click", function (e) {
+          if (!$(e.target).closest(".color-control").length) {
+            colorSelector.removeClass("active");
+          }
+        });
+
+        // Handle color selection
+        colorOptions.on("click", function () {
+          const newColor = $(this).data("color");
+          textarea.css("color", newColor);
+          document.documentElement.style.setProperty("--text-color", newColor);
+          // Save color to localStorage
+          localStorage.setItem("textColor", newColor);
+
+          colorLabel.find(".color-preview").css("background-color", newColor);
+          colorOptions.removeClass("active");
+          $(this).addClass("active");
+
+          colorSelector.removeClass("active");
+        });
+
+        // Set initial active color
+        colorOptions.first().addClass("active");
+
+        // Toggle keyboard and content section
+        $("#keyboardToggleShow, #keyboardToggleHide").on("change", function () {
+          keyboard.toggleClass("hidden");
+          contentSection.toggleClass("hidden");
+
+          const isChecked = $(this).is(":checked");
+          $("#keyboardToggleShow, #keyboardToggleHide").prop(
+            "checked",
+            isChecked
+          );
+        });
+
+        // Handle keyboard key clicks
+        keyboardKeys.on("click", function () {
+          const $key = $(this);
+          const cursorPos = textarea[0].selectionStart;
+          const text = textarea.val();
+
+          // Handle special function keys
+          if ($key.hasClass("backspace-key")) {
+            // Backspace - delete the character before cursor
+            if (cursorPos > 0) {
+              const newText =
+                text.slice(0, cursorPos - 1) + text.slice(cursorPos);
+              textarea.val(newText);
+              textarea[0].selectionStart = cursorPos - 1;
+              textarea[0].selectionEnd = cursorPos - 1;
+            }
+          } else if ($key.hasClass("enter-key")) {
+            // Enter - insert a new line
+            const newText =
+              text.slice(0, cursorPos) + "\n" + text.slice(cursorPos);
+            textarea.val(newText);
+            textarea[0].selectionStart = cursorPos + 1;
+            textarea[0].selectionEnd = cursorPos + 1;
+          } else if ($key.hasClass("clear-key")) {
+            // Clear - clear all text with confirmation
+            if (
+              confirm(
+                "Are you sure you want to clear all text? This cannot be undone."
+              )
+            ) {
+              textarea.val("");
+              Storage.remove("syriacText");
+              adjustTextareaHeight();
+            }
+          } else if ($key.hasClass("numeric-toggle-key")) {
+            // Toggle numeric keyboard
+            toggleNumericKeyboard(true);
+          } else if ($key.hasClass("abc-toggle-key")) {
+            // Toggle back to regular keyboard
+            toggleNumericKeyboard(false);
+          } else {
+            // Regular character - insert at cursor position
+            const syriacChar = $key.data("syriac");
+            if (syriacChar) {
+              const newText =
+                text.slice(0, cursorPos) + syriacChar + text.slice(cursorPos);
+              textarea.val(newText);
+              textarea[0].selectionStart = cursorPos + 1;
+              textarea[0].selectionEnd = cursorPos + 1;
+            }
+          }
+
+          textarea.focus();
+        });
+
+        // Add long-press functionality to backspace key
+        let backspaceInterval;
+        let backspaceDelay = 500; // Initial delay before rapid deletion starts
+        let backspaceSpeed = 75; // Interval between deletions in ms
+
+        // Mousedown/touchstart handler for backspace
+        $(".backspace-key").on("mousedown touchstart", function (e) {
+          e.preventDefault(); // Prevent default behavior
+          const $key = $(this);
+
+          // First delete immediately
+          deleteChar();
+
+          // Then set timeout for continuous deletion
+          backspaceInterval = setTimeout(function () {
+            backspaceInterval = setInterval(deleteChar, backspaceSpeed);
+          }, backspaceDelay);
+
+          // Visual feedback
+          $key.css("background-color", "#e6e6e6");
+        });
+
+        // Mouseup/touchend handler to stop deleting
+        $(document).on("mouseup touchend mouseleave touchcancel", function () {
+          if (backspaceInterval) {
+            clearTimeout(backspaceInterval);
+            clearInterval(backspaceInterval);
+            backspaceInterval = null;
+
+            // Reset visual appearance
+            $(".backspace-key").css("background-color", "");
+          }
+        });
+
+        // Function to delete a character at cursor position
+        function deleteChar() {
+          const cursorPos = textarea[0].selectionStart;
+          const text = textarea.val();
+
+          if (cursorPos > 0) {
+            const newText =
+              text.slice(0, cursorPos - 1) + text.slice(cursorPos);
+            textarea.val(newText);
+            textarea[0].selectionStart = cursorPos - 1;
+            textarea[0].selectionEnd = cursorPos - 1;
+
+            // Save after deletion with throttling
+            if (saveTimeout) {
+              clearTimeout(saveTimeout);
+            }
+            saveTimeout = setTimeout(() => {
+              Storage.save("syriacText", textarea.val());
+            }, 1000); // Less frequent saves during rapid deletion
+          }
+        }
+
+        // Function to adjust textarea height
+        function adjustTextareaHeight() {
+          textarea.height("auto");
+          const scrollHeight = textarea[0].scrollHeight;
+          const minHeight = 300;
+          const newHeight = Math.max(scrollHeight, minHeight);
+          textarea.height(newHeight);
+        }
+
+        // Adjust height on input and window resize
+        textarea.on("input", adjustTextareaHeight);
+        $(window).on("resize", adjustTextareaHeight);
+
+        // Initial height adjustment
+        adjustTextareaHeight();
+
+        // Show/hide share and download buttons based on textarea content
+        function updateButtonsVisibility() {
+          const hasText = textarea.val().trim().length > 0;
+          $(".share-button, .download-button, .pdf-button").toggleClass(
+            "visible",
+            hasText
+          );
+        }
+
+        // Storage system with fallbacks
+        const Storage = {
+          save(key, value) {
+            try {
+              // Try localStorage first (synchronous)
+              localStorage.setItem(key, value);
+              console.log(`Saved to localStorage: ${key}`);
+              return true;
+            } catch (e) {
+              console.warn("localStorage failed:", e);
+              // Fallback to cookies for maximum compatibility
+              this.setCookie(key, value, 365); // Store for 1 year
+              return true;
+            }
+          },
+
+          load(key) {
+            try {
+              // Try localStorage first
+              const value = localStorage.getItem(key);
+              if (value !== null) {
+                console.log(`Loaded from localStorage: ${key}`);
+                return value;
+              }
+
+              // Try cookies as fallback
+              const cookieValue = this.getCookie(key);
+              if (cookieValue) {
+                console.log(`Loaded from cookies: ${key}`);
+                return cookieValue;
+              }
+
+              return null;
+            } catch (e) {
+              console.warn("Storage load failed:", e);
+
+              // Try cookies as last resort
+              const cookieValue = this.getCookie(key);
+              if (cookieValue) {
+                console.log(`Loaded from cookies: ${key}`);
+                return cookieValue;
+              }
+
+              return null;
+            }
+          },
+
+          remove(key) {
+            try {
+              localStorage.removeItem(key);
+              this.eraseCookie(key);
+              console.log(`Removed from storage: ${key}`);
+              return true;
+            } catch (e) {
+              console.warn("Storage remove failed:", e);
+              this.eraseCookie(key);
+              return false;
+            }
+          },
+
+          // Cookie helpers for maximum compatibility
+          setCookie(name, value, days) {
+            let expires = "";
+            if (days) {
+              const date = new Date();
+              date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+              expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie =
+              name +
+              "=" +
+              encodeURIComponent(value || "") +
+              expires +
+              "; path=/; SameSite=Strict";
+          },
+
+          getCookie(name) {
+            const nameEQ = name + "=";
+            const ca = document.cookie.split(";");
+            for (let i = 0; i < ca.length; i++) {
+              let c = ca[i];
+              while (c.charAt(0) === " ") c = c.substring(1, c.length);
+              if (c.indexOf(nameEQ) === 0) {
+                return decodeURIComponent(c.substring(nameEQ.length, c.length));
+              }
+            }
+            return null;
+          },
+
+          eraseCookie(name) {
+            document.cookie = name + "=; Max-Age=-99999999; path=/";
+          },
+        };
+
+        // Update persistence related code to work with synchronous API
+        let saveTimeout;
+        textarea.on("input", function () {
+          // Clear previous timeout
+          if (saveTimeout) {
+            clearTimeout(saveTimeout);
+          }
+
+          // Set new timeout to save after 500ms of no typing
+          saveTimeout = setTimeout(() => {
+            const text = $(this).val();
+            Storage.save("syriacText", text);
+            updateButtonsVisibility();
+          }, 500);
+        });
+
+        // Load saved text when page loads (synchronous)
+        function loadSavedText() {
+          const savedText = Storage.load("syriacText");
+          if (savedText) {
+            textarea.val(savedText);
+            adjustTextareaHeight();
+            updateButtonsVisibility();
+          }
+        }
+
+        // Call loadSavedText when document is ready
+        loadSavedText();
+
+        // Update clear functionality to use the synchronous storage system
+        $(".clear-key").on("click", function () {
+          if (
+            confirm(
+              "Are you sure you want to clear all text? This cannot be undone."
+            )
+          ) {
+            textarea.val("");
+            Storage.remove("syriacText");
+            adjustTextareaHeight();
+            updateButtonsVisibility();
+          }
+        });
+
+        // Run visibility check after any keyboard interaction on touch devices
+        if (isTouchDevice) {
+          $(".keyboard-key").on("click", function () {
+            // Very short timeout to allow for DOM updates
+            setTimeout(updateButtonsVisibility, 10);
+          });
+        }
+
+        // Initial visibility check - run immediately and again after a short delay
+        updateButtonsVisibility();
+        setTimeout(updateButtonsVisibility, 100);
+
+        // Expose this function globally for debugging
+        window.debugUpdateButtonsVisibility = function () {
+          updateButtonsVisibility();
+          console.log(
+            "Buttons visibility updated:",
+            textarea.val().trim().length > 0
+          );
+        };
+
+        // Function to toggle between numeric and regular keyboard
+        function toggleNumericKeyboard(showNumeric) {
+          if (showNumeric) {
+            // Hide regular sections, show numeric section
+            $(".keyboard-section")
+              .not(".special-keys, .numeric-section")
+              .addClass("hidden");
+            $(".numeric-section").removeClass("hidden");
+            // Change numeric toggle key to ABC key
+            $(".numeric-toggle-key")
+              .removeClass("numeric-toggle-key")
+              .addClass("abc-toggle-key")
+              .text("ABC");
+          } else {
+            // Show regular sections, hide numeric section
+            $(".numeric-section").addClass("hidden");
+
+            // Show all sections except punctuation on touch devices
+            $(".keyboard-section")
+              .not(".special-keys, .numeric-section")
+              .each(function () {
+                const title = $(this).find(".keyboard-section-title").text();
+                if (isTouchDevice && title.includes("Punctuation")) {
+                  $(this).addClass("hidden");
+                } else {
+                  $(this).removeClass("hidden");
+                }
+              });
+
+            // Change ABC key back to numeric toggle key
+            $(".abc-toggle-key")
+              .removeClass("abc-toggle-key")
+              .addClass("numeric-toggle-key")
+              .text("123");
+          }
+        }
+
+        // Add share functionality
+        $(".share-button").on("click", function () {
+          createAndShareImage(true);
+        });
+
+        // Add download functionality
+        $(".download-button").on("click", function () {
+          createAndShareImage(false);
+        });
+
+        // Function to show iOS alert dialog
+        function showIOSAlertDialog() {
+          // Create dialog background
+          const dialogOverlay = $("<div>").css({
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0,0,0,0.5)",
+            "z-index": 9999,
+            display: "flex",
+            "justify-content": "center",
+            "align-items": "center",
+          });
+
+          // Create dialog content
+          const dialogContent = $("<div>").css({
+            background: "white",
+            "border-radius": "8px",
+            padding: "20px",
+            width: "80%",
+            "max-width": "380px",
+            "text-align": "center",
+            "box-shadow": "0 4px 12px rgba(0,0,0,0.15)",
+          });
+
+          // Create dialog title
+          const dialogTitle = $("<h3>").text("iOS Compatibility Notice").css({
+            "margin-top": 0,
+            color: "#D1001F",
+            "font-size": "1.2rem",
+          });
+
+          // Create dialog message with simplified explanation
+          const dialogMessage = $("<div>").css({
+            margin: "15px 0",
+            "line-height": "1.4",
+            color: "#333",
+            "text-align": "left",
+          });
+
+          // Add main message paragraph with simplified content
+          dialogMessage.append(
+            $("<p>").html(
+              "Some Syriac characters may not display correctly in exported images on iOS devices."
+            )
+          );
+
+          // Add suggestion paragraph with simplified options
+          dialogMessage.append(
+            $("<p>").html(
+              "You have these options:<br>" +
+                "1. Proceed anyway (some characters may appear incorrectly)<br>" +
+                "2. Take a screenshot manually<br>" +
+                "3. Use a PC or Android device for best results"
+            )
+          );
+
+          // Create buttons container with flex layout
+          const buttonsContainer = $("<div>").css({
+            display: "flex",
+            "justify-content": "center",
+            gap: "10px",
+            "margin-top": "15px",
+          });
+
+          // Create cancel button
+          const cancelButton = $("<button>").text("Cancel").css({
+            background: "#f5f5f5",
+            color: "#333",
+            border: "1px solid #ddd",
+            "border-radius": "4px",
+            padding: "10px 15px",
+            "font-weight": "bold",
+            cursor: "pointer",
+            flex: "1",
+          });
+
+          // Create proceed button
+          const proceedButton = $("<button>").text("Proceed Anyway").css({
+            background: "#D1001F",
+            color: "white",
+            border: "none",
+            "border-radius": "4px",
+            padding: "10px 15px",
+            "font-weight": "bold",
+            cursor: "pointer",
+            flex: "1",
+          });
+
+          // Add buttons to container
+          buttonsContainer.append(cancelButton, proceedButton);
+
+          // Add elements to dialog
+          dialogContent.append(dialogTitle, dialogMessage, buttonsContainer);
+          dialogOverlay.append(dialogContent);
+
+          // Add dialog to body
+          $("body").append(dialogOverlay);
+
+          // Return a promise that resolves when the user makes a choice
+          return new Promise((resolve) => {
+            // Handle cancel button click
+            cancelButton.on("click", function () {
+              dialogOverlay.remove();
+              resolve(false); // User canceled
+            });
+
+            // Handle proceed button click
+            proceedButton.on("click", function () {
+              dialogOverlay.remove();
+              resolve(true); // User wants to proceed
+            });
+
+            // Also close on overlay click (counts as cancel)
+            dialogOverlay.on("click", function (e) {
+              if (e.target === this) {
+                dialogOverlay.remove();
+                resolve(false); // User canceled
+              }
+            });
+          });
+        }
+
+        // Function to create and share/download image
+        function createAndShareImage(shouldShare) {
+          // Check if using iOS/iPadOS - show warning for all iOS users
+          if (isiOS()) {
+            // Show dialog and wait for user decision
+            showIOSAlertDialog().then((shouldProceed) => {
+              if (shouldProceed) {
+                // User wants to proceed despite warning
+                proceedWithImageCreation(shouldShare);
+              }
+            });
+            return;
+          }
+
+          // No issues, proceed normally
+          proceedWithImageCreation(shouldShare);
+        }
+
+        // Function to handle the actual image creation
+        function proceedWithImageCreation(shouldShare) {
+          // Get the computed width of the textarea
+          const textareaWidth = textarea.width() + 20;
+
+          // Create a temporary div to render the text with improved styling
+          const tempDiv = $('<div contenteditable="true">')
+            .css({
+              position: "absolute",
+              left: "-9999px",
+              "font-family": "Karshon",
+              "font-size": textarea.css("font-size"),
+              color: textarea.css("color"),
+              direction: "rtl",
+              "white-space": "pre-wrap",
+              padding: "10px",
+              background: "white",
+              "max-width": textareaWidth + "px", // Set the width to match textarea
+              "box-sizing": "border-box",
+              "line-height": "1.6",
+              "text-rendering": "optimizeLegibility",
+              "-webkit-font-smoothing": "antialiased",
+            })
+            .text(textarea.val());
+
+          // Add the div to the document temporarily
+          $("body").append(tempDiv);
+
+          // Show a small loading indicator
+          const loadingIndicator = $("<div>")
+            .css({
+              position: "fixed",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              background: "rgba(255,255,255,0.9)",
+              padding: "15px 20px",
+              "border-radius": "8px",
+              "box-shadow": "0 2px 10px rgba(0,0,0,0.2)",
+              "z-index": "9999",
+              "font-family": "Arial, sans-serif",
+              "font-size": "14px",
+            })
+            .text("Creating high-quality image...");
+
+          $("body").append(loadingIndicator);
+
+          // Convert the div to canvas with higher quality settings
+          html2canvas(tempDiv[0], {
+            scale: 4, // Increased from 2 to 4 for higher resolution
+            useCORS: true,
+            backgroundColor: "white",
+            logging: false,
+            allowTaint: true,
+            letterRendering: true,
+            renderSettings: {
+              quality: 1.0,
+            },
+          }).then((canvas) => {
+            // Create higher-quality version for better display
+            const highQualityCanvas = document.createElement("canvas");
+            const ctx = highQualityCanvas.getContext("2d");
+
+            // Set scaling factor for quality improvement
+            const scaleFactor = 1.2; // Additional scaling for better image quality
+
+            // Get the original text font size from the textarea and convert to number
+            const originalFontSize = parseInt(textarea.css("font-size"));
+            console.log(originalFontSize);
+
+            // Scale font size for the watermark, but don't exceed the text font size
+            const watermark = "hendoacademy.org";
+            const maxFontSize = originalFontSize * 2; // Don't exceed the text font size
+            const calculatedFontSize = Math.round(
+              canvas.height * scaleFactor * 0.025
+            );
+            const fontSize = Math.min(
+              maxFontSize,
+              Math.max(14, calculatedFontSize)
+            );
+            const watermarkPadding = fontSize * 2; // Space for watermark (2x font size)
+            console.log({ fontSize, watermarkPadding });
+
+            // Set larger canvas dimensions with extra height for watermark
+            highQualityCanvas.width = canvas.width * scaleFactor;
+            highQualityCanvas.height =
+              canvas.height * scaleFactor + watermarkPadding;
+
+            // Enable image smoothing for better rendering
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = "high";
+
+            // Fill with white background
+            ctx.fillStyle = "white";
+            ctx.fillRect(
+              0,
+              0,
+              highQualityCanvas.width,
+              highQualityCanvas.height
+            );
+
+            // Draw the original canvas content at higher resolution (keep the same size, just add padding at bottom)
+            ctx.drawImage(
+              canvas,
+              0,
+              0,
+              highQualityCanvas.width,
+              canvas.height * scaleFactor
+            );
+
+            // Add watermark text in bottom center
+            ctx.font = `italic ${fontSize}px Arial`;
+            ctx.fillStyle = "rgba(150, 150, 150, 0.6)"; // Light gray with transparency
+            ctx.textAlign = "center";
+            ctx.textBaseline = "bottom";
+
+            // Position at bottom center, with padding proportional to image size
+            const paddingBottom = Math.max(
+              15,
+              Math.round(highQualityCanvas.height * 0.025)
+            );
+            ctx.fillText(
+              watermark,
+              highQualityCanvas.width / 2,
+              highQualityCanvas.height - paddingBottom
+            );
+
+            // Convert the enhanced canvas to blob with higher quality
+            highQualityCanvas.toBlob(
+              (blob) => {
+                // Create a file from the blob
+                const file = new File([blob], "syriac-text.png", {
+                  type: "image/png",
+                });
+
+                // Remove loading indicator
+                loadingIndicator.remove();
+
+                // Check if we should share or download
+                if (shouldShare && isTouchDevice && navigator.share) {
+                  // Share the file if the Web Share API is available
+                  navigator
+                    .share({
+                      title: "Syriac Text",
+                      text: "Shared from East Syriac Text Editor",
+                      files: [file],
+                    })
+                    .catch((error) => {
+                      console.error("Error sharing:", error);
+                      // Fallback to download if sharing fails
+                      downloadImage(blob);
+                    });
+                } else {
+                  // Download the file
+                  downloadImage(blob);
+                }
+              },
+              "image/png",
+              1.0
+            ); // Maximum quality (1.0)
+
+            // Remove the temporary div
+            tempDiv.remove();
+          });
+        }
+
+        // Helper function to download image
+        function downloadImage(blob) {
+          // No need to check iOS here anymore as the check is done in createAndShareImage
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "syriac-text.png";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        }
+
+        // Function to detect iOS/iPadOS devices
+        function isiOS() {
+          return (
+            /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+            (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
+          );
+        }
+
+        // Set keyboard height CSS variable for touch devices
+        if (isTouchDevice) {
+          // No longer need to reposition buttons since they're inside the keyboard
+          function updateKeyboardHeightVar() {
+            // Force update the share button visibility
+            updateButtonsVisibility();
+          }
+
+          // Update on window resize and after keyboard is shown
+          $(window).on("resize", updateKeyboardHeightVar);
+          $(window).on("orientationchange", updateKeyboardHeightVar);
+
+          // Run multiple times initially to ensure it captures the right height
+          setTimeout(updateKeyboardHeightVar, 100);
+          setTimeout(updateKeyboardHeightVar, 500);
+          setTimeout(updateKeyboardHeightVar, 1000);
+
+          // Also update when keyboard is toggled
+          $(".keyboard-collapse").on("click", function () {
+            setTimeout(updateKeyboardHeightVar, 300);
+          });
+        }
+
+        // Add PDF functionality
+        $(".pdf-button").on("click", function () {
+          createAndDownloadPDF();
+        });
+
+        // Function to create and download PDF
+        function createAndDownloadPDF() {
+          // Check if using iOS/iPadOS - show warning for all iOS users
+          if (isiOS()) {
+            // Show dialog and wait for user decision
+            showIOSAlertDialog().then((shouldProceed) => {
+              if (shouldProceed) {
+                // User wants to proceed despite warning
+                proceedWithPDFCreation();
+              }
+            });
+            return;
+          }
+
+          // No issues, proceed normally
+          proceedWithPDFCreation();
+        }
+
+        // Function to handle the actual PDF creation
+        function proceedWithPDFCreation() {
+          // Show a small loading indicator
+          const loadingIndicator = $("<div>")
+            .css({
+              position: "fixed",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              background: "rgba(255,255,255,0.9)",
+              padding: "15px 20px",
+              "border-radius": "8px",
+              "box-shadow": "0 2px 10px rgba(0,0,0,0.2)",
+              "z-index": "9999",
+              "font-family": "Arial, sans-serif",
+              "font-size": "14px",
+            })
+            .text("Creating PDF...");
+
+          $("body").append(loadingIndicator);
+
+          // Get the computed width of the textarea
+          const textareaWidth = textarea.width() + 20;
+
+          // Create a temporary div to render the text with improved styling
+          const tempDiv = $('<div contenteditable="true">')
+            .css({
+              position: "absolute",
+              left: "-9999px",
+              "font-family": "Karshon",
+              "font-size": textarea.css("font-size"),
+              color: textarea.css("color"),
+              direction: "rtl",
+              "white-space": "pre-wrap",
+              padding: "10px",
+              background: "white",
+              "max-width": textareaWidth + "px", // Set the width to match textarea
+              "box-sizing": "border-box",
+              "line-height": "1.6",
+              "text-rendering": "optimizeLegibility",
+              "-webkit-font-smoothing": "antialiased",
+            })
+            .text(textarea.val());
+
+          // Add the div to the document temporarily
+          $("body").append(tempDiv);
+
+          // Convert the div to canvas with higher quality settings
+          html2canvas(tempDiv[0], {
+            scale: 4, // Increased from 2 to 4 for higher resolution
+            useCORS: true,
+            backgroundColor: "white",
+            logging: false,
+            allowTaint: true,
+            letterRendering: true,
+            renderSettings: {
+              quality: 1.0,
+            },
+          }).then((canvas) => {
+            // Remove any 10px padding from the temp div that might affect dimensions
+            tempDiv.css("padding", "0");
+
+            // Log canvas dimensions
+            console.log("Canvas dimensions:", {
+              width: canvas.width,
+              height: canvas.height,
+            });
+
+            // Determine orientation based on dimensions
+            const isLandscape = canvas.width > canvas.height;
+            const orientation = isLandscape ? "landscape" : "portrait";
+
+            // Define margin size in pixels
+            const margin = 48;
+
+            // Initialize jsPDF with pixel dimensions matching the canvas plus margins
+            const pdf = new jspdf.jsPDF({
+              orientation: orientation,
+              unit: "px",
+              format: [canvas.width + margin * 2, canvas.height + margin * 2], // Add margins to both dimensions
+              compress: false,
+            });
+
+            // Get the image as base64 string at full resolution
+            const imgData = canvas.toDataURL("image/png", 1.0);
+
+            // Add the image to the PDF with margin on all sides
+            pdf.addImage(
+              imgData,
+              "PNG",
+              margin,
+              margin,
+              canvas.width,
+              canvas.height,
+              undefined,
+              "FAST"
+            );
+
+            // Remove loading indicator
+            loadingIndicator.remove();
+
+            // Remove the temporary div
+            tempDiv.remove();
+
+            // Save the PDF
+            pdf.save("syriac-text.pdf");
+          });
+        }
+
+        // Settings functionality
+        function initializeSettings() {
+          const settingsButtons = $(".settings-button");
+          const settingsDialog = $(".settings-dialog");
+          const settingsOverlay = $(".settings-dialog-overlay");
+          const fontSelect = $("#fontSelect");
+          const lineHeightSelect = $("#lineHeight");
+          const saveButton = $(".save-button");
+          const cancelButton = $(".cancel-button");
+
+          // Load saved preferences
+          const savedFont = localStorage.getItem("syriacFont") || "Karshon";
+          const savedLineHeight = localStorage.getItem("lineHeight") || "1.5";
+
+          // Apply saved preferences
+          document.documentElement.style.setProperty(
+            "--current-font",
+            savedFont
+          );
+          document.documentElement.style.setProperty(
+            "--line-height",
+            savedLineHeight
+          );
+
+          textarea.css({
+            "font-family": savedFont,
+            "line-height": savedLineHeight,
+          });
+
+          // Set select values
+          fontSelect.val(savedFont);
+          lineHeightSelect.val(savedLineHeight);
+
+          // Show settings dialog
+          settingsButtons.on("click", function () {
+            // Update select values to match current settings before showing dialog
+            const currentFont = document.documentElement.style
+              .getPropertyValue("--current-font")
+              .trim()
+              .replace(/['"]/g, "");
+            const currentLineHeight = document.documentElement.style
+              .getPropertyValue("--line-height")
+              .trim();
+
+            fontSelect.val(currentFont);
+            lineHeightSelect.val(currentLineHeight);
+
+            settingsDialog.addClass("active");
+            settingsOverlay.addClass("active");
+          });
+
+          // Handle line height changes immediately
+          lineHeightSelect.on("change", function () {
+            const newLineHeight = $(this).val();
+            textarea.css("line-height", newLineHeight);
+          });
+
+          // Hide settings dialog
+          function hideSettings() {
+            settingsDialog.removeClass("active");
+            settingsOverlay.removeClass("active");
+          }
+
+          settingsOverlay.on("click", hideSettings);
+          cancelButton.on("click", hideSettings);
+
+          // Save settings
+          saveButton.on("click", function () {
+            const selectedFont = fontSelect.val();
+            const selectedLineHeight = lineHeightSelect.val();
+
+            // Update CSS variables
+            document.documentElement.style.setProperty(
+              "--current-font",
+              selectedFont
+            );
+            document.documentElement.style.setProperty(
+              "--line-height",
+              selectedLineHeight
+            );
+
+            // Update textarea styles
+            textarea.css({
+              "font-family": selectedFont,
+              "line-height": selectedLineHeight,
+            });
+
+            // Save to localStorage
+            localStorage.setItem("syriacFont", selectedFont);
+            localStorage.setItem("lineHeight", selectedLineHeight);
+
+            hideSettings();
+          });
+        }
+
+        // Initialize settings
+        initializeSettings();
+
+        // Original font size and color controls - already handled above
+        // No need to remove controls-left anymore
+      });
     </script>
     <!-- Add html2canvas library -->
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <!-- Add jsPDF library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-</body>
-</html> 
+  </body>
+</html>
