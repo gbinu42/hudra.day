@@ -3329,6 +3329,18 @@
           fontSelect.val(savedFont);
           lineHeightSelect.val(savedLineHeight);
 
+          // Check if this is the first visit
+          const hasVisitedBefore = localStorage.getItem("hasVisitedBefore");
+          if (!hasVisitedBefore) {
+            // First visit - show settings dialog
+            setTimeout(function () {
+              settingsDialog.addClass("active");
+              settingsOverlay.addClass("active");
+              // Set the flag to indicate the user has visited before
+              localStorage.setItem("hasVisitedBefore", "true");
+            }, 500); // Short delay to ensure everything is loaded
+          }
+
           // Show settings dialog
           settingsButtons.on("click", function () {
             // Update select values to match current settings before showing dialog
