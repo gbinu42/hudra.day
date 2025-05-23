@@ -26,9 +26,9 @@
     />
     <meta
       name="keywords"
-      content="East Syriac, text editor, Syriac keyboard, Karshon, RTL text"
+      content="East Syriac, text editor, Syriac keyboard, Karshon, RTL text, Syriac typing, East syriac typing"
     />
-    <meta name="author" content="East Syriac Breviary Project" />
+    <meta name="author" content="Binu George" />
     <meta name="theme-color" content="#8A1612" />
     <meta property="og:title" content="East Syriac Text Editor" />
     <meta
@@ -58,6 +58,13 @@
       @font-face {
         font-family: "EastSyriacMalankara";
         src: url("fonts/EastSyriacMalankara.ttf") format("truetype");
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "EastSyriacMalankaraClassical";
+        src: url("fonts/EastSyriacMalankaraClassical.ttf") format("truetype");
         font-weight: normal;
         font-style: normal;
         font-display: swap;
@@ -2072,18 +2079,20 @@
         </div>
       </div>
       <div class="content-section">
-        <h1>East Syriac Text Editor</h1>
+        <h1>East Syriac + Karshon Text Editor</h1>
         <div class="instructions">
           <h3>Instructions:</h3>
           <ul>
-            <li>Switch to the Syriac phonetic keyboard on your system</li>
+            <li>
+              Switch to the Syriac phonetic keyboard on your system (You can
+              also use the on-screen keyboard)
+            </li>
             <li>Type Syriac text in the textbox above</li>
             <li>The text will automatically flow from right to left</li>
             <li>You can copy and paste text from other sources</li>
-            <li>The text is displayed in the Karshon font</li>
-            <li class="touch-tip">
-              On mobile devices: If keyboard doesn't appear, add
-              <code>?forceTouch=true</code> to the URL
+            <li>
+              Click on the settings(⚙️) button to change the font and line
+              height
             </li>
           </ul>
         </div>
@@ -2099,6 +2108,9 @@
         <select id="fontSelect">
           <option value="Karshon">East Syriac Adiabene</option>
           <option value="EastSyriacMalankara">East Syriac Malankara</option>
+          <option value="EastSyriacMalankaraClassical">
+            East Syriac Malankara Classical
+          </option>
         </select>
       </div>
       <div class="setting-group">
@@ -2904,6 +2916,8 @@
                     clonedElement.classList.add(
                       currentFont === "EastSyriacMalankara"
                         ? "malankara-font"
+                        : currentFont === "EastSyriacMalankaraClassical"
+                        ? "malankara-classical-font"
                         : "karshon-font"
                     );
 
@@ -2922,11 +2936,20 @@
                         font-weight: normal;
                         font-style: normal;
                       }
+                      @font-face {
+                        font-family: 'EastSyriacMalankaraClassical';
+                        src: url('fonts/EastSyriacMalankaraClassical.ttf') format('truetype');
+                        font-weight: normal;
+                        font-style: normal;
+                      }
                       .malankara-font {
                         font-family: 'EastSyriacMalankara' !important;
                       }
                       .karshon-font {
                         font-family: 'Karshon' !important;
+                      }
+                      .malankara-classical-font {
+                        font-family: 'EastSyriacMalankaraClassical' !important;
                       }
                     `;
                     clonedDoc.head.appendChild(styleTag);
@@ -3206,6 +3229,8 @@
                     clonedElement.classList.add(
                       currentFont === "EastSyriacMalankara"
                         ? "malankara-font"
+                        : currentFont === "EastSyriacMalankaraClassical"
+                        ? "malankara-classical-font"
                         : "karshon-font"
                     );
 
@@ -3224,11 +3249,20 @@
                         font-weight: normal;
                         font-style: normal;
                       }
+                      @font-face {
+                        font-family: 'EastSyriacMalankaraClassical';
+                        src: url('fonts/EastSyriacMalankaraClassical.ttf') format('truetype');
+                        font-weight: normal;
+                        font-style: normal;
+                      }
                       .malankara-font {
                         font-family: 'EastSyriacMalankara' !important;
                       }
                       .karshon-font {
                         font-family: 'Karshon' !important;
+                      }
+                      .malankara-classical-font {
+                        font-family: 'EastSyriacMalankaraClassical' !important;
                       }
                     `;
                     clonedDoc.head.appendChild(styleTag);
