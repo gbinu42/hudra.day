@@ -503,7 +503,7 @@ export default function HomePage() {
                 alt="East Syriac Cross"
                 width={150}
                 height={150}
-                className="transition-transform hover:scale-110"
+                className="transition-transform hover:scale-110 rounded-lg shadow-lg"
               />
             </div>
           </div>
