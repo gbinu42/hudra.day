@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Hudra 📜
 
-## Getting Started
+**Digital Archive of East Syriac Manuscripts**
 
-First, run the development server:
+Hudra is a modern web platform dedicated to digitizing, preserving, and making accessible the rich manuscript tradition of the East Syriac churches. Built with Next.js and shadcn/ui components.
+
+## ✨ Features
+
+- **Manuscript Digitization**: Tools for digitizing and cataloging ancient East Syriac manuscripts
+- **Online Syriac Editor**: Advanced text editor with full Unicode Syriac support
+- **Church Heritage**: Showcasing manuscripts from Syro-Malabar Church, Assyrian Church of the East, and Chaldean Catholic Church
+- **Responsive Design**: Beautiful, modern interface that works on all devices
+- **Accessibility**: Built with accessibility in mind for scholars and communities worldwide
+
+## 🚀 Getting Started
+
+First, install the dependencies:
+
+```bash
+npm install
+```
+
+Then, run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🛠️ Tech Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Framework**: Next.js 15 with App Router
+- **Styling**: Tailwind CSS
+- **UI Components**: shadcn/ui
+- **Icons**: Lucide React
+- **Typography**: Support for Syriac Unicode text
 
-## Learn More
+## 📚 East Syriac Churches
 
-To learn more about Next.js, take a look at the following resources:
+This project serves the manuscript traditions of:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. **Syro-Malabar Church** - Ancient Christian community in India
+2. **Assyrian Church of the East** - Apostolic church preserving original East Syriac traditions
+3. **Chaldean Catholic Church** - Eastern Catholic church maintaining East Syriac heritage
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🔧 Development
 
-## Deploy on Vercel
+The main page is located in `app/page.tsx`. The project uses:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Modern React components with TypeScript
+- shadcn/ui component library
+- Responsive design patterns
+- Semantic HTML structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🎨 Design
+
+The interface features:
+
+- Clean, modern design respecting cultural significance
+- Gradient backgrounds and subtle shadows
+- Accessible color contrast
+- Mobile-first responsive layout
+- Syriac text display support
+
+## 🤝 Contributing
+
+We welcome contributions from scholars, developers, and members of the East Syriac communities. Please feel free to submit issues and pull requests.
+
+## 📄 License
+
+This project is dedicated to preserving and sharing ancient wisdom for all.
+
+---
+
+_"Made with love for ancient wisdom"_ ♥️
