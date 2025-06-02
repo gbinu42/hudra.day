@@ -1,16 +1,18 @@
-# Hudra 📜
+# ܚܘܼܕܪܵܐ Hudra ഹുദ്റാ 📜
 
-**Digital Archive of East Syriac Manuscripts**
+**Digital Archive of Church of the East Liturgical Texts**
 
-Hudra is a modern web platform dedicated to digitizing, preserving, and making accessible the rich manuscript tradition of the East Syriac churches. Built with Next.js and shadcn/ui components.
+Hudra.day is an initiative by [Hendo Academy](https://www.hendoacademy.org) dedicated to digitizing and making freely available the rich liturgical tradition of the Church of the East for scholars, clergy, and communities worldwide.
 
 ## ✨ Features
 
-- **Manuscript Digitization**: Tools for digitizing and cataloging ancient East Syriac manuscripts
-- **Online Syriac Editor**: Advanced text editor with full Unicode Syriac support
-- **Church Heritage**: Showcasing manuscripts from Syro-Malabar Church, Assyrian Church of the East, and Chaldean Catholic Church
-- **Responsive Design**: Beautiful, modern interface that works on all devices
-- **Accessibility**: Built with accessibility in mind for scholars and communities worldwide
+- **East Syriac + Karshon Editor**: Advanced online text editor supporting both East Syriac script and Karshon (Garshuni Malayalam) with full Unicode support
+- **Liturgical Text Archive**: Digital collection of Church of the East liturgical manuscripts and texts
+- **Three Church Traditions**: Serving the manuscript heritage of Syro-Malabar Church, Assyrian Church of the East, and Chaldean Catholic Church
+- **Modern Web Platform**: Built with Next.js 15, TypeScript, and Tailwind CSS for optimal performance
+- **Mobile-First Design**: Responsive interface that works seamlessly across all devices
+- **Cultural Authenticity**: Proper Karshon font integration for authentic Syriac text display
+- **Coming Soon Features**: Work in progress with planned manuscript transcription tools and formatting features
 
 ## 🚀 Getting Started
 
@@ -31,46 +33,106 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ## 🛠️ Tech Stack
 
 - **Framework**: Next.js 15 with App Router
-- **Styling**: Tailwind CSS
-- **UI Components**: shadcn/ui
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS v4
+- **UI Components**: shadcn/ui component library
 - **Icons**: Lucide React
-- **Typography**: Support for Syriac Unicode text
+- **Fonts**: Custom Karshon font for authentic Syriac text rendering
+- **Analytics**: Google Analytics integration
+- **Deployment**: Optimized for modern web standards
 
 ## 📚 East Syriac Churches
 
-This project serves the manuscript traditions of:
+This project preserves and shares the liturgical heritage of three major churches:
 
-1. **Syro-Malabar Church** - Ancient Christian community in India
-2. **Assyrian Church of the East** - Apostolic church preserving original East Syriac traditions
-3. **Chaldean Catholic Church** - Eastern Catholic church maintaining East Syriac heritage
+### 1. **Syro-Malabar Church**
 
-## 🔧 Development
+- One of the oldest Christian communities in the world
+- Traces origins to St. Thomas the Apostle in India
+- Rich tradition of liturgical manuscripts and theological works
 
-The main page is located in `app/page.tsx`. The project uses:
+### 2. **Assyrian Church of the East**
 
-- Modern React components with TypeScript
-- shadcn/ui component library
-- Responsive design patterns
-- Semantic HTML structure
+- Ancient apostolic church with headquarters in Erbil, Iraq
+- Preserves the original East Syriac liturgical tradition
+- Extensive manuscript collections spanning centuries
 
-## 🎨 Design
+### 3. **Chaldean Catholic Church**
 
-The interface features:
+- Eastern Catholic church in full communion with Rome
+- Maintains East Syriac traditions and heritage
+- Significant manuscript heritage from Mesopotamia and beyond
 
-- Clean, modern design respecting cultural significance
-- Gradient backgrounds and subtle shadows
-- Accessible color contrast
-- Mobile-first responsive layout
-- Syriac text display support
+## 🎯 Mission
+
+- **Digitize**: Converting ancient liturgical manuscripts into high-quality digital formats
+- **Share Freely**: Making Church of the East liturgical texts accessible worldwide
+- **Preserve**: Ensuring liturgical heritage continues for future generations
+
+## 🖥️ Online Editor Features
+
+- Full Unicode East Syriac support
+- Full Unicode Karshon (Garshuni Malayalam) support
+- Mobile-first design
+- Liturgical text formatting tools (WIP)
+- Manuscript transcription features (WIP)
+- Export to multiple formats
+
+## 🎨 Design Highlights
+
+- **Multilingual Typography**: Displays Syriac (ܚܘܼܕܪܵܐ), English (Hudra), and Malayalam (ഹുദ്റാ) text
+- **Burgundy Color Scheme**: Professional color palette (#8A1538) respecting cultural significance
+- **Responsive Layout**: Grid-based design that adapts to all screen sizes
+- **Interactive Elements**: Hover effects, animations, and smooth transitions
+- **Accessibility**: Built with semantic HTML and proper contrast ratios
+
+## 🔧 Development Structure
+
+```
+app/
+├── page.tsx          # Main landing page with all sections
+├── layout.tsx        # Root layout with metadata and analytics
+├── globals.css       # Global styles including Karshon font
+└── components/       # Reusable UI components
+
+public/
+├── images/
+│   ├── logo.png      # Project logo
+│   ├── header.png    # Background image
+│   └── sliwa.png     # East Syriac cross image
+└── favicon files
+```
+
+## 📱 Responsive Sections
+
+1. **Hero Section**: Multilingual title with work-in-progress banner
+2. **Mission Section**: Three-card layout explaining project goals
+3. **Churches Section**: Information about the three church traditions
+4. **Editor Section**: Preview of the online Syriac editor with "Our Father" prayer
+5. **Footer**: Links, contact information, and branding
+
+## 🔗 Key Links
+
+- **Hendo Academy**: [www.hendoacademy.org](https://www.hendoacademy.org)
+- **East Syriac Editor**: `/type` route
+- **Contact**: `/contact` route
+- **About**: `/about` route
 
 ## 🤝 Contributing
 
-We welcome contributions from scholars, developers, and members of the East Syriac communities. Please feel free to submit issues and pull requests.
+We welcome contributions from:
+
+- Scholars of East Syriac traditions
+- Developers interested in digital humanities
+- Members of East Syriac communities
+- Anyone passionate about preserving ancient wisdom
 
 ## 📄 License
 
-This project is dedicated to preserving and sharing ancient wisdom for all.
+© 2025 Hendo Academy. All rights reserved.
+
+This project is dedicated to preserving and freely sharing the sacred liturgical traditions of the Church of the East.
 
 ---
 
-_"Made with love for ancient wisdom"_ ♥️
+_Made with love by [Hendo Academy](https://www.hendoacademy.org) for preserving sacred eastern tradition_ ♥️
