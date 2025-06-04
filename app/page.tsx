@@ -35,6 +35,9 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 
+// Enable SSG for this page
+export const revalidate = false; // or set to a number for ISR
+
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-primary/5 via-white to-white">
@@ -403,7 +406,7 @@ export default function HomePage() {
               </div>
 
               <Button size="lg" asChild>
-                <Link href="/type">
+                <Link href="/type.html">
                   <Edit3 className="mr-2 h-5 w-5" />
                   Launch East Syriac Editor
                 </Link>

@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import Footer from "@/components/Footer";
 
 interface KeyboardKey {
   syriac: string;
@@ -536,6 +537,9 @@ const SyriacEditor: React.FC = () => {
           </DialogContent>
         </Dialog>
       </div>
+
+      {/* Footer - Only show on desktop */}
+      {!isTouchDevice && <Footer />}
 
       {/* Font face definitions */}
       <style jsx>{`

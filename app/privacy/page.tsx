@@ -3,6 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import Footer from "@/components/Footer";
+
+// Enable SSG for this page
+export const revalidate = false;
 
 export default function PrivacyPage() {
   return (
@@ -86,6 +90,9 @@ export default function PrivacyPage() {
           </Card>
         </div>
       </main>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

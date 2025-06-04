@@ -3,6 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import Footer from "@/components/Footer";
+
+// Enable SSG for this page
+export const revalidate = false;
 
 export default function TermsPage() {
   return (
@@ -58,9 +62,9 @@ export default function TermsPage() {
 
               <h2>3. Disclaimer</h2>
               <p>
-                The materials on Hudra.day are provided on an 'as is' basis.
-                Hendo Academy makes no warranties, expressed or implied, and
-                hereby disclaims and negates all other warranties including
+                The materials on Hudra.day are provided on an &apos;as is&apos;
+                basis. Hendo Academy makes no warranties, expressed or implied,
+                and hereby disclaims and negates all other warranties including
                 without limitation, implied warranties or conditions of
                 merchantability, fitness for a particular purpose, or
                 non-infringement of intellectual property or other violation of
@@ -84,6 +88,9 @@ export default function TermsPage() {
           </Card>
         </div>
       </main>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }
