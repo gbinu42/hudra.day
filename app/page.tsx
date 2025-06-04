@@ -61,9 +61,11 @@ export default function HomePage() {
               clergy, and communities worldwide.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-              <Button size="lg" className="text-lg px-8">
-                <BookOpen className="mr-2 h-5 w-5" />
-                Browse Liturgical Texts
+              <Button size="lg" className="text-lg px-8" asChild>
+                <Link href="/texts">
+                  <BookOpen className="mr-2 h-5 w-5" />
+                  Browse Liturgical Texts
+                </Link>
               </Button>
               <Button
                 variant="outline"
