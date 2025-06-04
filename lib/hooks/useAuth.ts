@@ -93,6 +93,23 @@ export function useAuth() {
     }
   };
 
+  const sendPasswordResetEmail = async (email: string) => {
+    try {
+      setLoading(true);
+      setError(null);
+      await authService.sendPasswordResetEmail(email);
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "An error occurred while sending password reset email";
+      setError(errorMessage);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     user,
     loading,
@@ -101,5 +118,6 @@ export function useAuth() {
     signIn,
     signInWithGoogle,
     signOut,
+    sendPasswordResetEmail,
   };
 }

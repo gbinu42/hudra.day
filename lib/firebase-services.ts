@@ -6,6 +6,7 @@ import {
   onAuthStateChanged,
   GoogleAuthProvider,
   signInWithPopup,
+  sendPasswordResetEmail,
   type NextOrObserver,
 } from "firebase/auth";
 import {
@@ -55,6 +56,11 @@ export const authService = {
       password
     );
     return userCredential.user;
+  },
+
+  // Send password reset email
+  async sendPasswordResetEmail(email: string): Promise<void> {
+    await sendPasswordResetEmail(auth, email);
   },
 
   // Sign in with Google
