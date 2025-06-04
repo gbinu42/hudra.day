@@ -90,6 +90,20 @@ export default function HomePage() {
             </NavigationMenuList>
           </NavigationMenu>
 
+          {/* Desktop Auth Buttons */}
+          <div className="hidden md:flex items-center space-x-3">
+            <Button
+              variant="ghost"
+              className="text-primary hover:text-primary/80"
+              asChild
+            >
+              <Link href="/signin">Sign In</Link>
+            </Button>
+            <Button className="bg-primary hover:bg-primary/90" asChild>
+              <Link href="/signup">Sign Up</Link>
+            </Button>
+          </div>
+
           {/* Mobile Navigation */}
           <Sheet>
             <SheetTrigger asChild className="md:hidden">
@@ -138,6 +152,23 @@ export default function HomePage() {
                 >
                   East Syriac Editor
                 </Link>
+
+                {/* Mobile Auth Buttons */}
+                <div className="pt-4 border-t border-gray-200 space-y-3">
+                  <Button
+                    variant="ghost"
+                    className="w-full text-primary hover:text-primary/80 justify-start"
+                    asChild
+                  >
+                    <Link href="/signin">Sign In</Link>
+                  </Button>
+                  <Button
+                    className="w-full bg-primary hover:bg-primary/90"
+                    asChild
+                  >
+                    <Link href="/signup">Sign Up</Link>
+                  </Button>
+                </div>
               </div>
             </SheetContent>
           </Sheet>

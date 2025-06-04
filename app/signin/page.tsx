@@ -10,7 +10,6 @@ import {
   PolicyProvider,
   SignInAuthScreen,
   GoogleSignInButton,
-  OAuthScreen,
 } from "@firebase-ui/react";
 import "@firebase-ui/styles/dist.css";
 import {
@@ -25,7 +24,7 @@ import { ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
-export default function AuthPage() {
+export default function SignInPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const [ui, setUi] = useState<FirebaseUI | null>(null);
@@ -111,7 +110,7 @@ export default function AuthPage() {
             </div>
           </header>
 
-          {/* Auth Content */}
+          {/* Sign In Content */}
           <main className="container mx-auto px-4 py-20">
             <div className="max-w-md mx-auto">
               <Card className="shadow-lg">
@@ -126,7 +125,7 @@ export default function AuthPage() {
                     />
                   </div>
                   <CardTitle className="text-2xl">
-                    Welcome to{" "}
+                    Welcome back to{" "}
                     <span className="font-syriac text-primary">ܚܘܼܕܪܵܐ</span>
                   </CardTitle>
                   <CardDescription className="text-base">
@@ -138,6 +137,19 @@ export default function AuthPage() {
                     <SignInAuthScreen>
                       <GoogleSignInButton />
                     </SignInAuthScreen>
+                  </div>
+
+                  {/* Link to Register */}
+                  <div className="mt-6 text-center">
+                    <p className="text-sm text-muted-foreground">
+                      Don&apos;t have an account?{" "}
+                      <Link
+                        href="/signup"
+                        className="text-primary hover:underline"
+                      >
+                        Create one here
+                      </Link>
+                    </p>
                   </div>
                 </CardContent>
               </Card>
