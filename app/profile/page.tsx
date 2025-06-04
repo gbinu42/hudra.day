@@ -13,6 +13,17 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   ArrowLeft,
   Loader2,
@@ -22,15 +33,22 @@ import {
   Shield,
   Edit,
   Settings,
+  Save,
+  X,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import Footer from "@/components/Footer";
+import { updateProfile } from "firebase/auth";
+import { toast } from "sonner";
 
 export default function ProfilePage() {
   const { user, loading, signOut } = useAuth();
   const router = useRouter();
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [displayName, setDisplayName] = useState("");
+  const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     // Redirect if not authenticated
@@ -38,6 +56,13 @@ export default function ProfilePage() {
       router.push("/signin");
     }
   }, [user, loading, router]);
+
+  useEffect(() => {
+    // Set initial display name when user is loaded
+    if (user?.displayName) {
+      setDisplayName(user.displayName);
+    }
+  }, [user]);
 
   const handleSignOut = async () => {
     try {
@@ -48,6 +73,29 @@ export default function ProfilePage() {
       console.error("Sign out error:", error);
     } finally {
       setIsSigningOut(false);
+    }
+  };
+
+  const handleUpdateProfile = async () => {
+    if (!user) return;
+
+    try {
+      setIsUpdating(true);
+
+      await updateProfile(user, {
+        displayName: displayName.trim() || null,
+      });
+
+      toast.success("Profile updated successfully!");
+      setIsEditOpen(false);
+
+      // Force a page refresh to show updated data
+      window.location.reload();
+    } catch (error) {
+      console.error("Profile update error:", error);
+      toast.error("Failed to update profile. Please try again.");
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -157,26 +205,14 @@ export default function ProfilePage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <Mail className="h-4 w-4 text-muted-foreground" />
-                      <div>
-                        <p className="text-sm font-medium">Email</p>
-                        <p className="text-sm text-muted-foreground">
-                          {user.email}
-                        </p>
-                      </div>
+                  <div className="flex items-center gap-3">
+                    <Mail className="h-4 w-4 text-muted-foreground" />
+                    <div>
+                      <p className="text-sm font-medium">Email</p>
+                      <p className="text-sm text-muted-foreground">
+                        {user.email}
+                      </p>
                     </div>
-                    {user.emailVerified ? (
-                      <Badge
-                        variant="secondary"
-                        className="bg-green-100 text-green-800"
-                      >
-                        Verified
-                      </Badge>
-                    ) : (
-                      <Badge variant="destructive">Not Verified</Badge>
-                    )}
                   </div>
 
                   <Separator />
@@ -265,35 +301,76 @@ export default function ProfilePage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start"
-                    disabled
-                  >
-                    <Edit className="h-4 w-4 mr-2" />
-                    Edit Profile
-                    <Badge variant="secondary" className="ml-auto">
-                      Soon
-                    </Badge>
-                  </Button>
-
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start"
-                    disabled
-                  >
-                    <Settings className="h-4 w-4 mr-2" />
-                    Account Settings
-                    <Badge variant="secondary" className="ml-auto">
-                      Soon
-                    </Badge>
-                  </Button>
+                  <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+                    <DialogTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start"
+                        onClick={() => setDisplayName(user.displayName || "")}
+                      >
+                        <Edit className="h-4 w-4 mr-2" />
+                        Edit Profile
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]">
+                      <DialogHeader>
+                        <DialogTitle>Edit Profile</DialogTitle>
+                        <DialogDescription>
+                          Make changes to your profile here. Click save when
+                          you&apos;re done.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="grid gap-4 py-4">
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="displayName" className="text-right">
+                            Name
+                          </Label>
+                          <Input
+                            id="displayName"
+                            value={displayName}
+                            onChange={(e) => setDisplayName(e.target.value)}
+                            className="col-span-3"
+                            placeholder="Enter your display name"
+                            disabled={isUpdating}
+                          />
+                        </div>
+                      </div>
+                      <DialogFooter>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => setIsEditOpen(false)}
+                          disabled={isUpdating}
+                        >
+                          <X className="h-4 w-4 mr-2" />
+                          Cancel
+                        </Button>
+                        <Button
+                          type="button"
+                          onClick={handleUpdateProfile}
+                          disabled={isUpdating}
+                        >
+                          {isUpdating ? (
+                            <>
+                              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                              Saving...
+                            </>
+                          ) : (
+                            <>
+                              <Save className="h-4 w-4 mr-2" />
+                              Save Changes
+                            </>
+                          )}
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
 
                   <Separator />
 
                   <Button
                     variant="destructive"
-                    className="w-full justify-start"
+                    className="w-full justify-start cursor-pointer"
                     onClick={handleSignOut}
                     disabled={isSigningOut}
                   >
@@ -313,20 +390,6 @@ export default function ProfilePage() {
                   <CardTitle>Account Status</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">Email Verified</span>
-                    {user.emailVerified ? (
-                      <Badge
-                        variant="secondary"
-                        className="bg-green-100 text-green-800"
-                      >
-                        ✓ Yes
-                      </Badge>
-                    ) : (
-                      <Badge variant="destructive">✗ No</Badge>
-                    )}
-                  </div>
-
                   <div className="flex items-center justify-between">
                     <span className="text-sm">Account Type</span>
                     <Badge variant="outline">Standard</Badge>
