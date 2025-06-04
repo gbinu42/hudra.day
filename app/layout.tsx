@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import Script from "next/script";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "East Syriac Breviary (Hudra)",
@@ -60,7 +61,10 @@ export default function RootLayout({
           `}
         </Script>
       </head>
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        {children}
+        <Toaster />
+      </body>
     </html>
   );
 }

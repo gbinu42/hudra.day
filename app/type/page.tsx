@@ -52,7 +52,7 @@ export default function TypePage() {
             </p>
             <div className="space-y-4">
               <Button size="lg" asChild>
-                <Link href="/editor">Go to Editor</Link>
+                <Link href="/type.html">Go to Editor</Link>
               </Button>
               <p className="text-sm text-muted-foreground">
                 If you are not redirected automatically, click the button above.

@@ -16,6 +16,7 @@ import {
   getDoc,
   updateDoc,
   deleteDoc,
+  setDoc,
   query,
   where,
   orderBy,
@@ -81,13 +82,22 @@ export const authService = {
 
 // Firestore Services
 export const firestoreService = {
-  // Add a document to a collection
+  // Add a document to a collection (auto-generates ID)
   async addDocument(
     collectionName: string,
     data: DocumentData
   ): Promise<string> {
     const docRef = await addDoc(collection(db, collectionName), data);
     return docRef.id;
+  },
+
+  // Set a document with a specific ID
+  async setDocument(
+    collectionName: string,
+    docId: string,
+    data: DocumentData
+  ): Promise<void> {
+    await setDoc(doc(db, collectionName, docId), data);
   },
 
   // Get all documents from a collection

@@ -1,17 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/lib/hooks/useAuth";
-import { auth } from "@/lib/firebase";
-import { initializeUI, type FirebaseUI } from "@firebase-ui/core";
-import {
-  ConfigProvider,
-  PolicyProvider,
-  SignInAuthScreen,
-  GoogleSignInButton,
-} from "@firebase-ui/react";
-import "@firebase-ui/styles/dist.css";
+import Link from "next/link";
+import Image from "next/image";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -19,174 +15,181 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft, Loader2 } from "lucide-react";
-import Link from "next/link";
-import Image from "next/image";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useAuth } from "@/lib/hooks/useAuth";
+import { toast } from "sonner";
+import { Eye, EyeOff } from "lucide-react";
+import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
+const formSchema = z.object({
+  email: z.string().email({
+    message: "Please enter a valid email address.",
+  }),
+  password: z.string().min(6, {
+    message: "Password must be at least 6 characters.",
+  }),
+});
+
 export default function SignInPage() {
-  const { user, loading } = useAuth();
   const router = useRouter();
-  const [ui, setUi] = useState<FirebaseUI | null>(null);
+  const { signIn, user, loading } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Redirect logged-in users to home page
   useEffect(() => {
-    // Initialize Firebase UI v7
-    if (!ui && typeof window !== "undefined") {
-      const firebaseUI = initializeUI({
-        app: auth.app,
-        locale: "en-US",
-      });
-      setUi(firebaseUI);
-    }
-  }, [ui]);
-
-  useEffect(() => {
-    // Redirect if already authenticated
     if (!loading && user) {
       router.push("/");
     }
   }, [user, loading, router]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-primary/5 via-white to-white flex items-center justify-center">
-        <div className="flex items-center space-x-2">
-          <Loader2 className="h-6 w-6 animate-spin text-primary" />
-          <span className="text-lg">Loading...</span>
-        </div>
-      </div>
-    );
-  }
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
-  if (user) {
-    return null; // Will redirect in useEffect
-  }
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      setIsSubmitting(true);
 
-  if (!ui) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-primary/5 via-white to-white flex items-center justify-center">
-        <div className="flex items-center space-x-2">
-          <Loader2 className="h-6 w-6 animate-spin text-primary" />
-          <span className="text-lg">Initializing...</span>
-        </div>
-      </div>
-    );
-  }
+      // Sign in user with email and password
+      await signIn(values.email, values.password);
+
+      toast.success("Welcome back! You've been signed in successfully.");
+      router.push("/");
+    } catch (error: unknown) {
+      console.error("Signin error:", error);
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to sign in. Please check your credentials and try again.";
+      toast.error(errorMessage);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
-    <ConfigProvider
-      ui={ui}
-      policies={{
-        termsOfServiceUrl: "/terms",
-        privacyPolicyUrl: "/privacy",
-      }}
-    >
-      <PolicyProvider
-        policies={{
-          termsOfServiceUrl: "/terms",
-          privacyPolicyUrl: "/privacy",
-        }}
-      >
-        <div className="min-h-screen bg-gradient-to-b from-primary/5 via-white to-white">
-          {/* Navigation */}
-          <header className="sticky top-0 z-50 w-full border-b bg-white shadow-sm">
-            <div className="container mx-auto px-4 flex h-16 items-center justify-between">
-              <Link href="/" className="flex items-center space-x-2">
-                <Image
-                  src="/images/logo.png"
-                  alt="Hudra Logo"
-                  width={32}
-                  height={32}
-                  className="h-8 w-8"
+    <>
+      <Navbar />
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <Card className="w-full max-w-md">
+          <CardHeader className="space-y-1">
+            <div className="flex justify-center mb-4">
+              <Image
+                src="/images/logo.png"
+                alt="Hudra Logo"
+                width={64}
+                height={64}
+                className="h-16 w-16"
+                priority
+              />
+            </div>
+            <CardTitle className="text-2xl font-bold text-center">
+              Welcome back
+            </CardTitle>
+            <CardDescription className="text-center">
+              Enter your credentials to sign in to your account
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="email"
+                          placeholder="Enter your email"
+                          {...field}
+                          disabled={isSubmitting || loading}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-                <span className="text-3xl font-syriac">ܚܘܼܕܪܵܐ</span>
+
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Input
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Enter your password"
+                            {...field}
+                            disabled={isSubmitting || loading}
+                          />
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                            onClick={() => setShowPassword(!showPassword)}
+                            disabled={isSubmitting || loading}
+                          >
+                            {showPassword ? (
+                              <EyeOff className="h-4 w-4" />
+                            ) : (
+                              <Eye className="h-4 w-4" />
+                            )}
+                          </Button>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="w-full cursor-pointer"
+                  disabled={isSubmitting || loading}
+                >
+                  {isSubmitting ? "Signing in..." : "Sign in"}
+                </Button>
+              </form>
+            </Form>
+
+            <div className="text-center text-sm">
+              <span className="text-muted-foreground">
+                Don&apos;t have an account?{" "}
+              </span>
+              <Link
+                href="/signup"
+                className="text-primary underline-offset-4 hover:underline"
+              >
+                Sign up
               </Link>
-              <Button variant="ghost" size="sm" asChild>
-                <Link href="/">
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  Back to Home
-                </Link>
-              </Button>
             </div>
-          </header>
-
-          {/* Sign In Content */}
-          <main className="container mx-auto px-4 py-20">
-            <div className="max-w-md mx-auto">
-              <Card className="shadow-lg">
-                <CardHeader className="text-center">
-                  <div className="flex justify-center mb-4">
-                    <Image
-                      src="/images/logo.png"
-                      alt="Hudra Logo"
-                      width={64}
-                      height={64}
-                      className="h-16 w-16"
-                    />
-                  </div>
-                  <CardTitle className="text-2xl">
-                    Welcome back to{" "}
-                    <span className="font-syriac text-primary">ܚܘܼܕܪܵܐ</span>
-                  </CardTitle>
-                  <CardDescription className="text-base">
-                    Sign in to contribute to hudra.day
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4 -mt-24">
-                    <SignInAuthScreen>
-                      <GoogleSignInButton />
-                    </SignInAuthScreen>
-                  </div>
-
-                  {/* Link to Register */}
-                  <div className="mt-6 text-center">
-                    <p className="text-sm text-muted-foreground">
-                      Don&apos;t have an account?{" "}
-                      <Link
-                        href="/signup"
-                        className="text-primary hover:underline"
-                      >
-                        Create one here
-                      </Link>
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Additional Information */}
-              <div className="mt-8 text-center text-sm text-muted-foreground">
-                <p className="mb-2">
-                  By signing in, you agree to our{" "}
-                  <Link href="/terms" className="text-primary hover:underline">
-                    Terms of Service
-                  </Link>{" "}
-                  and{" "}
-                  <Link
-                    href="/privacy"
-                    className="text-primary hover:underline"
-                  >
-                    Privacy Policy
-                  </Link>
-                </p>
-                <p>
-                  Need help?{" "}
-                  <Link
-                    href="/contact"
-                    className="text-primary hover:underline"
-                  >
-                    Contact us
-                  </Link>
-                </p>
-              </div>
-            </div>
-          </main>
-
-          {/* Footer */}
-          <Footer />
-        </div>
-      </PolicyProvider>
-    </ConfigProvider>
+          </CardContent>
+        </Card>
+      </div>
+      <Footer />
+    </>
   );
 }
