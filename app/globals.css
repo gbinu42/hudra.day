@@ -8,6 +8,7 @@
 
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "@firebase-ui/styles/src/base.css";
 
 @custom-variant dark (&:is(.dark *));
 
