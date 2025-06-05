@@ -39,10 +39,10 @@ type PageParams = {
   text: TextSlug;
 };
 
-interface PageProps {
-  params: PageParams;
-  searchParams: { [key: string]: string | string[] | undefined };
-}
+type Props = {
+  params: Promise<PageParams>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
 
 export function generateStaticParams(): PageParams[] {
   const params: PageParams[] = [];
@@ -62,8 +62,13 @@ export function generateStaticParams(): PageParams[] {
   return params;
 }
 
-export default function TextPage({ params }: PageProps) {
-  const { church: churchSlug, category: categorySlug, text: textSlug } = params;
+export default async function TextPage({ params }: Props) {
+  const resolvedParams = await params;
+  const {
+    church: churchSlug,
+    category: categorySlug,
+    text: textSlug,
+  } = resolvedParams;
 
   const churchData = textData[churchSlug];
   if (!churchData) {

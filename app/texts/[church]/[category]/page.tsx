@@ -34,10 +34,10 @@ type PageParams = {
   category: CategorySlug;
 };
 
-interface PageProps {
-  params: PageParams;
-  searchParams: { [key: string]: string | string[] | undefined };
-}
+type Props = {
+  params: Promise<PageParams>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
 
 export function generateStaticParams(): PageParams[] {
   const params: PageParams[] = [];
@@ -53,8 +53,9 @@ export function generateStaticParams(): PageParams[] {
   return params;
 }
 
-export default function CategoryPage({ params }: PageProps) {
-  const { church: churchSlug, category: categorySlug } = params;
+export default async function CategoryPage({ params }: Props) {
+  const resolvedParams = await params;
+  const { church: churchSlug, category: categorySlug } = resolvedParams;
 
   const churchData = categoryData[churchSlug];
   if (!churchData) {
