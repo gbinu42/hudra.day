@@ -73,7 +73,7 @@ export default function HomePage() {
                 className="text-lg px-8"
                 asChild
               >
-                <Link href="/type.html">
+                <Link href="/type">
                   <Edit3 className="mr-2 h-5 w-5" />
                   Try East Syriac Editor
                 </Link>
@@ -249,13 +249,13 @@ export default function HomePage() {
               </div>
 
               <Button size="lg" asChild>
-                <Link href="/type.html">
+                <Link href="/type">
                   <Edit3 className="mr-2 h-5 w-5" />
                   Launch East Syriac Editor
                 </Link>
               </Button>
             </div>
-            <Link href="/type.html" className="cursor-pointer">
+            <Link href="/type" className="cursor-pointer">
               <div className="bg-white p-8 rounded-lg shadow-lg border hover:shadow-2xl hover:scale-105 hover:border-primary/30 transition-all duration-300 ease-in-out">
                 <div className="space-y-4">
                   <div className="bg-white p-6 rounded  min-h-[300px] flex items-center justify-center">
