@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Card,
   CardContent,
@@ -21,141 +19,48 @@ import {
   Download,
 } from "lucide-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
 import { notFound } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { categoryData, ChurchSlug, CategorySlug } from "@/app/data/texts";
 
-// This would typically come from a database or API
-const categoryData = {
-  "syro-malabar": {
-    name: "Syro-Malabar Church",
-    categories: {
-      liturgy: {
-        name: "Liturgical Texts",
-        description:
-          "Complete liturgical services including Qurbana Taksa and sacramental rites",
-        texts: [
-          {
-            slug: "qurbana-taksa",
-            title: "Qurbana Taksa",
-            description:
-              "The complete order of the Holy Qurbana (Eucharistic liturgy)",
-            language: "Syriac",
-            translation: "Malayalam",
-            date: "Traditional",
-            status: "coming-soon",
-          },
-          {
-            slug: "ordination-rites",
-            title: "Ordination Rites",
-            description:
-              "Liturgical texts for ordination of deacons, priests, and bishops",
-            language: "Syriac",
-            translation: "Malayalam",
-            date: "Traditional",
-            status: "coming-soon",
-          },
-        ],
-      },
-      prayers: {
-        name: "Prayers",
-        description: "Daily prayers, devotional texts, and seasonal prayers",
-        texts: [
-          {
-            slug: "daily-prayers",
-            title: "Daily Prayers",
-            description:
-              "Morning, evening, and night prayers for daily devotion",
-            language: "Malayalam",
-            translation: "English",
-            date: "Traditional",
-            status: "coming-soon",
-          },
-        ],
-      },
-      hymns: {
-        name: "Hymns & Chants",
-        description: "Traditional liturgical hymns and musical texts",
-        texts: [],
-      },
-      breviary: {
-        name: "Breviary",
-        description: "Divine Office prayers for different times of day",
-        texts: [],
-      },
-    },
-  },
-  assyrian: {
-    name: "Assyrian Church of the East",
-    categories: {
-      liturgy: {
-        name: "Liturgical Texts",
-        description:
-          "Ancient East Syriac liturgical traditions and Qurbana services",
-        texts: [],
-      },
-      prayers: {
-        name: "Prayers",
-        description: "Traditional prayers and devotional texts",
-        texts: [],
-      },
-      hymns: {
-        name: "Hymns & Chants",
-        description: "Classical Syriac hymns and liturgical chants",
-        texts: [],
-      },
-      breviary: {
-        name: "Breviary",
-        description: "Canonical hours and seasonal prayers",
-        texts: [],
-      },
-    },
-  },
-  chaldean: {
-    name: "Chaldean Catholic Church",
-    categories: {
-      liturgy: {
-        name: "Liturgical Texts",
-        description: "East Syriac liturgical texts in communion with Rome",
-        texts: [],
-      },
-      prayers: {
-        name: "Prayers",
-        description: "Prayer texts and devotional materials",
-        texts: [],
-      },
-      hymns: {
-        name: "Hymns & Chants",
-        description: "Liturgical hymns and traditional chants",
-        texts: [],
-      },
-      breviary: {
-        name: "Breviary",
-        description: "Divine Office and canonical prayers",
-        texts: [],
-      },
-    },
-  },
-};
+type TextStatus = "available" | "coming-soon" | "in-progress";
 
-export default function CategoryPage() {
-  const params = useParams();
-  const churchSlug = params.church as string;
-  const categorySlug = params.category as string;
+interface PageProps {
+  params: {
+    church: ChurchSlug;
+    category: CategorySlug;
+  };
+}
 
-  const churchData = categoryData[churchSlug as keyof typeof categoryData];
+export function generateStaticParams() {
+  const params = [];
+  for (const churchSlug in categoryData) {
+    const church = categoryData[churchSlug as ChurchSlug];
+    for (const categorySlug in church.categories) {
+      params.push({
+        church: churchSlug,
+        category: categorySlug,
+      });
+    }
+  }
+  return params;
+}
+
+export default function CategoryPage({ params }: PageProps) {
+  const { church: churchSlug, category: categorySlug } = params;
+
+  const churchData = categoryData[churchSlug];
   if (!churchData) {
     notFound();
   }
 
-  const category =
-    churchData.categories[categorySlug as keyof typeof churchData.categories];
+  const category = churchData.categories[categorySlug];
   if (!category) {
     notFound();
   }
 
-  const getStatusBadge = (status: string) => {
+  const getStatusBadge = (status: TextStatus) => {
     switch (status) {
       case "available":
         return (
@@ -238,7 +143,7 @@ export default function CategoryPage() {
                           <CardTitle className="text-xl">
                             {text.title}
                           </CardTitle>
-                          {getStatusBadge(text.status)}
+                          {getStatusBadge(text.status as TextStatus)}
                         </div>
                         <CardDescription className="text-base">
                           {text.description}

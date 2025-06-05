@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Card,
   CardContent,
@@ -23,99 +21,58 @@ import {
   FileText,
 } from "lucide-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
 import { notFound } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { textData, ChurchSlug, CategorySlug, TextSlug } from "@/app/data/texts";
 
-// This would typically come from a database or API
-const textData = {
-  "syro-malabar": {
-    liturgy: {
-      "qurbana-taksa": {
-        title: "Qurbana Taksa",
-        subtitle: "The Complete Order of the Holy Qurbana",
-        description:
-          "The complete liturgical order of the Holy Qurbana (Eucharistic liturgy) of the Syro-Malabar Church, preserving the ancient East Syriac tradition.",
-        language: "Syriac",
-        translation: "Malayalam",
-        originalLanguage: "Classical Syriac",
-        date: "Traditional (Ancient)",
-        author: "Church Tradition",
-        source: "Ancient Manuscripts",
-        status: "coming-soon",
-        content: null, // Content would be loaded here
-      },
-      "ordination-rites": {
-        title: "Ordination Rites",
-        subtitle: "Liturgical Texts for Holy Orders",
-        description:
-          "Complete liturgical texts for the ordination of deacons, priests, and bishops in the Syro-Malabar tradition.",
-        language: "Syriac",
-        translation: "Malayalam",
-        originalLanguage: "Classical Syriac",
-        date: "Traditional (Ancient)",
-        author: "Church Tradition",
-        source: "Ancient Manuscripts",
-        status: "coming-soon",
-        content: null,
-      },
-    },
-    prayers: {
-      "daily-prayers": {
-        title: "Daily Prayers",
-        subtitle: "Morning, Evening, and Night Prayers",
-        description:
-          "Traditional daily prayers for morning, evening, and night devotions in the Syro-Malabar tradition.",
-        language: "Malayalam",
-        translation: "English",
-        originalLanguage: "Malayalam/Syriac",
-        date: "Traditional",
-        author: "Church Tradition",
-        source: "Prayer Books",
-        status: "coming-soon",
-        content: null,
-      },
-    },
-  },
-} as const;
+type TextStatus = "available" | "coming-soon" | "in-progress";
 
-interface TextInfo {
-  title: string;
-  subtitle: string;
-  description: string;
-  language: string;
-  translation: string;
-  originalLanguage: string;
-  date: string;
-  author: string;
-  source: string;
-  status: string;
-  content: string | null;
+interface PageProps {
+  params: {
+    church: ChurchSlug;
+    category: CategorySlug;
+    text: TextSlug;
+  };
 }
 
-export default function TextPage() {
-  const params = useParams();
-  const churchSlug = params.church as string;
-  const categorySlug = params.category as string;
-  const textSlug = params.text as string;
+export function generateStaticParams() {
+  const params = [];
+  for (const churchSlug in textData) {
+    const church = textData[churchSlug as ChurchSlug];
+    for (const categorySlug in church) {
+      const category = church[categorySlug as CategorySlug];
+      for (const textSlug in category) {
+        params.push({
+          church: churchSlug,
+          category: categorySlug,
+          text: textSlug,
+        });
+      }
+    }
+  }
+  return params;
+}
 
-  const churchData = textData[churchSlug as keyof typeof textData];
+export default function TextPage({ params }: PageProps) {
+  const { church: churchSlug, category: categorySlug, text: textSlug } = params;
+
+  const churchData = textData[churchSlug as ChurchSlug];
   if (!churchData) {
     notFound();
   }
 
-  const categoryData = churchData[categorySlug as keyof typeof churchData];
+  const categoryData = churchData[categorySlug as CategorySlug];
   if (!categoryData) {
     notFound();
   }
 
-  const text = categoryData[textSlug as keyof typeof categoryData] as TextInfo;
+  const text = categoryData[textSlug as TextSlug];
   if (!text) {
     notFound();
   }
 
-  const getStatusBadge = (status: string) => {
+  const getStatusBadge = (status: TextStatus) => {
     switch (status) {
       case "available":
         return (
