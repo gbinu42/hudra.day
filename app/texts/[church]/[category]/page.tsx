@@ -22,25 +22,31 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { categoryData, ChurchSlug, CategorySlug } from "@/app/data/texts";
+import {
+  categoryData,
+  ChurchSlug,
+  CategorySlug,
+  TextStatus,
+} from "@/app/data/texts";
 
-type TextStatus = "available" | "coming-soon" | "in-progress";
+type PageParams = {
+  church: ChurchSlug;
+  category: CategorySlug;
+};
 
 interface PageProps {
-  params: {
-    church: ChurchSlug;
-    category: CategorySlug;
-  };
+  params: PageParams;
+  searchParams: { [key: string]: string | string[] | undefined };
 }
 
-export function generateStaticParams() {
-  const params = [];
+export function generateStaticParams(): PageParams[] {
+  const params: PageParams[] = [];
   for (const churchSlug in categoryData) {
     const church = categoryData[churchSlug as ChurchSlug];
     for (const categorySlug in church.categories) {
       params.push({
-        church: churchSlug,
-        category: categorySlug,
+        church: churchSlug as ChurchSlug,
+        category: categorySlug as CategorySlug,
       });
     }
   }
@@ -194,7 +200,7 @@ export default function CategoryPage({ params }: PageProps) {
 
                       <div className="flex items-center justify-between">
                         <div className="flex space-x-2">
-                          {text.status === "available" ? (
+                          {(text.status as TextStatus) === "available" ? (
                             <>
                               <Button asChild>
                                 <Link

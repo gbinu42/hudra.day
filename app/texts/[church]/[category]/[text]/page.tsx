@@ -24,29 +24,37 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { textData, ChurchSlug, CategorySlug, TextSlug } from "@/app/data/texts";
+import {
+  textData,
+  ChurchSlug,
+  CategorySlug,
+  TextSlug,
+  Text,
+  TextStatus,
+} from "@/app/data/texts";
 
-type TextStatus = "available" | "coming-soon" | "in-progress";
+type PageParams = {
+  church: ChurchSlug;
+  category: CategorySlug;
+  text: TextSlug;
+};
 
 interface PageProps {
-  params: {
-    church: ChurchSlug;
-    category: CategorySlug;
-    text: TextSlug;
-  };
+  params: PageParams;
+  searchParams: { [key: string]: string | string[] | undefined };
 }
 
-export function generateStaticParams() {
-  const params = [];
+export function generateStaticParams(): PageParams[] {
+  const params: PageParams[] = [];
   for (const churchSlug in textData) {
     const church = textData[churchSlug as ChurchSlug];
     for (const categorySlug in church) {
       const category = church[categorySlug as CategorySlug];
       for (const textSlug in category) {
         params.push({
-          church: churchSlug,
-          category: categorySlug,
-          text: textSlug,
+          church: churchSlug as ChurchSlug,
+          category: categorySlug as CategorySlug,
+          text: textSlug as TextSlug,
         });
       }
     }
@@ -57,17 +65,17 @@ export function generateStaticParams() {
 export default function TextPage({ params }: PageProps) {
   const { church: churchSlug, category: categorySlug, text: textSlug } = params;
 
-  const churchData = textData[churchSlug as ChurchSlug];
+  const churchData = textData[churchSlug];
   if (!churchData) {
     notFound();
   }
 
-  const categoryData = churchData[categorySlug as CategorySlug];
+  const categoryData = churchData[categorySlug];
   if (!categoryData) {
     notFound();
   }
 
-  const text = categoryData[textSlug as TextSlug];
+  const text = categoryData[textSlug] as Text;
   if (!text) {
     notFound();
   }

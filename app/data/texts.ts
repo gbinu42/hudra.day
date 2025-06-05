@@ -110,7 +110,31 @@ export const categoryData = {
   },
 } as const;
 
-export const textData = {
+export type TextStatus = "available" | "coming-soon" | "in-progress";
+
+export interface Text {
+  title: string;
+  subtitle: string;
+  description: string;
+  language: string;
+  translation: string;
+  originalLanguage: string;
+  date: string;
+  author: string;
+  source: string;
+  status: TextStatus;
+  content: string | null;
+}
+
+export type CategoryTexts = {
+  [key: string]: Text;
+};
+
+export type ChurchCategories = {
+  [key: string]: CategoryTexts;
+};
+
+export const textData: Record<ChurchSlug, ChurchCategories> = {
   "syro-malabar": {
     liturgy: {
       "qurbana-taksa": {
@@ -124,7 +148,7 @@ export const textData = {
         date: "Traditional (Ancient)",
         author: "Church Tradition",
         source: "Ancient Manuscripts",
-        status: "coming-soon" as const,
+        status: "coming-soon",
         content: null,
       },
       "ordination-rites": {
@@ -138,7 +162,7 @@ export const textData = {
         date: "Traditional (Ancient)",
         author: "Church Tradition",
         source: "Ancient Manuscripts",
-        status: "coming-soon" as const,
+        status: "coming-soon",
         content: null,
       },
     },
@@ -154,7 +178,7 @@ export const textData = {
         date: "Traditional",
         author: "Church Tradition",
         source: "Prayer Books",
-        status: "coming-soon" as const,
+        status: "coming-soon",
         content: null,
       },
     },
