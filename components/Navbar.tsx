@@ -172,7 +172,7 @@ export default function Navbar() {
                 Churches
               </Link>
               <Link
-                href="/editor"
+                href="/type"
                 className="text-lg font-medium text-primary hover:text-primary/80 transition-colors"
               >
                 East Syriac Editor

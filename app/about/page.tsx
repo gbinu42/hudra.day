@@ -157,7 +157,7 @@ export default function AboutPage() {
                       <Link href="/contact">Contact Us</Link>
                     </Button>
                     <Button variant="outline" asChild>
-                      <Link href="/editor">Try Our Editor</Link>
+                      <Link href="/type">Try Our Editor</Link>
                     </Button>
                   </div>
                 </section>

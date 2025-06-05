@@ -33,7 +33,7 @@ export default function Footer() {
             <ul className="space-y-2 text-white/80">
               <li>
                 <Link
-                  href="/editor"
+                  href="/type"
                   className="hover:text-white transition-colors"
                 >
                   Text Editor
