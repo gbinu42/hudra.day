@@ -6,7 +6,7 @@ export default function Footer() {
   return (
     <footer className="bg-primary text-white py-16">
       <div className="container mx-auto px-4 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-8">
           <div className="md:col-span-2">
             <div className="flex items-center space-x-2 mb-4">
               <Image
@@ -106,6 +106,15 @@ export default function Footer() {
                 </Link>
               </li>
             </ul>
+          </div>
+          <div className="flex flex-col items-center justify-start">
+            <Image
+              src="/images/sliwa.png"
+              alt="Sliwa"
+              width={150}
+              height={150}
+              className="rounded-xl"
+            />
           </div>
         </div>
         <div className="border-t border-white/20 mt-12 pt-8">
