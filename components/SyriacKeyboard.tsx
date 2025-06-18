@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { X, Move, Minimize2, Maximize2, Keyboard } from "lucide-react";
+import { X, Move, Minimize2, Maximize2 } from "lucide-react";
 
 interface SyriacKeyboardProps {
   isVisible: boolean;
