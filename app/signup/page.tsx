@@ -27,7 +27,6 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
-import { updateProfile } from "firebase/auth";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -77,13 +76,9 @@ export default function SignUpPage() {
     try {
       setIsSubmitting(true);
 
-      // Create user with email and password
-      const user = await signUp(values.email, values.password);
-
-      // Update user profile with display name
-      await updateProfile(user, {
-        displayName: values.name,
-      });
+      // Create user with email, password, and display name
+      // updateProfile is called automatically inside signUp
+      await signUp(values.email, values.password, "viewer", values.name);
 
       toast.success("Account created successfully! Welcome to Hudra!");
       router.push("/");
