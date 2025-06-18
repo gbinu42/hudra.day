@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -47,32 +47,51 @@ export function UserManagement() {
   const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
   const [newRole, setNewRole] = useState<UserRole>("viewer");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const isMountedRef = useRef(true);
+  const fetchingRef = useRef(false);
 
   const fetchUsers = useCallback(async () => {
-    // Don't fetch if user is not authenticated
-    if (!userProfile?.uid) {
-      console.log("No authenticated user, skipping fetch");
+    // Don't fetch if user is not authenticated or already fetching
+    if (!userProfile?.uid || fetchingRef.current) {
+      console.log("No authenticated user or already fetching, skipping fetch");
       setLoading(false);
       return;
     }
 
     try {
+      fetchingRef.current = true;
       setLoading(true);
       const usersList = await getAllUsers();
-      setUsers(usersList);
+
+      // Only update state if component is still mounted
+      if (isMountedRef.current) {
+        setUsers(usersList);
+      }
     } catch (error) {
       console.error("Error fetching users:", error);
     } finally {
-      setLoading(false);
+      fetchingRef.current = false;
+      if (isMountedRef.current) {
+        setLoading(false);
+      }
     }
-  }, [userProfile?.uid, getAllUsers]);
+  }, [userProfile?.uid]); // Removed getAllUsers from dependencies
 
   useEffect(() => {
     // Only fetch users if we have an authenticated user
-    if (userProfile && userProfile.uid) {
+    if (userProfile?.uid) {
       fetchUsers();
+    } else {
+      setLoading(false);
     }
-  }, [userProfile, fetchUsers]);
+  }, [userProfile?.uid, fetchUsers]); // Use only uid instead of full userProfile
+
+  useEffect(() => {
+    // Cleanup function to prevent state updates on unmounted component
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const handleRoleChange = async () => {
     if (!selectedUser || !userProfile) return;

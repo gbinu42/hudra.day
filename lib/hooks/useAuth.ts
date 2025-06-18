@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { User } from "firebase/auth";
 import { authService, userService } from "../firebase-services";
 import { UserRole, UserProfile } from "../types/auth";
@@ -148,23 +148,26 @@ export function useAuth() {
   };
 
   // Role management functions
-  const updateUserRole = async (uid: string, newRole: UserRole) => {
-    if (!user) throw new Error("No authenticated user");
+  const updateUserRole = useCallback(
+    async (uid: string, newRole: UserRole) => {
+      if (!user) throw new Error("No authenticated user");
 
-    try {
-      setError(null);
-      await userService.updateUserRole(uid, newRole, user.uid);
-    } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "An error occurred while updating user role";
-      setError(errorMessage);
-      throw error;
-    }
-  };
+      try {
+        setError(null);
+        await userService.updateUserRole(uid, newRole, user.uid);
+      } catch (error: unknown) {
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : "An error occurred while updating user role";
+        setError(errorMessage);
+        throw error;
+      }
+    },
+    [user]
+  );
 
-  const getAllUsers = async (): Promise<UserProfile[]> => {
+  const getAllUsers = useCallback(async (): Promise<UserProfile[]> => {
     if (!user) throw new Error("No authenticated user");
 
     try {
@@ -178,39 +181,45 @@ export function useAuth() {
       setError(errorMessage);
       throw error;
     }
-  };
+  }, [user]);
 
-  const deactivateUser = async (uid: string) => {
-    if (!user) throw new Error("No authenticated user");
+  const deactivateUser = useCallback(
+    async (uid: string) => {
+      if (!user) throw new Error("No authenticated user");
 
-    try {
-      setError(null);
-      await userService.deactivateUser(uid, user.uid);
-    } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "An error occurred while deactivating user";
-      setError(errorMessage);
-      throw error;
-    }
-  };
+      try {
+        setError(null);
+        await userService.deactivateUser(uid, user.uid);
+      } catch (error: unknown) {
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : "An error occurred while deactivating user";
+        setError(errorMessage);
+        throw error;
+      }
+    },
+    [user]
+  );
 
-  const activateUser = async (uid: string) => {
-    if (!user) throw new Error("No authenticated user");
+  const activateUser = useCallback(
+    async (uid: string) => {
+      if (!user) throw new Error("No authenticated user");
 
-    try {
-      setError(null);
-      await userService.activateUser(uid, user.uid);
-    } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "An error occurred while activating user";
-      setError(errorMessage);
-      throw error;
-    }
-  };
+      try {
+        setError(null);
+        await userService.activateUser(uid, user.uid);
+      } catch (error: unknown) {
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : "An error occurred while activating user";
+        setError(errorMessage);
+        throw error;
+      }
+    },
+    [user]
+  );
 
   // Helper methods
   const hasRole = (role: UserRole): boolean => {
