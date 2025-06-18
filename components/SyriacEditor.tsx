@@ -65,6 +65,8 @@ interface SyriacEditorProps {
   className?: string;
 }
 
+const isRTL = true;
+
 export default function SyriacEditor({
   content = "",
   onUpdate,
@@ -74,7 +76,6 @@ export default function SyriacEditor({
   const [selectedFont, setSelectedFont] = useState("Karshon");
   const [fontSize, setFontSize] = useState("24pt");
   const [fontColor, setFontColor] = useState("#000000");
-  const [isRTL, setIsRTL] = useState(true);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [keyboardCollapsed, setKeyboardCollapsed] = useState(false);
 
@@ -218,7 +219,7 @@ export default function SyriacEditor({
 
   // Handle mobile keyboard visibility based on clicks outside editor
   useEffect(() => {
-    const handleClickOutside = (event: Event) => {
+    const handleClickOutside = () => {
       // Remove mobile auto-dismiss logic - keyboard stays visible on mobile
       // Only handle desktop behavior if needed
       if (typeof window !== "undefined" && window.innerWidth >= 768) {

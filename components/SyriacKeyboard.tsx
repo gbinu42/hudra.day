@@ -318,7 +318,7 @@ export default function SyriacKeyboard({
       {!isCollapsed && (
         <div
           className={`
-            p-3 max-h-96 overflow-y-auto
+            p-3 max-h-[500px] overflow-y-auto
             max-md:p-2 max-md:pb-1 max-md:max-h-none
           `}
           dir="rtl"
@@ -435,16 +435,16 @@ export default function SyriacKeyboard({
           {/* Special Keys */}
           <div className="mt-3 pt-3 border-t border-border max-md:mt-2 max-md:pt-2">
             <div
-              className="grid grid-cols-4 gap-1 max-md:flex max-md:justify-between max-md:gap-1"
+              className="grid grid-cols-5 gap-1 max-md:flex max-md:justify-between max-md:gap-1"
               dir="ltr"
             >
               {/* Keep special keys LTR for clarity */}
-              {/* ABC/123 Toggle - Only on mobile */}
+              {/* ABC/123 Toggle */}
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setShowNumbers(!showNumbers)}
-                className="h-8 text-xs md:hidden max-md:w-12 max-md:h-8 max-md:text-xs max-md:flex-none"
+                className="h-8 text-xs px-2 max-md:w-12 max-md:h-8 max-md:text-xs max-md:flex-none"
               >
                 {showNumbers ? "ABC" : "123"}
               </Button>
@@ -452,7 +452,7 @@ export default function SyriacKeyboard({
               <Button
                 variant="outline"
                 size="sm"
-                className="h-8 text-xs max-md:flex-1 max-md:h-8 max-md:text-xs"
+                className="h-8 text-xs px-2 max-md:flex-1 max-md:h-8 max-md:text-xs"
                 onMouseDown={(e) => {
                   e.preventDefault();
                   onSpace();
@@ -464,7 +464,7 @@ export default function SyriacKeyboard({
               <Button
                 variant="outline"
                 size="sm"
-                className="h-8 text-xs max-md:w-12 max-md:h-8 max-md:text-sm max-md:flex-none"
+                className="h-8 text-xs px-2 max-md:w-12 max-md:h-8 max-md:text-sm max-md:flex-none"
                 onMouseDown={(e) => {
                   e.preventDefault();
                   onEnter();
@@ -476,7 +476,7 @@ export default function SyriacKeyboard({
               <Button
                 variant="outline"
                 size="sm"
-                className="h-8 text-xs max-md:w-12 max-md:h-8 max-md:text-sm max-md:flex-none"
+                className="h-8 text-xs px-2 max-md:w-12 max-md:h-8 max-md:text-sm max-md:flex-none"
                 onMouseDown={(e) => {
                   e.preventDefault();
                   onBackspace();
@@ -488,15 +488,14 @@ export default function SyriacKeyboard({
               <Button
                 variant="destructive"
                 size="sm"
-                className="h-8 text-xs max-md:w-12 max-md:h-8 max-md:text-xs max-md:flex-none"
+                className="h-8 text-xs px-2 max-md:w-12 max-md:h-8 max-md:text-xs max-md:flex-none"
                 onMouseDown={(e) => {
                   e.preventDefault();
                   onClear();
                 }}
                 title="Clear All"
               >
-                <span className="md:inline hidden">Clear</span>
-                <Trash2 size={16} className="md:hidden" />
+                <Trash2 size={16} />
               </Button>
             </div>
           </div>
