@@ -439,8 +439,9 @@ export default function SyriacEditor({
 
       {/* Editor Content */}
       <div
-        className="min-h-[400px] p-6 focus-within:outline-none"
+        className="min-h-[400px] p-6 focus-within:outline-none cursor-text"
         dir={isRTL ? "rtl" : "ltr"}
+        onClick={() => editor?.chain().focus().run()}
       >
         <EditorContent editor={editor} className="focus:outline-none" />
         <style jsx global>{`
@@ -458,11 +459,17 @@ export default function SyriacEditor({
       <div className="border-t border-border bg-muted/30 px-3 py-2">
         <div className="flex justify-between items-center text-sm text-muted-foreground">
           <div className="flex items-center gap-4">
-            <span>Font: {isFontMixed ? "Mixed" : currentFont}</span>
-            <span>Size: {isSizeMixed ? "Mixed" : currentFontSize}</span>
-            <span>Color: {isColorMixed ? "Mixed" : currentColor}</span>
-            <span>Align: {isAlignMixed ? "Mixed" : currentAlign}</span>
-            <span>Direction: {isRTL ? "Right-to-Left" : "Left-to-Right"}</span>
+            <span>
+              Built with ❤️ by{" "}
+              <a
+                href="https://hendoacademy.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className=" hover:text-blue-800 dark:hover:text-blue-300 underline"
+              >
+                Hendo Academy
+              </a>
+            </span>
           </div>
           <div className="flex items-center gap-2">
             {!editable && (
