@@ -73,11 +73,11 @@ export default function SyriacEditor({
   const [selectedFont, setSelectedFont] = useState("Karshon");
   const [fontSize, setFontSize] = useState("24pt");
   const [fontColor, setFontColor] = useState("#000000");
-  const [isRTL, setIsRTL] = useState(true);
+  const isRTL = true;
 
   // Current selection attributes
   const [currentFont, setCurrentFont] = useState("Karshon");
-  const [currentFontSize, setCurrentFontSize] = useState("28px");
+  const [currentFontSize, setCurrentFontSize] = useState("24pt");
   const [currentColor, setCurrentColor] = useState("#000000");
   const [currentAlign, setCurrentAlign] = useState(isRTL ? "right" : "left");
 
@@ -126,7 +126,7 @@ export default function SyriacEditor({
       }
       updateCurrentAttributes();
     },
-    onSelectionUpdate: ({ editor }) => {
+    onSelectionUpdate: () => {
       updateCurrentAttributes();
     },
     onCreate: ({ editor }) => {
@@ -160,12 +160,12 @@ export default function SyriacEditor({
     } else {
       // Check for mixed formatting in selection
       const doc = editor.state.doc;
-      let fonts = new Set();
-      let sizes = new Set();
-      let colors = new Set();
-      let aligns = new Set();
+      const fonts = new Set();
+      const sizes = new Set();
+      const colors = new Set();
+      const aligns = new Set();
 
-      doc.nodesBetween(from, to, (node, pos) => {
+      doc.nodesBetween(from, to, (node) => {
         if (node.isText && node.marks) {
           const textStyleMark = node.marks.find(
             (mark) => mark.type.name === "textStyle"
