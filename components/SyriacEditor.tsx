@@ -28,7 +28,9 @@ import {
   Palette,
   Undo,
   Redo,
+  Keyboard,
 } from "lucide-react";
+import SyriacKeyboard from "./SyriacKeyboard";
 
 const fonts = [
   { name: "East Syriac Adiabene", value: "Karshon" },
@@ -74,6 +76,9 @@ export default function SyriacEditor({
   const [fontSize, setFontSize] = useState("24pt");
   const [fontColor, setFontColor] = useState("#000000");
   const isRTL = true;
+
+  // Keyboard state
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
 
   // Current selection attributes
   const [currentFont, setCurrentFont] = useState("Karshon");
@@ -240,6 +245,54 @@ export default function SyriacEditor({
     [editor]
   );
 
+  // Keyboard handlers
+  const handleKeyboardToggle = useCallback(() => {
+    setKeyboardVisible(!keyboardVisible);
+  }, [keyboardVisible]);
+
+  const handleKeyPress = useCallback(
+    (key: string) => {
+      if (!editor) return;
+      editor.chain().focus().insertContent(key).run();
+    },
+    [editor]
+  );
+
+  const handleKeyboardBackspace = useCallback(() => {
+    if (!editor) return;
+    const { from, to } = editor.state.selection;
+    if (from === to && from > 0) {
+      // Delete character before cursor
+      editor
+        .chain()
+        .focus()
+        .deleteRange({ from: from - 1, to: from })
+        .run();
+    } else if (from !== to) {
+      // Delete selection
+      editor.chain().focus().deleteSelection().run();
+    }
+  }, [editor]);
+
+  const handleKeyboardEnter = useCallback(() => {
+    if (!editor) return;
+    editor.chain().focus().enter().run();
+  }, [editor]);
+
+  const handleKeyboardClear = useCallback(() => {
+    if (!editor) return;
+    if (
+      confirm("Are you sure you want to clear all text? This cannot be undone.")
+    ) {
+      editor.chain().focus().clearContent().run();
+    }
+  }, [editor]);
+
+  const handleKeyboardSpace = useCallback(() => {
+    if (!editor) return;
+    editor.chain().focus().insertContent(" ").run();
+  }, [editor]);
+
   if (!editor) {
     return (
       <div
@@ -254,237 +307,272 @@ export default function SyriacEditor({
   }
 
   return (
-    <div
-      className={`w-full max-w-4xl mx-auto border border-border rounded-lg overflow-hidden bg-card ${className}`}
-    >
-      {/* Toolbar */}
-      <div className="border-b border-border bg-muted/30 p-3">
-        <div className="flex flex-wrap items-center gap-2">
-          {/* Font Selection */}
-          <div className="flex items-center gap-2">
-            <Languages size={16} />
-            <Select
-              value={isFontMixed ? "mixed" : currentFont}
-              onValueChange={handleFontChange}
-            >
-              <SelectTrigger className="w-48">
-                <SelectValue
-                  placeholder={isFontMixed ? "Mixed" : "Select font"}
-                />
-              </SelectTrigger>
-              <SelectContent>
-                {isFontMixed && (
-                  <SelectItem value="mixed" disabled>
-                    Mixed Fonts
-                  </SelectItem>
-                )}
-                {fonts.map((font) => (
-                  <SelectItem key={font.value} value={font.value}>
-                    <span style={{ fontFamily: font.value }}>{font.name}</span>
-                  </SelectItem>
+    <>
+      <div
+        className={`w-full max-w-4xl mx-auto border border-border rounded-lg overflow-hidden bg-card ${className}`}
+      >
+        {/* Toolbar */}
+        <div className="border-b border-border bg-muted/30 p-3">
+          <div className="flex flex-wrap items-center gap-2">
+            {/* Font Selection */}
+            <div className="flex items-center gap-2">
+              <Languages size={16} />
+              <Select
+                value={isFontMixed ? "mixed" : currentFont}
+                onValueChange={handleFontChange}
+              >
+                <SelectTrigger className="w-48">
+                  <SelectValue
+                    placeholder={isFontMixed ? "Mixed" : "Select font"}
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  {isFontMixed && (
+                    <SelectItem value="mixed" disabled>
+                      Mixed Fonts
+                    </SelectItem>
+                  )}
+                  {fonts.map((font) => (
+                    <SelectItem key={font.value} value={font.value}>
+                      <span style={{ fontFamily: font.value }}>
+                        {font.name}
+                      </span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <Separator orientation="vertical" className="h-6" />
+
+            {/* Font Size */}
+            <div className="flex items-center gap-2">
+              <Type size={16} />
+              <Select
+                value={isSizeMixed ? "mixed" : currentFontSize}
+                onValueChange={handleFontSizeChange}
+              >
+                <SelectTrigger className="w-20">
+                  <SelectValue placeholder={isSizeMixed ? "Mixed" : "Size"} />
+                </SelectTrigger>
+                <SelectContent>
+                  {isSizeMixed && (
+                    <SelectItem value="mixed" disabled>
+                      Mixed
+                    </SelectItem>
+                  )}
+                  {fontSizes.map((size) => (
+                    <SelectItem key={size.value} value={size.value}>
+                      {size.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <Separator orientation="vertical" className="h-6" />
+
+            {/* Font Color */}
+            <div className="flex items-center gap-2">
+              <Palette size={16} />
+              <div className="flex items-center gap-1">
+                {/* Main Colors - Simple */}
+                {mainColors.map((color) => (
+                  <button
+                    key={color.value}
+                    className={`w-5 h-5 rounded border cursor-pointer ${
+                      !isColorMixed && currentColor === color.value
+                        ? "ring-1 ring-gray-400"
+                        : ""
+                    } ${isColorMixed ? "opacity-50" : ""}`}
+                    style={{ backgroundColor: color.value }}
+                    onClick={() => handleColorChange(color.value)}
+                    title={
+                      isColorMixed
+                        ? `${color.name} (Mixed colors selected)`
+                        : color.name
+                    }
+                  />
                 ))}
-              </SelectContent>
-            </Select>
-          </div>
 
-          <Separator orientation="vertical" className="h-6" />
-
-          {/* Font Size */}
-          <div className="flex items-center gap-2">
-            <Type size={16} />
-            <Select
-              value={isSizeMixed ? "mixed" : currentFontSize}
-              onValueChange={handleFontSizeChange}
-            >
-              <SelectTrigger className="w-20">
-                <SelectValue placeholder={isSizeMixed ? "Mixed" : "Size"} />
-              </SelectTrigger>
-              <SelectContent>
-                {isSizeMixed && (
-                  <SelectItem value="mixed" disabled>
-                    Mixed
-                  </SelectItem>
-                )}
-                {fontSizes.map((size) => (
-                  <SelectItem key={size.value} value={size.value}>
-                    {size.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <Separator orientation="vertical" className="h-6" />
-
-          {/* Font Color */}
-          <div className="flex items-center gap-2">
-            <Palette size={16} />
-            <div className="flex items-center gap-1">
-              {/* Main Colors - Simple */}
-              {mainColors.map((color) => (
-                <button
-                  key={color.value}
-                  className={`w-5 h-5 rounded border cursor-pointer ${
-                    !isColorMixed && currentColor === color.value
-                      ? "ring-1 ring-gray-400"
-                      : ""
-                  } ${isColorMixed ? "opacity-50" : ""}`}
-                  style={{ backgroundColor: color.value }}
-                  onClick={() => handleColorChange(color.value)}
+                {/* Custom Color */}
+                <Input
+                  type="color"
+                  value={isColorMixed ? "#808080" : currentColor}
+                  onChange={(e) => handleColorChange(e.target.value)}
+                  className="w-5 h-5 p-0 border rounded cursor-pointer"
                   title={
-                    isColorMixed
-                      ? `${color.name} (Mixed colors selected)`
-                      : color.name
+                    isColorMixed ? "Custom (Mixed colors selected)" : "Custom"
                   }
+                  disabled={isColorMixed}
                 />
-              ))}
+              </div>
+              {isColorMixed && (
+                <span className="text-xs text-muted-foreground">Mixed</span>
+              )}
+            </div>
 
-              {/* Custom Color */}
-              <Input
-                type="color"
-                value={isColorMixed ? "#808080" : currentColor}
-                onChange={(e) => handleColorChange(e.target.value)}
-                className="w-5 h-5 p-0 border rounded cursor-pointer"
-                title={
-                  isColorMixed ? "Custom (Mixed colors selected)" : "Custom"
+            <Separator orientation="vertical" className="h-6" />
+
+            {/* Text Alignment */}
+            <div className="flex items-center gap-1">
+              <Button
+                variant={
+                  !isAlignMixed && currentAlign === (isRTL ? "right" : "left")
+                    ? "default"
+                    : "ghost"
                 }
-                disabled={isColorMixed}
+                size="sm"
+                onClick={() => handleAlignChange(isRTL ? "right" : "left")}
+                className={isAlignMixed ? "opacity-50" : ""}
+              >
+                {isRTL ? <AlignRight size={16} /> : <AlignLeft size={16} />}
+              </Button>
+              <Button
+                variant={
+                  !isAlignMixed && currentAlign === "center"
+                    ? "default"
+                    : "ghost"
+                }
+                size="sm"
+                onClick={() => handleAlignChange("center")}
+                className={isAlignMixed ? "opacity-50" : ""}
+              >
+                <AlignCenter size={16} />
+              </Button>
+              <Button
+                variant={
+                  !isAlignMixed && currentAlign === (isRTL ? "left" : "right")
+                    ? "default"
+                    : "ghost"
+                }
+                size="sm"
+                onClick={() => handleAlignChange(isRTL ? "left" : "right")}
+                className={isAlignMixed ? "opacity-50" : ""}
+              >
+                {isRTL ? <AlignLeft size={16} /> : <AlignRight size={16} />}
+              </Button>
+              <Button
+                variant={
+                  !isAlignMixed && currentAlign === "justify"
+                    ? "default"
+                    : "ghost"
+                }
+                size="sm"
+                onClick={() => handleAlignChange("justify")}
+                className={isAlignMixed ? "opacity-50" : ""}
+              >
+                <AlignJustify size={16} />
+              </Button>
+              {isAlignMixed && (
+                <span className="text-xs text-muted-foreground ml-1">
+                  Mixed
+                </span>
+              )}
+            </div>
+
+            <Separator orientation="vertical" className="h-6" />
+
+            {/* Undo/Redo */}
+            <div className="flex items-center gap-1">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => editor.chain().focus().undo().run()}
+                disabled={!editor.can().chain().focus().undo().run()}
+                title="Undo"
+              >
+                <Undo size={16} />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => editor.chain().focus().redo().run()}
+                disabled={!editor.can().chain().focus().redo().run()}
+                title="Redo"
+              >
+                <Redo size={16} />
+              </Button>
+            </div>
+
+            <Separator orientation="vertical" className="h-6" />
+
+            {/* Keyboard Toggle */}
+            <div className="flex items-center gap-2">
+              <span className="text-sm">Keyboard</span>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={keyboardVisible}
+                  onChange={(e) => setKeyboardVisible(e.target.checked)}
+                  className="sr-only peer"
+                />
+                <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        {/* Editor Content */}
+        <div
+          className="min-h-[400px] p-6 focus-within:outline-none cursor-text"
+          dir={isRTL ? "rtl" : "ltr"}
+          onClick={() => editor?.chain().focus().run()}
+        >
+          <EditorContent editor={editor} className="focus:outline-none" />
+          <style jsx global>{`
+            .ProseMirror ::selection {
+              background-color: #e5e7eb !important; /* Light gray */
+            }
+
+            .ProseMirror ::-moz-selection {
+              background-color: #e5e7eb !important; /* Light gray for Firefox */
+            }
+          `}</style>
+        </div>
+
+        {/* Status Bar */}
+        <div className="border-t border-border bg-muted/30 px-3 py-2">
+          <div className="flex justify-between items-center text-sm text-muted-foreground">
+            <div className="flex items-center gap-4">
+              <span>
+                Built with ❤️ by{" "}
+                <a
+                  href="https://www.hendoacademy.org"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className=" hover:text-blue-800 dark:hover:text-blue-300 underline"
+                >
+                  Hendo Academy
+                </a>
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              {!editable && (
+                <span className="text-orange-600 dark:text-orange-400">
+                  Read-only
+                </span>
+              )}
+              <span
+                className={`inline-block w-2 h-2 rounded-full ${
+                  editor.isFocused ? "bg-green-500" : "bg-gray-400"
+                }`}
               />
             </div>
-            {isColorMixed && (
-              <span className="text-xs text-muted-foreground">Mixed</span>
-            )}
-          </div>
-
-          <Separator orientation="vertical" className="h-6" />
-
-          {/* Text Alignment */}
-          <div className="flex items-center gap-1">
-            <Button
-              variant={
-                !isAlignMixed && currentAlign === (isRTL ? "right" : "left")
-                  ? "default"
-                  : "ghost"
-              }
-              size="sm"
-              onClick={() => handleAlignChange(isRTL ? "right" : "left")}
-              className={isAlignMixed ? "opacity-50" : ""}
-            >
-              {isRTL ? <AlignRight size={16} /> : <AlignLeft size={16} />}
-            </Button>
-            <Button
-              variant={
-                !isAlignMixed && currentAlign === "center" ? "default" : "ghost"
-              }
-              size="sm"
-              onClick={() => handleAlignChange("center")}
-              className={isAlignMixed ? "opacity-50" : ""}
-            >
-              <AlignCenter size={16} />
-            </Button>
-            <Button
-              variant={
-                !isAlignMixed && currentAlign === (isRTL ? "left" : "right")
-                  ? "default"
-                  : "ghost"
-              }
-              size="sm"
-              onClick={() => handleAlignChange(isRTL ? "left" : "right")}
-              className={isAlignMixed ? "opacity-50" : ""}
-            >
-              {isRTL ? <AlignLeft size={16} /> : <AlignRight size={16} />}
-            </Button>
-            <Button
-              variant={
-                !isAlignMixed && currentAlign === "justify"
-                  ? "default"
-                  : "ghost"
-              }
-              size="sm"
-              onClick={() => handleAlignChange("justify")}
-              className={isAlignMixed ? "opacity-50" : ""}
-            >
-              <AlignJustify size={16} />
-            </Button>
-            {isAlignMixed && (
-              <span className="text-xs text-muted-foreground ml-1">Mixed</span>
-            )}
-          </div>
-
-          <Separator orientation="vertical" className="h-6" />
-
-          {/* Undo/Redo */}
-          <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => editor.chain().focus().undo().run()}
-              disabled={!editor.can().chain().focus().undo().run()}
-              title="Undo"
-            >
-              <Undo size={16} />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => editor.chain().focus().redo().run()}
-              disabled={!editor.can().chain().focus().redo().run()}
-              title="Redo"
-            >
-              <Redo size={16} />
-            </Button>
           </div>
         </div>
       </div>
 
-      {/* Editor Content */}
-      <div
-        className="min-h-[400px] p-6 focus-within:outline-none cursor-text"
-        dir={isRTL ? "rtl" : "ltr"}
-        onClick={() => editor?.chain().focus().run()}
-      >
-        <EditorContent editor={editor} className="focus:outline-none" />
-        <style jsx global>{`
-          .ProseMirror ::selection {
-            background-color: #e5e7eb !important; /* Light gray */
-          }
-
-          .ProseMirror ::-moz-selection {
-            background-color: #e5e7eb !important; /* Light gray for Firefox */
-          }
-        `}</style>
-      </div>
-
-      {/* Status Bar */}
-      <div className="border-t border-border bg-muted/30 px-3 py-2">
-        <div className="flex justify-between items-center text-sm text-muted-foreground">
-          <div className="flex items-center gap-4">
-            <span>
-              Built with ❤️ by{" "}
-              <a
-                href="https://hendoacademy.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className=" hover:text-blue-800 dark:hover:text-blue-300 underline"
-              >
-                Hendo Academy
-              </a>
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            {!editable && (
-              <span className="text-orange-600 dark:text-orange-400">
-                Read-only
-              </span>
-            )}
-            <span
-              className={`inline-block w-2 h-2 rounded-full ${
-                editor.isFocused ? "bg-green-500" : "bg-gray-400"
-              }`}
-            />
-          </div>
-        </div>
-      </div>
-    </div>
+      {/* Syriac Keyboard - Outside main container for proper floating */}
+      <SyriacKeyboard
+        isVisible={keyboardVisible}
+        onToggle={handleKeyboardToggle}
+        onKeyPress={handleKeyPress}
+        onBackspace={handleKeyboardBackspace}
+        onEnter={handleKeyboardEnter}
+        onClear={handleKeyboardClear}
+        onSpace={handleKeyboardSpace}
+      />
+    </>
   );
 }
