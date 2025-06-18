@@ -88,29 +88,15 @@ export default function Navbar() {
           {!loading && user ? (
             // Show user info and sign out when authenticated
             <div className="flex items-center space-x-3">
-              <div className="flex items-center space-x-2 text-sm">
+              <Link
+                href="/profile"
+                className="flex items-center space-x-2 text-sm hover:text-primary/80 transition-colors"
+              >
                 <User className="h-4 w-4 text-primary" />
-                <span className="text-muted-foreground">
+                <span className="text-muted-foreground hover:text-primary">
                   {user.displayName || user.email}
                 </span>
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-primary hover:text-primary/80"
-                asChild
-              >
-                <Link href="/profile">Profile</Link>
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleSignOut}
-                className="text-primary hover:text-primary/80"
-              >
-                <LogOut className="h-4 w-4 mr-1" />
-                Sign Out
-              </Button>
+              </Link>
             </div>
           ) : !loading ? (
             // Show signin/signup when not authenticated
@@ -183,30 +169,15 @@ export default function Navbar() {
                 {!loading && user ? (
                   // Show user info and sign out when authenticated
                   <>
-                    <div className="flex items-center space-x-2 p-3 bg-primary/5 rounded-lg">
+                    <Link
+                      href="/profile"
+                      className="flex items-center space-x-2 p-3 bg-primary/5 rounded-lg hover:bg-primary/10 transition-colors"
+                    >
                       <User className="h-4 w-4 text-primary" />
                       <span className="text-sm text-muted-foreground">
                         {user.displayName || user.email}
                       </span>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      className="w-full text-primary hover:text-primary/80 justify-start"
-                      asChild
-                    >
-                      <Link href="/profile">
-                        <User className="h-4 w-4 mr-2" />
-                        View Profile
-                      </Link>
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="w-full text-primary hover:text-primary/80 justify-start"
-                      onClick={handleSignOut}
-                    >
-                      <LogOut className="h-4 w-4 mr-2" />
-                      Sign Out
-                    </Button>
+                    </Link>
                   </>
                 ) : !loading ? (
                   // Show signin/signup when not authenticated
