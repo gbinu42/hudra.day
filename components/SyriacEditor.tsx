@@ -28,7 +28,6 @@ import {
   Palette,
   Undo,
   Redo,
-  Keyboard,
 } from "lucide-react";
 import SyriacKeyboard from "./SyriacKeyboard";
 
