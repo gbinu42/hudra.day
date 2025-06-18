@@ -118,7 +118,8 @@ export function ProtectedRoute({
               <div>
                 <h3 className="text-lg font-semibold">Access Denied</h3>
                 <p className="text-muted-foreground">
-                  You don't have the required permissions to access this page.
+                  You don&apos;t have the required permissions to access this
+                  page.
                 </p>
                 <p className="text-sm text-muted-foreground">
                   Required role: {RBACService.getRoleDisplayName(requiredRole)}

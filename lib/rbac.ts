@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  UserRole,
-  UserProfile,
-  ROLE_PERMISSIONS,
-  ROLE_HIERARCHY,
-} from "./types/auth";
+import { UserRole, ROLE_PERMISSIONS, ROLE_HIERARCHY } from "./types/auth";
 
 // RBAC Utility Class
 export class RBACService {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -23,7 +23,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
 import { useAuth } from "@/lib/hooks/useAuth";
@@ -49,7 +48,7 @@ export function UserManagement() {
   const [newRole, setNewRole] = useState<UserRole>("viewer");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     // Don't fetch if user is not authenticated
     if (!userProfile?.uid) {
       console.log("No authenticated user, skipping fetch");
@@ -66,14 +65,14 @@ export function UserManagement() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [userProfile?.uid, getAllUsers]);
 
   useEffect(() => {
     // Only fetch users if we have an authenticated user
     if (userProfile && userProfile.uid) {
       fetchUsers();
     }
-  }, [userProfile]);
+  }, [userProfile, fetchUsers]);
 
   const handleRoleChange = async () => {
     if (!selectedUser || !userProfile) return;
@@ -149,7 +148,7 @@ export function UserManagement() {
       <Card>
         <CardContent className="pt-6">
           <p className="text-center text-muted-foreground">
-            You don't have permission to access user management.
+            You don&apos;t have permission to access user management.
           </p>
         </CardContent>
       </Card>

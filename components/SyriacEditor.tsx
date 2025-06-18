@@ -211,7 +211,7 @@ export default function SyriacEditor({
       if (colors.size === 1) setCurrentColor(Array.from(colors)[0] as string);
       if (aligns.size === 1) setCurrentAlign(Array.from(aligns)[0] as string);
     }
-  }, [editor, selectedFont, fontSize, fontColor, isRTL]);
+  }, [editor, selectedFont, fontSize, fontColor]);
 
   useEffect(() => {
     updateCurrentAttributes();

@@ -45,7 +45,7 @@ export const authService = {
     email: string,
     password: string,
     role: UserRole = "viewer",
-    displayName: string
+    displayName?: string
   ): Promise<User> {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
@@ -54,9 +54,11 @@ export const authService = {
     );
 
     // Update Firebase Auth profile with display name immediately after user creation
-    await updateProfile(userCredential.user, {
-      displayName: displayName,
-    });
+    if (displayName) {
+      await updateProfile(userCredential.user, {
+        displayName: displayName,
+      });
+    }
 
     // Create user profile in Firestore with display name
     await userService.createUserProfile(userCredential.user, role, displayName);
@@ -123,7 +125,7 @@ export const userService = {
     role: UserRole,
     displayName?: string
   ): Promise<void> {
-    const userProfile: any = {
+    const userProfile: Partial<UserProfile> = {
       uid: user.uid,
       email: user.email!,
       role,
