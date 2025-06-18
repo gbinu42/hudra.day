@@ -74,10 +74,9 @@ export default function SyriacEditor({
   const [selectedFont, setSelectedFont] = useState("Karshon");
   const [fontSize, setFontSize] = useState("24pt");
   const [fontColor, setFontColor] = useState("#000000");
-  const isRTL = true;
-
-  // Keyboard state
+  const [isRTL, setIsRTL] = useState(true);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const [keyboardCollapsed, setKeyboardCollapsed] = useState(false);
 
   // Current selection attributes
   const [currentFont, setCurrentFont] = useState("Karshon");
@@ -139,6 +138,18 @@ export default function SyriacEditor({
       editor.commands.setColor(fontColor);
       editor.commands.setFontSize(fontSize);
       updateCurrentAttributes();
+    },
+    onFocus: () => {
+      // Show keyboard on mobile when editor is focused
+      if (typeof window !== "undefined" && window.innerWidth < 768) {
+        setKeyboardVisible(true);
+      }
+    },
+    onBlur: () => {
+      // Hide keyboard on mobile when editor loses focus
+      if (typeof window !== "undefined" && window.innerWidth < 768) {
+        setKeyboardVisible(false);
+      }
     },
   });
 
@@ -205,6 +216,43 @@ export default function SyriacEditor({
     updateCurrentAttributes();
   }, [updateCurrentAttributes]);
 
+  // Handle mobile keyboard visibility based on clicks outside editor
+  useEffect(() => {
+    const handleClickOutside = (event: Event) => {
+      // Remove mobile auto-dismiss logic - keyboard stays visible on mobile
+      // Only handle desktop behavior if needed
+      if (typeof window !== "undefined" && window.innerWidth >= 768) {
+        // Desktop behavior can stay the same if needed
+        return;
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
+  }, [keyboardVisible]);
+
+  // Control hardware keyboard on mobile based on Syriac keyboard state
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
+      const proseMirrorElement = document.querySelector(
+        ".ProseMirror"
+      ) as HTMLElement;
+      if (proseMirrorElement) {
+        // Prevent hardware keyboard when Syriac keyboard is visible and not collapsed
+        if (keyboardVisible && !keyboardCollapsed) {
+          proseMirrorElement.setAttribute("inputmode", "none");
+        } else {
+          proseMirrorElement.setAttribute("inputmode", "text");
+        }
+      }
+    }
+  }, [keyboardVisible, keyboardCollapsed]);
+
   const handleFontChange = useCallback(
     (value: string) => {
       setSelectedFont(value);
@@ -248,6 +296,10 @@ export default function SyriacEditor({
   const handleKeyboardToggle = useCallback(() => {
     setKeyboardVisible(!keyboardVisible);
   }, [keyboardVisible]);
+
+  const handleKeyboardCollapseChange = useCallback((isCollapsed: boolean) => {
+    setKeyboardCollapsed(isCollapsed);
+  }, []);
 
   const handleKeyPress = useCallback(
     (key: string) => {
@@ -496,8 +548,8 @@ export default function SyriacEditor({
 
             <Separator orientation="vertical" className="h-6" />
 
-            {/* Keyboard Toggle */}
-            <div className="flex items-center gap-2">
+            {/* Keyboard Toggle - Hidden on mobile */}
+            <div className="hidden md:flex items-center gap-2">
               <span className="text-sm">Keyboard</span>
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
@@ -516,7 +568,13 @@ export default function SyriacEditor({
         <div
           className="min-h-[400px] p-6 focus-within:outline-none cursor-text"
           dir={isRTL ? "rtl" : "ltr"}
-          onClick={() => editor?.chain().focus().run()}
+          onClick={() => {
+            editor?.chain().focus().run();
+            // Show keyboard on mobile when clicking editor area
+            if (typeof window !== "undefined" && window.innerWidth < 768) {
+              setKeyboardVisible(true);
+            }
+          }}
         >
           <EditorContent editor={editor} className="focus:outline-none" />
           <style jsx global>{`
@@ -566,12 +624,16 @@ export default function SyriacEditor({
       <SyriacKeyboard
         isVisible={keyboardVisible}
         onToggle={handleKeyboardToggle}
+        onCollapseChange={handleKeyboardCollapseChange}
         onKeyPress={handleKeyPress}
         onBackspace={handleKeyboardBackspace}
         onEnter={handleKeyboardEnter}
         onClear={handleKeyboardClear}
         onSpace={handleKeyboardSpace}
       />
+
+      {/* Mobile keyboard spacer - prevents content from being hidden */}
+      {keyboardVisible && <div className="h-80 md:hidden" aria-hidden="true" />}
     </>
   );
 }
