@@ -218,7 +218,10 @@ export default function SyriacKeyboard({
       variant="outline"
       size="sm"
       className={`h-8 min-w-8 text-lg p-1 ${isSpecial ? "bg-muted" : ""}`}
-      onClick={() => onKeyPress(char)}
+      onMouseDown={(e) => {
+        e.preventDefault(); // Prevent focus change
+        onKeyPress(char);
+      }}
       title={title}
       style={{
         fontFamily: "Karshon, East Syriac Adiabene, East Syriac Malankara",
@@ -395,7 +398,10 @@ export default function SyriacKeyboard({
                 variant="outline"
                 size="sm"
                 className="h-8 text-xs"
-                onClick={onSpace}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  onSpace();
+                }}
                 title="Space"
               >
                 Space
@@ -404,7 +410,10 @@ export default function SyriacKeyboard({
                 variant="outline"
                 size="sm"
                 className="h-8 text-xs"
-                onClick={onEnter}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  onEnter();
+                }}
                 title="Enter"
               >
                 ↵
@@ -413,7 +422,10 @@ export default function SyriacKeyboard({
                 variant="outline"
                 size="sm"
                 className="h-8 text-xs"
-                onClick={onBackspace}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  onBackspace();
+                }}
                 title="Backspace"
               >
                 ⌫
@@ -422,7 +434,10 @@ export default function SyriacKeyboard({
                 variant="destructive"
                 size="sm"
                 className="h-8 text-xs"
-                onClick={onClear}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  onClear();
+                }}
                 title="Clear All"
               >
                 Clear
