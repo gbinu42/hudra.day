@@ -37,6 +37,7 @@ import {
 } from "firebase/storage";
 import { auth, db, storage } from "./firebase";
 import { UserRole, UserProfile, ROLE_PERMISSIONS } from "./types/auth";
+import { CreateBookData } from "./types/book";
 
 // Authentication Services
 export const authService = {
@@ -343,5 +344,57 @@ export const storageService = {
   async getDownloadURL(path: string): Promise<string> {
     const storageRef = ref(storage, path);
     return await getDownloadURL(storageRef);
+  },
+};
+
+// Book Service
+export const bookService = {
+  // Get all books
+  async getAllBooks(): Promise<QuerySnapshot<DocumentData>> {
+    return await firestoreService.getCollection("books");
+  },
+
+  // Get book by ID
+  async getBookById(bookId: string): Promise<DocumentSnapshot<DocumentData>> {
+    return await firestoreService.getDocument("books", bookId);
+  },
+
+  // Create new book
+  async createBook(bookData: CreateBookData, userId: string): Promise<string> {
+    const newBook = {
+      ...bookData,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      createdBy: userId,
+      isPublished: false,
+    };
+    return await firestoreService.addDocument("books", newBook);
+  },
+
+  // Update book
+  async updateBook(
+    bookId: string,
+    bookData: Partial<CreateBookData>
+  ): Promise<void> {
+    const updateData = {
+      ...bookData,
+      updatedAt: new Date(),
+    };
+    await firestoreService.updateDocument("books", bookId, updateData);
+  },
+
+  // Delete book
+  async deleteBook(bookId: string): Promise<void> {
+    await firestoreService.deleteDocument("books", bookId);
+  },
+
+  // Search books
+  async searchBooks(
+    searchField: string,
+    searchValue: string
+  ): Promise<QuerySnapshot<DocumentData>> {
+    return await firestoreService.queryDocuments("books", [
+      { field: searchField, operator: "==", value: searchValue },
+    ]);
   },
 };

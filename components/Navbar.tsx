@@ -15,21 +15,13 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Menu, User, LogOut } from "lucide-react";
+import { Menu, User } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "@/lib/hooks/useAuth";
 
 export default function Navbar() {
-  const { user, loading, signOut } = useAuth();
-
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-    } catch (error) {
-      console.error("Sign out error:", error);
-    }
-  };
+  const { user, loading } = useAuth();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white shadow-sm">

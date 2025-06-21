@@ -75,7 +75,7 @@ export function UserManagement() {
         setLoading(false);
       }
     }
-  }, [userProfile?.uid]); // Removed getAllUsers from dependencies
+  }, [userProfile?.uid, getAllUsers]); // Removed getAllUsers from dependencies
 
   useEffect(() => {
     // Only fetch users if we have an authenticated user
