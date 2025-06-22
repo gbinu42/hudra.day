@@ -33,12 +33,16 @@ import {
 import SyriacKeyboard from "./SyriacKeyboard";
 
 const fonts = [
-  { name: "East Syriac Adiabene", value: "Karshon" },
+  { name: "East Syriac Adiabene", value: "East Syriac Adiabene" },
   { name: "East Syriac Malankara", value: "East Syriac Malankara" },
   {
     name: "East Syriac Malankara Classical",
     value: "East Syriac Malankara Classical",
   },
+  { name: "Karshon", value: "Karshon" },
+  { name: "East Syriac Ctesiphon", value: "East Syriac Ctesiphon" },
+  { name: "Estrangela Edessa", value: "Estrangelo Edessa" },
+  { name: "Estrangela Qenneshrin", value: "Estrangelo Qenneshrin" },
 ];
 
 const fontSizes = [
@@ -52,6 +56,33 @@ const fontSizes = [
   { label: "32pt", value: "32pt" },
   { label: "36pt", value: "36pt" },
   { label: "48pt", value: "48pt" },
+];
+
+const alignmentOptions = [
+  {
+    label: "Left",
+    value: "left",
+    icon: AlignLeft,
+    rtlValue: "right", // In RTL, "left" visually appears on the right
+  },
+  {
+    label: "Center",
+    value: "center",
+    icon: AlignCenter,
+    rtlValue: "center",
+  },
+  {
+    label: "Right",
+    value: "right",
+    icon: AlignRight,
+    rtlValue: "left", // In RTL, "right" visually appears on the left
+  },
+  {
+    label: "Justify",
+    value: "justify",
+    icon: AlignJustify,
+    rtlValue: "justify",
+  },
 ];
 
 const mainColors = [
@@ -115,6 +146,7 @@ export default function SyriacEditor({
 }: SyriacEditorProps) {
   const [selectedFont, setSelectedFont] = useState("Karshon");
   const [fontSize, setFontSize] = useState("24pt");
+  const [fontSizeInput, setFontSizeInput] = useState("24");
   const [fontColor, setFontColor] = useState("#000000");
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [keyboardCollapsed, setKeyboardCollapsed] = useState(false);
@@ -215,7 +247,11 @@ export default function SyriacEditor({
       const alignAttrs = editor.getAttributes("paragraph");
 
       setCurrentFont(attrs.fontFamily || selectedFont);
-      setCurrentFontSize(attrs.fontSize || fontSize);
+      const currentSize = attrs.fontSize || fontSize;
+      setCurrentFontSize(currentSize);
+      // Update input field with numeric value
+      const numericValue = currentSize.replace(/[^\d.]/g, "");
+      setFontSizeInput(numericValue);
       setCurrentColor(attrs.color || fontColor);
       setCurrentAlign(alignAttrs.textAlign || (isRTL ? "right" : "left"));
 
@@ -257,7 +293,13 @@ export default function SyriacEditor({
       setIsAlignMixed(aligns.size > 1);
 
       if (fonts.size === 1) setCurrentFont(Array.from(fonts)[0] as string);
-      if (sizes.size === 1) setCurrentFontSize(Array.from(sizes)[0] as string);
+      if (sizes.size === 1) {
+        const size = Array.from(sizes)[0] as string;
+        setCurrentFontSize(size);
+        // Update input field with numeric value
+        const numericValue = size.replace(/[^\d.]/g, "");
+        setFontSizeInput(numericValue);
+      }
       if (colors.size === 1) setCurrentColor(Array.from(colors)[0] as string);
       if (aligns.size === 1) setCurrentAlign(Array.from(aligns)[0] as string);
     }
@@ -319,9 +361,45 @@ export default function SyriacEditor({
       setFontSize(value);
       setCurrentFontSize(value);
       setIsSizeMixed(false);
+      // Extract numeric value for input field
+      const numericValue = value.replace(/[^\d.]/g, "");
+      setFontSizeInput(numericValue);
       editor?.chain().focus().setFontSize(value).run();
     },
     [editor]
+  );
+
+  const handleFontSizeInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      setFontSizeInput(value);
+    },
+    []
+  );
+
+  const handleFontSizeInputSubmit = useCallback(() => {
+    const numValue = parseFloat(fontSizeInput);
+    if (numValue >= 8 && numValue <= 72) {
+      const sizeValue = `${numValue}pt`;
+      setFontSize(sizeValue);
+      setCurrentFontSize(sizeValue);
+      setIsSizeMixed(false);
+      editor?.chain().focus().setFontSize(sizeValue).run();
+    } else {
+      // Reset to current size if invalid
+      const currentNumeric = currentFontSize.replace(/[^\d.]/g, "") || "24";
+      setFontSizeInput(currentNumeric);
+    }
+  }, [editor, fontSizeInput, currentFontSize]);
+
+  const handleFontSizeInputKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter") {
+        handleFontSizeInputSubmit();
+        (e.target as HTMLInputElement).blur();
+      }
+    },
+    [handleFontSizeInputSubmit]
   );
 
   const handleColorChange = useCallback(
@@ -418,14 +496,13 @@ export default function SyriacEditor({
           <div className="flex flex-wrap items-center gap-2">
             {/* Font Selection */}
             <div className="flex items-center gap-2">
-              <Languages size={16} />
               <Select
                 value={isFontMixed ? "mixed" : currentFont}
                 onValueChange={handleFontChange}
               >
-                <SelectTrigger className="w-48">
+                <SelectTrigger className="w-44">
                   <SelectValue
-                    placeholder={isFontMixed ? "Mixed" : "Select font"}
+                    placeholder={isFontMixed ? "Mixed Fonts" : "Select font"}
                   />
                 </SelectTrigger>
                 <SelectContent>
@@ -436,9 +513,7 @@ export default function SyriacEditor({
                   )}
                   {fonts.map((font) => (
                     <SelectItem key={font.value} value={font.value}>
-                      <span style={{ fontFamily: font.value }}>
-                        {font.name}
-                      </span>
+                      {font.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -449,34 +524,50 @@ export default function SyriacEditor({
 
             {/* Font Size */}
             <div className="flex items-center gap-2">
-              <Type size={16} />
-              <Select
-                value={isSizeMixed ? "mixed" : currentFontSize}
-                onValueChange={handleFontSizeChange}
-              >
-                <SelectTrigger className="w-20">
-                  <SelectValue placeholder={isSizeMixed ? "Mixed" : "Size"} />
-                </SelectTrigger>
-                <SelectContent>
-                  {isSizeMixed && (
-                    <SelectItem value="mixed" disabled>
-                      Mixed
-                    </SelectItem>
-                  )}
-                  {fontSizes.map((size) => (
-                    <SelectItem key={size.value} value={size.value}>
-                      {size.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="relative">
+                <Input
+                  type="text"
+                  value={isSizeMixed ? "Mixed" : fontSizeInput + "pt"}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^\d.]/g, "");
+                    setFontSizeInput(value);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleFontSizeInputSubmit();
+                      (e.target as HTMLInputElement).blur();
+                    }
+                  }}
+                  onBlur={handleFontSizeInputSubmit}
+                  placeholder={isSizeMixed ? "Mixed" : "Size"}
+                  className="w-18 h-9 text-center text-sm pr-6"
+                  disabled={isSizeMixed}
+                />
+                <Select
+                  value={isSizeMixed ? "mixed" : currentFontSize}
+                  onValueChange={handleFontSizeChange}
+                >
+                  <SelectTrigger className="absolute right-0 top-0 w-6 h-9 border-0 bg-transparent p-0 hover:bg-slate-100"></SelectTrigger>
+                  <SelectContent>
+                    {isSizeMixed && (
+                      <SelectItem value="mixed" disabled>
+                        Mixed
+                      </SelectItem>
+                    )}
+                    {fontSizes.map((size) => (
+                      <SelectItem key={size.value} value={size.value}>
+                        {size.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <Separator orientation="vertical" className="h-6" />
 
             {/* Font Color */}
             <div className="flex items-center gap-2">
-              <Palette size={16} />
               <div className="flex items-center gap-1">
                 {/* Main Colors - Simple */}
                 {mainColors.map((color) => (
@@ -517,60 +608,46 @@ export default function SyriacEditor({
             <Separator orientation="vertical" className="h-6" />
 
             {/* Text Alignment */}
-            <div className="flex items-center gap-1">
-              <Button
-                variant={
-                  !isAlignMixed && currentAlign === (isRTL ? "right" : "left")
-                    ? "default"
-                    : "ghost"
-                }
-                size="sm"
-                onClick={() => handleAlignChange(isRTL ? "right" : "left")}
-                className={isAlignMixed ? "opacity-50" : ""}
+            <div className="flex items-center gap-2">
+              <Select
+                value={isAlignMixed ? "mixed" : currentAlign}
+                onValueChange={handleAlignChange}
               >
-                {isRTL ? <AlignRight size={16} /> : <AlignLeft size={16} />}
-              </Button>
-              <Button
-                variant={
-                  !isAlignMixed && currentAlign === "center"
-                    ? "default"
-                    : "ghost"
-                }
-                size="sm"
-                onClick={() => handleAlignChange("center")}
-                className={isAlignMixed ? "opacity-50" : ""}
-              >
-                <AlignCenter size={16} />
-              </Button>
-              <Button
-                variant={
-                  !isAlignMixed && currentAlign === (isRTL ? "left" : "right")
-                    ? "default"
-                    : "ghost"
-                }
-                size="sm"
-                onClick={() => handleAlignChange(isRTL ? "left" : "right")}
-                className={isAlignMixed ? "opacity-50" : ""}
-              >
-                {isRTL ? <AlignLeft size={16} /> : <AlignRight size={16} />}
-              </Button>
-              <Button
-                variant={
-                  !isAlignMixed && currentAlign === "justify"
-                    ? "default"
-                    : "ghost"
-                }
-                size="sm"
-                onClick={() => handleAlignChange("justify")}
-                className={isAlignMixed ? "opacity-50" : ""}
-              >
-                <AlignJustify size={16} />
-              </Button>
-              {isAlignMixed && (
-                <span className="text-xs text-muted-foreground ml-1">
-                  Mixed
-                </span>
-              )}
+                <SelectTrigger className="w-16 h-10 [&>[data-radix-select-icon]]:hidden">
+                  {isAlignMixed ? (
+                    <span className="text-xs">Mix</span>
+                  ) : (
+                    (() => {
+                      const option = alignmentOptions.find((opt) =>
+                        isRTL
+                          ? opt.rtlValue === currentAlign
+                          : opt.value === currentAlign
+                      );
+                      const IconComponent = option?.icon || AlignLeft;
+                      return <IconComponent size={16} />;
+                    })()
+                  )}
+                </SelectTrigger>
+                <SelectContent>
+                  {isAlignMixed && (
+                    <SelectItem value="mixed" disabled>
+                      Mixed Alignment
+                    </SelectItem>
+                  )}
+                  {alignmentOptions.map((option) => {
+                    const IconComponent = option.icon;
+                    const value = isRTL ? option.rtlValue : option.value;
+                    return (
+                      <SelectItem key={option.value} value={value}>
+                        <div className="flex items-center gap-2">
+                          <IconComponent size={16} />
+                          <span>{option.label}</span>
+                        </div>
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
             </div>
 
             <Separator orientation="vertical" className="h-6" />
