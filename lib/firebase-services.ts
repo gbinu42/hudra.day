@@ -38,6 +38,30 @@ import {
 import { auth, db, storage } from "./firebase";
 import { UserRole, UserProfile, ROLE_PERMISSIONS } from "./types/auth";
 import { CreateBookData } from "./types/book";
+import { JSONContent } from "@tiptap/react";
+
+// Interface for update data
+interface PageUpdateData {
+  pageNumberInBook?: number;
+  currentTextJson?: JSONContent;
+  currentVersion?: number;
+  lastEditAt?: Date;
+  lastEditBy?: string;
+  edits?: EditData[];
+}
+
+// Interface for edit data
+interface EditData {
+  editId: string;
+  version: number;
+  textJson: JSONContent;
+  userId: string;
+  createdAt: Date;
+  status: "pending" | "approved" | "rejected";
+  verifiedBy?: string;
+  verifiedAt?: Date;
+  notes?: string;
+}
 
 // Authentication Services
 export const authService = {
@@ -396,5 +420,151 @@ export const bookService = {
     return await firestoreService.queryDocuments("books", [
       { field: searchField, operator: "==", value: searchValue },
     ]);
+  },
+};
+
+// Page Service for handling pages and their edits
+export const pageService = {
+  // Get pages for a book, ordered by pageNumber
+  async getPages(bookId: string): Promise<QuerySnapshot<DocumentData>> {
+    // Query without ordering to avoid composite index requirement
+    return await firestoreService.queryDocuments("pages", [
+      { field: "bookId", operator: "==", value: bookId },
+    ]);
+  },
+
+  // Get a specific page document
+  async getPage(pageId: string): Promise<DocumentSnapshot<DocumentData>> {
+    return await firestoreService.getDocument("pages", pageId);
+  },
+
+  // Create a new page document
+  async createPage(
+    bookId: string,
+    pageNumber: number,
+    imageUrl: string,
+    userId: string,
+    pageNumberInBook?: number
+  ): Promise<string> {
+    const newPage = {
+      bookId,
+      pageNumber,
+      pageNumberInBook: pageNumberInBook || pageNumber, // Use provided value or default to pageNumber
+      imageUrl,
+      currentTextJson: null,
+      currentVersion: 0,
+      edits: [],
+      lastEditAt: new Date(),
+      createdAt: new Date(),
+      createdBy: userId,
+    };
+    return await firestoreService.addDocument("pages", newPage);
+  },
+
+  // Upload page image and return download URL
+  async uploadPageImage(
+    bookId: string,
+    pageNumber: number,
+    file: File
+  ): Promise<string> {
+    // Get file extension
+    const fileExtension = file.name.split(".").pop() || "jpg";
+    // Use pageNumber as filename in /pages/{bookId}/ path
+    const path = `pages/${bookId}/${pageNumber}.${fileExtension}`;
+    return await storageService.uploadFile(path, file);
+  },
+
+  // Add an edit/version to a page
+  async addEdit(
+    pageId: string,
+    editData: {
+      version: number;
+      text: string;
+      userId: string;
+      status?: "pending" | "approved" | "rejected";
+      notes?: string;
+    }
+  ): Promise<string> {
+    const editsCollection = `pages/${pageId}/edits`;
+    const newEdit = {
+      ...editData,
+      status: editData.status || "pending",
+      createdAt: new Date(),
+    };
+    return await firestoreService.addDocument(editsCollection, newEdit);
+  },
+
+  // Get edits for a page
+  async getEdits(pageId: string): Promise<QuerySnapshot<DocumentData>> {
+    const editsCollection = `pages/${pageId}/edits`;
+    return await firestoreService.getCollection(editsCollection);
+  },
+
+  // Update page metadata (including pageNumberInBook)
+  async updatePage(pageId: string, updateData: PageUpdateData): Promise<void> {
+    // Filter out undefined values to prevent Firestore errors
+    const filteredData: Record<string, unknown> = {
+      lastEditAt: new Date(),
+    };
+
+    Object.keys(updateData).forEach((key) => {
+      const value = updateData[key as keyof PageUpdateData];
+      if (value !== undefined) {
+        filteredData[key] = value;
+      }
+    });
+
+    await firestoreService.updateDocument("pages", pageId, filteredData);
+  },
+
+  // Add a new edit to the page's edits array
+  async addEditToPage(
+    pageId: string,
+    editData: {
+      version: number;
+      textJson: JSONContent;
+      userId: string;
+      status?: "pending" | "approved" | "rejected";
+      notes?: string;
+    }
+  ): Promise<void> {
+    // Get current page
+    const pageDoc = await this.getPage(pageId);
+    if (!pageDoc.exists()) {
+      throw new Error("Page not found");
+    }
+
+    const pageData = pageDoc.data();
+    const currentEdits = pageData?.edits || [];
+
+    // Create new edit with unique ID, filtering out undefined values
+    const newEdit: EditData = {
+      editId: `edit_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      version: editData.version,
+      textJson: editData.textJson,
+      userId: editData.userId,
+      createdAt: new Date(),
+      status: editData.status || "pending",
+    };
+
+    // Only add optional fields if they have values
+    if (editData.notes !== undefined && editData.notes !== null) {
+      newEdit.notes = editData.notes;
+    }
+
+    // Add new edit to array
+    const updatedEdits = [...currentEdits, newEdit];
+
+    // Prepare update data, filtering out undefined values
+    const updatePageData: PageUpdateData = {
+      edits: updatedEdits,
+      currentTextJson: editData.textJson,
+      currentVersion: editData.version,
+      lastEditAt: new Date(),
+      lastEditBy: editData.userId,
+    };
+
+    // Update page with new edits array and current text/version
+    await this.updatePage(pageId, updatePageData);
   },
 };

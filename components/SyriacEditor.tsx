@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { useEditor, EditorContent } from "@tiptap/react";
+import { useEditor, EditorContent, JSONContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import TextAlign from "@tiptap/extension-text-align";
 import FontFamily from "@tiptap/extension-font-family";
 import TextStyle from "@tiptap/extension-text-style";
 import Color from "@tiptap/extension-color";
 import FontSize from "@tiptap/extension-font-size";
+import { Extension } from "@tiptap/core";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -59,13 +60,52 @@ const mainColors = [
 ];
 
 interface SyriacEditorProps {
-  content?: string;
-  onUpdate?: (content: string) => void;
+  content?: string | JSONContent;
+  onUpdate?: (content: string, json?: JSONContent) => void;
   editable?: boolean;
   className?: string;
 }
 
 const isRTL = true;
+
+// Custom extension to add line height and direction to paragraphs
+const ParagraphExtension = Extension.create({
+  name: "paragraphExtension",
+
+  addGlobalAttributes() {
+    return [
+      {
+        types: ["paragraph"],
+        attributes: {
+          lineHeight: {
+            default: "1.4",
+            parseHTML: (element) => element.style.lineHeight || "1.4",
+            renderHTML: (attributes) => {
+              if (!attributes.lineHeight) {
+                return {};
+              }
+              return {
+                style: `line-height: ${attributes.lineHeight}`,
+              };
+            },
+          },
+          dir: {
+            default: "rtl",
+            parseHTML: (element) => element.getAttribute("dir") || "rtl",
+            renderHTML: (attributes) => {
+              if (!attributes.dir) {
+                return {};
+              }
+              return {
+                dir: attributes.dir,
+              };
+            },
+          },
+        },
+      },
+    ];
+  },
+});
 
 export default function SyriacEditor({
   content = "",
@@ -120,13 +160,14 @@ export default function SyriacEditor({
         alignments: ["left", "center", "right", "justify"],
         defaultAlignment: isRTL ? "right" : "left",
       }),
+      ParagraphExtension,
     ],
     content,
     editable,
     immediatelyRender: false,
     onUpdate: ({ editor }) => {
       if (onUpdate) {
-        onUpdate(editor.getHTML());
+        onUpdate(editor.getHTML(), editor.getJSON());
       }
       updateCurrentAttributes();
     },
@@ -138,6 +179,15 @@ export default function SyriacEditor({
       editor.commands.setFontFamily(selectedFont);
       editor.commands.setColor(fontColor);
       editor.commands.setFontSize(fontSize);
+
+      // Set line height and direction for all paragraphs
+      editor.commands.selectAll();
+      editor.commands.updateAttributes("paragraph", {
+        lineHeight: "1.4",
+        dir: "rtl",
+      });
+      editor.commands.setTextSelection(0);
+
       updateCurrentAttributes();
     },
     onFocus: () => {
@@ -361,10 +411,10 @@ export default function SyriacEditor({
   return (
     <>
       <div
-        className={`w-full max-w-4xl mx-auto border border-border rounded-lg overflow-hidden bg-card ${className}`}
+        className={`w-full max-w-4xl mx-auto border border-border rounded-lg overflow-hidden bg-card flex flex-col ${className}`}
       >
         {/* Toolbar */}
-        <div className="border-b border-border bg-muted/30 p-3">
+        <div className="border-b border-border bg-muted/30 p-3 lg:px-6 xl:px-8">
           <div className="flex flex-wrap items-center gap-2">
             {/* Font Selection */}
             <div className="flex items-center gap-2">
@@ -567,7 +617,7 @@ export default function SyriacEditor({
 
         {/* Editor Content */}
         <div
-          className="min-h-[400px] p-6 focus-within:outline-none cursor-text"
+          className="flex-1 p-6 lg:px-8 xl:px-12 focus-within:outline-none cursor-text overflow-y-auto"
           dir={isRTL ? "rtl" : "ltr"}
           onClick={() => {
             editor?.chain().focus().run();
@@ -579,6 +629,15 @@ export default function SyriacEditor({
         >
           <EditorContent editor={editor} className="focus:outline-none" />
           <style jsx global>{`
+            .ProseMirror {
+              line-height: 1.4 !important;
+            }
+
+            .ProseMirror p {
+              line-height: 1.4 !important;
+              margin: 0.25em 0 !important;
+            }
+
             .ProseMirror ::selection {
               background-color: #e5e7eb !important; /* Light gray */
             }
@@ -590,7 +649,7 @@ export default function SyriacEditor({
         </div>
 
         {/* Status Bar */}
-        <div className="border-t border-border bg-muted/30 px-3 py-2">
+        <div className="border-t border-border bg-muted/30 px-3 lg:px-6 xl:px-8 py-2">
           <div className="flex justify-between items-center text-sm text-muted-foreground">
             <div className="flex items-center gap-4">
               <span>
