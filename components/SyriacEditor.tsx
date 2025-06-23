@@ -24,9 +24,6 @@ import {
   AlignCenter,
   AlignRight,
   AlignJustify,
-  Type,
-  Languages,
-  Palette,
   Undo,
   Redo,
 } from "lucide-react";
@@ -51,6 +48,7 @@ const fontSizes = [
   { label: "16pt", value: "16pt" },
   { label: "18pt", value: "18pt" },
   { label: "20pt", value: "20pt" },
+  { label: "22pt", value: "22pt" },
   { label: "24pt", value: "24pt" },
   { label: "28pt", value: "28pt" },
   { label: "32pt", value: "32pt" },
@@ -145,8 +143,8 @@ export default function SyriacEditor({
   className = "",
 }: SyriacEditorProps) {
   const [selectedFont, setSelectedFont] = useState("Karshon");
-  const [fontSize, setFontSize] = useState("24pt");
-  const [fontSizeInput, setFontSizeInput] = useState("24");
+  const [fontSize, setFontSize] = useState("22pt");
+  const [fontSizeInput, setFontSizeInput] = useState("22");
   const [fontColor, setFontColor] = useState("#000000");
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [keyboardCollapsed, setKeyboardCollapsed] = useState(false);
@@ -369,14 +367,6 @@ export default function SyriacEditor({
     [editor]
   );
 
-  const handleFontSizeInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-      setFontSizeInput(value);
-    },
-    []
-  );
-
   const handleFontSizeInputSubmit = useCallback(() => {
     const numValue = parseFloat(fontSizeInput);
     if (numValue >= 8 && numValue <= 72) {
@@ -391,16 +381,6 @@ export default function SyriacEditor({
       setFontSizeInput(currentNumeric);
     }
   }, [editor, fontSizeInput, currentFontSize]);
-
-  const handleFontSizeInputKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter") {
-        handleFontSizeInputSubmit();
-        (e.target as HTMLInputElement).blur();
-      }
-    },
-    [handleFontSizeInputSubmit]
-  );
 
   const handleColorChange = useCallback(
     (color: string) => {

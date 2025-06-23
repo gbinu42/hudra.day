@@ -204,6 +204,8 @@ export default function BookViewer() {
     useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [pageInputValue, setPageInputValue] = useState<string>("1");
+  const [originalTextContentJson, setOriginalTextContentJson] =
+    useState<JSONContent | null>(null);
 
   // Add page form state
   const [addPageDialogOpen, setAddPageDialogOpen] = useState<boolean>(false);
@@ -1028,7 +1030,11 @@ export default function BookViewer() {
                                   onClick={handleSaveTranscription}
                                   variant="default"
                                   className="bg-white text-red-900 hover:bg-slate-100 h-7 sm:h-8 px-2 sm:px-3 text-xs"
-                                  disabled={saving}
+                                  disabled={
+                                    saving ||
+                                    JSON.stringify(textContentJson) ===
+                                      JSON.stringify(originalTextContentJson)
+                                  }
                                 >
                                   {saving ? (
                                     <div className="flex items-center gap-1">
@@ -1043,7 +1049,11 @@ export default function BookViewer() {
                             ) : (
                               <Button
                                 size="sm"
-                                onClick={() => setEditMode(true)}
+                                onClick={() => {
+                                  setEditMode(true);
+                                  // Store original content when entering edit mode
+                                  setOriginalTextContentJson(textContentJson);
+                                }}
                                 variant="secondary"
                                 className="bg-white text-red-900 hover:bg-slate-100 h-7 sm:h-8 px-2 sm:px-3 text-xs"
                               >
@@ -1086,7 +1096,11 @@ export default function BookViewer() {
                               </p>
                               {permissions.canEdit && (
                                 <Button
-                                  onClick={() => setEditMode(true)}
+                                  onClick={() => {
+                                    setEditMode(true);
+                                    // Store original content when entering edit mode
+                                    setOriginalTextContentJson(textContentJson);
+                                  }}
                                   variant="outline"
                                   size="sm"
                                 >
