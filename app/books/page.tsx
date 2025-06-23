@@ -147,10 +147,6 @@ export default function BooksPage() {
     }));
   };
 
-  const handleBookClick = (bookId: string) => {
-    router.push(`/books/${bookId}`);
-  };
-
   const isFormValid = () => {
     return (
       newBookData.title.trim() &&
@@ -374,67 +370,65 @@ export default function BooksPage() {
                 </div>
               ) : (
                 books?.map((book) => (
-                  <Card
-                    key={book.id}
-                    className="cursor-pointer hover:shadow-lg transition-shadow"
-                    onClick={() => handleBookClick(book.id)}
-                  >
-                    <CardHeader>
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <CardTitle className="line-clamp-2 mb-2">
-                            {book.title}
-                          </CardTitle>
-                          <CardDescription className="flex items-center gap-2 text-sm">
-                            <User className="w-3 h-3" />
-                            {book.author}
-                          </CardDescription>
-                        </div>
-                        {book.coverImage && (
-                          <Image
-                            src={book.coverImage}
-                            alt={book.title}
-                            className="w-16 h-20 object-cover rounded border ml-4"
-                          />
-                        )}
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-                        {book.description}
-                      </p>
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between text-xs text-muted-foreground">
-                          <span className="flex items-center gap-1">
-                            <Calendar className="w-3 h-3" />
-                            {book.createdAt.toLocaleDateString()}
-                          </span>
-                          <Badge variant="secondary" className="text-xs">
-                            {book.language}
-                          </Badge>
-                        </div>
-                        {book.tags && book.tags.length > 0 && (
-                          <div className="flex items-center gap-1 flex-wrap">
-                            <Tag className="w-3 h-3 text-muted-foreground" />
-                            {book.tags.slice(0, 3).map((tag, index) => (
-                              <Badge
-                                key={index}
-                                variant="outline"
-                                className="text-xs"
-                              >
-                                {tag}
-                              </Badge>
-                            ))}
-                            {book.tags.length > 3 && (
-                              <span className="text-xs text-muted-foreground">
-                                +{book.tags.length - 3} more
-                              </span>
-                            )}
+                  <a key={book.id} href={`/books/${book.id}`}>
+                    <Card className="hover:shadow-lg transition-shadow">
+                      <CardHeader>
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <CardTitle className="line-clamp-2 mb-2">
+                              {book.title}
+                            </CardTitle>
+                            <CardDescription className="flex items-center gap-2 text-sm">
+                              <User className="w-3 h-3" />
+                              {book.author}
+                            </CardDescription>
                           </div>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
+                          {book.coverImage && (
+                            <Image
+                              src={book.coverImage}
+                              alt={book.title}
+                              className="w-16 h-20 object-cover rounded border ml-4"
+                            />
+                          )}
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                          {book.description}
+                        </p>
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between text-xs text-muted-foreground">
+                            <span className="flex items-center gap-1">
+                              <Calendar className="w-3 h-3" />
+                              {book.createdAt.toLocaleDateString()}
+                            </span>
+                            <Badge variant="secondary" className="text-xs">
+                              {book.language}
+                            </Badge>
+                          </div>
+                          {book.tags && book.tags.length > 0 && (
+                            <div className="flex items-center gap-1 flex-wrap">
+                              <Tag className="w-3 h-3 text-muted-foreground" />
+                              {book.tags.slice(0, 3).map((tag, index) => (
+                                <Badge
+                                  key={index}
+                                  variant="outline"
+                                  className="text-xs"
+                                >
+                                  {tag}
+                                </Badge>
+                              ))}
+                              {book.tags.length > 3 && (
+                                <span className="text-xs text-muted-foreground">
+                                  +{book.tags.length - 3} more
+                                </span>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </a>
                 ))
               )}
             </div>
