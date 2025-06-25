@@ -577,11 +577,6 @@ export default function BooksPage() {
                             )}
                             <div className="mt-2 space-y-2">
                               <div className="flex items-center gap-2">
-                                {book.placeOfPublication && (
-                                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                    <span>{book.placeOfPublication}</span>
-                                  </div>
-                                )}
                                 {book.publicationYear && (
                                   <div className="flex items-center gap-1 text-xs text-muted-foreground">
                                     <Calendar className="w-3 h-3" />
@@ -599,7 +594,7 @@ export default function BooksPage() {
                                   </Badge>
                                 )}
                                 <span
-                                  className={`text-xs font-medium rounded-full border ${getStatusStyling(
+                                  className={`text-xs font-medium rounded border px-2 py-0 ${getStatusStyling(
                                     book.status
                                   )}`}
                                 >

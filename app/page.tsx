@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BookOpen, Globe, Users, Edit3, Church, Scroll } from "lucide-react";
-import Link from "next/link";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 
@@ -48,24 +47,24 @@ export default function HomePage() {
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
               Hudra.day is an initiative by{" "}
-              <Link
+              <a
                 href="https://www.hendoacademy.org"
                 className="text-primary hover:text-primary/80 underline underline-offset-4 transition-colors"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 Hendo Academy
-              </Link>{" "}
+              </a>{" "}
               dedicated to digitizing and making freely available the rich
               liturgical tradition of the Church of the East for scholars,
               clergy, and communities worldwide.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
               <Button size="lg" className="text-lg px-8" asChild>
-                <Link href="/texts">
+                <a href="/books">
                   <BookOpen className="mr-2 h-5 w-5" />
                   Browse Liturgical Texts
-                </Link>
+                </a>
               </Button>
               <Button
                 variant="outline"
@@ -73,10 +72,10 @@ export default function HomePage() {
                 className="text-lg px-8"
                 asChild
               >
-                <Link href="/type">
+                <a href="/type">
                   <Edit3 className="mr-2 h-5 w-5" />
                   Try East Syriac Editor
-                </Link>
+                </a>
               </Button>
             </div>
           </div>
@@ -249,13 +248,13 @@ export default function HomePage() {
               </div>
 
               <Button size="lg" asChild>
-                <Link href="/type">
+                <a href="/type">
                   <Edit3 className="mr-2 h-5 w-5" />
                   Launch East Syriac Editor
-                </Link>
+                </a>
               </Button>
             </div>
-            <Link href="/type" className="cursor-pointer">
+            <a href="/type" className="cursor-pointer">
               <div className="bg-white p-8 rounded-lg shadow-lg border hover:shadow-2xl hover:scale-105 hover:border-primary/30 transition-all duration-300 ease-in-out">
                 <div className="space-y-4">
                   <div className="bg-white p-6 rounded  min-h-[300px] flex items-center justify-center">
@@ -273,7 +272,7 @@ export default function HomePage() {
                   </div>
                 </div>
               </div>
-            </Link>
+            </a>
           </div>
         </div>
       </section>
