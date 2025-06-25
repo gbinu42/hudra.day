@@ -1230,7 +1230,7 @@ export default function BookViewer() {
                         <SelectTrigger className="w-32 h-8">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="max-h-[300px] overflow-y-auto">
                           {pages.map((page, index) => (
                             <SelectItem key={page.id} value={String(index + 1)}>
                               <div className="flex items-center justify-between w-full">
@@ -1307,7 +1307,7 @@ export default function BookViewer() {
                         <SelectTrigger className="w-32 h-8">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="max-h-[300px] overflow-y-auto">
                           {pages.map((page, index) => (
                             <SelectItem key={page.id} value={String(index + 1)}>
                               <div className="flex items-center justify-between w-full">
