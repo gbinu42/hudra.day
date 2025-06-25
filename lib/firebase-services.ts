@@ -52,7 +52,7 @@ type PageStatus =
 
 // Interface for update data
 interface PageUpdateData {
-  pageNumberInBook?: number;
+  pageNumberInBook?: string;
   currentTextJson?: JSONContent;
   currentVersion?: number;
   lastEditAt?: Date;
@@ -540,12 +540,11 @@ export const pageService = {
     pageNumber: number,
     imageUrl: string,
     userId: string,
-    pageNumberInBook?: number
+    pageNumberInBook?: string
   ): Promise<string> {
-    const newPage = {
+    const newPage: Record<string, unknown> = {
       bookId,
       pageNumber,
-      pageNumberInBook: pageNumberInBook || pageNumber, // Use provided value or default to pageNumber
       imageUrl,
       currentTextJson: null,
       currentVersion: 0,
@@ -555,6 +554,11 @@ export const pageService = {
       createdAt: new Date(),
       createdBy: userId,
     };
+
+    // Only include pageNumberInBook if it has a defined value
+    if (pageNumberInBook !== undefined) {
+      newPage.pageNumberInBook = pageNumberInBook;
+    }
 
     // Create the page document first
     const pageId = await firestoreService.addDocument("pages", newPage);

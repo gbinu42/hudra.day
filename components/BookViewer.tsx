@@ -517,8 +517,6 @@ export default function BookViewer() {
         imageUrl,
         userProfile.uid,
         addPageForm.pageNumberInBook
-          ? Number(addPageForm.pageNumberInBook)
-          : undefined
       );
 
       // Real-time listener will automatically update pages
