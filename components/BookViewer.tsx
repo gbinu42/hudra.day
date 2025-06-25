@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -102,7 +102,7 @@ function isContentEqual(
   if (content1 === null || content2 === null) return false;
 
   // Recursive function to deeply normalize JSON objects
-  const deepNormalize = (obj: any): any => {
+  const deepNormalize = (obj: unknown): unknown => {
     if (obj === null || obj === undefined) return obj;
 
     if (Array.isArray(obj)) {
@@ -110,12 +110,14 @@ function isContentEqual(
     }
 
     if (typeof obj === "object") {
-      const normalized: any = {};
+      const normalized: Record<string, unknown> = {};
       // Sort keys and recursively normalize values
-      Object.keys(obj)
+      Object.keys(obj as Record<string, unknown>)
         .sort()
         .forEach((key) => {
-          normalized[key] = deepNormalize(obj[key]);
+          normalized[key] = deepNormalize(
+            (obj as Record<string, unknown>)[key]
+          );
         });
       return normalized;
     }
@@ -322,38 +324,33 @@ export default function BookViewer() {
     };
   }, [bookId]);
 
-  useEffect(() => {
-    if (!bookId) return;
+  // Create stable callback for pages snapshot handler
+  const handlePagesSnapshot = useCallback(
+    (pagesSnap: DocumentData) => {
+      const pagesData = pagesSnap.docs
+        .map((doc: DocumentData) => {
+          const data = doc.data();
+          // Convert Firestore timestamps to Date objects for edits
+          const edits =
+            data.edits?.map((edit: DocumentData) => ({
+              ...edit,
+              createdAt: edit.createdAt?.toDate?.() || edit.createdAt,
+              verifiedAt: edit.verifiedAt?.toDate?.() || edit.verifiedAt,
+            })) || [];
 
-    // Set up real-time listener for pages data
-    const unsubscribePages = pageService.onPagesSnapshot(
-      bookId,
-      (pagesSnap) => {
-        const pagesData = pagesSnap.docs
-          .map((doc) => {
-            const data = doc.data();
-            // Convert Firestore timestamps to Date objects for edits
-            const edits =
-              data.edits?.map((edit: DocumentData) => ({
-                ...edit,
-                createdAt: edit.createdAt?.toDate?.() || edit.createdAt,
-                verifiedAt: edit.verifiedAt?.toDate?.() || edit.verifiedAt,
-              })) || [];
+          return {
+            id: doc.id,
+            ...data,
+            edits,
+          };
+        })
+        .sort(
+          (a: unknown, b: unknown) =>
+            (a as Page).pageNumber - (b as Page).pageNumber
+        ) as Page[];
 
-            return {
-              id: doc.id,
-              ...data,
-              edits,
-            };
-          })
-          .sort(
-            (a, b) => (a as Page).pageNumber - (b as Page).pageNumber
-          ) as Page[];
-
-        const prevPagesLength = pages.length;
-        const prevSelectedIndex = selectedPageIndex;
-
-        setPages(pagesData);
+      setPages((prevPages) => {
+        const prevPagesLength = prevPages.length;
 
         if (pagesData.length > 0) {
           // If this is the first load (no previous pages)
@@ -361,20 +358,30 @@ export default function BookViewer() {
             setSelectedPageIndex(0);
             setTextContentJson(pagesData[0].currentTextJson || null);
           }
-          // If pages were updated but we had existing pages, preserve current selection
-          else if (prevSelectedIndex < pagesData.length) {
-            // Update text content to reflect any changes from real-time updates (like saves)
-            const currentPageData = pagesData[prevSelectedIndex];
-            setTextContentJson(currentPageData.currentTextJson || null);
-          }
-          // If the current page index is now out of bounds, go to last page
-          else if (prevSelectedIndex >= pagesData.length) {
-            const lastIndex = pagesData.length - 1;
-            setSelectedPageIndex(lastIndex);
-            setTextContentJson(pagesData[lastIndex].currentTextJson || null);
+          // For existing pages, update text content based on current selection
+          else {
+            setTextContentJson((prevText) => {
+              const currentPage = pagesData[selectedPageIndex];
+              return currentPage
+                ? currentPage.currentTextJson || null
+                : prevText;
+            });
           }
         }
-      },
+
+        return pagesData;
+      });
+    },
+    [selectedPageIndex]
+  );
+
+  useEffect(() => {
+    if (!bookId) return;
+
+    // Set up real-time listener for pages data
+    const unsubscribePages = pageService.onPagesSnapshot(
+      bookId,
+      handlePagesSnapshot,
       (error) => {
         console.error("Error fetching pages:", error);
       }
@@ -384,7 +391,7 @@ export default function BookViewer() {
     return () => {
       unsubscribePages();
     };
-  }, [bookId]);
+  }, [bookId, handlePagesSnapshot]);
 
   // When selected page changes, update textContent
   useEffect(() => {
@@ -398,7 +405,8 @@ export default function BookViewer() {
       setTextContentJson(page.currentTextJson || null);
       setImageLoading(true); // Reset image loading when changing pages
     }
-  }, [selectedPageIndex]); // Only depend on selectedPageIndex, not pages
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedPageIndex]); // Only depend on selectedPageIndex to avoid infinite loops
 
   // Handle file upload trigger
   // This function is no longer needed as dialog initialization is handled in onOpenChange

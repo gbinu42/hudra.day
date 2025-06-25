@@ -559,7 +559,7 @@ export const pageService = {
       const bookDoc = await bookService.getBookById(bookId);
       if (bookDoc.exists()) {
         const bookData = bookDoc.data();
-        const updateData: any = {
+        const updateData: Record<string, unknown> = {
           pages: pageCount,
           updatedAt: new Date(),
         };

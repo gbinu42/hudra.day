@@ -221,14 +221,15 @@ export default function BooksPage() {
 
       // Redirect to the book detail page
       router.push(`/books/${bookId}`);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error creating book:", error);
       // Handle specific error cases
-      if (error.code === "permission-denied") {
+      const errorWithCode = error as { code?: string; message?: string };
+      if (errorWithCode.code === "permission-denied") {
         setCreateError("You don't have permission to create books");
       } else if (
-        error.message?.includes("already exists") ||
-        error.code === "already-exists"
+        errorWithCode.message?.includes("already exists") ||
+        errorWithCode.code === "already-exists"
       ) {
         setCreateError(
           "A book with this ID already exists. Please choose a different ID."
