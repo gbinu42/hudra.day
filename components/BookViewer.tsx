@@ -10,7 +10,7 @@ import Footer from "@/components/Footer";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { usePermissions } from "@/lib/rbac";
 import { bookService, pageService } from "@/lib/firebase-services";
-import { Book } from "@/lib/types/book";
+import { Book, BookStatus } from "@/lib/types/book";
 import { DocumentData } from "firebase/firestore";
 import {
   ArrowLeft,
@@ -45,6 +45,13 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // Custom extension to add line height and direction to paragraphs
 const ParagraphExtension = Extension.create({
@@ -94,12 +101,38 @@ function isContentEqual(
   if (content1 === null && content2 === null) return true;
   if (content1 === null || content2 === null) return false;
 
-  // Use JSON.stringify for comparison, but normalize the objects first
-  const normalize = (obj: JSONContent): string => {
-    return JSON.stringify(obj, Object.keys(obj).sort());
+  // Recursive function to deeply normalize JSON objects
+  const deepNormalize = (obj: any): any => {
+    if (obj === null || obj === undefined) return obj;
+
+    if (Array.isArray(obj)) {
+      return obj.map(deepNormalize);
+    }
+
+    if (typeof obj === "object") {
+      const normalized: any = {};
+      // Sort keys and recursively normalize values
+      Object.keys(obj)
+        .sort()
+        .forEach((key) => {
+          normalized[key] = deepNormalize(obj[key]);
+        });
+      return normalized;
+    }
+
+    return obj;
   };
 
-  return normalize(content1) === normalize(content2);
+  // Deep normalize both objects and compare their JSON strings
+  try {
+    const normalized1 = deepNormalize(content1);
+    const normalized2 = deepNormalize(content2);
+    return JSON.stringify(normalized1) === JSON.stringify(normalized2);
+  } catch (error) {
+    console.error("Error comparing content:", error);
+    // Fall back to reference equality if normalization fails
+    return content1 === content2;
+  }
 }
 
 interface Edit {
@@ -220,7 +253,6 @@ export default function BookViewer() {
   const [transcriptionLoading, setTranscriptionLoading] =
     useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [pageInputValue, setPageInputValue] = useState<string>("1");
   const [originalTextContentJson, setOriginalTextContentJson] =
     useState<JSONContent | null>(null);
 
@@ -233,6 +265,26 @@ export default function BookViewer() {
   });
   const [addPageLoading, setAddPageLoading] = useState<boolean>(false);
   const [addPageError, setAddPageError] = useState<string>("");
+
+  // Edit book form state
+  const [editBookDialogOpen, setEditBookDialogOpen] = useState<boolean>(false);
+  const [editBookForm, setEditBookForm] = useState({
+    title: "",
+    author: "",
+    description: "",
+    language: "",
+    category: "",
+    status: "draft" as BookStatus,
+    publicationYear: undefined as number | undefined,
+    isbn: "",
+    publisher: "",
+    placeOfPublication: "",
+    coverImage: "",
+    tags: [] as string[],
+  });
+  const [editBookTagsInput, setEditBookTagsInput] = useState("");
+  const [editBookLoading, setEditBookLoading] = useState<boolean>(false);
+  const [editBookError, setEditBookError] = useState<string>("");
 
   useEffect(() => {
     if (!bookId) return;
@@ -311,9 +363,9 @@ export default function BookViewer() {
           }
           // If pages were updated but we had existing pages, preserve current selection
           else if (prevSelectedIndex < pagesData.length) {
-            setTextContentJson(
-              pagesData[prevSelectedIndex].currentTextJson || null
-            );
+            // Update text content to reflect any changes from real-time updates (like saves)
+            const currentPageData = pagesData[prevSelectedIndex];
+            setTextContentJson(currentPageData.currentTextJson || null);
           }
           // If the current page index is now out of bounds, go to last page
           else if (prevSelectedIndex >= pagesData.length) {
@@ -332,7 +384,7 @@ export default function BookViewer() {
     return () => {
       unsubscribePages();
     };
-  }, [bookId, pages.length, selectedPageIndex]);
+  }, [bookId]);
 
   // When selected page changes, update textContent
   useEffect(() => {
@@ -344,10 +396,9 @@ export default function BookViewer() {
         currentVersion: page.currentVersion,
       });
       setTextContentJson(page.currentTextJson || null);
-      setPageInputValue(String(selectedPageIndex + 1)); // Update input to reflect current page (1-indexed)
       setImageLoading(true); // Reset image loading when changing pages
     }
-  }, [selectedPageIndex, pages]);
+  }, [selectedPageIndex]); // Only depend on selectedPageIndex, not pages
 
   // Handle file upload trigger
   // This function is no longer needed as dialog initialization is handled in onOpenChange
@@ -491,10 +542,15 @@ export default function BookViewer() {
 
       console.log("Save successful");
 
-      // Just exit edit mode - no need to refetch since we're only updating text content
+      // Update the original content to the saved content
+      setOriginalTextContentJson(textContentJson);
+
+      // Exit edit mode
       setEditMode(false);
     } catch (err) {
       console.error("Error saving transcription", err);
+      // Show error to user (you might want to add a toast notification here)
+      alert("Failed to save transcription. Please try again.");
     } finally {
       setSaving(false);
     }
@@ -505,14 +561,86 @@ export default function BookViewer() {
   };
 
   const handleEditClick = () => {
-    // To be implemented: edit book metadata
+    if (!book) return;
+
+    // Initialize edit form with current book data
+    setEditBookForm({
+      title: book.title,
+      author: book.author,
+      description: book.description,
+      language: book.language,
+      category: book.category,
+      status: book.status,
+      publicationYear: book.publicationYear,
+      isbn: book.isbn || "",
+      publisher: book.publisher || "",
+      placeOfPublication: book.placeOfPublication || "",
+      coverImage: book.coverImage || "",
+      tags: book.tags || [],
+    });
+    setEditBookTagsInput((book.tags || []).join(", "));
+    setEditBookError("");
+    setEditBookDialogOpen(true);
+  };
+
+  const handleEditBookFormSubmit = async () => {
+    if (!userProfile || !book) return;
+
+    setEditBookLoading(true);
+    setEditBookError("");
+
+    try {
+      // Parse tags from comma-separated string
+      const tags = editBookTagsInput
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter((tag) => tag.length > 0);
+
+      const updateData = {
+        ...editBookForm,
+        tags,
+        publicationYear: editBookForm.publicationYear
+          ? Number(editBookForm.publicationYear)
+          : undefined,
+      };
+
+      await bookService.updateBook(book.id, updateData);
+
+      // Close dialog
+      setEditBookDialogOpen(false);
+    } catch (err) {
+      console.error("Error updating book:", err);
+      setEditBookError("Failed to update book. Please try again.");
+    } finally {
+      setEditBookLoading(false);
+    }
+  };
+
+  const handleEditBookInputChange = (
+    field: keyof typeof editBookForm,
+    value: string | number | BookStatus
+  ) => {
+    setEditBookForm((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const isEditFormValid = () => {
+    return (
+      editBookForm.title.trim() &&
+      editBookForm.author.trim() &&
+      editBookForm.description.trim() &&
+      editBookForm.language.trim() &&
+      editBookForm.category.trim() &&
+      editBookForm.status
+    );
   };
 
   const goToPreviousPage = () => {
     if (selectedPageIndex > 0) {
       setTranscriptionLoading(true);
       setSelectedPageIndex(selectedPageIndex - 1);
-      setPageInputValue(String(selectedPageIndex)); // selectedPageIndex - 1 + 1 for 1-indexed = selectedPageIndex
       setEditMode(false);
       setTimeout(() => setTranscriptionLoading(false), 300);
     }
@@ -522,32 +650,8 @@ export default function BookViewer() {
     if (selectedPageIndex < pages.length - 1) {
       setTranscriptionLoading(true);
       setSelectedPageIndex(selectedPageIndex + 1);
-      setPageInputValue(String(selectedPageIndex + 2)); // +2 because we're going to next page and it's 1-indexed
       setEditMode(false);
       setTimeout(() => setTranscriptionLoading(false), 300);
-    }
-  };
-
-  const handlePageInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPageInputValue(e.target.value);
-  };
-
-  const handlePageInputSubmit = () => {
-    const pageNum = parseInt(pageInputValue);
-    if (pageNum >= 1 && pageNum <= pages.length) {
-      setTranscriptionLoading(true);
-      setSelectedPageIndex(pageNum - 1); // Convert to 0-indexed
-      setEditMode(false);
-      setTimeout(() => setTranscriptionLoading(false), 300);
-    } else {
-      // Reset to current page if invalid
-      setPageInputValue(String(selectedPageIndex + 1));
-    }
-  };
-
-  const handlePageInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      handlePageInputSubmit();
     }
   };
 
@@ -603,35 +707,267 @@ export default function BookViewer() {
       <div className="container mx-auto px-4 py-8 flex-1 flex flex-col">
         <ProtectedRoute requireAuth={true}>
           {/* Header */}
-          <div className="mb-8">
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <h1 className="text-2xl font-bold text-slate-900 mb-4">
-                    {book.title}
-                  </h1>
-                  <div className="flex items-center gap-6 text-slate-600">
-                    <div className="flex items-center gap-2">
-                      <User className="w-5 h-5" />
-                      <span className="font-medium">{book.author}</span>
+          <div className="px-4">
+            <div className="flex items-center gap-3 mb-4">
+              <h1 className="text-2xl font-bold text-slate-900">
+                {book.title}
+              </h1>
+              {permissions.canEdit && (
+                <Dialog
+                  open={editBookDialogOpen}
+                  onOpenChange={setEditBookDialogOpen}
+                >
+                  <DialogTrigger asChild>
+                    <Button
+                      onClick={handleEditClick}
+                      variant="outline"
+                      size="sm"
+                      className="relative z-50"
+                    >
+                      <Edit className="w-4 h-4 mr-2" />
+                      Edit Details
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle>Edit Book Details</DialogTitle>
+                      <DialogDescription>
+                        Update the book metadata and information.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="editTitle">Title *</Label>
+                          <Input
+                            id="editTitle"
+                            value={editBookForm.title}
+                            onChange={(e) =>
+                              handleEditBookInputChange("title", e.target.value)
+                            }
+                            placeholder="Enter book title"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="editAuthor">Author *</Label>
+                          <Input
+                            id="editAuthor"
+                            value={editBookForm.author}
+                            onChange={(e) =>
+                              handleEditBookInputChange(
+                                "author",
+                                e.target.value
+                              )
+                            }
+                            placeholder="Enter author name"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="editDescription">Description *</Label>
+                        <Input
+                          id="editDescription"
+                          value={editBookForm.description}
+                          onChange={(e) =>
+                            handleEditBookInputChange(
+                              "description",
+                              e.target.value
+                            )
+                          }
+                          placeholder="Enter book description"
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="editLanguage">Language *</Label>
+                          <Input
+                            id="editLanguage"
+                            value={editBookForm.language}
+                            onChange={(e) =>
+                              handleEditBookInputChange(
+                                "language",
+                                e.target.value
+                              )
+                            }
+                            placeholder="e.g., Syriac, Aramaic"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="editCategory">Category *</Label>
+                          <Input
+                            id="editCategory"
+                            value={editBookForm.category}
+                            onChange={(e) =>
+                              handleEditBookInputChange(
+                                "category",
+                                e.target.value
+                              )
+                            }
+                            placeholder="e.g., Liturgy, Theology"
+                          />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="editStatus">Status *</Label>
+                          <select
+                            id="editStatus"
+                            value={editBookForm.status}
+                            onChange={(e) =>
+                              handleEditBookInputChange(
+                                "status",
+                                e.target.value as BookStatus
+                              )
+                            }
+                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                          >
+                            <option value="draft">Draft</option>
+                            <option value="digitizing">Digitizing</option>
+                            <option value="transcribing">Transcribing</option>
+                            <option value="reviewing">Reviewing</option>
+                            <option value="completed">Completed</option>
+                            <option value="published">Published</option>
+                          </select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="editPublicationYear">
+                            Publication Year
+                          </Label>
+                          <Input
+                            id="editPublicationYear"
+                            type="number"
+                            value={editBookForm.publicationYear || ""}
+                            onChange={(e) =>
+                              handleEditBookInputChange(
+                                "publicationYear",
+                                e.target.value ? Number(e.target.value) : ""
+                              )
+                            }
+                            placeholder="YYYY"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="editIsbn">ISBN</Label>
+                        <Input
+                          id="editIsbn"
+                          value={editBookForm.isbn}
+                          onChange={(e) =>
+                            handleEditBookInputChange("isbn", e.target.value)
+                          }
+                          placeholder="ISBN number"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="editPublisher">Publisher</Label>
+                        <Input
+                          id="editPublisher"
+                          value={editBookForm.publisher}
+                          onChange={(e) =>
+                            handleEditBookInputChange(
+                              "publisher",
+                              e.target.value
+                            )
+                          }
+                          placeholder="Publisher name"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="editPlaceOfPublication">
+                          Place of Publication
+                        </Label>
+                        <Input
+                          id="editPlaceOfPublication"
+                          value={editBookForm.placeOfPublication}
+                          onChange={(e) =>
+                            handleEditBookInputChange(
+                              "placeOfPublication",
+                              e.target.value
+                            )
+                          }
+                          placeholder="e.g., New York, London, Damascus"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="editCoverImage">Cover Image URL</Label>
+                        <Input
+                          id="editCoverImage"
+                          value={editBookForm.coverImage}
+                          onChange={(e) =>
+                            handleEditBookInputChange(
+                              "coverImage",
+                              e.target.value
+                            )
+                          }
+                          placeholder="https://example.com/cover.jpg"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="editTags">Tags</Label>
+                        <Input
+                          id="editTags"
+                          value={editBookTagsInput}
+                          onChange={(e) => setEditBookTagsInput(e.target.value)}
+                          placeholder="Enter tags separated by commas"
+                        />
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-5 h-5" />
-                      <span>{book.createdAt.toLocaleDateString()}</span>
-                    </div>
-                    <Badge variant="secondary" className="px-3 py-1">
-                      {book.language}
-                    </Badge>
-                  </div>
-                </div>
-
-                {permissions.canEdit && (
-                  <Button onClick={handleEditClick} variant="outline">
-                    <Edit className="w-4 h-4 mr-2" />
-                    Edit Book
-                  </Button>
-                )}
+                    {editBookError && (
+                      <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md">
+                        {editBookError}
+                      </div>
+                    )}
+                    <DialogFooter>
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          setEditBookDialogOpen(false);
+                          setEditBookError("");
+                        }}
+                        disabled={editBookLoading}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        onClick={handleEditBookFormSubmit}
+                        disabled={!isEditFormValid() || editBookLoading}
+                      >
+                        {editBookLoading ? "Updating..." : "Update Book"}
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              )}
+            </div>
+            <div className="flex items-center gap-6 text-slate-600 mb-3">
+              <div className="flex items-center gap-2">
+                <User className="w-5 h-5" />
+                <span className="font-medium">{book.author}</span>
               </div>
+              <div className="flex items-center gap-2">
+                <Calendar className="w-5 h-5" />
+                <span>
+                  {book.publicationYear || "Publication year unknown"}
+                </span>
+              </div>
+              <Badge variant="secondary" className="px-3 py-1">
+                {book.language}
+              </Badge>
+            </div>
+            <div className="flex items-center gap-2 flex-wrap">
+              {book.tags && book.tags.length > 0 && (
+                <>
+                  {book.tags.map((tag, index) => (
+                    <Badge
+                      key={index}
+                      variant="outline"
+                      className="px-2 py-1 text-xs"
+                    >
+                      {tag}
+                    </Badge>
+                  ))}
+                </>
+              )}
             </div>
           </div>
 
@@ -661,18 +997,34 @@ export default function BookViewer() {
                       <span className="text-xs hidden sm:inline">Next</span>
                     </Button>
 
-                    {/* Page Input and Total */}
+                    {/* Page Selector */}
                     <div className="flex items-center gap-2">
-                      <Input
-                        type="number"
-                        min="1"
-                        max={pages.length}
-                        value={pageInputValue}
-                        onChange={handlePageInputChange}
-                        onKeyDown={handlePageInputKeyDown}
-                        onBlur={handlePageInputSubmit}
-                        className="w-16 h-8 text-center border border-slate-300 rounded-md px-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      />
+                      <Select
+                        value={String(selectedPageIndex + 1)}
+                        onValueChange={(value) => {
+                          const pageNum = parseInt(value);
+                          if (pageNum >= 1 && pageNum <= pages.length) {
+                            setTranscriptionLoading(true);
+                            setSelectedPageIndex(pageNum - 1);
+                            setEditMode(false);
+                            setTimeout(
+                              () => setTranscriptionLoading(false),
+                              300
+                            );
+                          }
+                        }}
+                      >
+                        <SelectTrigger className="w-32 h-8">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {pages.map((page, index) => (
+                            <SelectItem key={page.id} value={String(index + 1)}>
+                              Page {index + 1} [{page.pageNumber}]
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <span className="text-sm text-slate-600 font-medium">
                         of {pages.length}
                       </span>
@@ -706,18 +1058,34 @@ export default function BookViewer() {
                       <span className="text-xs hidden sm:inline">Previous</span>
                     </Button>
 
-                    {/* Page Input and Total */}
+                    {/* Page Selector */}
                     <div className="flex items-center gap-2">
-                      <Input
-                        type="number"
-                        min="1"
-                        max={pages.length}
-                        value={pageInputValue}
-                        onChange={handlePageInputChange}
-                        onKeyDown={handlePageInputKeyDown}
-                        onBlur={handlePageInputSubmit}
-                        className="w-16 h-8 text-center border border-slate-300 rounded-md px-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      />
+                      <Select
+                        value={String(selectedPageIndex + 1)}
+                        onValueChange={(value) => {
+                          const pageNum = parseInt(value);
+                          if (pageNum >= 1 && pageNum <= pages.length) {
+                            setTranscriptionLoading(true);
+                            setSelectedPageIndex(pageNum - 1);
+                            setEditMode(false);
+                            setTimeout(
+                              () => setTranscriptionLoading(false),
+                              300
+                            );
+                          }
+                        }}
+                      >
+                        <SelectTrigger className="w-32 h-8">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {pages.map((page, index) => (
+                            <SelectItem key={page.id} value={String(index + 1)}>
+                              Page {index + 1} [{page.pageNumber}]
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <span className="text-sm text-slate-600 font-medium">
                         of {pages.length}
                       </span>
@@ -742,166 +1110,26 @@ export default function BookViewer() {
 
             {/* Add Button on the right */}
             <div className="flex items-center">
-              <Dialog
-                open={addPageDialogOpen}
-                onOpenChange={(open) => {
-                  setAddPageDialogOpen(open);
-                  if (open) {
-                    // Calculate suggested page numbers when dialog opens
-                    const nextSequentialPageNumber = pages.length + 1;
-                    const maxPageNumber = Math.max(
-                      0,
-                      ...pages.map((p) => p.pageNumber)
-                    );
-                    const suggestedPageNumber = Math.max(
-                      nextSequentialPageNumber,
-                      maxPageNumber + 1
-                    );
-
-                    setAddPageForm({
-                      pageNumber: suggestedPageNumber,
-                      pageNumberInBook: suggestedPageNumber,
-                      file: null,
-                    });
-                    setAddPageError("");
-                  }
-                }}
-              >
-                <DialogTrigger asChild>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="h-8 px-3 text-sm flex items-center gap-1 ml-2 sm:ml-4 relative z-10"
-                  >
-                    <Plus className="w-3 h-3" />
-                    <span className="hidden sm:inline">Add</span>
-                    <span className="sm:hidden">+</span>
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-md">
-                  <DialogHeader>
-                    <DialogTitle>Add New Page</DialogTitle>
-                    <DialogDescription>
-                      Upload a new page image and specify page numbers.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="grid gap-2">
-                        <Label htmlFor="pageNumber">Page Number</Label>
-                        <Input
-                          id="pageNumber"
-                          type="number"
-                          min="1"
-                          value={addPageForm.pageNumber}
-                          onChange={(e) =>
-                            setAddPageForm((prev) => ({
-                              ...prev,
-                              pageNumber: parseInt(e.target.value) || 0,
-                            }))
-                          }
-                          placeholder="Page number"
-                        />
-                      </div>
-                      <div className="grid gap-2">
-                        <Label htmlFor="pageNumberInBook">Page in Book</Label>
-                        <Input
-                          id="pageNumberInBook"
-                          type="number"
-                          min="1"
-                          value={addPageForm.pageNumberInBook}
-                          onChange={(e) =>
-                            setAddPageForm((prev) => ({
-                              ...prev,
-                              pageNumberInBook: parseInt(e.target.value) || 0,
-                            }))
-                          }
-                          placeholder="Page number in book"
-                        />
-                      </div>
-                    </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="pageImage">Page Image</Label>
-                      <Input
-                        id="pageImage"
-                        type="file"
-                        accept="image/*"
-                        onChange={handleAddPageFileSelect}
-                        className="cursor-pointer"
-                      />
-                      {addPageForm.file && (
-                        <p className="text-sm text-muted-foreground">
-                          Selected: {addPageForm.file.name}
-                        </p>
-                      )}
-                    </div>
-                    {addPageError && (
-                      <p className="text-sm text-red-600">{addPageError}</p>
-                    )}
-                  </div>
-                  <DialogFooter>
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      onClick={() => setAddPageDialogOpen(false)}
-                      disabled={addPageLoading}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      type="button"
-                      onClick={handleAddPageFormSubmit}
-                      disabled={addPageLoading || !addPageForm.file}
-                    >
-                      {addPageLoading ? (
-                        <div className="flex items-center gap-2">
-                          <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                          Adding...
-                        </div>
-                      ) : (
-                        <>
-                          <Plus className="w-4 h-4 mr-2" />
-                          Add Page
-                        </>
-                      )}
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            </div>
-
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-            />
-          </div>
-
-          {/* Content Area */}
-          <div className="flex-1 mb-4">
-            {pages.length === 0 ? (
-              <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-8 lg:p-16 text-center mx-2 sm:mx-4 lg:mx-0">
-                <div className="mx-auto w-16 h-16 sm:w-24 sm:h-24 bg-slate-100 rounded-full flex items-center justify-center mb-6">
-                  <Upload className="w-8 h-8 sm:w-12 sm:h-12 text-slate-500" />
-                </div>
-                <h3 className="text-xl sm:text-2xl font-semibold text-slate-900 mb-4">
-                  No pages yet
-                </h3>
-                <p className="text-base sm:text-lg text-slate-600 mb-8 max-w-md mx-auto">
-                  Start by uploading the first page of your book to begin
-                  transcription.
-                </p>
+              {permissions.canCreate && (
                 <Dialog
                   open={addPageDialogOpen}
                   onOpenChange={(open) => {
                     setAddPageDialogOpen(open);
                     if (open) {
-                      // For first page, default to page 1
+                      // Calculate suggested page numbers when dialog opens
+                      const nextSequentialPageNumber = pages.length + 1;
+                      const maxPageNumber = Math.max(
+                        0,
+                        ...pages.map((p) => p.pageNumber)
+                      );
+                      const suggestedPageNumber = Math.max(
+                        nextSequentialPageNumber,
+                        maxPageNumber + 1
+                      );
+
                       setAddPageForm({
-                        pageNumber: 1,
-                        pageNumberInBook: 1,
+                        pageNumber: suggestedPageNumber,
+                        pageNumberInBook: suggestedPageNumber,
                         file: null,
                       });
                       setAddPageError("");
@@ -909,24 +1137,29 @@ export default function BookViewer() {
                   }}
                 >
                   <DialogTrigger asChild>
-                    <Button size="lg" className="px-8 relative z-10">
-                      <Plus className="w-5 h-5 mr-2" />
-                      Add First Page
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-8 px-3 text-sm flex items-center gap-1 ml-2 sm:ml-4 relative z-10"
+                    >
+                      <Plus className="w-3 h-3" />
+                      <span className="hidden sm:inline">Add</span>
+                      <span className="sm:hidden">+</span>
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-md">
                     <DialogHeader>
-                      <DialogTitle>Add First Page</DialogTitle>
+                      <DialogTitle>Add New Page</DialogTitle>
                       <DialogDescription>
-                        Upload the first page image to begin transcription.
+                        Upload a new page image and specify page numbers.
                       </DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
                       <div className="grid grid-cols-2 gap-4">
                         <div className="grid gap-2">
-                          <Label htmlFor="firstPageNumber">Page Number</Label>
+                          <Label htmlFor="pageNumber">Page Number</Label>
                           <Input
-                            id="firstPageNumber"
+                            id="pageNumber"
                             type="number"
                             min="1"
                             value={addPageForm.pageNumber}
@@ -940,11 +1173,9 @@ export default function BookViewer() {
                           />
                         </div>
                         <div className="grid gap-2">
-                          <Label htmlFor="firstPageNumberInBook">
-                            Page in Book
-                          </Label>
+                          <Label htmlFor="pageNumberInBook">Page in Book</Label>
                           <Input
-                            id="firstPageNumberInBook"
+                            id="pageNumberInBook"
                             type="number"
                             min="1"
                             value={addPageForm.pageNumberInBook}
@@ -959,9 +1190,9 @@ export default function BookViewer() {
                         </div>
                       </div>
                       <div className="grid gap-2">
-                        <Label htmlFor="firstPageImage">Page Image</Label>
+                        <Label htmlFor="pageImage">Page Image</Label>
                         <Input
-                          id="firstPageImage"
+                          id="pageImage"
                           type="file"
                           accept="image/*"
                           onChange={handleAddPageFileSelect}
@@ -1006,6 +1237,148 @@ export default function BookViewer() {
                     </DialogFooter>
                   </DialogContent>
                 </Dialog>
+              )}
+            </div>
+
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+            />
+          </div>
+
+          {/* Content Area */}
+          <div className="flex-1 mb-4">
+            {pages.length === 0 ? (
+              <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-8 lg:p-16 text-center mx-2 sm:mx-4 lg:mx-0">
+                <div className="mx-auto w-16 h-16 sm:w-24 sm:h-24 bg-slate-100 rounded-full flex items-center justify-center mb-6">
+                  <Upload className="w-8 h-8 sm:w-12 sm:h-12 text-slate-500" />
+                </div>
+                <h3 className="text-xl sm:text-2xl font-semibold text-slate-900 mb-4">
+                  No pages yet
+                </h3>
+                <p className="text-base sm:text-lg text-slate-600 mb-8 max-w-md mx-auto">
+                  Start by uploading the first page of your book to begin
+                  transcription.
+                </p>
+                {permissions.canCreate && (
+                  <Dialog
+                    open={addPageDialogOpen}
+                    onOpenChange={(open) => {
+                      setAddPageDialogOpen(open);
+                      if (open) {
+                        // For first page, default to page 1
+                        setAddPageForm({
+                          pageNumber: 1,
+                          pageNumberInBook: 1,
+                          file: null,
+                        });
+                        setAddPageError("");
+                      }
+                    }}
+                  >
+                    <DialogTrigger asChild>
+                      <Button size="lg" className="px-8 relative z-10">
+                        <Plus className="w-5 h-5 mr-2" />
+                        Add First Page
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-md">
+                      <DialogHeader>
+                        <DialogTitle>Add First Page</DialogTitle>
+                        <DialogDescription>
+                          Upload the first page image to begin transcription.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="grid gap-4 py-4">
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="grid gap-2">
+                            <Label htmlFor="firstPageNumber">Page Number</Label>
+                            <Input
+                              id="firstPageNumber"
+                              type="number"
+                              min="1"
+                              value={addPageForm.pageNumber}
+                              onChange={(e) =>
+                                setAddPageForm((prev) => ({
+                                  ...prev,
+                                  pageNumber: parseInt(e.target.value) || 0,
+                                }))
+                              }
+                              placeholder="Page number"
+                            />
+                          </div>
+                          <div className="grid gap-2">
+                            <Label htmlFor="firstPageNumberInBook">
+                              Page in Book
+                            </Label>
+                            <Input
+                              id="firstPageNumberInBook"
+                              type="number"
+                              min="1"
+                              value={addPageForm.pageNumberInBook}
+                              onChange={(e) =>
+                                setAddPageForm((prev) => ({
+                                  ...prev,
+                                  pageNumberInBook:
+                                    parseInt(e.target.value) || 0,
+                                }))
+                              }
+                              placeholder="Page number in book"
+                            />
+                          </div>
+                        </div>
+                        <div className="grid gap-2">
+                          <Label htmlFor="firstPageImage">Page Image</Label>
+                          <Input
+                            id="firstPageImage"
+                            type="file"
+                            accept="image/*"
+                            onChange={handleAddPageFileSelect}
+                            className="cursor-pointer"
+                          />
+                          {addPageForm.file && (
+                            <p className="text-sm text-muted-foreground">
+                              Selected: {addPageForm.file.name}
+                            </p>
+                          )}
+                        </div>
+                        {addPageError && (
+                          <p className="text-sm text-red-600">{addPageError}</p>
+                        )}
+                      </div>
+                      <DialogFooter>
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          onClick={() => setAddPageDialogOpen(false)}
+                          disabled={addPageLoading}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          type="button"
+                          onClick={handleAddPageFormSubmit}
+                          disabled={addPageLoading || !addPageForm.file}
+                        >
+                          {addPageLoading ? (
+                            <div className="flex items-center gap-2">
+                              <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                              Adding...
+                            </div>
+                          ) : (
+                            <>
+                              <Plus className="w-4 h-4 mr-2" />
+                              Add Page
+                            </>
+                          )}
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                )}
               </div>
             ) : (
               <div className="grid gap-2 lg:gap-8 lg:grid-cols-2 h-full px-2 lg:px-0">

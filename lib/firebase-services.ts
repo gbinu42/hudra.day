@@ -442,7 +442,11 @@ export const bookService = {
   },
 
   // Create new book
-  async createBook(bookData: CreateBookData, userId: string): Promise<string> {
+  async createBook(
+    bookData: CreateBookData,
+    userId: string,
+    customBookId?: string
+  ): Promise<string> {
     const newBook = {
       ...bookData,
       createdAt: new Date(),
@@ -450,7 +454,15 @@ export const bookService = {
       createdBy: userId,
       isPublished: false,
     };
-    return await firestoreService.addDocument("books", newBook);
+
+    if (customBookId && customBookId.trim()) {
+      // Use custom ID if provided
+      await firestoreService.setDocument("books", customBookId.trim(), newBook);
+      return customBookId.trim();
+    } else {
+      // Auto-generate ID if not provided
+      return await firestoreService.addDocument("books", newBook);
+    }
   },
 
   // Update book
@@ -533,7 +545,47 @@ export const pageService = {
       createdAt: new Date(),
       createdBy: userId,
     };
-    return await firestoreService.addDocument("pages", newPage);
+
+    // Create the page document first
+    const pageId = await firestoreService.addDocument("pages", newPage);
+
+    // Check if this is the first page for the book and update cover image
+    try {
+      // Get all pages for this book to check count
+      const pagesSnapshot = await this.getPages(bookId);
+      const pageCount = pagesSnapshot.docs.length;
+
+      // Get the book document to check if it has a cover image
+      const bookDoc = await bookService.getBookById(bookId);
+      if (bookDoc.exists()) {
+        const bookData = bookDoc.data();
+        const updateData: any = {
+          pages: pageCount,
+          updatedAt: new Date(),
+        };
+
+        // If this is the first page and the book doesn't have a cover image, set it
+        if (
+          pageCount === 1 &&
+          (!bookData?.coverImage || bookData.coverImage === "")
+        ) {
+          updateData.coverImage = imageUrl;
+        }
+
+        // Auto-update status based on page count and current status
+        if (pageCount === 1 && bookData?.status === "draft") {
+          updateData.status = "digitizing";
+        }
+
+        // Update the book document
+        await bookService.updateBook(bookId, updateData);
+      }
+    } catch (error) {
+      console.error("Error updating book cover/page count:", error);
+      // Don't throw error here as the page was successfully created
+    }
+
+    return pageId;
   },
 
   // Upload page image and return download URL

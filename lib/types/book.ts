@@ -1,3 +1,11 @@
+export type BookStatus =
+  | "draft" // Book created, no pages yet
+  | "digitizing" // Pages being added/uploaded
+  | "transcribing" // Pages added, transcription in progress
+  | "reviewing" // Transcription complete, under review/correction
+  | "completed" // Fully transcribed and reviewed
+  | "published"; // Ready for public access
+
 export interface Book {
   id: string;
   title: string;
@@ -5,9 +13,11 @@ export interface Book {
   description: string;
   language: string;
   category: string;
+  status: BookStatus;
   publicationYear?: number;
   isbn?: string;
   publisher?: string;
+  placeOfPublication?: string;
   pages?: number;
   coverImage?: string;
   downloadUrl?: string;
@@ -24,10 +34,11 @@ export interface CreateBookData {
   description: string;
   language: string;
   category: string;
+  status: BookStatus;
   publicationYear?: number;
   isbn?: string;
   publisher?: string;
-  pages?: number;
+  placeOfPublication?: string;
   coverImage?: string;
   tags: string[];
 }
