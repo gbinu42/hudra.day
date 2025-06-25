@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -310,7 +310,6 @@ export default function BookViewer() {
   const [saving, setSaving] = useState<boolean>(false);
   const [transcriptionLoading, setTranscriptionLoading] =
     useState<boolean>(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const [originalTextContentJson, setOriginalTextContentJson] =
     useState<JSONContent | null>(null);
 
@@ -470,40 +469,6 @@ export default function BookViewer() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedPageIndex]); // Only depend on selectedPageIndex to avoid infinite loops
-
-  // Handle file upload trigger
-  // This function is no longer needed as dialog initialization is handled in onOpenChange
-  // const handleAddPageClick = () => { ... };
-
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files || e.target.files.length === 0 || !userProfile) return;
-    const file = e.target.files[0];
-    const nextPageNumber = pages.length + 1;
-    try {
-      // Upload image
-      const imageUrl = await pageService.uploadPageImage(
-        bookId,
-        nextPageNumber,
-        file
-      );
-      // Create page doc
-      await pageService.createPage(
-        bookId,
-        nextPageNumber,
-        imageUrl,
-        userProfile.uid
-      );
-      // Real-time listener will automatically update pages
-      // Set to last page (which will be the new page when listener updates)
-      setTimeout(() => {
-        setSelectedPageIndex(pages.length);
-      }, 100);
-    } catch (err) {
-      console.error("Error uploading page", err);
-    } finally {
-      if (fileInputRef.current) fileInputRef.current.value = "";
-    }
-  };
 
   const handleAddPageFormSubmit = async () => {
     if (!userProfile || !addPageForm.file) {
