@@ -35,15 +35,9 @@ import {
 import { FileUpload } from "@/components/ui/file-upload";
 import Image from "next/image";
 import SyriacEditor from "@/components/SyriacEditor";
+import TipTapRenderer from "@/components/TipTapRenderer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useEditor, EditorContent, JSONContent } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import TextAlign from "@tiptap/extension-text-align";
-import FontFamily from "@tiptap/extension-font-family";
-import TextStyle from "@tiptap/extension-text-style";
-import Color from "@tiptap/extension-color";
-import FontSize from "@tiptap/extension-font-size";
-import { Extension } from "@tiptap/core";
+import { JSONContent } from "@tiptap/react";
 import {
   Dialog,
   DialogContent,
@@ -105,45 +99,6 @@ const getPageStatusDisplayName = (status: PageStatus) => {
       return "Unknown";
   }
 };
-
-// Custom extension to add line height and direction to paragraphs
-const ParagraphExtension = Extension.create({
-  name: "paragraphExtension",
-
-  addGlobalAttributes() {
-    return [
-      {
-        types: ["paragraph"],
-        attributes: {
-          lineHeight: {
-            default: "1.4",
-            parseHTML: (element) => element.style.lineHeight || "1.4",
-            renderHTML: (attributes) => {
-              if (!attributes.lineHeight) {
-                return {};
-              }
-              return {
-                style: `line-height: ${attributes.lineHeight}`,
-              };
-            },
-          },
-          dir: {
-            default: "rtl",
-            parseHTML: (element) => element.getAttribute("dir") || "rtl",
-            renderHTML: (attributes) => {
-              if (!attributes.dir) {
-                return {};
-              }
-              return {
-                dir: attributes.dir,
-              };
-            },
-          },
-        },
-      },
-    ];
-  },
-});
 
 // Helper function to deep compare JSONContent objects
 function isContentEqual(
@@ -216,79 +171,6 @@ interface Page {
   updatedAt?: Date;
 }
 
-// Component to render TipTap JSON as HTML
-function TipTapRenderer({ content }: { content: JSONContent }) {
-  const editor = useEditor({
-    extensions: [
-      StarterKit.configure({
-        bold: false,
-        italic: false,
-        strike: false,
-        code: false,
-        codeBlock: false,
-        bulletList: false,
-        orderedList: false,
-        listItem: false,
-        blockquote: false,
-        heading: false,
-        horizontalRule: false,
-      }),
-      TextStyle,
-      Color,
-      FontFamily.configure({
-        types: ["textStyle"],
-      }),
-      FontSize.configure({
-        types: ["textStyle"],
-      }),
-      TextAlign.configure({
-        types: ["paragraph"],
-        alignments: ["left", "center", "right", "justify"],
-        defaultAlignment: "right",
-      }),
-      ParagraphExtension,
-    ],
-    content: content,
-    editable: false,
-    immediatelyRender: false,
-  });
-
-  if (!editor) {
-    return <div>Loading...</div>;
-  }
-
-  return (
-    <div
-      className="mt-8 sm:mt-16 lg:mt-24"
-      style={{
-        fontFamily: 'Karshon, "East Syriac Malankara", serif',
-        fontSize: "24pt",
-        marginTop: "70px",
-      }}
-    >
-      <EditorContent editor={editor} />
-      <style jsx global>{`
-        .ProseMirror {
-          line-height: 1.4 !important;
-        }
-
-        .ProseMirror p {
-          line-height: 1.4 !important;
-          margin: 0.25em 0 !important;
-        }
-
-        .ProseMirror ::selection {
-          background-color: #e5e7eb !important; /* Light gray */
-        }
-
-        .ProseMirror ::-moz-selection {
-          background-color: #e5e7eb !important; /* Light gray for Firefox */
-        }
-      `}</style>
-    </div>
-  );
-}
-
 export default function BookViewer() {
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
@@ -349,6 +231,9 @@ export default function BookViewer() {
   const [pageStatusLoading, setPageStatusLoading] = useState<boolean>(false);
   const [selectedPageStatus, setSelectedPageStatus] =
     useState<PageStatus>("draft");
+
+  // Line numbers toggle state
+  const [showLineNumbers, setShowLineNumbers] = useState<boolean>(false);
 
   useEffect(() => {
     if (!bookId) return;
@@ -1614,7 +1499,25 @@ export default function BookViewer() {
                         <Edit className="w-4 h-4" />
                         Transcription
                       </CardTitle>
-                      <div className="flex items-center py-100">
+                      <div className="flex items-center gap-2 py-100">
+                        {/* Line Numbers Toggle */}
+                        <Button
+                          size="sm"
+                          onClick={() => setShowLineNumbers(!showLineNumbers)}
+                          variant="secondary"
+                          className={`h-7 px-2 text-xs ${
+                            showLineNumbers
+                              ? "bg-white text-red-900 hover:bg-slate-100"
+                              : "bg-white/20 text-white hover:bg-white/30"
+                          }`}
+                          title={
+                            showLineNumbers
+                              ? "Hide line numbers"
+                              : "Show line numbers"
+                          }
+                        >
+                          123
+                        </Button>
                         {permissions.canEdit && (
                           <div className="flex gap-1 sm:gap-2">
                             {editMode ? (
@@ -1686,11 +1589,14 @@ export default function BookViewer() {
                         />
                       </div>
                     ) : (
-                      <div className="px-2 lg:px-8  flex-1 flex flex-col">
+                      <div className="px-2 lg:px-4  flex-1 flex flex-col">
                         {textContentJson ? (
                           <div className="flex-1 p-2 sm:p-4 overflow-y-auto">
                             <div className="prose prose-sm sm:prose-lg max-w-none leading-relaxed">
-                              <TipTapRenderer content={textContentJson} />
+                              <TipTapRenderer
+                                content={textContentJson}
+                                showLineNumbers={showLineNumbers}
+                              />
                             </div>
                           </div>
                         ) : (

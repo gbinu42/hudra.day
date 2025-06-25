@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BookOpen, Globe, Users, Edit3, Church, Scroll } from "lucide-react";
+import Link from "next/link";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 
@@ -61,10 +62,10 @@ export default function HomePage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
               <Button size="lg" className="text-lg px-8" asChild>
-                <a href="/books">
+                <Link href="/books">
                   <BookOpen className="mr-2 h-5 w-5" />
                   Browse Liturgical Texts
-                </a>
+                </Link>
               </Button>
               <Button
                 variant="outline"
