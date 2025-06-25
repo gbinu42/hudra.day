@@ -60,33 +60,38 @@ export default function BooksPage() {
   const [tagsInput, setTagsInput] = useState("");
 
   useEffect(() => {
-    fetchBooks();
+    setLoading(true);
+
+    // Set up real-time listener for books data
+    const unsubscribeBooks = bookService.onBooksSnapshot(
+      (booksSnapshot) => {
+        const booksData = booksSnapshot.docs.map((doc) => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            ...data,
+            tags: data.tags || [], // Ensure tags is always an array
+            createdAt: data.createdAt?.toDate?.() || new Date(),
+            updatedAt: data.updatedAt?.toDate?.() || new Date(),
+          };
+        }) as Book[];
+
+        // Sort by creation date, newest first
+        booksData.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+        setBooks(booksData);
+        setLoading(false);
+      },
+      (error) => {
+        console.error("Error fetching books:", error);
+        setLoading(false);
+      }
+    );
+
+    // Cleanup function
+    return () => {
+      unsubscribeBooks();
+    };
   }, []);
-
-  const fetchBooks = async () => {
-    try {
-      setLoading(true);
-      const booksSnapshot = await bookService.getAllBooks();
-      const booksData = booksSnapshot.docs.map((doc) => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          ...data,
-          tags: data.tags || [], // Ensure tags is always an array
-          createdAt: data.createdAt?.toDate?.() || new Date(),
-          updatedAt: data.updatedAt?.toDate?.() || new Date(),
-        };
-      }) as Book[];
-
-      // Sort by creation date, newest first
-      booksData.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-      setBooks(booksData);
-    } catch (error) {
-      console.error("Error fetching books:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleCreateBook = async () => {
     if (!user) return;

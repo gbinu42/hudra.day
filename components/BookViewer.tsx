@@ -85,6 +85,23 @@ const ParagraphExtension = Extension.create({
   },
 });
 
+// Helper function to deep compare JSONContent objects
+function isContentEqual(
+  content1: JSONContent | null,
+  content2: JSONContent | null
+): boolean {
+  // Handle null cases
+  if (content1 === null && content2 === null) return true;
+  if (content1 === null || content2 === null) return false;
+
+  // Use JSON.stringify for comparison, but normalize the objects first
+  const normalize = (obj: JSONContent): string => {
+    return JSON.stringify(obj, Object.keys(obj).sort());
+  };
+
+  return normalize(content1) === normalize(content2);
+}
+
 interface Edit {
   editId: string;
   version: number;
@@ -218,11 +235,14 @@ export default function BookViewer() {
   const [addPageError, setAddPageError] = useState<string>("");
 
   useEffect(() => {
-    const fetchBook = async () => {
-      try {
-        setLoading(true);
-        const bookDoc = await bookService.getBookById(bookId);
+    if (!bookId) return;
 
+    setLoading(true);
+
+    // Set up real-time listener for book data
+    const unsubscribeBook = bookService.onBookSnapshot(
+      bookId,
+      (bookDoc) => {
         if (bookDoc.exists()) {
           const bookData = bookDoc.data();
           setBook({
@@ -231,70 +251,88 @@ export default function BookViewer() {
             createdAt: bookData.createdAt?.toDate?.() || new Date(),
             updatedAt: bookData.updatedAt?.toDate?.() || new Date(),
           } as Book);
+          setNotFound(false);
         } else {
           setNotFound(true);
         }
-      } catch (error) {
+        setLoading(false);
+      },
+      (error) => {
         console.error("Error fetching book:", error);
         setNotFound(true);
-      } finally {
         setLoading(false);
       }
+    );
+
+    // Cleanup function
+    return () => {
+      unsubscribeBook();
     };
-
-    if (bookId) {
-      fetchBook();
-    }
   }, [bookId]);
-
-  // Fetch pages
-  const fetchPages = async (preserveCurrentPage = false) => {
-    if (!bookId) return;
-    try {
-      const pagesSnap = await pageService.getPages(bookId);
-      const pagesData = pagesSnap.docs
-        .map((doc) => {
-          const data = doc.data();
-          // Convert Firestore timestamps to Date objects for edits
-          const edits =
-            data.edits?.map((edit: DocumentData) => ({
-              ...edit,
-              createdAt: edit.createdAt?.toDate?.() || edit.createdAt,
-              verifiedAt: edit.verifiedAt?.toDate?.() || edit.verifiedAt,
-            })) || [];
-
-          return {
-            id: doc.id,
-            ...data,
-            edits,
-          };
-        })
-        .sort(
-          (a, b) => (a as Page).pageNumber - (b as Page).pageNumber
-        ) as Page[];
-      setPages(pagesData);
-
-      if (pagesData.length > 0) {
-        if (preserveCurrentPage && selectedPageIndex < pagesData.length) {
-          // Keep current page and update its content
-          setTextContentJson(
-            pagesData[selectedPageIndex].currentTextJson || null
-          );
-        } else {
-          // Default to first page (initial load)
-          setSelectedPageIndex(0);
-          setTextContentJson(pagesData[0].currentTextJson || null);
-        }
-      }
-    } catch (err) {
-      console.error("Error fetching pages", err);
-    }
-  };
 
   useEffect(() => {
-    fetchPages();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bookId]);
+    if (!bookId) return;
+
+    // Set up real-time listener for pages data
+    const unsubscribePages = pageService.onPagesSnapshot(
+      bookId,
+      (pagesSnap) => {
+        const pagesData = pagesSnap.docs
+          .map((doc) => {
+            const data = doc.data();
+            // Convert Firestore timestamps to Date objects for edits
+            const edits =
+              data.edits?.map((edit: DocumentData) => ({
+                ...edit,
+                createdAt: edit.createdAt?.toDate?.() || edit.createdAt,
+                verifiedAt: edit.verifiedAt?.toDate?.() || edit.verifiedAt,
+              })) || [];
+
+            return {
+              id: doc.id,
+              ...data,
+              edits,
+            };
+          })
+          .sort(
+            (a, b) => (a as Page).pageNumber - (b as Page).pageNumber
+          ) as Page[];
+
+        const prevPagesLength = pages.length;
+        const prevSelectedIndex = selectedPageIndex;
+
+        setPages(pagesData);
+
+        if (pagesData.length > 0) {
+          // If this is the first load (no previous pages)
+          if (prevPagesLength === 0) {
+            setSelectedPageIndex(0);
+            setTextContentJson(pagesData[0].currentTextJson || null);
+          }
+          // If pages were updated but we had existing pages, preserve current selection
+          else if (prevSelectedIndex < pagesData.length) {
+            setTextContentJson(
+              pagesData[prevSelectedIndex].currentTextJson || null
+            );
+          }
+          // If the current page index is now out of bounds, go to last page
+          else if (prevSelectedIndex >= pagesData.length) {
+            const lastIndex = pagesData.length - 1;
+            setSelectedPageIndex(lastIndex);
+            setTextContentJson(pagesData[lastIndex].currentTextJson || null);
+          }
+        }
+      },
+      (error) => {
+        console.error("Error fetching pages:", error);
+      }
+    );
+
+    // Cleanup function
+    return () => {
+      unsubscribePages();
+    };
+  }, [bookId, pages.length, selectedPageIndex]);
 
   // When selected page changes, update textContent
   useEffect(() => {
@@ -333,9 +371,11 @@ export default function BookViewer() {
         imageUrl,
         userProfile.uid
       );
-      // Refresh pages
-      await fetchPages();
-      setSelectedPageIndex(pages.length); // new page index
+      // Real-time listener will automatically update pages
+      // Set to last page (which will be the new page when listener updates)
+      setTimeout(() => {
+        setSelectedPageIndex(pages.length);
+      }, 100);
     } catch (err) {
       console.error("Error uploading page", err);
     } finally {
@@ -384,19 +424,19 @@ export default function BookViewer() {
         addPageForm.pageNumberInBook
       );
 
-      // Refresh pages
-      await fetchPages();
-
-      // Find the index of the newly created page and select it
-      const newPageIndex = pages.findIndex(
-        (p) => p.pageNumber === addPageForm.pageNumber
-      );
-      if (newPageIndex >= 0) {
-        setSelectedPageIndex(newPageIndex);
-      } else {
-        // If not found, select the last page (newly added)
-        setSelectedPageIndex(pages.length);
-      }
+      // Real-time listener will automatically update pages
+      // Wait a moment for the listener to update, then select the new page
+      setTimeout(() => {
+        const newPageIndex = pages.findIndex(
+          (p) => p.pageNumber === addPageForm.pageNumber
+        );
+        if (newPageIndex >= 0) {
+          setSelectedPageIndex(newPageIndex);
+        } else {
+          // If not found, select the last page (newly added)
+          setSelectedPageIndex(pages.length);
+        }
+      }, 100);
 
       // Close dialog
       setAddPageDialogOpen(false);
@@ -422,6 +462,14 @@ export default function BookViewer() {
   const handleSaveTranscription = async () => {
     if (!userProfile || !pages[selectedPageIndex] || saving || !textContentJson)
       return;
+
+    // Check if content has actually changed
+    if (isContentEqual(textContentJson, originalTextContentJson)) {
+      // Content hasn't changed, just exit edit mode
+      setEditMode(false);
+      return;
+    }
+
     const page = pages[selectedPageIndex];
     const newVersion = (page.currentVersion || 0) + 1;
 
@@ -443,8 +491,7 @@ export default function BookViewer() {
 
       console.log("Save successful");
 
-      // Refresh page data to get updated edits array, preserving current page
-      await fetchPages(true);
+      // Just exit edit mode - no need to refetch since we're only updating text content
       setEditMode(false);
     } catch (err) {
       console.error("Error saving transcription", err);
@@ -607,7 +654,7 @@ export default function BookViewer() {
                       size="sm"
                       onClick={goToNextPage}
                       disabled={selectedPageIndex === pages.length - 1}
-                      className="h-8 px-3 flex items-center gap-1"
+                      className="h-8 px-3 flex items-center gap-1 relative z-10"
                       title="Next Page"
                     >
                       <ChevronLeft className="w-3 h-3" />
@@ -682,7 +729,7 @@ export default function BookViewer() {
                       size="sm"
                       onClick={goToNextPage}
                       disabled={selectedPageIndex === pages.length - 1}
-                      className="h-8 px-3 flex items-center gap-1"
+                      className="h-8 px-3 flex items-center gap-1 relative z-10"
                       title="Next Page"
                     >
                       <span className="text-xs hidden sm:inline">Next</span>
@@ -962,44 +1009,9 @@ export default function BookViewer() {
               </div>
             ) : (
               <div className="grid gap-2 lg:gap-8 lg:grid-cols-2 h-full px-2 lg:px-0">
-                {/* Left: Page Image */}
-                <Card className="shadow-lg border-0 overflow-hidden flex flex-col h-full py-0 gap-0">
-                  <CardHeader className="bg-gradient-to-r from-slate-900 to-slate-800 text-white h-16 flex items-center">
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="flex items-center gap-2 text-sm">
-                        <BookOpen className="w-4 h-4" />
-                        Page {pages[selectedPageIndex].pageNumber}
-                      </CardTitle>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="p-0 flex-1 flex items-center justify-center bg-slate-50 min-h-[300px] relative">
-                    {pages[selectedPageIndex]?.imageUrl ? (
-                      <div className="w-full h-full flex items-center justify-center">
-                        {imageLoading && (
-                          <div className="absolute inset-0 flex items-center justify-center bg-slate-50">
-                            <div className="animate-spin rounded-full h-8 w-8 border-4 border-slate-300 border-t-slate-600"></div>
-                          </div>
-                        )}
-                        <Image
-                          src={pages[selectedPageIndex].imageUrl}
-                          alt={`Page ${pages[selectedPageIndex].pageNumber}`}
-                          className="max-w-full max-h-full object-contain"
-                          width={800}
-                          height={1200}
-                          priority
-                          onLoad={() => setImageLoading(false)}
-                          onError={() => setImageLoading(false)}
-                        />
-                      </div>
-                    ) : (
-                      <p className="text-slate-500">No image available</p>
-                    )}
-                  </CardContent>
-                </Card>
-
-                {/* Right: Text / Editor */}
+                {/* Left: Text / Editor */}
                 <Card className="shadow-lg border-0 flex flex-col h-full py-0 gap-0">
-                  <CardHeader className="bg-red-900 text-white h-16 flex items-center rounded-t-lg">
+                  <CardHeader className="bg-red-900 text-white h-12 flex items-center rounded-t-lg">
                     <div className="flex items-center justify-between w-full">
                       <CardTitle className="flex items-center gap-2 text-sm">
                         <Edit className="w-4 h-4" />
@@ -1030,11 +1042,7 @@ export default function BookViewer() {
                                   onClick={handleSaveTranscription}
                                   variant="default"
                                   className="bg-white text-red-900 hover:bg-slate-100 h-7 sm:h-8 px-2 sm:px-3 text-xs"
-                                  disabled={
-                                    saving ||
-                                    JSON.stringify(textContentJson) ===
-                                      JSON.stringify(originalTextContentJson)
-                                  }
+                                  disabled={saving}
                                 >
                                   {saving ? (
                                     <div className="flex items-center gap-1">
@@ -1111,6 +1119,42 @@ export default function BookViewer() {
                           </div>
                         )}
                       </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                {/* Right: Page Image */}
+                <Card className="shadow-lg border-0 overflow-hidden flex flex-col h-full py-0 gap-0">
+                  <CardHeader className="bg-gradient-to-r from-slate-900 to-slate-800 text-white h-12 flex items-center">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="flex items-center gap-2 text-sm">
+                        <BookOpen className="w-4 h-4" />
+                        Page {pages[selectedPageIndex].pageNumber}
+                      </CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-0 flex-1 flex items-center justify-center bg-slate-50 min-h-[300px] relative">
+                    {pages[selectedPageIndex]?.imageUrl ? (
+                      <div className="w-full h-full flex items-center justify-center">
+                        {imageLoading && (
+                          <div className="absolute inset-0 flex items-center justify-center bg-slate-50">
+                            <div className="animate-spin rounded-full h-8 w-8 border-4 border-slate-300 border-t-slate-600"></div>
+                          </div>
+                        )}
+                        <Image
+                          key={`page-${pages[selectedPageIndex].id}-${pages[selectedPageIndex].imageUrl}`}
+                          src={pages[selectedPageIndex].imageUrl}
+                          alt={`Page ${pages[selectedPageIndex].pageNumber}`}
+                          className="max-w-full max-h-full object-contain"
+                          width={800}
+                          height={1200}
+                          priority
+                          onLoad={() => setImageLoading(false)}
+                          onError={() => setImageLoading(false)}
+                        />
+                      </div>
+                    ) : (
+                      <p className="text-slate-500">No image available</p>
                     )}
                   </CardContent>
                 </Card>

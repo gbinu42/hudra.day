@@ -23,11 +23,13 @@ import {
   where,
   orderBy,
   limit,
+  onSnapshot,
   type DocumentData,
   type QuerySnapshot,
   type DocumentSnapshot,
   type Query,
   type WhereFilterOp,
+  type Unsubscribe,
 } from "firebase/firestore";
 import {
   ref,
@@ -224,6 +226,35 @@ export const userService = {
     });
   },
 
+  // Listen to all users changes in real-time (admin only)
+  async onUsersSnapshot(
+    adminUid: string,
+    callback: (users: UserProfile[]) => void,
+    onError?: (error: Error) => void
+  ): Promise<Unsubscribe> {
+    const adminProfile = await this.getUserProfile(adminUid);
+    if (!adminProfile || adminProfile.role !== "admin") {
+      throw new Error("Insufficient permissions to view all users");
+    }
+
+    const usersCollection = collection(db, "users");
+    return onSnapshot(
+      usersCollection,
+      (querySnapshot) => {
+        const users = querySnapshot.docs.map((doc) => {
+          const data = doc.data();
+          return {
+            ...data,
+            createdAt: data.createdAt.toDate(),
+            updatedAt: data.updatedAt.toDate(),
+          } as UserProfile;
+        });
+        callback(users);
+      },
+      onError || ((error) => console.error("Users snapshot error:", error))
+    );
+  },
+
   // Check if user has permission
   hasPermission(
     userRole: UserRole,
@@ -378,9 +409,36 @@ export const bookService = {
     return await firestoreService.getCollection("books");
   },
 
+  // Listen to all books changes in real-time
+  onBooksSnapshot(
+    callback: (snapshot: QuerySnapshot<DocumentData>) => void,
+    onError?: (error: Error) => void
+  ): Unsubscribe {
+    const booksCollection = collection(db, "books");
+    return onSnapshot(
+      booksCollection,
+      callback,
+      onError || ((error) => console.error("Books snapshot error:", error))
+    );
+  },
+
   // Get book by ID
   async getBookById(bookId: string): Promise<DocumentSnapshot<DocumentData>> {
     return await firestoreService.getDocument("books", bookId);
+  },
+
+  // Listen to book changes in real-time
+  onBookSnapshot(
+    bookId: string,
+    callback: (snapshot: DocumentSnapshot<DocumentData>) => void,
+    onError?: (error: Error) => void
+  ): Unsubscribe {
+    const bookRef = doc(db, "books", bookId);
+    return onSnapshot(
+      bookRef,
+      callback,
+      onError || ((error) => console.error("Book snapshot error:", error))
+    );
   },
 
   // Create new book
@@ -431,6 +489,23 @@ export const pageService = {
     return await firestoreService.queryDocuments("pages", [
       { field: "bookId", operator: "==", value: bookId },
     ]);
+  },
+
+  // Listen to pages changes in real-time
+  onPagesSnapshot(
+    bookId: string,
+    callback: (snapshot: QuerySnapshot<DocumentData>) => void,
+    onError?: (error: Error) => void
+  ): Unsubscribe {
+    const pagesQuery = query(
+      collection(db, "pages"),
+      where("bookId", "==", bookId)
+    );
+    return onSnapshot(
+      pagesQuery,
+      callback,
+      onError || ((error) => console.error("Pages snapshot error:", error))
+    );
   },
 
   // Get a specific page document

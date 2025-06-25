@@ -183,6 +183,28 @@ export function useAuth() {
     }
   }, [user]);
 
+  const onUsersSnapshot = useCallback(
+    async (
+      callback: (users: UserProfile[]) => void,
+      onError?: (error: Error) => void
+    ) => {
+      if (!user) throw new Error("No authenticated user");
+
+      try {
+        setError(null);
+        return await userService.onUsersSnapshot(user.uid, callback, onError);
+      } catch (error: unknown) {
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : "An error occurred while setting up users listener";
+        setError(errorMessage);
+        throw error;
+      }
+    },
+    [user]
+  );
+
   const deactivateUser = useCallback(
     async (uid: string) => {
       if (!user) throw new Error("No authenticated user");
@@ -248,6 +270,7 @@ export function useAuth() {
     sendPasswordResetEmail,
     updateUserRole,
     getAllUsers,
+    onUsersSnapshot,
     deactivateUser,
     activateUser,
     hasRole,

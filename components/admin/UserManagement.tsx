@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -34,7 +34,7 @@ import { Crown, Edit, Eye, UserX, UserCheck, Settings } from "lucide-react";
 export function UserManagement() {
   const {
     userProfile,
-    getAllUsers,
+    onUsersSnapshot,
     updateUserRole,
     deactivateUser,
     activateUser,
@@ -48,43 +48,51 @@ export function UserManagement() {
   const [newRole, setNewRole] = useState<UserRole>("viewer");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const isMountedRef = useRef(true);
-  const fetchingRef = useRef(false);
 
-  const fetchUsers = useCallback(async () => {
-    // Don't fetch if user is not authenticated or already fetching
-    if (!userProfile?.uid || fetchingRef.current) {
-      console.log("No authenticated user or already fetching, skipping fetch");
+  useEffect(() => {
+    // Only set up listener if we have an authenticated user
+    if (!userProfile?.uid) {
       setLoading(false);
       return;
     }
 
-    try {
-      fetchingRef.current = true;
-      setLoading(true);
-      const usersList = await getAllUsers();
+    let unsubscribe: (() => void) | null = null;
 
-      // Only update state if component is still mounted
-      if (isMountedRef.current) {
-        setUsers(usersList);
+    const setupListener = async () => {
+      try {
+        setLoading(true);
+        unsubscribe = await onUsersSnapshot(
+          (usersList) => {
+            // Only update state if component is still mounted
+            if (isMountedRef.current) {
+              setUsers(usersList);
+              setLoading(false);
+            }
+          },
+          (error) => {
+            console.error("Error in users listener:", error);
+            if (isMountedRef.current) {
+              setLoading(false);
+            }
+          }
+        );
+      } catch (error) {
+        console.error("Error setting up users listener:", error);
+        if (isMountedRef.current) {
+          setLoading(false);
+        }
       }
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    } finally {
-      fetchingRef.current = false;
-      if (isMountedRef.current) {
-        setLoading(false);
-      }
-    }
-  }, [userProfile?.uid, getAllUsers]); // Removed getAllUsers from dependencies
+    };
 
-  useEffect(() => {
-    // Only fetch users if we have an authenticated user
-    if (userProfile?.uid) {
-      fetchUsers();
-    } else {
-      setLoading(false);
-    }
-  }, [userProfile?.uid, fetchUsers]); // Use only uid instead of full userProfile
+    setupListener();
+
+    // Cleanup function
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, [userProfile?.uid, onUsersSnapshot]);
 
   useEffect(() => {
     // Cleanup function to prevent state updates on unmounted component
@@ -110,7 +118,7 @@ export function UserManagement() {
       }
 
       await updateUserRole(selectedUser.uid, newRole);
-      await fetchUsers(); // Refresh the list
+      // Real-time listener will automatically update the list
       setIsDialogOpen(false);
       setSelectedUser(null);
     } catch (error) {
@@ -126,7 +134,7 @@ export function UserManagement() {
       } else {
         await activateUser(user.uid);
       }
-      await fetchUsers(); // Refresh the list
+      // Real-time listener will automatically update the list
     } catch (error) {
       console.error("Error toggling user status:", error);
       alert("Failed to update user status");
