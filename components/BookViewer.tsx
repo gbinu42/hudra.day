@@ -759,7 +759,7 @@ export default function BookViewer() {
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
         <Navbar />
         <div className="container mx-auto px-4 py-16">
-          <ProtectedRoute requireAuth={true}>
+          <ProtectedRoute requireAuth={false}>
             <div className="text-center py-24">
               <div className="mx-auto w-24 h-24 bg-slate-200 rounded-full flex items-center justify-center mb-6">
                 <BookOpen className="w-12 h-12 text-slate-500" />
@@ -883,7 +883,7 @@ export default function BookViewer() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col">
       <Navbar />
       <div className="container mx-auto px-4 py-8 flex-1 flex flex-col">
-        <ProtectedRoute requireAuth={true}>
+        <ProtectedRoute requireAuth={false}>
           {/* Title Section - Breadcrumbs and Header */}
           <div className="relative z-50">
             {/* Breadcrumbs */}

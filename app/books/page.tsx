@@ -280,7 +280,7 @@ export default function BooksPage() {
     <div className="min-h-screen bg-background">
       <Navbar />
       <div className="container mx-auto px-4 py-16">
-        <ProtectedRoute requireAuth={true}>
+        <ProtectedRoute requireAuth={false}>
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
               <div>
