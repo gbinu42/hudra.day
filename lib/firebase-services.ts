@@ -42,6 +42,14 @@ import { UserRole, UserProfile, ROLE_PERMISSIONS } from "./types/auth";
 import { CreateBookData } from "./types/book";
 import { JSONContent } from "@tiptap/react";
 
+// Page status types
+type PageStatus =
+  | "draft"
+  | "transcribing"
+  | "reviewing"
+  | "completed"
+  | "published";
+
 // Interface for update data
 interface PageUpdateData {
   pageNumberInBook?: number;
@@ -50,6 +58,7 @@ interface PageUpdateData {
   lastEditAt?: Date;
   lastEditBy?: string;
   edits?: EditData[];
+  status?: PageStatus;
 }
 
 // Interface for edit data
@@ -541,6 +550,7 @@ export const pageService = {
       currentTextJson: null,
       currentVersion: 0,
       edits: [],
+      status: "draft" as PageStatus, // Default status
       lastEditAt: new Date(),
       createdAt: new Date(),
       createdBy: userId,
@@ -693,5 +703,19 @@ export const pageService = {
 
     // Update page with new edits array and current text/version
     await this.updatePage(pageId, updatePageData);
+  },
+
+  // Update page status
+  async updatePageStatus(
+    pageId: string,
+    status: PageStatus,
+    userId: string
+  ): Promise<void> {
+    const updateData: PageUpdateData = {
+      status,
+      lastEditAt: new Date(),
+      lastEditBy: userId,
+    };
+    await this.updatePage(pageId, updateData);
   },
 };

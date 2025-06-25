@@ -53,6 +53,49 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+// Page status types
+type PageStatus =
+  | "draft"
+  | "transcribing"
+  | "reviewing"
+  | "completed"
+  | "published";
+
+// Helper functions for page status
+const getPageStatusColor = (status: PageStatus) => {
+  switch (status) {
+    case "draft":
+      return "bg-gray-100 text-gray-800 border-gray-300";
+    case "transcribing":
+      return "bg-blue-100 text-blue-800 border-blue-300";
+    case "reviewing":
+      return "bg-yellow-100 text-yellow-800 border-yellow-300";
+    case "completed":
+      return "bg-green-100 text-green-800 border-green-300";
+    case "published":
+      return "bg-purple-100 text-purple-800 border-purple-300";
+    default:
+      return "bg-gray-100 text-gray-800 border-gray-300";
+  }
+};
+
+const getPageStatusDisplayName = (status: PageStatus) => {
+  switch (status) {
+    case "draft":
+      return "Draft";
+    case "transcribing":
+      return "Transcribing";
+    case "reviewing":
+      return "Reviewing";
+    case "completed":
+      return "Completed";
+    case "published":
+      return "Published";
+    default:
+      return "Unknown";
+  }
+};
+
 // Custom extension to add line height and direction to paragraphs
 const ParagraphExtension = Extension.create({
   name: "paragraphExtension",
@@ -158,6 +201,9 @@ interface Page {
   currentTextJson?: JSONContent;
   currentVersion?: number;
   edits?: Edit[];
+  status: PageStatus;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 // Component to render TipTap JSON as HTML
@@ -287,6 +333,13 @@ export default function BookViewer() {
   const [editBookTagsInput, setEditBookTagsInput] = useState("");
   const [editBookLoading, setEditBookLoading] = useState<boolean>(false);
   const [editBookError, setEditBookError] = useState<string>("");
+
+  // Page status management state
+  const [pageStatusDialogOpen, setPageStatusDialogOpen] =
+    useState<boolean>(false);
+  const [pageStatusLoading, setPageStatusLoading] = useState<boolean>(false);
+  const [selectedPageStatus, setSelectedPageStatus] =
+    useState<PageStatus>("draft");
 
   useEffect(() => {
     if (!bookId) return;
@@ -663,6 +716,44 @@ export default function BookViewer() {
     }
   };
 
+  const handlePageStatusChange = async () => {
+    if (!userProfile || !pages[selectedPageIndex]) return;
+
+    const page = pages[selectedPageIndex];
+    setPageStatusLoading(true);
+
+    try {
+      await pageService.updatePageStatus(
+        page.id,
+        selectedPageStatus,
+        userProfile.uid
+      );
+      setPageStatusDialogOpen(false);
+    } catch (err) {
+      console.error("Error updating page status:", err);
+      alert("Failed to update page status. Please try again.");
+    } finally {
+      setPageStatusLoading(false);
+    }
+  };
+
+  const openPageStatusDialog = () => {
+    console.log("openPageStatusDialog called");
+    console.log("selectedPageIndex:", selectedPageIndex);
+    console.log("pages[selectedPageIndex]:", pages[selectedPageIndex]);
+    console.log("current pageStatusDialogOpen:", pageStatusDialogOpen);
+
+    if (pages[selectedPageIndex]) {
+      const currentStatus = pages[selectedPageIndex].status || "draft";
+      console.log("Setting status to:", currentStatus);
+      setSelectedPageStatus(currentStatus);
+      setPageStatusDialogOpen(true);
+      console.log("Dialog should now be open");
+    } else {
+      console.log("No page found at selectedPageIndex");
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
@@ -704,6 +795,102 @@ export default function BookViewer() {
             </div>
           </ProtectedRoute>
         </div>
+
+        {/* Page Status Change Dialog */}
+        {(() => {
+          console.log(
+            "Rendering dialog with pageStatusDialogOpen:",
+            pageStatusDialogOpen
+          );
+          return null;
+        })()}
+        <Dialog
+          open={pageStatusDialogOpen}
+          onOpenChange={(open) => {
+            console.log("Dialog onOpenChange called with:", open);
+            setPageStatusDialogOpen(open);
+          }}
+        >
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Change Page Status</DialogTitle>
+              <DialogDescription>
+                Update the status for Page{" "}
+                {pages[selectedPageIndex]?.pageNumber}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="pageStatus">Status</Label>
+                <Select
+                  value={selectedPageStatus}
+                  onValueChange={(value) =>
+                    setSelectedPageStatus(value as PageStatus)
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="draft">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full bg-gray-300"></div>
+                        <span>Draft</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="transcribing">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full bg-blue-300"></div>
+                        <span>Transcribing</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="reviewing">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full bg-yellow-300"></div>
+                        <span>Reviewing</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="completed">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full bg-green-300"></div>
+                        <span>Completed</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="published">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full bg-purple-300"></div>
+                        <span>Published</span>
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setPageStatusDialogOpen(false)}
+                disabled={pageStatusLoading}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handlePageStatusChange}
+                disabled={pageStatusLoading}
+              >
+                {pageStatusLoading ? (
+                  <div className="flex items-center gap-2">
+                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                    Updating...
+                  </div>
+                ) : (
+                  "Update Status"
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
         <Footer />
       </div>
     );
@@ -1028,7 +1215,20 @@ export default function BookViewer() {
                         <SelectContent>
                           {pages.map((page, index) => (
                             <SelectItem key={page.id} value={String(index + 1)}>
-                              Page {index + 1} [{page.pageNumber}]
+                              <div className="flex items-center justify-between w-full">
+                                <span>
+                                  Page {index + 1} ({page.pageNumber})
+                                </span>
+                                <div
+                                  className={`ml-2 px-1 py-0.5 rounded text-xs ${getPageStatusColor(
+                                    page.status || "draft"
+                                  )}`}
+                                >
+                                  {getPageStatusDisplayName(
+                                    page.status || "draft"
+                                  )}
+                                </div>
+                              </div>
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -1089,7 +1289,20 @@ export default function BookViewer() {
                         <SelectContent>
                           {pages.map((page, index) => (
                             <SelectItem key={page.id} value={String(index + 1)}>
-                              Page {index + 1} [{page.pageNumber}]
+                              <div className="flex items-center justify-between w-full">
+                                <span>
+                                  Page {index + 1} [{page.pageNumber}]
+                                </span>
+                                <div
+                                  className={`ml-2 px-1 py-0.5 rounded text-xs ${getPageStatusColor(
+                                    page.status || "draft"
+                                  )}`}
+                                >
+                                  {getPageStatusDisplayName(
+                                    page.status || "draft"
+                                  )}
+                                </div>
+                              </div>
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -1507,11 +1720,48 @@ export default function BookViewer() {
                 {/* Right: Page Image */}
                 <Card className="shadow-lg border-0 overflow-hidden flex flex-col h-full py-0 gap-0">
                   <CardHeader className="bg-gradient-to-r from-slate-900 to-slate-800 text-white h-12 flex items-center">
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between w-full">
                       <CardTitle className="flex items-center gap-2 text-sm">
                         <BookOpen className="w-4 h-4" />
                         Page {pages[selectedPageIndex].pageNumber}
                       </CardTitle>
+                      <div className="flex items-center gap-2">
+                        {/* Page Status Badge */}
+                        <div
+                          className={`px-2 py-1 rounded-full text-xs font-medium border ${getPageStatusColor(
+                            pages[selectedPageIndex]?.status || "draft"
+                          )}`}
+                        >
+                          {getPageStatusDisplayName(
+                            pages[selectedPageIndex]?.status || "draft"
+                          )}
+                        </div>
+                        {/* Admin Status Change Button */}
+                        {(() => {
+                          console.log("Permissions check:", {
+                            canEdit: permissions.canEdit,
+                            userRole: userProfile?.role,
+                            isAdmin: userProfile?.role === "admin",
+                          });
+                          return (
+                            permissions.canEdit && userProfile?.role === "admin"
+                          );
+                        })() && (
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            className="bg-white text-slate-900 hover:bg-slate-100 h-7 px-2 text-xs"
+                            onClick={(e) => {
+                              console.log("Change Status button clicked!");
+                              e.preventDefault();
+                              e.stopPropagation();
+                              openPageStatusDialog();
+                            }}
+                          >
+                            Change Status
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent className="p-0 flex-1 flex items-center justify-center bg-slate-50 min-h-[300px] relative">
@@ -1544,6 +1794,107 @@ export default function BookViewer() {
           </div>
         </ProtectedRoute>
       </div>
+
+      {/* Page Status Change Dialog */}
+      {(() => {
+        console.log(
+          "Rendering dialog with pageStatusDialogOpen:",
+          pageStatusDialogOpen
+        );
+        return null;
+      })()}
+      <Dialog
+        open={pageStatusDialogOpen}
+        onOpenChange={(open) => {
+          console.log("Dialog onOpenChange called with:", open);
+          setPageStatusDialogOpen(open);
+        }}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Change Page Status</DialogTitle>
+            <DialogDescription>
+              Update the status for Page {pages[selectedPageIndex]?.pageNumber}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="pageStatus">Status</Label>
+              <Select
+                value={selectedPageStatus}
+                onValueChange={(value) =>
+                  setSelectedPageStatus(value as PageStatus)
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="draft">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-gray-300"></div>
+                      <span>Draft</span>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="transcribing">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-blue-300"></div>
+                      <span>Transcribing</span>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="reviewing">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-yellow-300"></div>
+                      <span>Reviewing</span>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="completed">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-green-300"></div>
+                      <span>Completed</span>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="published">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-purple-300"></div>
+                      <span>Published</span>
+                    </div>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                console.log("Cancel button clicked");
+                setPageStatusDialogOpen(false);
+              }}
+              disabled={pageStatusLoading}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                console.log("Update Status button clicked");
+                handlePageStatusChange();
+              }}
+              disabled={pageStatusLoading}
+            >
+              {pageStatusLoading ? (
+                <div className="flex items-center gap-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                  Updating...
+                </div>
+              ) : (
+                "Update Status"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <Footer />
     </div>
   );
