@@ -1,5 +1,6 @@
 "use client";
 
+import { Metadata } from "next";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -29,6 +30,49 @@ import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+
+export const metadata: Metadata = {
+  title: "Sign Up - Create Your Hudra Account",
+  description:
+    "Create a free account on Hudra.day to access East Syriac liturgical texts, contribute to our digital preservation project, and connect with the global Church of the East community.",
+  keywords: [
+    "Hudra sign up",
+    "create account",
+    "register",
+    "East Syriac texts",
+    "liturgical texts registration",
+    "Hendo Academy registration",
+    "Syriac studies community",
+    "free account",
+  ],
+  openGraph: {
+    title: "Sign Up for Hudra.day - Create Your Free Account",
+    description:
+      "Create a free account to access East Syriac liturgical texts and contribute to our digital preservation project.",
+    url: "https://www.hudra.day/signup",
+    images: [
+      {
+        url: "https://www.hudra.day/images/sliwa.png",
+        width: 1200,
+        height: 630,
+        alt: "Sign Up for Hudra.day",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary",
+    title: "Sign Up for Hudra.day - Create Your Free Account",
+    description:
+      "Create a free account to access East Syriac liturgical texts and contribute to our preservation project.",
+  },
+  robots: {
+    index: false, // Don't index signup pages
+    follow: true,
+  },
+  alternates: {
+    canonical: "https://www.hudra.day/signup",
+  },
+};
 
 const formSchema = z
   .object({

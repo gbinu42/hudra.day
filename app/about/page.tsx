@@ -1,9 +1,56 @@
+import { Metadata } from "next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, BookOpen, Globe, Users, Heart } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import Footer from "@/components/Footer";
+
+export const metadata: Metadata = {
+  title: "About - Preserving Church of the East Liturgical Heritage",
+  description:
+    "Learn about Hudra.day's mission to digitize and preserve East Syriac liturgical texts from the Assyrian Church of the East, Chaldean Catholic Church, and Syro-Malabar Church. A Hendo Academy initiative.",
+  keywords: [
+    "Hudra mission",
+    "Church of the East history",
+    "East Syriac preservation",
+    "Hendo Academy",
+    "liturgical heritage",
+    "Assyrian Church history",
+    "Chaldean Catholic tradition",
+    "Syro-Malabar heritage",
+    "digital preservation",
+    "manuscript digitization",
+    "Eastern Christian heritage",
+    "Syriac studies",
+  ],
+  openGraph: {
+    title:
+      "About Hudra.day - Preserving Church of the East Liturgical Heritage",
+    description:
+      "Learn about our mission to digitize and preserve East Syriac liturgical texts from three major Church of the East traditions. A Hendo Academy initiative.",
+    url: "https://www.hudra.day/about",
+    images: [
+      {
+        url: "https://www.hudra.day/images/sliwa.png",
+        width: 1200,
+        height: 630,
+        alt: "About Hudra.day - Preserving Liturgical Heritage",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title:
+      "About Hudra.day - Preserving Church of the East Liturgical Heritage",
+    description:
+      "Learn about our mission to digitize and preserve East Syriac liturgical texts from three major Church of the East traditions.",
+    images: ["https://www.hudra.day/images/sliwa.png"],
+  },
+  alternates: {
+    canonical: "https://www.hudra.day/about",
+  },
+};
 
 // Enable SSG for this page
 export const revalidate = false;

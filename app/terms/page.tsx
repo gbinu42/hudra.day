@@ -1,9 +1,52 @@
+import { Metadata } from "next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import Footer from "@/components/Footer";
+
+export const metadata: Metadata = {
+  title: "Terms of Service - Hudra.day Usage Agreement",
+  description:
+    "Read the terms of service for using Hudra.day, including license agreements for accessing East Syriac liturgical texts and using our digital preservation platform.",
+  keywords: [
+    "Hudra terms of service",
+    "usage agreement",
+    "license terms",
+    "service terms",
+    "legal agreement",
+    "Hendo Academy terms",
+    "liturgical texts license",
+  ],
+  openGraph: {
+    title: "Terms of Service - Hudra.day Usage Agreement",
+    description:
+      "Read the terms of service for using Hudra.day and accessing our East Syriac liturgical texts collection.",
+    url: "https://www.hudra.day/terms",
+    images: [
+      {
+        url: "https://www.hudra.day/images/sliwa.png",
+        width: 1200,
+        height: 630,
+        alt: "Hudra.day Terms of Service",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary",
+    title: "Terms of Service - Hudra.day Usage Agreement",
+    description:
+      "Read the terms of service for using Hudra.day and accessing our liturgical texts collection.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  alternates: {
+    canonical: "https://www.hudra.day/terms",
+  },
+};
 
 // Enable SSG for this page
 export const revalidate = false;

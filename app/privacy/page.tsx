@@ -1,9 +1,52 @@
+import { Metadata } from "next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import Footer from "@/components/Footer";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy - Hudra.day Data Protection",
+  description:
+    "Learn how Hudra.day protects your privacy and handles your personal information. Our commitment to data security and transparency in preserving East Syriac liturgical texts.",
+  keywords: [
+    "Hudra privacy policy",
+    "data protection",
+    "privacy rights",
+    "personal information",
+    "data security",
+    "Hendo Academy privacy",
+    "liturgical texts privacy",
+  ],
+  openGraph: {
+    title: "Privacy Policy - Hudra.day Data Protection",
+    description:
+      "Learn how Hudra.day protects your privacy and handles your personal information with transparency and security.",
+    url: "https://www.hudra.day/privacy",
+    images: [
+      {
+        url: "https://www.hudra.day/images/sliwa.png",
+        width: 1200,
+        height: 630,
+        alt: "Hudra.day Privacy Policy",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary",
+    title: "Privacy Policy - Hudra.day Data Protection",
+    description:
+      "Learn how Hudra.day protects your privacy and handles your personal information.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  alternates: {
+    canonical: "https://www.hudra.day/privacy",
+  },
+};
 
 // Enable SSG for this page
 export const revalidate = false;

@@ -1,9 +1,52 @@
+import { Metadata } from "next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Mail, Globe, Heart } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import Footer from "@/components/Footer";
+
+export const metadata: Metadata = {
+  title: "Contact - Get in Touch with Hudra.day Team",
+  description:
+    "Contact the Hudra.day team for inquiries about East Syriac liturgical texts, collaboration opportunities, or technical support. Part of Hendo Academy's digital preservation initiatives.",
+  keywords: [
+    "Hudra contact",
+    "East Syriac collaboration",
+    "liturgical texts inquiry",
+    "Hendo Academy contact",
+    "Syriac studies collaboration",
+    "manuscript digitization",
+    "Church of the East contact",
+    "technical support",
+    "academic collaboration",
+    "liturgical research",
+  ],
+  openGraph: {
+    title: "Contact Hudra.day - Get in Touch with Our Team",
+    description:
+      "Contact us for inquiries about East Syriac liturgical texts, collaboration opportunities, or technical support. We welcome scholars, clergy, and community members.",
+    url: "https://www.hudra.day/contact",
+    images: [
+      {
+        url: "https://www.hudra.day/images/sliwa.png",
+        width: 1200,
+        height: 630,
+        alt: "Contact Hudra.day Team",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Contact Hudra.day - Get in Touch with Our Team",
+    description:
+      "Contact us for inquiries about East Syriac liturgical texts, collaboration opportunities, or technical support.",
+    images: ["https://www.hudra.day/images/sliwa.png"],
+  },
+  alternates: {
+    canonical: "https://www.hudra.day/contact",
+  },
+};
 
 // Enable SSG for this page
 export const revalidate = false;
