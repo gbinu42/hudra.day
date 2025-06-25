@@ -534,7 +534,7 @@ export default function BooksPage() {
               </div>
             </div>
           ) : (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {!books || books.length === 0 ? (
                 <div className="col-span-full text-center py-12">
                   <BookOpen className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
@@ -549,21 +549,14 @@ export default function BooksPage() {
               ) : (
                 books?.map((book) => (
                   <a key={book.id} href={`/books/${book.id}`}>
-                    <Card className="hover:shadow-lg transition-shadow h-full w-full max-w-sm mx-auto">
-                      <CardHeader className="pb-3">
-                        <div className="flex items-start justify-between gap-4">
+                    <Card className="hover:shadow-lg transition-shadow h-full w-full max-w-lg mx-auto">
+                      <CardHeader>
+                        <div className="flex items-start justify-between gap-2">
                           <div className="flex-1 min-w-0">
                             <div className="flex items-start gap-2 mb-2">
                               <CardTitle className="line-clamp-2 text-base font-semibold leading-tight flex-1">
                                 {book.title}
                               </CardTitle>
-                              <span
-                                className={`px-2 py-1 text-xs font-medium rounded-full border flex-shrink-0 ${getStatusStyling(
-                                  book.status
-                                )}`}
-                              >
-                                {getStatusDisplayName(book.status)}
-                              </span>
                             </div>
                             <CardDescription className="flex items-center gap-2 text-sm mb-2">
                               <User className="w-3 h-3 flex-shrink-0" />
@@ -582,15 +575,47 @@ export default function BooksPage() {
                                 )}
                               </div>
                             )}
+                            <div className="mt-2 space-y-2">
+                              <div className="flex items-center gap-2">
+                                {book.placeOfPublication && (
+                                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                    <span>{book.placeOfPublication}</span>
+                                  </div>
+                                )}
+                                {book.publicationYear && (
+                                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                    <Calendar className="w-3 h-3" />
+                                    <span>{book.publicationYear}</span>
+                                  </div>
+                                )}
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Badge variant="secondary" className="text-xs">
+                                  {book.language}
+                                </Badge>
+                                {book.category && (
+                                  <Badge variant="outline" className="text-xs">
+                                    {book.category}
+                                  </Badge>
+                                )}
+                                <span
+                                  className={`text-xs font-medium rounded-full border ${getStatusStyling(
+                                    book.status
+                                  )}`}
+                                >
+                                  {getStatusDisplayName(book.status)}
+                                </span>
+                              </div>
+                            </div>
                           </div>
                           {book.coverImage ? (
                             <div className="flex-shrink-0">
                               <Image
                                 src={book.coverImage}
                                 alt={`Cover of ${book.title}`}
-                                className="w-20 h-28 object-cover rounded-lg border shadow-md"
-                                width={80}
-                                height={112}
+                                className="w-24 h-36 object-cover rounded-lg border shadow-md"
+                                width={96}
+                                height={144}
                                 unoptimized
                                 onError={(e) => {
                                   const target = e.target as HTMLImageElement;
@@ -599,45 +624,25 @@ export default function BooksPage() {
                               />
                             </div>
                           ) : (
-                            <div className="flex-shrink-0 w-20 h-28 bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg border shadow-md flex items-center justify-center">
-                              <BookOpen className="w-8 h-8 text-slate-400" />
+                            <div className="flex-shrink-0 w-24 h-36 bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg border shadow-md flex items-center justify-center">
+                              <BookOpen className="w-10 h-10 text-slate-400" />
                             </div>
                           )}
                         </div>
                       </CardHeader>
                       <CardContent className="pt-0">
-                        <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                        <p className="text-sm text-muted-foreground mb-2 line-clamp-3">
                           {book.description}
                         </p>
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between text-xs">
-                            <div className="flex items-center gap-2">
-                              <Badge variant="secondary" className="text-xs">
-                                {book.language}
-                              </Badge>
-                              {book.category && (
-                                <Badge
-                                  variant="outline"
-                                  className="text-xs truncate max-w-20"
-                                >
-                                  {book.category}
-                                </Badge>
-                              )}
-                            </div>
-                            {book.pages && (
+                        <div className="space-y-1">
+                          {book.pages && (
+                            <div className="flex items-center justify-end text-xs">
                               <span className="text-muted-foreground whitespace-nowrap">
                                 {book.pages} pages
                               </span>
-                            )}
-                          </div>
-                          {book.publicationYear && (
-                            <div className="flex items-center text-xs text-muted-foreground">
-                              <span className="flex items-center gap-1">
-                                <Calendar className="w-3 h-3" />
-                                Published {book.publicationYear}
-                              </span>
                             </div>
                           )}
+
                           {book.tags && book.tags.length > 0 && (
                             <div className="flex items-center gap-1 flex-wrap pt-1">
                               <Tag className="w-3 h-3 text-muted-foreground flex-shrink-0" />
@@ -645,7 +650,7 @@ export default function BooksPage() {
                                 <Badge
                                   key={index}
                                   variant="outline"
-                                  className="text-xs truncate max-w-16"
+                                  className="text-xs"
                                 >
                                   {tag}
                                 </Badge>
