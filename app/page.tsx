@@ -1,6 +1,5 @@
 "use client";
 
-import { Metadata } from "next";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -14,50 +13,6 @@ import { BookOpen, Globe, Users, Edit3, Church, Scroll } from "lucide-react";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
-
-export const metadata: Metadata = {
-  title: "Home - Digital Archive of Church of the East Liturgical Texts",
-  description:
-    "Hudra.day - Digital archive of East Syriac liturgical texts from Assyrian Church of the East, Chaldean Catholic Church, and Syro-Malabar Church. Free access to ancient manuscripts and online Syriac text editor by Hendo Academy.",
-  keywords: [
-    "Hudra",
-    "East Syriac liturgical texts",
-    "Church of the East",
-    "Assyrian Church",
-    "Chaldean Catholic Church",
-    "Syro-Malabar Church",
-    "Syriac manuscripts",
-    "liturgical archive",
-    "Hendo Academy",
-    "East Syriac editor",
-    "Karshon",
-    "Garshuni Malayalam",
-  ],
-  openGraph: {
-    title: "Hudra - Digital Archive of Church of the East Liturgical Texts",
-    description:
-      "Free digital archive of East Syriac liturgical texts from three major churches. Access ancient manuscripts and use our online Syriac text editor.",
-    url: "https://www.hudra.day",
-    images: [
-      {
-        url: "https://www.hudra.day/images/sliwa.png",
-        width: 1200,
-        height: 630,
-        alt: "Hudra - East Syriac Liturgical Texts Archive",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Hudra - Digital Archive of Church of the East Liturgical Texts",
-    description:
-      "Free digital archive of East Syriac liturgical texts from Assyrian, Chaldean, and Syro-Malabar churches. Includes online Syriac text editor.",
-    images: ["https://www.hudra.day/images/sliwa.png"],
-  },
-  alternates: {
-    canonical: "https://www.hudra.day",
-  },
-};
 
 export default function HomePage() {
   return (
