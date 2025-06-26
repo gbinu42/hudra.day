@@ -148,8 +148,8 @@ export default function SyriacEditor({
   className = "",
 }: SyriacEditorProps) {
   const [selectedFont, setSelectedFont] = useState("Karshon");
-  const [fontSize, setFontSize] = useState("22pt");
-  const [fontSizeInput, setFontSizeInput] = useState("22");
+  const [fontSize, setFontSize] = useState("");
+  const [fontSizeInput, setFontSizeInput] = useState("");
   const [fontColor, setFontColor] = useState("#000000");
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [keyboardCollapsed, setKeyboardCollapsed] = useState(false);
@@ -200,7 +200,45 @@ export default function SyriacEditor({
     content,
     editable,
     immediatelyRender: false,
-    onUpdate: ({ editor }) => {
+
+    onUpdate: ({ editor, transaction }) => {
+      // Check if this update was caused by a paste operation
+      if (transaction.docChanged && transaction.getMeta("paste")) {
+        // Transform Syriac characters after paste
+        const content = editor.getHTML();
+        const transformedContent = content
+          .replace(/ܬܼܵ/g, "ܬ݂ܵ") // Replace ܬܼܵ with ܬ݂ܵ
+          .replace(/ܟܼ/g, "ܟ݂") // Replace ܟܼ with ܟ݂
+          .replace(/ܡܼܢ/g, "ܡ̣ܢ") // Replace ܡܼܢ with ܡ̣ܢ
+          .replace(/ܕܿ/g, "ܕ݁") // Replace ܕܿ with ܕ݁
+          .replace(/ܓܼ/g, "ܓ݂") // Replace ܓܼ with ܓ݂
+          .replace(/ܬܼ/g, "ܬ݂") // Replace ܬܼ with ܬ݂
+          .replace(/ܒܼ/g, "ܒ݂") // Replace ܒܼ with ܒ݂
+          .replace(/ܡ݂ܢ/g, "ܡ̣ܢ") // Replace ܡ݂ܢ with ܡ̣ܢ
+          .replace(/ܕܼ/g, "ܕ݂") // Replace ܕܼ with ܕ݂
+          .replace(/ܒܹܿ/g, "ܒܹ݁") // Replace ܒܹܿ with ܒܹܿ
+          .replace(/ܒ̇/g, "ܒ݁")
+          .replace(/ܐ݇ܡܹܝܢ/g, "ܐܵܡܹܝܢ")
+          .replace(/ܟܿ/g, "ܟ݁")
+          .replace(/ܡܳܪܶ/g, "ܡܵܪܵ")
+          .replace(/ܒܿ/g, "ܒ݁")
+          .replace(/ܐܿ/g, "ܐܵ")
+          .replace(/\*/g, "܀")
+          .replace(/ܬܿ/g, "ܬ݁")
+          .replace(/ܟܷ/g, "ܟ݂")
+          .replace(/ܥܵܢܲܝܢ/g, "ܥܵܢܹܝܢ")
+          .replace(/ܐܲܡܹܝܢ/g, "ܐܵܡܹܝܢ")
+          .replace(/ܙܲܒ݂ܢܲܐ/g, "ܙܲܒ݂ܢܹ̈ܐ")
+          .replace(/ܙܲܒ݂ܪܹܐ/g, "ܙܲܒ݂ܢܹ̈ܐ")
+          .replace(/ܥܸܕܵܪܹܐ/g, "ܥܸܕܵܢܹܐ")
+          .replace(/ܕܒܲܬܲܪ/g, "ܕܒ݂ܵܬܲܪ");
+
+        if (transformedContent !== content) {
+          // Only update if there were changes to avoid infinite loops
+          editor.commands.setContent(transformedContent, false);
+        }
+      }
+
       if (onUpdate) {
         onUpdate(editor.getHTML(), editor.getJSON());
       }
