@@ -1,7 +1,12 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { useEditor, EditorContent, JSONContent } from "@tiptap/react";
+import {
+  useEditor,
+  EditorContent,
+  JSONContent,
+  BubbleMenu,
+} from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import TextAlign from "@tiptap/extension-text-align";
 import FontFamily from "@tiptap/extension-font-family";
@@ -685,6 +690,46 @@ export default function SyriacEditor({
           }}
         >
           <EditorContent editor={editor} className="focus:outline-none" />
+
+          {/* Bubble Menu */}
+          {editor && (
+            <BubbleMenu
+              editor={editor}
+              className="bg-background border border-border rounded-lg shadow-lg p-2 flex items-center gap-2 z-50"
+            >
+              {/* Font Color */}
+              <div className="flex items-center gap-1">
+                {mainColors.map((color) => (
+                  <button
+                    key={color.value}
+                    className={`w-4 h-4 rounded border cursor-pointer hover:scale-110 transition-transform ${
+                      !isColorMixed && currentColor === color.value
+                        ? "ring-1 ring-gray-400"
+                        : ""
+                    } ${isColorMixed ? "opacity-50" : ""}`}
+                    style={{ backgroundColor: color.value }}
+                    onClick={() => handleColorChange(color.value)}
+                    title={
+                      isColorMixed
+                        ? `${color.name} (Mixed colors selected)`
+                        : color.name
+                    }
+                  />
+                ))}
+                <Input
+                  type="color"
+                  value={isColorMixed ? "#808080" : currentColor}
+                  onChange={(e) => handleColorChange(e.target.value)}
+                  className="w-4 h-4 p-0 border rounded cursor-pointer"
+                  title={
+                    isColorMixed ? "Custom (Mixed colors selected)" : "Custom"
+                  }
+                  disabled={isColorMixed}
+                />
+              </div>
+            </BubbleMenu>
+          )}
+
           <style jsx global>{`
             .ProseMirror {
               line-height: 1.4 !important;
