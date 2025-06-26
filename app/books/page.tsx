@@ -46,6 +46,7 @@ export default function BooksPage() {
   // Form state for new book
   const [newBookData, setNewBookData] = useState<CreateBookData>({
     title: "",
+    syriacTitle: "",
     author: "",
     description: "",
     language: "",
@@ -201,6 +202,7 @@ export default function BooksPage() {
       // Reset form
       setNewBookData({
         title: "",
+        syriacTitle: "",
         author: "",
         description: "",
         language: "",
@@ -322,6 +324,21 @@ export default function BooksPage() {
                             placeholder="Enter book title"
                           />
                         </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="syriacTitle">Syriac Title</Label>
+                          <Input
+                            id="syriacTitle"
+                            value={newBookData.syriacTitle}
+                            onChange={(e) =>
+                              handleInputChange("syriacTitle", e.target.value)
+                            }
+                            placeholder="Enter Syriac title"
+                            dir="rtl"
+                            className="text-right"
+                          />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="author">Author *</Label>
                           <Input
@@ -554,9 +571,23 @@ export default function BooksPage() {
                         <div className="flex items-start justify-between gap-2">
                           <div className="flex-1 min-w-0">
                             <div className="flex items-start gap-2 mb-2">
-                              <CardTitle className="line-clamp-2 text-base font-semibold leading-tight flex-1">
-                                {book.title}
-                              </CardTitle>
+                              <div className="flex-1">
+                                <CardTitle className="line-clamp-2 text-base font-semibold leading-tight">
+                                  {book.title}
+                                </CardTitle>
+                                {book.syriacTitle && (
+                                  <p
+                                    className="text-sm text-slate-600 mt-1 line-clamp-1"
+                                    dir="rtl"
+                                    style={{
+                                      fontFamily:
+                                        "Estrangelo Edessa, Noto Sans Syriac, serif",
+                                    }}
+                                  >
+                                    {book.syriacTitle}
+                                  </p>
+                                )}
+                              </div>
                             </div>
                             <CardDescription className="flex items-center gap-2 text-sm mb-2">
                               <User className="w-3 h-3 flex-shrink-0" />

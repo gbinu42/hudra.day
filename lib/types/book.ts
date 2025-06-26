@@ -9,6 +9,7 @@ export type BookStatus =
 export interface Book {
   id: string;
   title: string;
+  syriacTitle?: string;
   author: string;
   description: string;
   language: string;
@@ -30,6 +31,7 @@ export interface Book {
 
 export interface CreateBookData {
   title: string;
+  syriacTitle?: string;
   author: string;
   description: string;
   language: string;

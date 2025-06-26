@@ -43,10 +43,14 @@ export async function generateMetadata({
     };
 
     // Create SEO-friendly title and description
-    const title = `${book.title} by ${book.author}`;
+    const title = book.syriacTitle
+      ? `${book.title} (${book.syriacTitle}) by ${book.author}`
+      : `${book.title} by ${book.author}`;
     const description =
       book.description ||
-      `Read ${book.title} by ${book.author}. ${book.category} book in ${book.language}.`;
+      `Read ${book.title}${
+        book.syriacTitle ? ` (${book.syriacTitle})` : ""
+      } by ${book.author}. ${book.category} book in ${book.language}.`;
 
     return {
       title,
