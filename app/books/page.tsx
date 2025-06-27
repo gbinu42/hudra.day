@@ -335,6 +335,9 @@ export default function BooksPage() {
                             placeholder="Enter Syriac title"
                             dir="rtl"
                             className="text-right"
+                            style={{
+                              fontFamily: '"East Syriac Adiabene", serif',
+                            }}
                           />
                         </div>
                       </div>
@@ -577,11 +580,11 @@ export default function BooksPage() {
                                 </CardTitle>
                                 {book.syriacTitle && (
                                   <p
-                                    className="text-sm text-slate-600 mt-1 line-clamp-1"
+                                    className="text-xl text-slate-600 mt-1 line-clamp-1"
                                     dir="rtl"
                                     style={{
                                       fontFamily:
-                                        "Estrangelo Edessa, Noto Sans Syriac, serif",
+                                        '"East Syriac Adiabene", serif',
                                     }}
                                   >
                                     {book.syriacTitle}
@@ -634,61 +637,69 @@ export default function BooksPage() {
                               </div>
                             </div>
                           </div>
-                          {book.coverImage ? (
-                            <div className="flex-shrink-0">
-                              <Image
-                                src={book.coverImage}
-                                alt={`Cover of ${book.title}`}
-                                className="w-24 h-36 object-cover rounded-lg border shadow-md"
-                                width={96}
-                                height={144}
-                                unoptimized
-                                onError={(e) => {
-                                  const target = e.target as HTMLImageElement;
-                                  target.style.display = "none";
-                                }}
-                              />
-                            </div>
-                          ) : (
-                            <div className="flex-shrink-0 w-24 h-36 bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg border shadow-md flex items-center justify-center">
-                              <BookOpen className="w-10 h-10 text-slate-400" />
-                            </div>
-                          )}
+                          <div className="flex-shrink-0">
+                            {book.coverImage ? (
+                              <div>
+                                <Image
+                                  src={book.coverImage}
+                                  alt={`Cover of ${book.title}`}
+                                  className="w-24 h-36 object-cover rounded-lg border shadow-md"
+                                  width={96}
+                                  height={144}
+                                  unoptimized
+                                  onError={(e) => {
+                                    const target = e.target as HTMLImageElement;
+                                    target.style.display = "none";
+                                  }}
+                                />
+                                {book.pages && (
+                                  <div className="mt-1 text-center">
+                                    <span className="text-xs text-muted-foreground whitespace-nowrap">
+                                      {book.pages} pages
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
+                            ) : (
+                              <div>
+                                <div className="w-24 h-36 bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg border shadow-md flex items-center justify-center">
+                                  <BookOpen className="w-10 h-10 text-slate-400" />
+                                </div>
+                                {book.pages && (
+                                  <div className="mt-1 text-center">
+                                    <span className="text-xs text-muted-foreground whitespace-nowrap">
+                                      {book.pages} pages
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </CardHeader>
                       <CardContent className="pt-0">
                         <p className="text-sm text-muted-foreground mb-2 line-clamp-3">
                           {book.description}
                         </p>
-                        <div className="space-y-1">
-                          {book.pages && (
-                            <div className="flex items-center justify-end text-xs">
-                              <span className="text-muted-foreground whitespace-nowrap">
-                                {book.pages} pages
+                        {book.tags && book.tags.length > 0 && (
+                          <div className="flex items-center gap-1 flex-wrap pt-1">
+                            <Tag className="w-3 h-3 text-muted-foreground flex-shrink-0" />
+                            {book.tags.slice(0, 3).map((tag, index) => (
+                              <Badge
+                                key={index}
+                                variant="outline"
+                                className="text-xs"
+                              >
+                                {tag}
+                              </Badge>
+                            ))}
+                            {book.tags.length > 3 && (
+                              <span className="text-xs text-muted-foreground">
+                                +{book.tags.length - 3}
                               </span>
-                            </div>
-                          )}
-
-                          {book.tags && book.tags.length > 0 && (
-                            <div className="flex items-center gap-1 flex-wrap pt-1">
-                              <Tag className="w-3 h-3 text-muted-foreground flex-shrink-0" />
-                              {book.tags.slice(0, 2).map((tag, index) => (
-                                <Badge
-                                  key={index}
-                                  variant="outline"
-                                  className="text-xs"
-                                >
-                                  {tag}
-                                </Badge>
-                              ))}
-                              {book.tags.length > 2 && (
-                                <span className="text-xs text-muted-foreground">
-                                  +{book.tags.length - 2}
-                                </span>
-                              )}
-                            </div>
-                          )}
-                        </div>
+                            )}
+                          </div>
+                        )}
                       </CardContent>
                     </Card>
                   </a>

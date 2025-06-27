@@ -830,287 +830,279 @@ export default function BookViewer() {
               </Breadcrumb>
             </div>
 
+            {/* Edit Button */}
+            {permissions.canEdit && (
+              <div className="flex justify-end mb-2">
+                <Dialog
+                  open={editBookDialogOpen}
+                  onOpenChange={setEditBookDialogOpen}
+                >
+                  <DialogTrigger asChild>
+                    <Button
+                      onClick={handleEditClick}
+                      variant="outline"
+                      size="sm"
+                      className="relative z-50"
+                    >
+                      <Edit className="w-4 h-4 mr-2" />
+                      Edit Details
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle>Edit Book Details</DialogTitle>
+                      <DialogDescription>
+                        Update the book metadata and information.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="editTitle">Title *</Label>
+                          <Input
+                            id="editTitle"
+                            value={editBookForm.title}
+                            onChange={(e) =>
+                              handleEditBookInputChange("title", e.target.value)
+                            }
+                            placeholder="Enter book title"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="editSyriacTitle">Syriac Title</Label>
+                          <Input
+                            id="editSyriacTitle"
+                            value={editBookForm.syriacTitle}
+                            onChange={(e) =>
+                              handleEditBookInputChange(
+                                "syriacTitle",
+                                e.target.value
+                              )
+                            }
+                            placeholder="Enter Syriac title"
+                            dir="rtl"
+                            className="text-right"
+                            style={{
+                              fontFamily: '"East Syriac Adiabene", serif',
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="editAuthor">Author *</Label>
+                          <Input
+                            id="editAuthor"
+                            value={editBookForm.author}
+                            onChange={(e) =>
+                              handleEditBookInputChange(
+                                "author",
+                                e.target.value
+                              )
+                            }
+                            placeholder="Enter author name"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="editDescription">Description *</Label>
+                        <Input
+                          id="editDescription"
+                          value={editBookForm.description}
+                          onChange={(e) =>
+                            handleEditBookInputChange(
+                              "description",
+                              e.target.value
+                            )
+                          }
+                          placeholder="Enter book description"
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="editLanguage">Language *</Label>
+                          <Input
+                            id="editLanguage"
+                            value={editBookForm.language}
+                            onChange={(e) =>
+                              handleEditBookInputChange(
+                                "language",
+                                e.target.value
+                              )
+                            }
+                            placeholder="e.g., Syriac, Aramaic"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="editCategory">Category *</Label>
+                          <Input
+                            id="editCategory"
+                            value={editBookForm.category}
+                            onChange={(e) =>
+                              handleEditBookInputChange(
+                                "category",
+                                e.target.value
+                              )
+                            }
+                            placeholder="e.g., Liturgy, Theology"
+                          />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="editStatus">Status *</Label>
+                          <select
+                            id="editStatus"
+                            value={editBookForm.status}
+                            onChange={(e) =>
+                              handleEditBookInputChange(
+                                "status",
+                                e.target.value as BookStatus
+                              )
+                            }
+                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                          >
+                            <option value="draft">Draft</option>
+                            <option value="digitizing">Digitizing</option>
+                            <option value="transcribing">Transcribing</option>
+                            <option value="reviewing">Reviewing</option>
+                            <option value="completed">Completed</option>
+                            <option value="published">Published</option>
+                          </select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="editPublicationYear">
+                            Publication Year
+                          </Label>
+                          <Input
+                            id="editPublicationYear"
+                            type="number"
+                            value={editBookForm.publicationYear || ""}
+                            onChange={(e) =>
+                              handleEditBookInputChange(
+                                "publicationYear",
+                                e.target.value ? Number(e.target.value) : ""
+                              )
+                            }
+                            placeholder="YYYY"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="editIsbn">ISBN</Label>
+                        <Input
+                          id="editIsbn"
+                          value={editBookForm.isbn}
+                          onChange={(e) =>
+                            handleEditBookInputChange("isbn", e.target.value)
+                          }
+                          placeholder="ISBN number"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="editPublisher">Publisher</Label>
+                        <Input
+                          id="editPublisher"
+                          value={editBookForm.publisher}
+                          onChange={(e) =>
+                            handleEditBookInputChange(
+                              "publisher",
+                              e.target.value
+                            )
+                          }
+                          placeholder="Publisher name"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="editPlaceOfPublication">
+                          Place of Publication
+                        </Label>
+                        <Input
+                          id="editPlaceOfPublication"
+                          value={editBookForm.placeOfPublication}
+                          onChange={(e) =>
+                            handleEditBookInputChange(
+                              "placeOfPublication",
+                              e.target.value
+                            )
+                          }
+                          placeholder="e.g., New York, London, Damascus"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="editCoverImage">Cover Image URL</Label>
+                        <Input
+                          id="editCoverImage"
+                          value={editBookForm.coverImage}
+                          onChange={(e) =>
+                            handleEditBookInputChange(
+                              "coverImage",
+                              e.target.value
+                            )
+                          }
+                          placeholder="https://example.com/cover.jpg"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="editTags">Tags</Label>
+                        <Input
+                          id="editTags"
+                          value={editBookTagsInput}
+                          onChange={(e) => setEditBookTagsInput(e.target.value)}
+                          placeholder="Enter tags separated by commas"
+                        />
+                      </div>
+                    </div>
+                    {editBookError && (
+                      <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md">
+                        {editBookError}
+                      </div>
+                    )}
+                    <DialogFooter>
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          setEditBookDialogOpen(false);
+                          setEditBookError("");
+                        }}
+                        disabled={editBookLoading}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        onClick={handleEditBookFormSubmit}
+                        disabled={!isEditFormValid() || editBookLoading}
+                      >
+                        {editBookLoading ? "Updating..." : "Update Book"}
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </div>
+            )}
+
             {/* Book Details Card */}
             <Card className="mb-4 shadow-sm">
               <CardContent className="p-3 sm:px-4 sm:py-2">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-3">
                   <div className="flex-1">
-                    <h1 className="text-xl sm:text-2xl font-bold text-slate-900 break-words">
-                      {book.title}
-                    </h1>
-                    {book.syriacTitle && (
-                      <p
-                        className="text-lg sm:text-xl text-slate-700 mt-1 break-words"
-                        dir="rtl"
-                        style={{
-                          fontFamily:
-                            "Estrangelo Edessa, Noto Sans Syriac, serif",
-                        }}
-                      >
-                        {book.syriacTitle}
-                      </p>
-                    )}
-                  </div>
-                  {permissions.canEdit && (
-                    <Dialog
-                      open={editBookDialogOpen}
-                      onOpenChange={setEditBookDialogOpen}
-                    >
-                      <DialogTrigger asChild>
-                        <Button
-                          onClick={handleEditClick}
-                          variant="outline"
-                          size="sm"
-                          className="relative z-50"
+                    <div className="flex items-baseline justify-between gap-4">
+                      <h1 className="text-xl sm:text-2xl font-bold text-slate-900 break-words flex-1 min-w-0">
+                        {book.title}
+                      </h1>
+                      {book.syriacTitle && (
+                        <span
+                          className="text-2xl sm:text-3xl text-slate-700 break-words flex-shrink-0"
+                          dir="rtl"
+                          style={{
+                            fontFamily: '"East Syriac Adiabene", serif',
+                          }}
                         >
-                          <Edit className="w-4 h-4 mr-2" />
-                          Edit Details
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-                        <DialogHeader>
-                          <DialogTitle>Edit Book Details</DialogTitle>
-                          <DialogDescription>
-                            Update the book metadata and information.
-                          </DialogDescription>
-                        </DialogHeader>
-                        <div className="grid gap-4 py-4">
-                          <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                              <Label htmlFor="editTitle">Title *</Label>
-                              <Input
-                                id="editTitle"
-                                value={editBookForm.title}
-                                onChange={(e) =>
-                                  handleEditBookInputChange(
-                                    "title",
-                                    e.target.value
-                                  )
-                                }
-                                placeholder="Enter book title"
-                              />
-                            </div>
-                            <div className="space-y-2">
-                              <Label htmlFor="editSyriacTitle">
-                                Syriac Title
-                              </Label>
-                              <Input
-                                id="editSyriacTitle"
-                                value={editBookForm.syriacTitle}
-                                onChange={(e) =>
-                                  handleEditBookInputChange(
-                                    "syriacTitle",
-                                    e.target.value
-                                  )
-                                }
-                                placeholder="Enter Syriac title"
-                                dir="rtl"
-                                className="text-right"
-                              />
-                            </div>
-                          </div>
-                          <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                              <Label htmlFor="editAuthor">Author *</Label>
-                              <Input
-                                id="editAuthor"
-                                value={editBookForm.author}
-                                onChange={(e) =>
-                                  handleEditBookInputChange(
-                                    "author",
-                                    e.target.value
-                                  )
-                                }
-                                placeholder="Enter author name"
-                              />
-                            </div>
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="editDescription">
-                              Description *
-                            </Label>
-                            <Input
-                              id="editDescription"
-                              value={editBookForm.description}
-                              onChange={(e) =>
-                                handleEditBookInputChange(
-                                  "description",
-                                  e.target.value
-                                )
-                              }
-                              placeholder="Enter book description"
-                            />
-                          </div>
-                          <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                              <Label htmlFor="editLanguage">Language *</Label>
-                              <Input
-                                id="editLanguage"
-                                value={editBookForm.language}
-                                onChange={(e) =>
-                                  handleEditBookInputChange(
-                                    "language",
-                                    e.target.value
-                                  )
-                                }
-                                placeholder="e.g., Syriac, Aramaic"
-                              />
-                            </div>
-                            <div className="space-y-2">
-                              <Label htmlFor="editCategory">Category *</Label>
-                              <Input
-                                id="editCategory"
-                                value={editBookForm.category}
-                                onChange={(e) =>
-                                  handleEditBookInputChange(
-                                    "category",
-                                    e.target.value
-                                  )
-                                }
-                                placeholder="e.g., Liturgy, Theology"
-                              />
-                            </div>
-                          </div>
-                          <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                              <Label htmlFor="editStatus">Status *</Label>
-                              <select
-                                id="editStatus"
-                                value={editBookForm.status}
-                                onChange={(e) =>
-                                  handleEditBookInputChange(
-                                    "status",
-                                    e.target.value as BookStatus
-                                  )
-                                }
-                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                              >
-                                <option value="draft">Draft</option>
-                                <option value="digitizing">Digitizing</option>
-                                <option value="transcribing">
-                                  Transcribing
-                                </option>
-                                <option value="reviewing">Reviewing</option>
-                                <option value="completed">Completed</option>
-                                <option value="published">Published</option>
-                              </select>
-                            </div>
-                            <div className="space-y-2">
-                              <Label htmlFor="editPublicationYear">
-                                Publication Year
-                              </Label>
-                              <Input
-                                id="editPublicationYear"
-                                type="number"
-                                value={editBookForm.publicationYear || ""}
-                                onChange={(e) =>
-                                  handleEditBookInputChange(
-                                    "publicationYear",
-                                    e.target.value ? Number(e.target.value) : ""
-                                  )
-                                }
-                                placeholder="YYYY"
-                              />
-                            </div>
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="editIsbn">ISBN</Label>
-                            <Input
-                              id="editIsbn"
-                              value={editBookForm.isbn}
-                              onChange={(e) =>
-                                handleEditBookInputChange(
-                                  "isbn",
-                                  e.target.value
-                                )
-                              }
-                              placeholder="ISBN number"
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="editPublisher">Publisher</Label>
-                            <Input
-                              id="editPublisher"
-                              value={editBookForm.publisher}
-                              onChange={(e) =>
-                                handleEditBookInputChange(
-                                  "publisher",
-                                  e.target.value
-                                )
-                              }
-                              placeholder="Publisher name"
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="editPlaceOfPublication">
-                              Place of Publication
-                            </Label>
-                            <Input
-                              id="editPlaceOfPublication"
-                              value={editBookForm.placeOfPublication}
-                              onChange={(e) =>
-                                handleEditBookInputChange(
-                                  "placeOfPublication",
-                                  e.target.value
-                                )
-                              }
-                              placeholder="e.g., New York, London, Damascus"
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="editCoverImage">
-                              Cover Image URL
-                            </Label>
-                            <Input
-                              id="editCoverImage"
-                              value={editBookForm.coverImage}
-                              onChange={(e) =>
-                                handleEditBookInputChange(
-                                  "coverImage",
-                                  e.target.value
-                                )
-                              }
-                              placeholder="https://example.com/cover.jpg"
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="editTags">Tags</Label>
-                            <Input
-                              id="editTags"
-                              value={editBookTagsInput}
-                              onChange={(e) =>
-                                setEditBookTagsInput(e.target.value)
-                              }
-                              placeholder="Enter tags separated by commas"
-                            />
-                          </div>
-                        </div>
-                        {editBookError && (
-                          <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md">
-                            {editBookError}
-                          </div>
-                        )}
-                        <DialogFooter>
-                          <Button
-                            variant="outline"
-                            onClick={() => {
-                              setEditBookDialogOpen(false);
-                              setEditBookError("");
-                            }}
-                            disabled={editBookLoading}
-                          >
-                            Cancel
-                          </Button>
-                          <Button
-                            onClick={handleEditBookFormSubmit}
-                            disabled={!isEditFormValid() || editBookLoading}
-                          >
-                            {editBookLoading ? "Updating..." : "Update Book"}
-                          </Button>
-                        </DialogFooter>
-                      </DialogContent>
-                    </Dialog>
-                  )}
+                          {book.syriacTitle}
+                        </span>
+                      )}
+                    </div>
+                  </div>
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-slate-600 mb-2">
                   <div className="flex items-center gap-2">
@@ -1414,6 +1406,10 @@ export default function BookViewer() {
                               }))
                             }
                             placeholder="Page number in book (optional)"
+                            dir="rtl"
+                            style={{
+                              fontFamily: '"East Syriac Adiabene", serif',
+                            }}
                           />
                         </div>
                       </div>
@@ -1541,6 +1537,10 @@ export default function BookViewer() {
                                 }))
                               }
                               placeholder="Page number in book (optional)"
+                              dir="rtl"
+                              style={{
+                                fontFamily: '"East Syriac Adiabene", serif',
+                              }}
                             />
                           </div>
                         </div>
