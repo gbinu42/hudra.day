@@ -516,6 +516,7 @@ export const pageService = {
       ...snapshot,
       docs: snapshot.docs.map((doc) => ({
         ...doc,
+        id: doc.id, // Explicitly preserve the document ID
         data: () => {
           const data = doc.data();
           const filteredData = { ...data };
@@ -546,6 +547,7 @@ export const pageService = {
         ...snapshot,
         docs: snapshot.docs.map((doc) => ({
           ...doc,
+          id: doc.id, // Explicitly preserve the document ID
           data: () => {
             const data = doc.data();
             const filteredData = { ...data };

@@ -339,6 +339,9 @@ export default function BookViewer() {
     };
   }, [bookId, handlePagesSnapshot]);
 
+  // Track previous page ID to only reset image loading when actually changing pages
+  const previousPageId = useRef<string | null>(null);
+
   // Separate effect to handle text content updates when page changes
   useEffect(() => {
     if (currentPage) {
@@ -348,7 +351,12 @@ export default function BookViewer() {
         currentVersion: currentPage.currentVersion,
       });
       setTextContentJson(currentPage.currentTextJson || null);
-      setImageLoading(true); // Reset image loading when changing pages
+
+      // Only reset image loading if we're actually changing to a different page
+      if (previousPageId.current !== currentPage.id) {
+        setImageLoading(true);
+        previousPageId.current = currentPage.id;
+      }
     }
   }, [currentPage]);
 
