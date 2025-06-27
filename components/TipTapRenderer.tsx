@@ -203,11 +203,27 @@ export default function TipTapRenderer({
       <style jsx global>{`
         .ProseMirror {
           line-height: 1.4 !important;
+          font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1,
+            "locl" 1, "mark" 1, "mkmk" 1;
+          font-variant-ligatures: common-ligatures contextual;
+          text-rendering: optimizeLegibility;
+          -webkit-font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1,
+            "locl" 1, "mark" 1, "mkmk" 1;
+          -moz-font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1,
+            "locl" 1, "mark" 1, "mkmk" 1;
         }
 
         .ProseMirror p {
           line-height: 1.4 !important;
           margin: 0.25em 0 !important;
+          font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1,
+            "locl" 1, "mark" 1, "mkmk" 1;
+          font-variant-ligatures: common-ligatures contextual;
+          text-rendering: optimizeLegibility;
+          -webkit-font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1,
+            "locl" 1, "mark" 1, "mkmk" 1;
+          -moz-font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1,
+            "locl" 1, "mark" 1, "mkmk" 1;
         }
 
         .ProseMirror ::selection {
@@ -216,6 +232,18 @@ export default function TipTapRenderer({
 
         .ProseMirror ::-moz-selection {
           background-color: #e5e7eb !important; /* Light gray for Firefox */
+        }
+
+        /* Ensure ligatures work for all Syriac fonts */
+        [style*="font-family"] {
+          font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1,
+            "locl" 1, "mark" 1, "mkmk" 1 !important;
+          font-variant-ligatures: common-ligatures contextual !important;
+          text-rendering: optimizeLegibility !important;
+          -webkit-font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1,
+            "locl" 1, "mark" 1, "mkmk" 1 !important;
+          -moz-font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1,
+            "locl" 1, "mark" 1, "mkmk" 1 !important;
         }
       `}</style>
     </div>

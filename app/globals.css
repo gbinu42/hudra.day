@@ -178,34 +178,98 @@
 
   .font-syriac {
     font-family: "Karshon", serif;
+    font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1, "locl" 1,
+      "mark" 1, "mkmk" 1;
+    font-variant-ligatures: common-ligatures contextual;
+    text-rendering: optimizeLegibility;
+    -webkit-font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1,
+      "locl" 1, "mark" 1, "mkmk" 1;
+    -moz-font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1, "locl" 1,
+      "mark" 1, "mkmk" 1;
   }
 
   .font-karshon {
     font-family: "Karshon", serif;
+    font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1, "locl" 1,
+      "mark" 1, "mkmk" 1;
+    font-variant-ligatures: common-ligatures contextual;
+    text-rendering: optimizeLegibility;
+    -webkit-font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1,
+      "locl" 1, "mark" 1, "mkmk" 1;
+    -moz-font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1, "locl" 1,
+      "mark" 1, "mkmk" 1;
   }
 
   .font-east-syriac-malankara {
     font-family: "East Syriac Malankara", serif;
+    font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1, "locl" 1,
+      "mark" 1, "mkmk" 1;
+    font-variant-ligatures: common-ligatures contextual;
+    text-rendering: optimizeLegibility;
+    -webkit-font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1,
+      "locl" 1, "mark" 1, "mkmk" 1;
+    -moz-font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1, "locl" 1,
+      "mark" 1, "mkmk" 1;
   }
 
   .font-east-syriac-malankara-classical {
     font-family: "East Syriac Malankara Classical", serif;
+    font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1, "locl" 1,
+      "mark" 1, "mkmk" 1;
+    font-variant-ligatures: common-ligatures contextual;
+    text-rendering: optimizeLegibility;
+    -webkit-font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1,
+      "locl" 1, "mark" 1, "mkmk" 1;
+    -moz-font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1, "locl" 1,
+      "mark" 1, "mkmk" 1;
   }
 
   .font-east-syriac-adiabene {
     font-family: "East Syriac Adiabene", serif;
+    font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1, "locl" 1,
+      "mark" 1, "mkmk" 1;
+    font-variant-ligatures: common-ligatures contextual;
+    text-rendering: optimizeLegibility;
+    -webkit-font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1,
+      "locl" 1, "mark" 1, "mkmk" 1;
+    -moz-font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1, "locl" 1,
+      "mark" 1, "mkmk" 1;
   }
 
   .font-east-syriac-ctesiphon {
     font-family: "East Syriac Ctesiphon", serif;
+    font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1, "locl" 1,
+      "mark" 1, "mkmk" 1;
+    font-variant-ligatures: common-ligatures contextual;
+    text-rendering: optimizeLegibility;
+    -webkit-font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1,
+      "locl" 1, "mark" 1, "mkmk" 1;
+    -moz-font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1, "locl" 1,
+      "mark" 1, "mkmk" 1;
   }
 
   .font-estrangelo-edessa {
     font-family: "Estrangelo Edessa", serif;
+    font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1, "locl" 1,
+      "mark" 1, "mkmk" 1;
+    font-variant-ligatures: common-ligatures contextual;
+    text-rendering: optimizeLegibility;
+    -webkit-font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1,
+      "locl" 1, "mark" 1, "mkmk" 1;
+    -moz-font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1, "locl" 1,
+      "mark" 1, "mkmk" 1;
   }
 
   .font-estrangelo-qenneshrin {
     font-family: "Estrangelo Qenneshrin", serif;
+    font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1, "locl" 1,
+      "mark" 1, "mkmk" 1;
+    font-variant-ligatures: common-ligatures contextual;
+    text-rendering: optimizeLegibility;
+    -webkit-font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1,
+      "locl" 1, "mark" 1, "mkmk" 1;
+    -moz-font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1, "locl" 1,
+      "mark" 1, "mkmk" 1;
   }
 
   /* Tiptap Editor Styles */
@@ -213,10 +277,26 @@
     outline: none;
     line-height: 1.8;
     font-size: 1.125rem;
+    font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1, "locl" 1,
+      "mark" 1, "mkmk" 1;
+    font-variant-ligatures: common-ligatures contextual;
+    text-rendering: optimizeLegibility;
+    -webkit-font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1,
+      "locl" 1, "mark" 1, "mkmk" 1;
+    -moz-font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1, "locl" 1,
+      "mark" 1, "mkmk" 1;
   }
 
   .ProseMirror p {
     margin: 0.75rem 0;
+    font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1, "locl" 1,
+      "mark" 1, "mkmk" 1;
+    font-variant-ligatures: common-ligatures contextual;
+    text-rendering: optimizeLegibility;
+    -webkit-font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1,
+      "locl" 1, "mark" 1, "mkmk" 1;
+    -moz-font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1, "locl" 1,
+      "mark" 1, "mkmk" 1;
   }
 
   .ProseMirror h1,
