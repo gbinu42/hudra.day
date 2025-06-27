@@ -473,11 +473,14 @@ export default function BookViewer() {
 
     const page = pages[selectedPageIndex];
     const newVersion = (page.currentVersion || 0) + 1;
+    const isFirstText =
+      !page.currentTextJson || page.currentTextJson.content?.length === 0;
 
     console.log("Saving transcription:", {
       textContentJson,
       pageId: page.id,
       newVersion,
+      isFirstText,
     });
 
     setSaving(true);
@@ -489,6 +492,15 @@ export default function BookViewer() {
         userId: userProfile.uid,
         status: "pending",
       });
+
+      // If this is the first text added to the page and status is draft, change to transcribing
+      if (isFirstText && page.status === "draft") {
+        await pageService.updatePageStatus(
+          page.id,
+          "transcribing",
+          userProfile.uid
+        );
+      }
 
       console.log("Save successful");
 
@@ -1187,9 +1199,19 @@ export default function BookViewer() {
                               <div className="flex items-center justify-between w-full">
                                 <span>
                                   Page {index + 1}
-                                  {page.pageNumberInBook
-                                    ? ` | ${page.pageNumberInBook}`
-                                    : ""}
+                                  {page.pageNumberInBook && (
+                                    <>
+                                      {" | "}
+                                      <span
+                                        style={{
+                                          fontFamily:
+                                            '"East Syriac Adiabene", serif',
+                                        }}
+                                      >
+                                        {page.pageNumberInBook}
+                                      </span>
+                                    </>
+                                  )}
                                 </span>
                                 <div
                                   className={`ml-2 px-1 py-0.5 rounded text-xs ${getPageStatusColor(
@@ -1264,9 +1286,19 @@ export default function BookViewer() {
                               <div className="flex items-center justify-between w-full">
                                 <span>
                                   Page {index + 1}
-                                  {page.pageNumberInBook
-                                    ? ` | ${page.pageNumberInBook}`
-                                    : ""}
+                                  {page.pageNumberInBook && (
+                                    <>
+                                      {" | "}
+                                      <span
+                                        style={{
+                                          fontFamily:
+                                            '"East Syriac Adiabene", serif',
+                                        }}
+                                      >
+                                        {page.pageNumberInBook}
+                                      </span>
+                                    </>
+                                  )}
                                 </span>
                                 <div
                                   className={`ml-2 px-1 py-0.5 rounded text-xs ${getPageStatusColor(
@@ -1568,18 +1600,25 @@ export default function BookViewer() {
                           <Edit className="w-4 h-4" />
                           Transcription
                         </CardTitle>
-                        {/* Font Selector and Font Size Selector - only show when not in edit mode */}
+                        {/* Font Selector and Font Size Selector - only show when not in edit mode and hide on mobile */}
                         {!editMode && (
                           <>
                             <div className="flex items-center gap-2">
-                              <label className="text-xs text-white/80">
+                              <label className="hidden md:block text-xs text-white/80">
                                 Font:
                               </label>
                               <Select
                                 value={selectedFont}
                                 onValueChange={setSelectedFont}
                               >
-                                <SelectTrigger className="h-5 w-32 bg-white text-red-900 hover:bg-slate-100 text-xs">
+                                <SelectTrigger
+                                  className="w-24 md:w-32 bg-white text-red-900 hover:bg-slate-100 text-xs"
+                                  style={{
+                                    height: "32px",
+                                    minHeight: "20px",
+                                    padding: "0 8px",
+                                  }}
+                                >
                                   <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -1610,7 +1649,7 @@ export default function BookViewer() {
                                 </SelectContent>
                               </Select>
                             </div>
-                            <div className="flex items-center gap-2">
+                            <div className="hidden md:flex items-center gap-2">
                               <label className="text-xs text-white/80">
                                 Size:
                               </label>
@@ -1618,7 +1657,14 @@ export default function BookViewer() {
                                 value={selectedFontSize}
                                 onValueChange={setSelectedFontSize}
                               >
-                                <SelectTrigger className="h-5 w-16 bg-white text-red-900 hover:bg-slate-100 text-xs">
+                                <SelectTrigger
+                                  className="w-16 bg-white text-red-900 hover:bg-slate-100 text-xs"
+                                  style={{
+                                    height: "32px",
+                                    minHeight: "20px",
+                                    padding: "0 8px",
+                                  }}
+                                >
                                   <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -1775,10 +1821,26 @@ export default function BookViewer() {
                 <Card className="shadow-lg border-0 overflow-hidden flex flex-col h-full py-0 gap-0">
                   <CardHeader className="bg-gradient-to-r from-slate-900 to-slate-800 text-white h-12 flex items-center">
                     <div className="flex items-center justify-between w-full h-full relative z-0">
-                      <CardTitle className="flex items-center gap-2 text-sm">
+                      <div className="flex items-center gap-2 text-sm font-medium">
                         <BookOpen className="w-4 h-4" />
-                        Page {pages[selectedPageIndex].pageNumber}
-                      </CardTitle>
+                        <span className="font-normal">
+                          Page {pages[selectedPageIndex].pageNumber}
+                        </span>
+                        {pages[selectedPageIndex].pageNumberInBook && (
+                          <>
+                            <span className="text-gray-300">|</span>
+                            <span
+                              className="text-lg font-normal"
+                              style={{
+                                fontFamily: '"East Syriac Adiabene", serif',
+                                marginBottom: "-2px",
+                              }}
+                            >
+                              {pages[selectedPageIndex].pageNumberInBook}
+                            </span>
+                          </>
+                        )}
+                      </div>
                       <div className="flex items-center gap-2">
                         {/* Page Status Badge */}
                         <div
