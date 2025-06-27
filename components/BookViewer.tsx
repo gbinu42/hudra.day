@@ -236,6 +236,9 @@ export default function BookViewer() {
   // Line numbers toggle state
   const [showLineNumbers, setShowLineNumbers] = useState<boolean>(false);
 
+  // Font selection state
+  const [selectedFont, setSelectedFont] = useState<string>("default");
+
   useEffect(() => {
     if (!bookId) return;
 
@@ -355,6 +358,11 @@ export default function BookViewer() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedPageIndex]); // Only depend on selectedPageIndex to avoid infinite loops
+
+  // Reset font selection to default when switching pages
+  useEffect(() => {
+    setSelectedFont("default");
+  }, [selectedPageIndex]);
 
   const handleAddPageFormSubmit = async () => {
     if (!userProfile || !addPageForm.file) {
@@ -1546,6 +1554,39 @@ export default function BookViewer() {
                         Transcription
                       </CardTitle>
                       <div className="flex items-center gap-2 py-100">
+                        {/* Font Selector - only show when not in edit mode */}
+                        {!editMode && (
+                          <Select
+                            value={selectedFont}
+                            onValueChange={setSelectedFont}
+                          >
+                            <SelectTrigger className="h-7 w-40 bg-white text-red-900 hover:bg-slate-100 text-xs">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="default">Default</SelectItem>
+                              <SelectItem value="East Syriac Adiabene">
+                                East Syriac Adiabene
+                              </SelectItem>
+                              <SelectItem value="East Syriac Malankara">
+                                East Syriac Malankara
+                              </SelectItem>
+                              <SelectItem value="East Syriac Malankara Classical">
+                                East Syriac Malankara Classical
+                              </SelectItem>
+                              <SelectItem value="East Syriac Ctesiphon">
+                                East Syriac Ctesiphon
+                              </SelectItem>
+                              <SelectItem value="Karshon">Karshon</SelectItem>
+                              <SelectItem value="Estrangelo Edessa">
+                                Estrangelo Edessa
+                              </SelectItem>
+                              <SelectItem value="Estrangelo Qenneshrin">
+                                Estrangelo Qenneshrin
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        )}
                         {/* Line Numbers Toggle */}
                         <Button
                           size="sm"
@@ -1642,6 +1683,7 @@ export default function BookViewer() {
                               <TipTapRenderer
                                 content={textContentJson}
                                 showLineNumbers={showLineNumbers}
+                                selectedFont={selectedFont}
                               />
                             </div>
                           </div>

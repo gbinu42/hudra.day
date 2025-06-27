@@ -52,14 +52,40 @@ const ParagraphExtension = Extension.create({
 interface TipTapRendererProps {
   content: JSONContent;
   showLineNumbers?: boolean;
+  selectedFont?: string;
 }
 
 export default function TipTapRenderer({
   content,
   showLineNumbers = true,
+  selectedFont = "default",
 }: TipTapRendererProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [linePositions, setLinePositions] = useState<number[]>([]);
+
+  // Get font family based on selected font
+  const getFontFamily = (fontType: string): string => {
+    // Return the font name directly as it should match the font family name
+    // Add fallbacks for each Syriac font
+    switch (fontType) {
+      case "Karshon":
+        return 'Karshon, "East Syriac Malankara", serif';
+      case "East Syriac Adiabene":
+        return '"East Syriac Adiabene", Karshon, serif';
+      case "East Syriac Malankara":
+        return '"East Syriac Malankara", Karshon, serif';
+      case "East Syriac Malankara Classical":
+        return '"East Syriac Malankara Classical", "East Syriac Malankara", Karshon, serif';
+      case "East Syriac Ctesiphon":
+        return '"East Syriac Ctesiphon", Karshon, serif';
+      case "Estrangelo Edessa":
+        return '"Estrangelo Edessa", Karshon, serif';
+      case "Estrangelo Qenneshrin":
+        return '"Estrangelo Qenneshrin", "Estrangelo Edessa", Karshon, serif';
+      default:
+        return 'Karshon, "East Syriac Malankara", serif';
+    }
+  };
 
   const editor = useEditor({
     extensions: [
@@ -152,6 +178,41 @@ export default function TipTapRenderer({
     }
   }, [editor, measureParagraphPositions]);
 
+  // Update font family dynamically
+  useEffect(() => {
+    // Remove existing style if present
+    const existingStyle = document.getElementById("tiptap-font-override");
+    if (existingStyle) {
+      existingStyle.remove();
+    }
+
+    // Only apply font override if a specific font is selected (not "default")
+    if (selectedFont && selectedFont !== "default") {
+      const fontFamily = getFontFamily(selectedFont);
+      const styleElement = document.createElement("style");
+      styleElement.id = "tiptap-font-override";
+
+      styleElement.textContent = `
+        .ProseMirror,
+        .ProseMirror *,
+        .ProseMirror p,
+        .ProseMirror span,
+        .ProseMirror div {
+          font-family: ${fontFamily} !important;
+        }
+      `;
+
+      document.head.appendChild(styleElement);
+    }
+
+    return () => {
+      const styleToRemove = document.getElementById("tiptap-font-override");
+      if (styleToRemove) {
+        styleToRemove.remove();
+      }
+    };
+  }, [selectedFont]);
+
   if (!editor) {
     return <div>Loading...</div>;
   }
@@ -160,13 +221,20 @@ export default function TipTapRenderer({
     <div
       className="mt-8 sm:mt-16 lg:mt-24 flex"
       style={{
-        fontFamily: 'Karshon, "East Syriac Malankara", serif',
+        ...(selectedFont !== "default" && {
+          fontFamily: getFontFamily(selectedFont),
+        }),
         fontSize: "24pt",
         marginTop: "70px",
+        overflow: "visible",
       }}
     >
       {/* Text content */}
-      <div ref={containerRef} className="flex-1">
+      <div
+        ref={containerRef}
+        className="flex-1"
+        style={{ overflow: "visible" }}
+      >
         <EditorContent editor={editor} />
       </div>
 
@@ -203,6 +271,7 @@ export default function TipTapRenderer({
       <style jsx global>{`
         .ProseMirror {
           line-height: 1.4 !important;
+          overflow: visible !important;
           font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1,
             "locl" 1, "mark" 1, "mkmk" 1;
           font-variant-ligatures: common-ligatures contextual;
