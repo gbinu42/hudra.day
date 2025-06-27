@@ -359,11 +359,6 @@ export default function BookViewer() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedPageIndex]); // Only depend on selectedPageIndex to avoid infinite loops
 
-  // Reset font selection to default when switching pages
-  useEffect(() => {
-    setSelectedFont("default");
-  }, [selectedPageIndex]);
-
   const handleAddPageFormSubmit = async () => {
     if (!userProfile || !addPageForm.file) {
       setAddPageError("Please select an image file");
