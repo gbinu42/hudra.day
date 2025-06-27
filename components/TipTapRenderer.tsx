@@ -53,12 +53,14 @@ interface TipTapRendererProps {
   content: JSONContent;
   showLineNumbers?: boolean;
   selectedFont?: string;
+  selectedFontSize?: string;
 }
 
 export default function TipTapRenderer({
   content,
   showLineNumbers = true,
   selectedFont = "default",
+  selectedFontSize = "default",
 }: TipTapRendererProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [linePositions, setLinePositions] = useState<number[]>([]);
@@ -178,7 +180,7 @@ export default function TipTapRenderer({
     }
   }, [editor, measureParagraphPositions]);
 
-  // Update font family dynamically
+  // Update font family and size dynamically
   useEffect(() => {
     // Remove existing style if present
     const existingStyle = document.getElementById("tiptap-font-override");
@@ -186,11 +188,24 @@ export default function TipTapRenderer({
       existingStyle.remove();
     }
 
-    // Only apply font override if a specific font is selected (not "default")
-    if (selectedFont && selectedFont !== "default") {
-      const fontFamily = getFontFamily(selectedFont);
+    // Apply overrides if either font or font size is selected (not "default")
+    if (
+      (selectedFont && selectedFont !== "default") ||
+      (selectedFontSize && selectedFontSize !== "default")
+    ) {
       const styleElement = document.createElement("style");
       styleElement.id = "tiptap-font-override";
+
+      let styles = "";
+
+      if (selectedFont && selectedFont !== "default") {
+        const fontFamily = getFontFamily(selectedFont);
+        styles += `font-family: ${fontFamily} !important;\n`;
+      }
+
+      if (selectedFontSize && selectedFontSize !== "default") {
+        styles += `font-size: ${selectedFontSize} !important;\n`;
+      }
 
       styleElement.textContent = `
         .ProseMirror,
@@ -198,7 +213,7 @@ export default function TipTapRenderer({
         .ProseMirror p,
         .ProseMirror span,
         .ProseMirror div {
-          font-family: ${fontFamily} !important;
+          ${styles}
         }
       `;
 
@@ -211,7 +226,7 @@ export default function TipTapRenderer({
         styleToRemove.remove();
       }
     };
-  }, [selectedFont]);
+  }, [selectedFont, selectedFontSize]);
 
   if (!editor) {
     return <div>Loading...</div>;
@@ -224,7 +239,7 @@ export default function TipTapRenderer({
         ...(selectedFont !== "default" && {
           fontFamily: getFontFamily(selectedFont),
         }),
-        fontSize: "24pt",
+        fontSize: selectedFontSize !== "default" ? selectedFontSize : "24pt",
         marginTop: "70px",
         overflow: "visible",
       }}

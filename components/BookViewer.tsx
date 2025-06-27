@@ -238,6 +238,7 @@ export default function BookViewer() {
 
   // Font selection state
   const [selectedFont, setSelectedFont] = useState<string>("default");
+  const [selectedFontSize, setSelectedFontSize] = useState<string>("default");
 
   useEffect(() => {
     if (!bookId) return;
@@ -358,6 +359,24 @@ export default function BookViewer() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedPageIndex]); // Only depend on selectedPageIndex to avoid infinite loops
+
+  // Show browser warning when trying to close page while in edit mode
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (editMode) {
+        event.preventDefault();
+        event.returnValue =
+          "You have unsaved changes. Are you sure you want to leave?";
+        return "You have unsaved changes. Are you sure you want to leave?";
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [editMode]);
 
   const handleAddPageFormSubmit = async () => {
     if (!userProfile || !addPageForm.file) {
@@ -1544,44 +1563,86 @@ export default function BookViewer() {
                 <Card className="shadow-lg border-0 flex flex-col h-full py-0 gap-0">
                   <CardHeader className="bg-red-900 text-white h-12 flex items-center rounded-t-lg">
                     <div className="flex items-center justify-between w-full h-6">
-                      <CardTitle className="flex items-center gap-2 text-sm">
-                        <Edit className="w-4 h-4" />
-                        Transcription
-                      </CardTitle>
-                      <div className="flex items-center gap-2 py-100">
-                        {/* Font Selector - only show when not in edit mode */}
+                      <div className="flex items-center gap-3">
+                        <CardTitle className="flex items-center gap-2 text-sm">
+                          <Edit className="w-4 h-4" />
+                          Transcription
+                        </CardTitle>
+                        {/* Font Selector and Font Size Selector - only show when not in edit mode */}
                         {!editMode && (
-                          <Select
-                            value={selectedFont}
-                            onValueChange={setSelectedFont}
-                          >
-                            <SelectTrigger className="h-7 w-40 bg-white text-red-900 hover:bg-slate-100 text-xs">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="default">Default</SelectItem>
-                              <SelectItem value="East Syriac Adiabene">
-                                East Syriac Adiabene
-                              </SelectItem>
-                              <SelectItem value="East Syriac Malankara">
-                                East Syriac Malankara
-                              </SelectItem>
-                              <SelectItem value="East Syriac Malankara Classical">
-                                East Syriac Malankara Classical
-                              </SelectItem>
-                              <SelectItem value="East Syriac Ctesiphon">
-                                East Syriac Ctesiphon
-                              </SelectItem>
-                              <SelectItem value="Karshon">Karshon</SelectItem>
-                              <SelectItem value="Estrangelo Edessa">
-                                Estrangelo Edessa
-                              </SelectItem>
-                              <SelectItem value="Estrangelo Qenneshrin">
-                                Estrangelo Qenneshrin
-                              </SelectItem>
-                            </SelectContent>
-                          </Select>
+                          <>
+                            <div className="flex items-center gap-2">
+                              <label className="text-xs text-white/80">
+                                Font:
+                              </label>
+                              <Select
+                                value={selectedFont}
+                                onValueChange={setSelectedFont}
+                              >
+                                <SelectTrigger className="h-5 w-32 bg-white text-red-900 hover:bg-slate-100 text-xs">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="default">
+                                    Default
+                                  </SelectItem>
+                                  <SelectItem value="East Syriac Adiabene">
+                                    East Syriac Adiabene
+                                  </SelectItem>
+                                  <SelectItem value="East Syriac Malankara">
+                                    East Syriac Malankara
+                                  </SelectItem>
+                                  <SelectItem value="East Syriac Malankara Classical">
+                                    East Syriac Malankara Classical
+                                  </SelectItem>
+                                  <SelectItem value="East Syriac Ctesiphon">
+                                    East Syriac Ctesiphon
+                                  </SelectItem>
+                                  <SelectItem value="Karshon">
+                                    Karshon
+                                  </SelectItem>
+                                  <SelectItem value="Estrangelo Edessa">
+                                    Estrangelo Edessa
+                                  </SelectItem>
+                                  <SelectItem value="Estrangelo Qenneshrin">
+                                    Estrangelo Qenneshrin
+                                  </SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <label className="text-xs text-white/80">
+                                Size:
+                              </label>
+                              <Select
+                                value={selectedFontSize}
+                                onValueChange={setSelectedFontSize}
+                              >
+                                <SelectTrigger className="h-5 w-16 bg-white text-red-900 hover:bg-slate-100 text-xs">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="default">
+                                    Default
+                                  </SelectItem>
+                                  <SelectItem value="12pt">12pt</SelectItem>
+                                  <SelectItem value="14pt">14pt</SelectItem>
+                                  <SelectItem value="16pt">16pt</SelectItem>
+                                  <SelectItem value="18pt">18pt</SelectItem>
+                                  <SelectItem value="20pt">20pt</SelectItem>
+                                  <SelectItem value="22pt">22pt</SelectItem>
+                                  <SelectItem value="24pt">24pt</SelectItem>
+                                  <SelectItem value="28pt">28pt</SelectItem>
+                                  <SelectItem value="32pt">32pt</SelectItem>
+                                  <SelectItem value="36pt">36pt</SelectItem>
+                                  <SelectItem value="48pt">48pt</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </>
                         )}
+                      </div>
+                      <div className="flex items-center gap-2 py-100">
                         {/* Line Numbers Toggle */}
                         <Button
                           size="sm"
@@ -1679,6 +1740,7 @@ export default function BookViewer() {
                                 content={textContentJson}
                                 showLineNumbers={showLineNumbers}
                                 selectedFont={selectedFont}
+                                selectedFontSize={selectedFontSize}
                               />
                             </div>
                           </div>
