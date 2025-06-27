@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -240,6 +240,14 @@ export default function BookViewer() {
   const [selectedFont, setSelectedFont] = useState<string>("default");
   const [selectedFontSize, setSelectedFontSize] = useState<string>("default");
 
+  // Use ref to track if we're initializing pages for the first time
+  const isInitialPagesLoad = useRef(true);
+
+  // Memoize current page to avoid unnecessary updates
+  const currentPage = useMemo(() => {
+    return pages[selectedPageIndex] || null;
+  }, [pages, selectedPageIndex]);
+
   useEffect(() => {
     if (!bookId) return;
 
@@ -276,7 +284,7 @@ export default function BookViewer() {
     };
   }, [bookId]);
 
-  // Create stable callback for pages snapshot handler
+  // Optimized pages snapshot handler - removed selectedPageIndex dependency
   const handlePagesSnapshot = useCallback(
     (pagesSnap: DocumentData) => {
       const pagesData = pagesSnap.docs
@@ -301,30 +309,16 @@ export default function BookViewer() {
             (a as Page).pageNumber - (b as Page).pageNumber
         ) as Page[];
 
-      setPages((prevPages) => {
-        const prevPagesLength = prevPages.length;
-
-        if (pagesData.length > 0) {
-          // If this is the first load (no previous pages)
-          if (prevPagesLength === 0) {
-            setSelectedPageIndex(0);
-            setTextContentJson(pagesData[0].currentTextJson || null);
-          }
-          // For existing pages, update text content based on current selection
-          else {
-            setTextContentJson((prevText) => {
-              const currentPage = pagesData[selectedPageIndex];
-              return currentPage
-                ? currentPage.currentTextJson || null
-                : prevText;
-            });
-          }
+      setPages(() => {
+        // Only update selected page index on initial load when we have no previous pages
+        if (isInitialPagesLoad.current && pagesData.length > 0) {
+          isInitialPagesLoad.current = false;
+          setSelectedPageIndex(0);
         }
-
         return pagesData;
       });
     },
-    [selectedPageIndex]
+    [] // No dependencies to prevent unnecessary listener reattachments
   );
 
   useEffect(() => {
@@ -345,20 +339,18 @@ export default function BookViewer() {
     };
   }, [bookId, handlePagesSnapshot]);
 
-  // When selected page changes, update textContent
+  // Separate effect to handle text content updates when page changes
   useEffect(() => {
-    if (pages[selectedPageIndex]) {
-      const page = pages[selectedPageIndex];
+    if (currentPage) {
       console.log("Loading page data:", {
-        pageId: page.id,
-        currentTextJson: page.currentTextJson,
-        currentVersion: page.currentVersion,
+        pageId: currentPage.id,
+        currentTextJson: currentPage.currentTextJson,
+        currentVersion: currentPage.currentVersion,
       });
-      setTextContentJson(page.currentTextJson || null);
+      setTextContentJson(currentPage.currentTextJson || null);
       setImageLoading(true); // Reset image loading when changing pages
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedPageIndex]); // Only depend on selectedPageIndex to avoid infinite loops
+  }, [currentPage]);
 
   // Show browser warning when trying to close page while in edit mode
   useEffect(() => {
@@ -377,6 +369,49 @@ export default function BookViewer() {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [editMode]);
+
+  // Memoize form validation to prevent unnecessary computations
+  const isEditFormValid = useMemo(() => {
+    return (
+      editBookForm.title.trim() &&
+      editBookForm.author.trim() &&
+      editBookForm.description.trim() &&
+      editBookForm.language.trim() &&
+      editBookForm.category.trim() &&
+      editBookForm.status
+    );
+  }, [editBookForm]);
+
+  // Memoized navigation helpers
+  const navigationHelpers = useMemo(() => {
+    const canGoToPrevious = selectedPageIndex > 0;
+    const canGoToNext = selectedPageIndex < pages.length - 1;
+
+    const goToPreviousPage = () => {
+      if (canGoToPrevious) {
+        setTranscriptionLoading(true);
+        setSelectedPageIndex(selectedPageIndex - 1);
+        setEditMode(false);
+        setTimeout(() => setTranscriptionLoading(false), 300);
+      }
+    };
+
+    const goToNextPage = () => {
+      if (canGoToNext) {
+        setTranscriptionLoading(true);
+        setSelectedPageIndex(selectedPageIndex + 1);
+        setEditMode(false);
+        setTimeout(() => setTranscriptionLoading(false), 300);
+      }
+    };
+
+    return {
+      canGoToPrevious,
+      canGoToNext,
+      goToPreviousPage,
+      goToNextPage,
+    };
+  }, [selectedPageIndex, pages.length]);
 
   const handleAddPageFormSubmit = async () => {
     if (!userProfile || !addPageForm.file) {
@@ -451,18 +486,17 @@ export default function BookViewer() {
     }
   };
 
-  const handleAddPageFileSelect = (file: File | null) => {
+  const handleAddPageFileSelect = useCallback((file: File | null) => {
     setAddPageForm((prev) => ({
       ...prev,
       file: file,
     }));
     setAddPageError("");
-  };
+  }, []);
 
   // Handle save transcription
   const handleSaveTranscription = async () => {
-    if (!userProfile || !pages[selectedPageIndex] || saving || !textContentJson)
-      return;
+    if (!userProfile || !currentPage || saving || !textContentJson) return;
 
     // Check if content has actually changed
     if (isContentEqual(textContentJson, originalTextContentJson)) {
@@ -471,14 +505,14 @@ export default function BookViewer() {
       return;
     }
 
-    const page = pages[selectedPageIndex];
-    const newVersion = (page.currentVersion || 0) + 1;
+    const newVersion = (currentPage.currentVersion || 0) + 1;
     const isFirstText =
-      !page.currentTextJson || page.currentTextJson.content?.length === 0;
+      !currentPage.currentTextJson ||
+      currentPage.currentTextJson.content?.length === 0;
 
     console.log("Saving transcription:", {
       textContentJson,
-      pageId: page.id,
+      pageId: currentPage.id,
       newVersion,
       isFirstText,
     });
@@ -486,7 +520,7 @@ export default function BookViewer() {
     setSaving(true);
     try {
       // Add new edit to the page's edits array
-      await pageService.addEditToPage(page.id, {
+      await pageService.addEditToPage(currentPage.id, {
         version: newVersion,
         textJson: textContentJson,
         userId: userProfile.uid,
@@ -494,9 +528,9 @@ export default function BookViewer() {
       });
 
       // If this is the first text added to the page and status is draft, change to transcribing
-      if (isFirstText && page.status === "draft") {
+      if (isFirstText && currentPage.status === "draft") {
         await pageService.updatePageStatus(
-          page.id,
+          currentPage.id,
           "transcribing",
           userProfile.uid
         );
@@ -518,11 +552,11 @@ export default function BookViewer() {
     }
   };
 
-  const handleBackClick = () => {
+  const handleBackClick = useCallback(() => {
     router.push("/books");
-  };
+  }, [router]);
 
-  const handleEditClick = () => {
+  const handleEditClick = useCallback(() => {
     if (!book) return;
 
     // Initialize edit form with current book data
@@ -544,7 +578,7 @@ export default function BookViewer() {
     setEditBookTagsInput((book.tags || []).join(", "));
     setEditBookError("");
     setEditBookDialogOpen(true);
-  };
+  }, [book]);
 
   const handleEditBookFormSubmit = async () => {
     if (!userProfile || !book) return;
@@ -579,54 +613,26 @@ export default function BookViewer() {
     }
   };
 
-  const handleEditBookInputChange = (
-    field: keyof typeof editBookForm,
-    value: string | number | BookStatus
-  ) => {
-    setEditBookForm((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
+  const handleEditBookInputChange = useCallback(
+    (field: keyof typeof editBookForm, value: string | number | BookStatus) => {
+      setEditBookForm((prev) => ({
+        ...prev,
+        [field]: value,
+      }));
+    },
+    []
+  );
 
-  const isEditFormValid = () => {
-    return (
-      editBookForm.title.trim() &&
-      editBookForm.author.trim() &&
-      editBookForm.description.trim() &&
-      editBookForm.language.trim() &&
-      editBookForm.category.trim() &&
-      editBookForm.status
-    );
-  };
-
-  const goToPreviousPage = () => {
-    if (selectedPageIndex > 0) {
-      setTranscriptionLoading(true);
-      setSelectedPageIndex(selectedPageIndex - 1);
-      setEditMode(false);
-      setTimeout(() => setTranscriptionLoading(false), 300);
-    }
-  };
-
-  const goToNextPage = () => {
-    if (selectedPageIndex < pages.length - 1) {
-      setTranscriptionLoading(true);
-      setSelectedPageIndex(selectedPageIndex + 1);
-      setEditMode(false);
-      setTimeout(() => setTranscriptionLoading(false), 300);
-    }
-  };
+  const { goToPreviousPage, goToNextPage } = navigationHelpers;
 
   const handlePageStatusChange = async () => {
-    if (!userProfile || !pages[selectedPageIndex]) return;
+    if (!userProfile || !currentPage) return;
 
-    const page = pages[selectedPageIndex];
     setPageStatusLoading(true);
 
     try {
       await pageService.updatePageStatus(
-        page.id,
+        currentPage.id,
         selectedPageStatus,
         userProfile.uid
       );
@@ -639,14 +645,14 @@ export default function BookViewer() {
     }
   };
 
-  const openPageStatusDialog = () => {
+  const openPageStatusDialog = useCallback(() => {
     console.log("openPageStatusDialog called");
     console.log("selectedPageIndex:", selectedPageIndex);
-    console.log("pages[selectedPageIndex]:", pages[selectedPageIndex]);
+    console.log("currentPage:", currentPage);
     console.log("current pageStatusDialogOpen:", pageStatusDialogOpen);
 
-    if (pages[selectedPageIndex]) {
-      const currentStatus = pages[selectedPageIndex].status || "draft";
+    if (currentPage) {
+      const currentStatus = currentPage.status || "draft";
       console.log("Setting status to:", currentStatus);
       setSelectedPageStatus(currentStatus);
       setPageStatusDialogOpen(true);
@@ -654,7 +660,7 @@ export default function BookViewer() {
     } else {
       console.log("No page found at selectedPageIndex");
     }
-  };
+  }, [currentPage, selectedPageIndex, pageStatusDialogOpen]);
 
   if (loading) {
     return (
@@ -1071,7 +1077,7 @@ export default function BookViewer() {
                       </Button>
                       <Button
                         onClick={handleEditBookFormSubmit}
-                        disabled={!isEditFormValid() || editBookLoading}
+                        disabled={!isEditFormValid || editBookLoading}
                       >
                         {editBookLoading ? "Updating..." : "Update Book"}
                       </Button>
@@ -1086,13 +1092,13 @@ export default function BookViewer() {
               <CardContent className="p-3 sm:px-4 sm:py-2">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-3">
                   <div className="flex-1">
-                    <div className="flex items-baseline justify-between gap-4">
+                    <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2 sm:gap-4">
                       <h1 className="text-xl sm:text-2xl font-bold text-slate-900 break-words flex-1 min-w-0">
                         {book.title}
                       </h1>
                       {book.syriacTitle && (
                         <span
-                          className="text-2xl sm:text-3xl text-slate-700 break-words flex-shrink-0"
+                          className="text-2xl sm:text-3xl text-slate-700 break-words sm:flex-shrink-0 text-right"
                           dir="rtl"
                           style={{
                             fontFamily: '"East Syriac Adiabene", serif',
@@ -1716,9 +1722,8 @@ export default function BookViewer() {
                                   onClick={() => {
                                     setEditMode(false);
                                     // Reset content to original values
-                                    const page = pages[selectedPageIndex];
                                     setTextContentJson(
-                                      page.currentTextJson || null
+                                      currentPage?.currentTextJson || null
                                     );
                                   }}
                                   variant="secondary"
@@ -1824,9 +1829,9 @@ export default function BookViewer() {
                       <div className="flex items-center gap-2 text-sm font-medium">
                         <BookOpen className="w-4 h-4" />
                         <span className="font-normal">
-                          Page {pages[selectedPageIndex].pageNumber}
+                          Page {currentPage?.pageNumber}
                         </span>
-                        {pages[selectedPageIndex].pageNumberInBook && (
+                        {currentPage?.pageNumberInBook && (
                           <>
                             <span className="text-gray-300">|</span>
                             <span
@@ -1836,7 +1841,7 @@ export default function BookViewer() {
                                 marginBottom: "-2px",
                               }}
                             >
-                              {pages[selectedPageIndex].pageNumberInBook}
+                              {currentPage.pageNumberInBook}
                             </span>
                           </>
                         )}
@@ -1845,11 +1850,11 @@ export default function BookViewer() {
                         {/* Page Status Badge */}
                         <div
                           className={`px-2 py-1 rounded-full text-xs font-medium border ${getPageStatusColor(
-                            pages[selectedPageIndex]?.status || "draft"
+                            currentPage?.status || "draft"
                           )}`}
                         >
                           {getPageStatusDisplayName(
-                            pages[selectedPageIndex]?.status || "draft"
+                            currentPage?.status || "draft"
                           )}
                         </div>
                         {/* Admin Status Change Button */}
@@ -1881,7 +1886,7 @@ export default function BookViewer() {
                     </div>
                   </CardHeader>
                   <CardContent className="p-0 flex-1 flex items-center justify-center bg-slate-50 min-h-[300px] relative">
-                    {pages[selectedPageIndex]?.imageUrl ? (
+                    {currentPage?.imageUrl ? (
                       <div className="w-full h-full flex items-center justify-center">
                         {imageLoading && (
                           <div className="absolute inset-0 flex items-center justify-center bg-slate-50">
@@ -1889,9 +1894,9 @@ export default function BookViewer() {
                           </div>
                         )}
                         <Image
-                          key={`page-${pages[selectedPageIndex].id}-${pages[selectedPageIndex].imageUrl}`}
-                          src={pages[selectedPageIndex].imageUrl}
-                          alt={`Page ${pages[selectedPageIndex].pageNumber}`}
+                          key={`page-${currentPage.id}-${currentPage.imageUrl}`}
+                          src={currentPage.imageUrl}
+                          alt={`Page ${currentPage.pageNumber}`}
                           className="max-w-full max-h-full object-contain"
                           width={800}
                           height={1200}
@@ -1930,7 +1935,7 @@ export default function BookViewer() {
           <DialogHeader>
             <DialogTitle>Change Page Status</DialogTitle>
             <DialogDescription>
-              Update the status for Page {pages[selectedPageIndex]?.pageNumber}
+              Update the status for Page {currentPage?.pageNumber}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">

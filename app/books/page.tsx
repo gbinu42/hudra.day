@@ -571,16 +571,16 @@ export default function BooksPage() {
                   <a key={book.id} href={`/books/${book.id}`}>
                     <Card className="hover:shadow-lg transition-shadow h-full w-full max-w-lg mx-auto">
                       <CardHeader>
-                        <div className="flex items-start justify-between gap-2">
+                        <div className="flex items-start gap-3">
                           <div className="flex-1 min-w-0">
                             <div className="flex items-start gap-2 mb-2">
-                              <div className="flex-1">
-                                <CardTitle className="line-clamp-2 text-base font-semibold leading-tight">
+                              <div className="flex-1 min-w-0">
+                                <CardTitle className="line-clamp-2 text-base font-semibold leading-tight break-words">
                                   {book.title}
                                 </CardTitle>
                                 {book.syriacTitle && (
                                   <p
-                                    className="text-xl text-slate-600 mt-1 line-clamp-1"
+                                    className="text-xl text-slate-600 mt-1 line-clamp-1 break-words"
                                     dir="rtl"
                                     style={{
                                       fontFamily:
@@ -592,12 +592,14 @@ export default function BooksPage() {
                                 )}
                               </div>
                             </div>
-                            <CardDescription className="flex items-center gap-2 text-sm mb-2">
+                            <CardDescription className="flex items-center gap-2 text-sm mb-2 min-w-0">
                               <User className="w-3 h-3 flex-shrink-0" />
-                              <span className="truncate">{book.author}</span>
+                              <span className="truncate max-w-32 sm:max-w-48 md:max-w-full">
+                                {book.author}
+                              </span>
                             </CardDescription>
                             {(book.publisher || book.placeOfPublication) && (
-                              <div className="text-xs text-muted-foreground mb-1 truncate">
+                              <div className="text-xs text-muted-foreground mb-1 truncate max-w-36 sm:max-w-52 md:max-w-full">
                                 {book.publisher && (
                                   <span>{book.publisher}</span>
                                 )}
@@ -617,6 +619,13 @@ export default function BooksPage() {
                                     <span>{book.publicationYear}</span>
                                   </div>
                                 )}
+                                <span
+                                  className={`text-xs font-medium rounded border px-2 py-0 ${getStatusStyling(
+                                    book.status
+                                  )}`}
+                                >
+                                  {getStatusDisplayName(book.status)}
+                                </span>
                               </div>
                               <div className="flex items-center gap-2">
                                 <Badge variant="secondary" className="text-xs">
@@ -627,25 +636,18 @@ export default function BooksPage() {
                                     {book.category}
                                   </Badge>
                                 )}
-                                <span
-                                  className={`text-xs font-medium rounded border px-2 py-0 ${getStatusStyling(
-                                    book.status
-                                  )}`}
-                                >
-                                  {getStatusDisplayName(book.status)}
-                                </span>
                               </div>
                             </div>
                           </div>
-                          <div className="flex-shrink-0">
+                          <div className="flex-shrink-0 w-20">
                             {book.coverImage ? (
-                              <div>
+                              <div className="w-full">
                                 <Image
                                   src={book.coverImage}
                                   alt={`Cover of ${book.title}`}
-                                  className="w-24 h-36 object-cover rounded-lg border shadow-md"
-                                  width={96}
-                                  height={144}
+                                  className="w-full h-28 object-cover rounded-lg border shadow-md"
+                                  width={80}
+                                  height={112}
                                   unoptimized
                                   onError={(e) => {
                                     const target = e.target as HTMLImageElement;
@@ -661,8 +663,8 @@ export default function BooksPage() {
                                 )}
                               </div>
                             ) : (
-                              <div>
-                                <div className="w-24 h-36 bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg border shadow-md flex items-center justify-center">
+                              <div className="w-full">
+                                <div className="w-full h-28 bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg border shadow-md flex items-center justify-center">
                                   <BookOpen className="w-10 h-10 text-slate-400" />
                                 </div>
                                 {book.pages && (
