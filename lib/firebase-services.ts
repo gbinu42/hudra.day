@@ -507,9 +507,25 @@ export const pageService = {
   // Get pages for a book, ordered by pageNumber
   async getPages(bookId: string): Promise<QuerySnapshot<DocumentData>> {
     // Query without ordering to avoid composite index requirement
-    return await firestoreService.queryDocuments("pages", [
+    const snapshot = await firestoreService.queryDocuments("pages", [
       { field: "bookId", operator: "==", value: bookId },
     ]);
+
+    // Filter out edits field from documents
+    const filteredSnapshot = {
+      ...snapshot,
+      docs: snapshot.docs.map((doc) => ({
+        ...doc,
+        data: () => {
+          const data = doc.data();
+          const filteredData = { ...data };
+          delete filteredData.edits;
+          return filteredData;
+        },
+      })),
+    };
+
+    return filteredSnapshot as QuerySnapshot<DocumentData>;
   },
 
   // Listen to pages changes in real-time
@@ -522,9 +538,28 @@ export const pageService = {
       collection(db, "pages"),
       where("bookId", "==", bookId)
     );
+
+    // Wrapper callback to filter out edits field
+    const wrappedCallback = (snapshot: QuerySnapshot<DocumentData>) => {
+      // Create a new snapshot-like object with filtered documents
+      const filteredSnapshot = {
+        ...snapshot,
+        docs: snapshot.docs.map((doc) => ({
+          ...doc,
+          data: () => {
+            const data = doc.data();
+            const filteredData = { ...data };
+            delete filteredData.edits;
+            return filteredData;
+          },
+        })),
+      };
+      callback(filteredSnapshot as QuerySnapshot<DocumentData>);
+    };
+
     return onSnapshot(
       pagesQuery,
-      callback,
+      wrappedCallback,
       onError || ((error) => console.error("Pages snapshot error:", error))
     );
   },
