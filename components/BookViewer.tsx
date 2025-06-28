@@ -34,7 +34,7 @@ import {
   BreadcrumbSeparator,
   BreadcrumbPage,
 } from "@/components/ui/breadcrumb";
-import { FileUpload } from "@/components/ui/file-upload";
+
 import Image from "next/image";
 import SyriacEditor from "@/components/SyriacEditor";
 import TipTapRenderer from "@/components/TipTapRenderer";
