@@ -260,7 +260,7 @@ export default function HomePage() {
                 <div className="space-y-4">
                   <div className="bg-white p-6 rounded  min-h-[300px] flex items-center justify-center">
                     <div
-                      className="font-syriac text-3xl leading-relaxed text-black text-justify hover:text-primary transition-colors duration-300"
+                      className="font-east-syriac-malankara-classical text-3xl leading-relaxed text-black text-justify hover:text-primary transition-colors duration-300"
                       dir="rtl"
                     >
                       ܐܲܒ݂ܘܼܢ ܕܒܲܫܡܲܝܵܐ ܢܸـܬ݂ܩܲܕܲܫ ܫܡܵـܟ݂ ܬܹܐܬܸܐ ܡܲܠܟܘܼܬ݂ܵܟ݂

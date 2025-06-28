@@ -23,6 +23,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Home,
+  FileImage,
+  X,
 } from "lucide-react";
 import {
   Breadcrumb,
@@ -198,9 +200,11 @@ export default function BookViewer() {
   // Add page form state
   const [addPageDialogOpen, setAddPageDialogOpen] = useState<boolean>(false);
   const [addPageForm, setAddPageForm] = useState({
-    pageNumber: 0,
-    pageNumberInBook: undefined as string | undefined,
-    file: null as File | null,
+    files: [] as Array<{
+      file: File;
+      pageNumber: number;
+      pageNumberInBook?: string;
+    }>,
   });
   const [addPageLoading, setAddPageLoading] = useState<boolean>(false);
   const [addPageError, setAddPageError] = useState<string>("");
@@ -422,31 +426,43 @@ export default function BookViewer() {
   }, [selectedPageIndex, pages.length]);
 
   const handleAddPageFormSubmit = async () => {
-    if (!userProfile || !addPageForm.file) {
-      setAddPageError("Please select an image file");
+    if (!userProfile || addPageForm.files.length === 0) {
+      setAddPageError("Please select at least one image file");
       return;
     }
 
-    // Validate page numbers
-    if (addPageForm.pageNumber <= 0) {
-      setAddPageError("Page number must be greater than 0");
-      return;
+    // Validate all page numbers
+    for (const fileData of addPageForm.files) {
+      if (fileData.pageNumber <= 0) {
+        setAddPageError("All page numbers must be greater than 0");
+        return;
+      }
+
+      if (
+        fileData.pageNumberInBook !== undefined &&
+        fileData.pageNumberInBook.trim() === ""
+      ) {
+        setAddPageError("Page number in book cannot be just whitespace");
+        return;
+      }
+
+      // Check if page number already exists
+      const existingPage = pages.find(
+        (p) => p.pageNumber === fileData.pageNumber
+      );
+      if (existingPage) {
+        setAddPageError(`Page ${fileData.pageNumber} already exists`);
+        return;
+      }
     }
 
-    if (
-      addPageForm.pageNumberInBook !== undefined &&
-      addPageForm.pageNumberInBook.trim() === ""
-    ) {
-      setAddPageError("Page number in book cannot be just whitespace");
-      return;
-    }
-
-    // Check if page number already exists
-    const existingPage = pages.find(
-      (p) => p.pageNumber === addPageForm.pageNumber
+    // Check for duplicate page numbers within the upload
+    const pageNumbers = addPageForm.files.map((f) => f.pageNumber);
+    const duplicates = pageNumbers.filter(
+      (num, index) => pageNumbers.indexOf(num) !== index
     );
-    if (existingPage) {
-      setAddPageError(`Page ${addPageForm.pageNumber} already exists`);
+    if (duplicates.length > 0) {
+      setAddPageError(`Duplicate page numbers found: ${duplicates.join(", ")}`);
       return;
     }
 
@@ -454,32 +470,40 @@ export default function BookViewer() {
     setAddPageError("");
 
     try {
-      // Upload image
-      const imageUrl = await pageService.uploadPageImage(
-        bookId,
-        addPageForm.pageNumber,
-        addPageForm.file
-      );
+      // Upload all images and create pages
+      const uploadPromises = addPageForm.files.map(async (fileData) => {
+        // Upload image
+        const imageUrl = await pageService.uploadPageImage(
+          bookId,
+          fileData.pageNumber,
+          fileData.file
+        );
 
-      // Create page doc
-      await pageService.createPage(
-        bookId,
-        addPageForm.pageNumber,
-        imageUrl,
-        userProfile.uid,
-        addPageForm.pageNumberInBook
-      );
+        // Create page doc
+        await pageService.createPage(
+          bookId,
+          fileData.pageNumber,
+          imageUrl,
+          userProfile.uid,
+          fileData.pageNumberInBook
+        );
+
+        return fileData.pageNumber;
+      });
+
+      await Promise.all(uploadPromises);
 
       // Real-time listener will automatically update pages
-      // Wait a moment for the listener to update, then select the new page
+      // Wait a moment for the listener to update, then select the first new page
       setTimeout(() => {
+        const firstNewPageNumber = Math.min(...pageNumbers);
         const newPageIndex = pages.findIndex(
-          (p) => p.pageNumber === addPageForm.pageNumber
+          (p) => p.pageNumber === firstNewPageNumber
         );
         if (newPageIndex >= 0) {
           setSelectedPageIndex(newPageIndex);
         } else {
-          // If not found, select the last page (newly added)
+          // If not found, select the last page
           setSelectedPageIndex(pages.length);
         }
       }, 100);
@@ -487,20 +511,73 @@ export default function BookViewer() {
       // Close dialog
       setAddPageDialogOpen(false);
     } catch (err) {
-      console.error("Error uploading page", err);
-      setAddPageError("Failed to add page. Please try again.");
+      console.error("Error uploading pages", err);
+      setAddPageError("Failed to add pages. Please try again.");
     } finally {
       setAddPageLoading(false);
     }
   };
 
-  const handleAddPageFileSelect = useCallback((file: File | null) => {
+  const handleMultipleFileSelect = useCallback(
+    (files: File[]) => {
+      // Sort files by name (natural sort)
+      const sortedFiles = [...files].sort((a, b) =>
+        a.name.localeCompare(b.name, undefined, { numeric: true })
+      );
+
+      // Calculate starting page numbers
+      const nextSequentialPageNumber = pages.length + 1;
+      const maxPageNumber = Math.max(0, ...pages.map((p) => p.pageNumber));
+      const startingPageNumber = Math.max(
+        nextSequentialPageNumber,
+        maxPageNumber + 1
+      );
+
+      // Create file data with auto-assigned page numbers
+      const fileData = sortedFiles.map((file, index) => ({
+        file,
+        pageNumber: startingPageNumber + index,
+        pageNumberInBook: undefined as string | undefined,
+      }));
+
+      setAddPageForm({ files: fileData });
+      setAddPageError("");
+    },
+    [pages]
+  );
+
+  const handleRemoveFile = useCallback((index: number) => {
     setAddPageForm((prev) => ({
-      ...prev,
-      file: file,
+      files: prev.files.filter((_, i) => i !== index),
     }));
-    setAddPageError("");
   }, []);
+
+  const handleUpdateFilePageNumber = useCallback(
+    (index: number, pageNumber: number) => {
+      setAddPageForm((prev) => ({
+        files: prev.files.map((fileData, i) =>
+          i === index ? { ...fileData, pageNumber } : fileData
+        ),
+      }));
+    },
+    []
+  );
+
+  const handleUpdateFilePageNumberInBook = useCallback(
+    (index: number, pageNumberInBook: string) => {
+      setAddPageForm((prev) => ({
+        files: prev.files.map((fileData, i) =>
+          i === index
+            ? {
+                ...fileData,
+                pageNumberInBook: pageNumberInBook.trim() || undefined,
+              }
+            : fileData
+        ),
+      }));
+    },
+    []
+  );
 
   // Handle save transcription
   const handleSaveTranscription = async () => {
@@ -1350,22 +1427,7 @@ export default function BookViewer() {
                   onOpenChange={(open) => {
                     setAddPageDialogOpen(open);
                     if (open) {
-                      // Calculate suggested page numbers when dialog opens
-                      const nextSequentialPageNumber = pages.length + 1;
-                      const maxPageNumber = Math.max(
-                        0,
-                        ...pages.map((p) => p.pageNumber)
-                      );
-                      const suggestedPageNumber = Math.max(
-                        nextSequentialPageNumber,
-                        maxPageNumber + 1
-                      );
-
-                      setAddPageForm({
-                        pageNumber: suggestedPageNumber,
-                        pageNumberInBook: undefined,
-                        file: null,
-                      });
+                      setAddPageForm({ files: [] });
                       setAddPageError("");
                     }
                   }}
@@ -1381,65 +1443,145 @@ export default function BookViewer() {
                       <span className="sm:hidden">+</span>
                     </Button>
                   </DialogTrigger>
-                  <DialogContent className="sm:max-w-md">
+                  <DialogContent className="sm:max-w-2xl max-h-[80vh] flex flex-col">
                     <DialogHeader>
-                      <DialogTitle>Add New Page</DialogTitle>
+                      <DialogTitle>Add Pages</DialogTitle>
                       <DialogDescription>
-                        Upload a new page image and specify page numbers.
+                        Upload one or more page images. Files will be sorted by
+                        name and assigned sequential page numbers.
                       </DialogDescription>
                     </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                      <div className="grid grid-cols-2 gap-4">
+                    <div className="flex-1 overflow-y-auto">
+                      <div className="grid gap-4 py-4">
+                        {/* Multi-file Upload Area */}
                         <div className="grid gap-2">
-                          <Label htmlFor="pageNumber">Page Number</Label>
-                          <Input
-                            id="pageNumber"
-                            type="number"
-                            min="1"
-                            value={addPageForm.pageNumber}
-                            onChange={(e) =>
-                              setAddPageForm((prev) => ({
-                                ...prev,
-                                pageNumber: parseInt(e.target.value) || 0,
-                              }))
-                            }
-                            placeholder="Page number"
-                          />
+                          <Label>Page Images</Label>
+                          <div className="relative border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-gray-400 transition-colors">
+                            <input
+                              type="file"
+                              accept="image/*"
+                              multiple
+                              onChange={(e) => {
+                                const files = Array.from(e.target.files || []);
+                                if (files.length > 0) {
+                                  handleMultipleFileSelect(files);
+                                }
+                              }}
+                              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                              disabled={addPageLoading}
+                            />
+                            <div className="text-center">
+                              <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                              <div className="space-y-2">
+                                <p className="text-sm font-medium text-gray-900">
+                                  Drop files here or click to browse
+                                </p>
+                                <p className="text-xs text-gray-500">
+                                  Select multiple images (up to 50MB each)
+                                </p>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                        <div className="grid gap-2">
-                          <Label htmlFor="pageNumberInBook">Page in Book</Label>
-                          <Input
-                            id="pageNumberInBook"
-                            type="text"
-                            value={addPageForm.pageNumberInBook || ""}
-                            onChange={(e) =>
-                              setAddPageForm((prev) => ({
-                                ...prev,
-                                pageNumberInBook:
-                                  e.target.value.trim() || undefined,
-                              }))
-                            }
-                            placeholder="Page number in book (optional)"
-                            dir="rtl"
-                            style={{
-                              fontFamily: '"East Syriac Adiabene", serif',
-                            }}
-                          />
-                        </div>
+
+                        {/* File Preview and Configuration */}
+                        {addPageForm.files.length > 0 && (
+                          <div className="grid gap-2">
+                            <Label>
+                              Selected Files ({addPageForm.files.length})
+                            </Label>
+                            <div className="max-h-60 overflow-y-auto border rounded-lg p-2 space-y-2">
+                              {addPageForm.files.map((fileData, index) => (
+                                <div
+                                  key={index}
+                                  className="flex items-center gap-3 p-2 bg-gray-50 rounded border"
+                                >
+                                  {/* File preview */}
+                                  <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center flex-shrink-0">
+                                    <FileImage className="w-6 h-6 text-gray-500" />
+                                  </div>
+
+                                  {/* File info and controls */}
+                                  <div className="flex-1 min-w-0 grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                    {/* File name */}
+                                    <div className="min-w-0">
+                                      <p className="text-sm font-medium text-gray-900 truncate">
+                                        {fileData.file.name}
+                                      </p>
+                                      <p className="text-xs text-gray-500">
+                                        {(
+                                          fileData.file.size /
+                                          (1024 * 1024)
+                                        ).toFixed(1)}{" "}
+                                        MB
+                                      </p>
+                                    </div>
+
+                                    {/* Page number input */}
+                                    <div>
+                                      <Input
+                                        type="number"
+                                        min="1"
+                                        value={fileData.pageNumber}
+                                        onChange={(e) => {
+                                          const pageNum =
+                                            parseInt(e.target.value) || 0;
+                                          handleUpdateFilePageNumber(
+                                            index,
+                                            pageNum
+                                          );
+                                        }}
+                                        placeholder="Page #"
+                                        className="text-sm h-8"
+                                      />
+                                    </div>
+
+                                    {/* Page in book input */}
+                                    <div>
+                                      <Input
+                                        type="text"
+                                        value={fileData.pageNumberInBook || ""}
+                                        onChange={(e) => {
+                                          handleUpdateFilePageNumberInBook(
+                                            index,
+                                            e.target.value
+                                          );
+                                        }}
+                                        placeholder="Page in book (optional)"
+                                        className="text-sm h-8"
+                                        dir="rtl"
+                                        style={{
+                                          fontFamily:
+                                            '"East Syriac Adiabene", serif',
+                                        }}
+                                      />
+                                    </div>
+                                  </div>
+
+                                  {/* Remove button */}
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleRemoveFile(index)}
+                                    className="h-8 w-8 p-0 flex-shrink-0"
+                                  >
+                                    <X className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {addPageError && (
+                          <div className="bg-red-50 border border-red-200 rounded p-3">
+                            <p className="text-sm text-red-600">
+                              {addPageError}
+                            </p>
+                          </div>
+                        )}
                       </div>
-                      <div className="grid gap-2">
-                        <Label htmlFor="pageImage">Page Image</Label>
-                        <FileUpload
-                          onFileSelect={handleAddPageFileSelect}
-                          accept="image/*"
-                          maxSize={50}
-                          selectedFile={addPageForm.file}
-                          disabled={addPageLoading}
-                        />
-                      </div>
-                      {addPageError && (
-                        <p className="text-sm text-red-600">{addPageError}</p>
-                      )}
                     </div>
                     <DialogFooter>
                       <Button
@@ -1453,7 +1595,9 @@ export default function BookViewer() {
                       <Button
                         type="button"
                         onClick={handleAddPageFormSubmit}
-                        disabled={addPageLoading || !addPageForm.file}
+                        disabled={
+                          addPageLoading || addPageForm.files.length === 0
+                        }
                       >
                         {addPageLoading ? (
                           <div className="flex items-center gap-2">
@@ -1463,7 +1607,8 @@ export default function BookViewer() {
                         ) : (
                           <>
                             <Plus className="w-4 h-4 mr-2" />
-                            Add Page
+                            Add {addPageForm.files.length} Page
+                            {addPageForm.files.length !== 1 ? "s" : ""}
                           </>
                         )}
                       </Button>
@@ -1494,12 +1639,7 @@ export default function BookViewer() {
                     onOpenChange={(open) => {
                       setAddPageDialogOpen(open);
                       if (open) {
-                        // For first page, default to page 1
-                        setAddPageForm({
-                          pageNumber: 1,
-                          pageNumberInBook: undefined,
-                          file: null,
-                        });
+                        setAddPageForm({ files: [] });
                         setAddPageError("");
                       }
                     }}
@@ -1510,67 +1650,149 @@ export default function BookViewer() {
                         Add First Page
                       </Button>
                     </DialogTrigger>
-                    <DialogContent className="sm:max-w-md">
+                    <DialogContent className="sm:max-w-2xl max-h-[80vh] flex flex-col">
                       <DialogHeader>
                         <DialogTitle>Add First Page</DialogTitle>
                         <DialogDescription>
-                          Upload the first page image to begin transcription.
+                          Upload the first page image(s) to begin transcription.
+                          You can add multiple pages at once.
                         </DialogDescription>
                       </DialogHeader>
-                      <div className="grid gap-4 py-4">
-                        <div className="grid grid-cols-2 gap-4">
+                      <div className="flex-1 overflow-y-auto">
+                        <div className="grid gap-4 py-4">
+                          {/* Multi-file Upload Area */}
                           <div className="grid gap-2">
-                            <Label htmlFor="firstPageNumber">Page Number</Label>
-                            <Input
-                              id="firstPageNumber"
-                              type="number"
-                              min="1"
-                              value={addPageForm.pageNumber}
-                              onChange={(e) =>
-                                setAddPageForm((prev) => ({
-                                  ...prev,
-                                  pageNumber: parseInt(e.target.value) || 0,
-                                }))
-                              }
-                              placeholder="Page number"
-                            />
+                            <Label>Page Images</Label>
+                            <div className="relative border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-gray-400 transition-colors">
+                              <input
+                                type="file"
+                                accept="image/*"
+                                multiple
+                                onChange={(e) => {
+                                  const files = Array.from(
+                                    e.target.files || []
+                                  );
+                                  if (files.length > 0) {
+                                    handleMultipleFileSelect(files);
+                                  }
+                                }}
+                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                disabled={addPageLoading}
+                              />
+                              <div className="text-center">
+                                <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                                <div className="space-y-2">
+                                  <p className="text-sm font-medium text-gray-900">
+                                    Drop files here or click to browse
+                                  </p>
+                                  <p className="text-xs text-gray-500">
+                                    Select multiple images (up to 50MB each)
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
                           </div>
-                          <div className="grid gap-2">
-                            <Label htmlFor="firstPageNumberInBook">
-                              Page in Book
-                            </Label>
-                            <Input
-                              id="firstPageNumberInBook"
-                              type="text"
-                              value={addPageForm.pageNumberInBook || ""}
-                              onChange={(e) =>
-                                setAddPageForm((prev) => ({
-                                  ...prev,
-                                  pageNumberInBook:
-                                    e.target.value.trim() || undefined,
-                                }))
-                              }
-                              placeholder="Page number in book (optional)"
-                              dir="rtl"
-                              style={{
-                                fontFamily: '"East Syriac Adiabene", serif',
-                              }}
-                            />
-                          </div>
+
+                          {/* File Preview and Configuration */}
+                          {addPageForm.files.length > 0 && (
+                            <div className="grid gap-2">
+                              <Label>
+                                Selected Files ({addPageForm.files.length})
+                              </Label>
+                              <div className="max-h-60 overflow-y-auto border rounded-lg p-2 space-y-2">
+                                {addPageForm.files.map((fileData, index) => (
+                                  <div
+                                    key={index}
+                                    className="flex items-center gap-3 p-2 bg-gray-50 rounded border"
+                                  >
+                                    {/* File preview */}
+                                    <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center flex-shrink-0">
+                                      <FileImage className="w-6 h-6 text-gray-500" />
+                                    </div>
+
+                                    {/* File info and controls */}
+                                    <div className="flex-1 min-w-0 grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                      {/* File name */}
+                                      <div className="min-w-0">
+                                        <p className="text-sm font-medium text-gray-900 truncate">
+                                          {fileData.file.name}
+                                        </p>
+                                        <p className="text-xs text-gray-500">
+                                          {(
+                                            fileData.file.size /
+                                            (1024 * 1024)
+                                          ).toFixed(1)}{" "}
+                                          MB
+                                        </p>
+                                      </div>
+
+                                      {/* Page number input */}
+                                      <div>
+                                        <Input
+                                          type="number"
+                                          min="1"
+                                          value={fileData.pageNumber}
+                                          onChange={(e) => {
+                                            const pageNum =
+                                              parseInt(e.target.value) || 0;
+                                            handleUpdateFilePageNumber(
+                                              index,
+                                              pageNum
+                                            );
+                                          }}
+                                          placeholder="Page #"
+                                          className="text-sm h-8"
+                                        />
+                                      </div>
+
+                                      {/* Page in book input */}
+                                      <div>
+                                        <Input
+                                          type="text"
+                                          value={
+                                            fileData.pageNumberInBook || ""
+                                          }
+                                          onChange={(e) => {
+                                            handleUpdateFilePageNumberInBook(
+                                              index,
+                                              e.target.value
+                                            );
+                                          }}
+                                          placeholder="Page in book (optional)"
+                                          className="text-sm h-8"
+                                          dir="rtl"
+                                          style={{
+                                            fontFamily:
+                                              '"East Syriac Adiabene", serif',
+                                          }}
+                                        />
+                                      </div>
+                                    </div>
+
+                                    {/* Remove button */}
+                                    <Button
+                                      type="button"
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => handleRemoveFile(index)}
+                                      className="h-8 w-8 p-0 flex-shrink-0"
+                                    >
+                                      <X className="h-4 w-4" />
+                                    </Button>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {addPageError && (
+                            <div className="bg-red-50 border border-red-200 rounded p-3">
+                              <p className="text-sm text-red-600">
+                                {addPageError}
+                              </p>
+                            </div>
+                          )}
                         </div>
-                        <div className="grid gap-2">
-                          <Label htmlFor="firstPageImage">Page Image</Label>
-                          <FileUpload
-                            onFileSelect={handleAddPageFileSelect}
-                            accept="image/*"
-                            maxSize={50}
-                            selectedFile={addPageForm.file}
-                            disabled={addPageLoading}
-                          />
-                        </div>
-                        {addPageError && (
-                          <p className="text-sm text-red-600">{addPageError}</p>
-                        )}
                       </div>
                       <DialogFooter>
                         <Button
@@ -1584,7 +1806,9 @@ export default function BookViewer() {
                         <Button
                           type="button"
                           onClick={handleAddPageFormSubmit}
-                          disabled={addPageLoading || !addPageForm.file}
+                          disabled={
+                            addPageLoading || addPageForm.files.length === 0
+                          }
                         >
                           {addPageLoading ? (
                             <div className="flex items-center gap-2">
@@ -1594,7 +1818,8 @@ export default function BookViewer() {
                           ) : (
                             <>
                               <Plus className="w-4 h-4 mr-2" />
-                              Add Page
+                              Add {addPageForm.files.length} Page
+                              {addPageForm.files.length !== 1 ? "s" : ""}
                             </>
                           )}
                         </Button>
