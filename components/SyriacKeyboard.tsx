@@ -247,7 +247,7 @@ export default function SyriacKeyboard({
     <div
       data-keyboard="syriac"
       className={`
-        fixed z-50 bg-card border border-border shadow-lg select-none
+        fixed z-[9999] bg-card border border-border shadow-lg select-none
         md:rounded-lg md:max-w-80
         max-md:bottom-0 max-md:left-0 max-md:right-0 max-md:w-full max-md:rounded-t-lg max-md:rounded-b-none max-md:border-b-0
       `}
