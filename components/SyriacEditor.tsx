@@ -31,6 +31,7 @@ import {
   AlignJustify,
   Undo,
   Redo,
+  Keyboard,
 } from "lucide-react";
 import SyriacKeyboard from "./SyriacKeyboard";
 
@@ -91,6 +92,7 @@ const alignmentOptions = [
 const mainColors = [
   { name: "Black", value: "#000000" },
   { name: "Red", value: "#ff0000" },
+  { name: "Blue", value: "#0000ff" },
 ];
 
 interface SyriacEditorProps {
@@ -231,7 +233,8 @@ export default function SyriacEditor({
           .replace(/ܙܲܒ݂ܢܲܐ/g, "ܙܲܒ݂ܢܹ̈ܐ")
           .replace(/ܙܲܒ݂ܪܹܐ/g, "ܙܲܒ݂ܢܹ̈ܐ")
           .replace(/ܥܸܕܵܪܹܐ/g, "ܥܸܕܵܢܹܐ")
-          .replace(/ܕܒܲܬܲܪ/g, "ܕܒ݂ܵܬܲܪ");
+          .replace(/ܕܒܲܬܲܪ/g, "ܕܒ݂ܵܬܲܪ")
+          .replace(/ܡܸܢ/g, "ܡ̣ܢ");
 
         if (transformedContent !== content) {
           // Only update if there were changes to avoid infinite loops
@@ -701,16 +704,17 @@ export default function SyriacEditor({
 
             {/* Keyboard Toggle - Hidden on mobile */}
             <div className="hidden md:flex items-center gap-2">
-              <span className="text-sm">Keyboard</span>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={keyboardVisible}
-                  onChange={(e) => setKeyboardVisible(e.target.checked)}
-                  className="sr-only peer"
-                />
-                <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-              </label>
+              <Button
+                variant={keyboardVisible ? "default" : "outline"}
+                size="sm"
+                onClick={handleKeyboardToggle}
+                title={keyboardVisible ? "Hide Keyboard" : "Show Keyboard"}
+                className={
+                  keyboardVisible ? "bg-blue-600 hover:bg-blue-700" : ""
+                }
+              >
+                <Keyboard size={16} />
+              </Button>
             </div>
           </div>
         </div>
