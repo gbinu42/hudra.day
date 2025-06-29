@@ -342,16 +342,18 @@ export default function SyriacKeyboard({
                   ))}
                 </div>
               </div>
-              {/* Hide punctuation section on mobile like type.html */}
-              <div className="md:block hidden">
+              <div>
                 <div
-                  className="text-xs font-medium mb-1 text-muted-foreground"
+                  className="text-xs font-medium mb-1 text-muted-foreground max-md:hidden"
                   dir="ltr"
                 >
-                  Punctuation
+                  Punctuation and Marks
                 </div>
-                <div className="grid grid-cols-6 gap-1" dir="rtl">
-                  {keyboardData.punctuation.slice(0, 15).map((key, idx) => (
+                <div
+                  className="grid grid-cols-6 gap-1 max-md:grid-cols-5 max-md:gap-0.5 max-md:mb-2"
+                  dir="rtl"
+                >
+                  {keyboardData.punctuation.map((key, idx) => (
                     <KeyButton
                       key={idx}
                       char={key.char}
@@ -443,7 +445,10 @@ export default function SyriacKeyboard({
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setShowNumbers(!showNumbers)}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  setShowNumbers(!showNumbers);
+                }}
                 className="h-8 text-xs px-2 max-md:w-12 max-md:h-8 max-md:text-xs max-md:flex-none"
               >
                 {showNumbers ? "ABC" : "123"}

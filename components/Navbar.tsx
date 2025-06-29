@@ -24,7 +24,7 @@ export default function Navbar() {
   const { user, loading } = useAuth();
 
   return (
-    <header className="sticky top-0 z-60 w-full border-b bg-white shadow-sm">
+    <header className="sticky top-0 z-50 w-full border-b bg-white shadow-sm">
       <div className="container mx-auto px-4 flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center space-x-2">
           <Image

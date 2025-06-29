@@ -862,13 +862,19 @@ export default function BookViewer() {
             <DialogFooter>
               <Button
                 variant="outline"
-                onClick={() => setPageStatusDialogOpen(false)}
+                onClick={() => {
+                  console.log("Cancel button clicked");
+                  setPageStatusDialogOpen(false);
+                }}
                 disabled={pageStatusLoading}
               >
                 Cancel
               </Button>
               <Button
-                onClick={handlePageStatusChange}
+                onClick={() => {
+                  console.log("Update Status button clicked");
+                  handlePageStatusChange();
+                }}
                 disabled={pageStatusLoading}
               >
                 {pageStatusLoading ? (
@@ -895,7 +901,7 @@ export default function BookViewer() {
       <div className="container mx-auto px-4 py-4 sm:py-8 flex-1 flex flex-col">
         <ProtectedRoute requireAuth={false}>
           {/* Title Section - Breadcrumbs and Header */}
-          <div className="relative z-50">
+          <div className="relative">
             {/* Breadcrumbs */}
             <div className="px-4 mb-4">
               <Breadcrumb>
@@ -933,7 +939,6 @@ export default function BookViewer() {
                       onClick={handleEditClick}
                       variant="outline"
                       size="sm"
-                      className="relative z-50"
                     >
                       <Edit className="w-4 h-4 mr-2" />
                       Edit Details
@@ -1321,7 +1326,7 @@ export default function BookViewer() {
                       size="sm"
                       onClick={goToNextPage}
                       disabled={selectedPageIndex === pages.length - 1}
-                      className="h-8 px-3 flex items-center gap-1 relative z-1"
+                      className="h-8 px-3 flex items-center gap-1"
                       title="Next Page"
                     >
                       <ChevronLeft className="w-3 h-3" />
@@ -1336,7 +1341,7 @@ export default function BookViewer() {
                       size="sm"
                       onClick={goToNextPage}
                       disabled={selectedPageIndex === pages.length - 1}
-                      className="h-8 px-3 flex items-center gap-1 relative z-1"
+                      className="h-8 px-3 flex items-center gap-1"
                       title="Next Page"
                     >
                       <ChevronLeft className="w-3 h-3" />
@@ -1436,7 +1441,7 @@ export default function BookViewer() {
                     <Button
                       size="sm"
                       variant="outline"
-                      className="h-8 px-3 text-sm flex items-center gap-1 ml-2 sm:ml-4 relative z-1"
+                      className="h-8 px-3 text-sm flex items-center gap-1 ml-2 sm:ml-4"
                     >
                       <Plus className="w-3 h-3" />
                       <span className="hidden sm:inline">Add</span>
@@ -1645,7 +1650,7 @@ export default function BookViewer() {
                     }}
                   >
                     <DialogTrigger asChild>
-                      <Button size="lg" className="px-8 relative z-1">
+                      <Button size="lg" className="px-8">
                         <Plus className="w-5 h-5 mr-2" />
                         Add First Page
                       </Button>
@@ -2058,7 +2063,7 @@ export default function BookViewer() {
                 {/* Right: Page Image */}
                 <Card className="shadow-lg border-0 overflow-hidden flex flex-col h-full py-0 gap-0">
                   <CardHeader className="bg-gradient-to-r from-slate-900 to-slate-800 text-white h-12 flex items-center">
-                    <div className="flex items-center justify-between w-full h-full relative z-0">
+                    <div className="flex items-center justify-between w-full h-full">
                       <div className="flex items-center gap-2 text-sm font-medium">
                         <BookOpen className="w-4 h-4" />
                         <span className="font-normal">
