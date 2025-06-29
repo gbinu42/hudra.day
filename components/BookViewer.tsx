@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
@@ -182,6 +182,8 @@ export default function BookViewer() {
   const params = useParams();
   const router = useRouter();
   const bookId = params.bookId as string;
+  const searchParams = useSearchParams();
+  const isWhitelabel = searchParams.get("whitelabel") === "1";
 
   // Pages state
   const [pages, setPages] = useState<Page[]>([]);
@@ -750,7 +752,7 @@ export default function BookViewer() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-        <Navbar />
+        {!isWhitelabel && <Navbar />}
         <div className="container mx-auto px-4 py-16">
           <div className="flex items-center justify-center py-24">
             <div className="text-center">
@@ -759,7 +761,7 @@ export default function BookViewer() {
             </div>
           </div>
         </div>
-        <Footer />
+        {!isWhitelabel && <Footer />}
       </div>
     );
   }
@@ -767,7 +769,7 @@ export default function BookViewer() {
   if (notFound || !book) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-        <Navbar />
+        {!isWhitelabel && <Navbar />}
         <div className="container mx-auto px-4 py-16">
           <ProtectedRoute requireAuth={false}>
             <div className="text-center py-24">
@@ -890,45 +892,47 @@ export default function BookViewer() {
           </DialogContent>
         </Dialog>
 
-        <Footer />
+        {!isWhitelabel && <Footer />}
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col">
-      <Navbar />
+      {!isWhitelabel && <Navbar />}
       <div className="container mx-auto px-4 py-4 sm:py-8 flex-1 flex flex-col">
         <ProtectedRoute requireAuth={false}>
           {/* Title Section - Breadcrumbs and Header */}
           <div className="relative">
             {/* Breadcrumbs */}
-            <div className="px-4 mb-4">
-              <Breadcrumb>
-                <BreadcrumbList>
-                  <BreadcrumbItem>
-                    <BreadcrumbLink href="/">
-                      <Home className="h-4 w-4" />
-                      Home
-                    </BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator />
-                  <BreadcrumbItem>
-                    <BreadcrumbLink href="/books">
-                      <BookOpen className="h-4 w-4" />
-                      Books
-                    </BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator />
-                  <BreadcrumbItem>
-                    <BreadcrumbPage>{book.title}</BreadcrumbPage>
-                  </BreadcrumbItem>
-                </BreadcrumbList>
-              </Breadcrumb>
-            </div>
+            {!isWhitelabel && (
+              <div className="px-4 mb-4">
+                <Breadcrumb>
+                  <BreadcrumbList>
+                    <BreadcrumbItem>
+                      <BreadcrumbLink href="/">
+                        <Home className="h-4 w-4" />
+                        Home
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbLink href="/books">
+                        <BookOpen className="h-4 w-4" />
+                        Books
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbPage>{book.title}</BreadcrumbPage>
+                    </BreadcrumbItem>
+                  </BreadcrumbList>
+                </Breadcrumb>
+              </div>
+            )}
 
             {/* Edit Button */}
-            {permissions.canEdit && (
+            {permissions.canEdit && !isWhitelabel && (
               <div className="flex justify-end mb-2">
                 <Dialog
                   open={editBookDialogOpen}
@@ -1426,7 +1430,7 @@ export default function BookViewer() {
 
             {/* Add Button on the right */}
             <div className="flex items-center">
-              {permissions.canCreate && (
+              {permissions.canCreate && !isWhitelabel && (
                 <Dialog
                   open={addPageDialogOpen}
                   onOpenChange={(open) => {
@@ -1638,7 +1642,7 @@ export default function BookViewer() {
                   Start by uploading the first page of your book to begin
                   transcription.
                 </p>
-                {permissions.canCreate && (
+                {permissions.canCreate && !isWhitelabel && (
                   <Dialog
                     open={addPageDialogOpen}
                     onOpenChange={(open) => {
@@ -1951,7 +1955,7 @@ export default function BookViewer() {
                         >
                           123
                         </Button>
-                        {permissions.canEdit && (
+                        {permissions.canEdit && !isWhitelabel && (
                           <div className="flex gap-1 sm:gap-2">
                             {editMode ? (
                               <>
@@ -1994,10 +1998,9 @@ export default function BookViewer() {
                                   // Store original content when entering edit mode
                                   setOriginalTextContentJson(textContentJson);
                                 }}
-                                variant="secondary"
-                                className="bg-white text-red-900 hover:bg-slate-100 h-7 sm:h-8 px-2 sm:px-3 text-xs"
+                                variant="outline"
                               >
-                                Edit
+                                Start Transcribing
                               </Button>
                             )}
                           </div>
@@ -2039,7 +2042,7 @@ export default function BookViewer() {
                               <p className="text-slate-500 text-base sm:text-lg mb-4">
                                 No transcription yet
                               </p>
-                              {permissions.canEdit && (
+                              {permissions.canEdit && !isWhitelabel && (
                                 <Button
                                   onClick={() => {
                                     setEditMode(true);
@@ -2103,7 +2106,9 @@ export default function BookViewer() {
                             isAdmin: userProfile?.role === "admin",
                           });
                           return (
-                            permissions.canEdit && userProfile?.role === "admin"
+                            permissions.canEdit &&
+                            userProfile?.role === "admin" &&
+                            !isWhitelabel
                           );
                         })() && (
                           <Button
@@ -2151,6 +2156,192 @@ export default function BookViewer() {
               </div>
             )}
           </div>
+
+          {/* Bottom Page Navigation */}
+          {pages.length > 0 && (
+            <div className="flex items-center justify-center mt-6 mb-4 px-4">
+              <div className="flex items-center gap-3">
+                {/* For RTL documents (like Syriac), reverse the navigation */}
+                {book?.language === "Syriac" ||
+                book?.language === "Arabic" ||
+                book?.language === "Hebrew" ? (
+                  <>
+                    {/* Previous Page (leftmost for RTL) */}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={goToPreviousPage}
+                      disabled={selectedPageIndex === 0}
+                      className="h-8 px-3 flex items-center gap-1"
+                      title="Previous Page"
+                    >
+                      <span className="text-xs hidden sm:inline">Previous</span>
+                      <ChevronRight className="w-3 h-3" />
+                    </Button>
+
+                    {/* Page Selector */}
+                    <div className="flex items-center gap-2">
+                      <Select
+                        value={String(selectedPageIndex + 1)}
+                        onValueChange={(value) => {
+                          const pageNum = parseInt(value);
+                          if (pageNum >= 1 && pageNum <= pages.length) {
+                            setTranscriptionLoading(true);
+                            setSelectedPageIndex(pageNum - 1);
+                            setEditMode(false);
+                            setTimeout(
+                              () => setTranscriptionLoading(false),
+                              300
+                            );
+                          }
+                        }}
+                      >
+                        <SelectTrigger className="w-32 h-8">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="max-h-[300px] overflow-y-auto">
+                          {pages.map((page, index) => (
+                            <SelectItem key={page.id} value={String(index + 1)}>
+                              <div className="flex items-center justify-between w-full">
+                                <span>
+                                  Page {index + 1}
+                                  {page.pageNumberInBook && (
+                                    <>
+                                      {" | "}
+                                      <span
+                                        style={{
+                                          fontFamily:
+                                            '"East Syriac Adiabene", serif',
+                                        }}
+                                      >
+                                        {page.pageNumberInBook}
+                                      </span>
+                                    </>
+                                  )}
+                                </span>
+                                <div
+                                  className={`ml-2 px-1 py-0.5 rounded text-xs ${getPageStatusColor(
+                                    page.status || "draft"
+                                  )}`}
+                                >
+                                  {getPageStatusDisplayName(
+                                    page.status || "draft"
+                                  )}
+                                </div>
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <span className="text-sm text-slate-600 font-medium">
+                        of {pages.length}
+                      </span>
+                    </div>
+
+                    {/* Next Page (rightmost for RTL) */}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={goToNextPage}
+                      disabled={selectedPageIndex === pages.length - 1}
+                      className="h-8 px-3 flex items-center gap-1"
+                      title="Next Page"
+                    >
+                      <ChevronLeft className="w-3 h-3" />
+                      <span className="text-xs hidden sm:inline">Next</span>
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    {/* Next Page (leftmost for LTR) */}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={goToNextPage}
+                      disabled={selectedPageIndex === pages.length - 1}
+                      className="h-8 px-3 flex items-center gap-1"
+                      title="Next Page"
+                    >
+                      <ChevronLeft className="w-3 h-3" />
+                      <span className="text-xs hidden sm:inline">Next</span>
+                    </Button>
+
+                    {/* Page Selector */}
+                    <div className="flex items-center gap-2">
+                      <Select
+                        value={String(selectedPageIndex + 1)}
+                        onValueChange={(value) => {
+                          const pageNum = parseInt(value);
+                          if (pageNum >= 1 && pageNum <= pages.length) {
+                            setTranscriptionLoading(true);
+                            setSelectedPageIndex(pageNum - 1);
+                            setEditMode(false);
+                            setTimeout(
+                              () => setTranscriptionLoading(false),
+                              300
+                            );
+                          }
+                        }}
+                      >
+                        <SelectTrigger className="w-32 h-8">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="max-h-[300px] overflow-y-auto">
+                          {pages.map((page, index) => (
+                            <SelectItem key={page.id} value={String(index + 1)}>
+                              <div className="flex items-center justify-between w-full">
+                                <span>
+                                  Page {index + 1}
+                                  {page.pageNumberInBook && (
+                                    <>
+                                      {" | "}
+                                      <span
+                                        style={{
+                                          fontFamily:
+                                            '"East Syriac Adiabene", serif',
+                                        }}
+                                      >
+                                        {page.pageNumberInBook}
+                                      </span>
+                                    </>
+                                  )}
+                                </span>
+                                <div
+                                  className={`ml-2 px-1 py-0.5 rounded text-xs ${getPageStatusColor(
+                                    page.status || "draft"
+                                  )}`}
+                                >
+                                  {getPageStatusDisplayName(
+                                    page.status || "draft"
+                                  )}
+                                </div>
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <span className="text-sm text-slate-600 font-medium">
+                        of {pages.length}
+                      </span>
+                    </div>
+
+                    {/* Previous Page (rightmost for LTR) */}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={goToPreviousPage}
+                      disabled={selectedPageIndex === 0}
+                      className="h-8 px-3 flex items-center gap-1"
+                      title="Previous Page"
+                    >
+                      <span className="text-xs hidden sm:inline">Previous</span>
+                      <ChevronRight className="w-3 h-3" />
+                    </Button>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
         </ProtectedRoute>
       </div>
 
@@ -2254,7 +2445,7 @@ export default function BookViewer() {
         </DialogContent>
       </Dialog>
 
-      <Footer />
+      {!isWhitelabel && <Footer />}
     </div>
   );
 }
