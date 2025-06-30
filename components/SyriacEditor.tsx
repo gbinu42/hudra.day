@@ -227,7 +227,6 @@ export default function SyriacEditor({
           .replace(/ܥܸܕܵܪܹܐ/g, "ܥܸܕܵܢܹܐ")
           .replace(/ܕܒܲܬܲܪ/g, "ܕܒ݂ܵܬܲܪ")
           .replace(/ܡܸܢ/g, "ܡ̣ܢ")
-          // Character replacements (removing duplicates)
           .replace(/ܒ̇/g, "ܒ݁") // Replace ܒ̇ with ܒ݁
           .replace(/ܒ̣/g, "ܒ݂") // Replace ܒ̣ with ܒ݂
           .replace(/ܬ̇/g, "ܬ݁") // Replace ܬ̇ with ܬ݁
@@ -242,7 +241,10 @@ export default function SyriacEditor({
           .replace(/ܒܿ/g, "ܒ݁") // Replace ܒܿ with ܒ݁
           .replace(/ܒܼ/g, "ܒ݂") // Replace ܒܼ with ܒ݂
           .replace(/ܓܼ/g, "ܓ݂") // Replace ܓܼ with ܓ݂
-          .replace(/ܓܿ/g, "ܓ݁"); // Replace ܓܿ with ܓ݁
+          .replace(/ܓܿ/g, "ܓ݁") // Replace ܓܿ with ܓ݁
+          .replace(/ܐ̄/g, "ܐ݇")
+          .replace(/ܗ̄/g, "ܗ݇")
+          .replace(/ܠ̄/g, "ܠ݇");
 
         if (transformedContent !== content) {
           // Only update if there were changes to avoid infinite loops
