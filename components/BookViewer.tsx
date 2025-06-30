@@ -1999,8 +1999,9 @@ export default function BookViewer() {
                                   setOriginalTextContentJson(textContentJson);
                                 }}
                                 variant="outline"
+                                className="border-slate-300 text-slate-700 hover:bg-slate-50 h-7 sm:h-8 px-2 sm:px-3 text-xs"
                               >
-                                Start Transcribing
+                                Edit
                               </Button>
                             )}
                           </div>
@@ -2051,8 +2052,9 @@ export default function BookViewer() {
                                   }}
                                   variant="outline"
                                   size="sm"
+                                  className="border-slate-300 text-slate-700 hover:bg-slate-50"
                                 >
-                                  Start Transcribing
+                                  Edit
                                 </Button>
                               )}
                             </div>
