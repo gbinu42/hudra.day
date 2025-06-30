@@ -2,6 +2,7 @@ import { bookService } from "@/lib/firebase-services";
 import BookViewer from "@/components/BookViewer";
 import { Metadata } from "next";
 import { Book } from "@/lib/types/book";
+import { Suspense } from "react";
 
 // Server-side function to generate static params
 export async function generateStaticParams() {
@@ -95,5 +96,9 @@ export async function generateMetadata({
 
 // Server component that renders the client component
 export default function BookDetailPage() {
-  return <BookViewer />;
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <BookViewer />
+    </Suspense>
+  );
 }
