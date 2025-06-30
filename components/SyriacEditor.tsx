@@ -210,23 +210,15 @@ export default function SyriacEditor({
         const content = editor.getHTML();
         const transformedContent = content
           .replace(/ܬܼܵ/g, "ܬ݂ܵ") // Replace ܬܼܵ with ܬ݂ܵ
-          .replace(/ܟܼ/g, "ܟ݂") // Replace ܟܼ with ܟ݂
           .replace(/ܡܼܢ/g, "ܡ̣ܢ") // Replace ܡܼܢ with ܡ̣ܢ
           .replace(/ܕܿ/g, "ܕ݁") // Replace ܕܿ with ܕ݁
-          .replace(/ܓܼ/g, "ܓ݂") // Replace ܓܼ with ܓ݂
-          .replace(/ܬܼ/g, "ܬ݂") // Replace ܬܼ with ܬ݂
-          .replace(/ܒܼ/g, "ܒ݂") // Replace ܒܼ with ܒ݂
           .replace(/ܡ݂ܢ/g, "ܡ̣ܢ") // Replace ܡ݂ܢ with ܡ̣ܢ
           .replace(/ܕܼ/g, "ܕ݂") // Replace ܕܼ with ܕ݂
           .replace(/ܒܹܿ/g, "ܒܹ݁") // Replace ܒܹܿ with ܒܹܿ
-          .replace(/ܒ̇/g, "ܒ݁")
           .replace(/ܐ݇ܡܹܝܢ/g, "ܐܵܡܹܝܢ")
-          .replace(/ܟܿ/g, "ܟ݁")
           .replace(/ܡܳܪܶ/g, "ܡܵܪܵ")
-          .replace(/ܒܿ/g, "ܒ݁")
           .replace(/ܐܿ/g, "ܐܵ")
           .replace(/\*/g, "܀")
-          .replace(/ܬܿ/g, "ܬ݁")
           .replace(/ܟܷ/g, "ܟ݂")
           .replace(/ܥܵܢܲܝܢ/g, "ܥܵܢܹܝܢ")
           .replace(/ܐܲܡܹܝܢ/g, "ܐܵܡܹܝܢ")
@@ -234,7 +226,23 @@ export default function SyriacEditor({
           .replace(/ܙܲܒ݂ܪܹܐ/g, "ܙܲܒ݂ܢܹ̈ܐ")
           .replace(/ܥܸܕܵܪܹܐ/g, "ܥܸܕܵܢܹܐ")
           .replace(/ܕܒܲܬܲܪ/g, "ܕܒ݂ܵܬܲܪ")
-          .replace(/ܡܸܢ/g, "ܡ̣ܢ");
+          .replace(/ܡܸܢ/g, "ܡ̣ܢ")
+          // Character replacements (removing duplicates)
+          .replace(/ܒ̇/g, "ܒ݁") // Replace ܒ̇ with ܒ݁
+          .replace(/ܒ̣/g, "ܒ݂") // Replace ܒ̣ with ܒ݂
+          .replace(/ܬ̇/g, "ܬ݁") // Replace ܬ̇ with ܬ݁
+          .replace(/ܬ̣/g, "ܬ݂") // Replace ܬ̣ with ܬ݂
+          .replace(/ܟ̇/g, "ܟ݁") // Replace ܟ̇ with ܟ݁
+          .replace(/ܟ̣/g, "ܟ݂") // Replace ܟ̣ with ܟ݂
+          .replace(/ܓ̣/g, "ܓ݁") // Replace ܓ̣ with ܓ݁
+          .replace(/ܓ̇/g, "ܓ݁") // Replace ܓ̇ with ܓ݁
+          .replace(/ܟܼ/g, "ܟ݂") // Replace ܟܼ with ܟ݂
+          .replace(/ܬܿ/g, "ܬ݁") // Replace ܬܿ with ܬ݁
+          .replace(/ܬܼ/g, "ܬ݂") // Replace ܬܼ with ܬ݂
+          .replace(/ܒܿ/g, "ܒ݁") // Replace ܒܿ with ܒ݁
+          .replace(/ܒܼ/g, "ܒ݂") // Replace ܒܼ with ܒ݂
+          .replace(/ܓܼ/g, "ܓ݂") // Replace ܓܼ with ܓ݂
+          .replace(/ܓܿ/g, "ܓ݁"); // Replace ܓܿ with ܓ݁
 
         if (transformedContent !== content) {
           // Only update if there were changes to avoid infinite loops
