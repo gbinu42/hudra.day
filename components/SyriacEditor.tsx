@@ -244,7 +244,8 @@ export default function SyriacEditor({
           .replace(/ܓܿ/g, "ܓ݁") // Replace ܓܿ with ܓ݁
           .replace(/ܐ̄/g, "ܐ݇")
           .replace(/ܗ̄/g, "ܗ݇")
-          .replace(/ܠ̄/g, "ܠ݇");
+          .replace(/ܠ̄/g, "ܠ݇")
+          .replace(/ܢ̄/g, "ܢ݇");
 
         if (transformedContent !== content) {
           // Only update if there were changes to avoid infinite loops
