@@ -2138,8 +2138,20 @@ export default function BookViewer() {
                               variant="secondary"
                               className="bg-blue-600 text-white hover:bg-blue-700 h-7 px-2 text-xs flex items-center gap-1"
                               onClick={handleOCR}
-                              disabled={ocrLoading}
-                              title="Recognize text from image"
+                              disabled={
+                                ocrLoading ||
+                                (currentPage?.currentTextJson &&
+                                  currentPage.currentTextJson.content &&
+                                  currentPage.currentTextJson.content.length >
+                                    0)
+                              }
+                              title={
+                                currentPage?.currentTextJson &&
+                                currentPage.currentTextJson.content &&
+                                currentPage.currentTextJson.content.length > 0
+                                  ? "OCR disabled - text already present"
+                                  : "Recognize text from image"
+                              }
                             >
                               {ocrLoading ? (
                                 <div className="animate-spin rounded-full h-3 w-3 border-2 border-white border-t-transparent"></div>
