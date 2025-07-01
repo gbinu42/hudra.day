@@ -418,15 +418,35 @@ export const bookService = {
     return await firestoreService.getCollection("books");
   },
 
-  // Listen to all books changes in real-time
+  // Listen to all books changes in real-time (excluding pages field for performance)
   onBooksSnapshot(
     callback: (snapshot: QuerySnapshot<DocumentData>) => void,
     onError?: (error: Error) => void
   ): Unsubscribe {
     const booksCollection = collection(db, "books");
+
+    // Wrapper callback to filter out pages field
+    const wrappedCallback = (snapshot: QuerySnapshot<DocumentData>) => {
+      // Create a new snapshot-like object with filtered documents
+      const filteredSnapshot = {
+        ...snapshot,
+        docs: snapshot.docs.map((doc) => ({
+          ...doc,
+          id: doc.id, // Explicitly preserve the document ID
+          data: () => {
+            const data = doc.data();
+            const filteredData = { ...data };
+            delete filteredData.pages; // Exclude pages field for performance
+            return filteredData;
+          },
+        })),
+      };
+      callback(filteredSnapshot as QuerySnapshot<DocumentData>);
+    };
+
     return onSnapshot(
       booksCollection,
-      callback,
+      wrappedCallback,
       onError || ((error) => console.error("Books snapshot error:", error))
     );
   },
