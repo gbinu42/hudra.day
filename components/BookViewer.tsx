@@ -341,33 +341,61 @@ export default function BookViewer() {
     setAddPageError("");
 
     try {
-      // Upload all images and create pages
-      const uploadPromises = addPageForm.files.map(async (fileData) => {
-        // Upload image
-        const imageUrl = await pageService.uploadPageImage(
-          bookId,
-          fileData.pageNumber,
-          fileData.file
-        );
+      const uploadedPageNumbers: number[] = [];
 
-        // Create page doc
-        await pageService.createPage(
-          bookId,
-          fileData.pageNumber,
-          imageUrl,
-          userProfile.uid,
-          fileData.pageNumberInBook
-        );
+      // Upload files sequentially, one at a time
+      for (let i = 0; i < addPageForm.files.length; i++) {
+        const fileData = addPageForm.files[i];
 
-        return fileData.pageNumber;
-      });
+        try {
+          // Update loading message to show progress
+          setAddPageError(
+            `Uploading page ${fileData.pageNumber} (${i + 1}/${
+              addPageForm.files.length
+            })...`
+          );
 
-      await Promise.all(uploadPromises);
+          // Upload image
+          const imageUrl = await pageService.uploadPageImage(
+            bookId,
+            fileData.pageNumber,
+            fileData.file
+          );
+
+          // Create page doc
+          await pageService.createPage(
+            bookId,
+            fileData.pageNumber,
+            imageUrl,
+            userProfile.uid,
+            fileData.pageNumberInBook
+          );
+
+          uploadedPageNumbers.push(fileData.pageNumber);
+        } catch (err) {
+          console.error(`Error uploading page ${fileData.pageNumber}:`, err);
+
+          // If any page fails, terminate the process and show error
+          setAddPageError(
+            `Failed to upload page ${fileData.pageNumber} (${
+              fileData.file.name
+            }). Process terminated. ${
+              uploadedPageNumbers.length > 0
+                ? `${uploadedPageNumbers.length} page(s) were successfully uploaded before the error.`
+                : ""
+            }`
+          );
+          return;
+        }
+      }
+
+      // All pages uploaded successfully
+      setAddPageError("");
 
       // Real-time listener will automatically update pages
       // Wait a moment for the listener to update, then select the first new page
       setTimeout(() => {
-        const firstNewPageNumber = Math.min(...pageNumbers);
+        const firstNewPageNumber = Math.min(...uploadedPageNumbers);
         const newPageIndex = book?.pages?.findIndex(
           (p) => p.pageNumber === firstNewPageNumber
         );
@@ -381,7 +409,7 @@ export default function BookViewer() {
       // Close dialog
       setAddPageDialogOpen(false);
     } catch (err) {
-      console.error("Error uploading pages", err);
+      console.error("Error in upload process:", err);
       setAddPageError("Failed to add pages. Please try again.");
     } finally {
       setAddPageLoading(false);
@@ -432,18 +460,199 @@ export default function BookViewer() {
     []
   );
 
+  // Syriac numeral mapping (alphabet to number)
+  const syriacNumerals: Record<string, number> = {
+    ܐ: 1,
+    ܒ: 2,
+    ܓ: 3,
+    ܕ: 4,
+    ܗ: 5,
+    ܘ: 6,
+    ܙ: 7,
+    ܚ: 8,
+    ܛ: 9,
+    ܝ: 10,
+    ܟ: 20,
+    ܠ: 30,
+    ܡ: 40,
+    ܢ: 50,
+    ܣ: 60,
+    ܥ: 70,
+    ܦ: 80,
+    ܨ: 90,
+    ܩ: 100,
+    ܪ: 200,
+    ܫ: 300,
+    ܬ: 400,
+  };
+
+  // Convert Syriac numeral to number
+  const syriacToNumber = (syriac: string): number => {
+    let result = 0;
+    for (let i = 0; i < syriac.length; i++) {
+      const char = syriac[i];
+      if (syriacNumerals[char]) {
+        result += syriacNumerals[char];
+      }
+    }
+    return result;
+  };
+
+  // Convert number to Syriac numeral
+  const numberToSyriac = (num: number): string => {
+    if (num <= 0) return "";
+
+    // Handle numbers 1-10: single letters ܐ - ܝ
+    if (num <= 10) {
+      const entries = Object.entries(syriacNumerals).filter(
+        ([_, value]) => value <= 10
+      );
+      for (const [char, value] of entries) {
+        if (value === num) return char;
+      }
+    }
+
+    // Handle numbers 11-19: ܝܐ-ܝܛ
+    if (num >= 11 && num <= 19) {
+      return "ܝ" + numberToSyriac(num - 10);
+    }
+
+    // Handle numbers 20-29: ܟ-ܟܛ
+    if (num >= 20 && num <= 29) {
+      return "ܟ" + (num === 20 ? "" : numberToSyriac(num - 20));
+    }
+
+    // Handle numbers 30-39: ܠ-ܠܛ
+    if (num >= 30 && num <= 39) {
+      return "ܠ" + (num === 30 ? "" : numberToSyriac(num - 30));
+    }
+
+    // Handle numbers 40-49: ܡ-ܡܛ
+    if (num >= 40 && num <= 49) {
+      return "ܡ" + (num === 40 ? "" : numberToSyriac(num - 40));
+    }
+
+    // Handle numbers 50-59: ܢ-ܢܛ
+    if (num >= 50 && num <= 59) {
+      return "ܢ" + (num === 50 ? "" : numberToSyriac(num - 50));
+    }
+
+    // Handle numbers 60-69: ܣ-ܣܛ
+    if (num >= 60 && num <= 69) {
+      return "ܣ" + (num === 60 ? "" : numberToSyriac(num - 60));
+    }
+
+    // Handle numbers 70-79: ܥ-ܥܛ
+    if (num >= 70 && num <= 79) {
+      return "ܥ" + (num === 70 ? "" : numberToSyriac(num - 70));
+    }
+
+    // Handle numbers 80-89: ܦ-ܦܛ
+    if (num >= 80 && num <= 89) {
+      return "ܦ" + (num === 80 ? "" : numberToSyriac(num - 80));
+    }
+
+    // Handle numbers 90-99: ܨ-ܨܛ
+    if (num >= 90 && num <= 99) {
+      return "ܨ" + (num === 90 ? "" : numberToSyriac(num - 90));
+    }
+
+    // Handle numbers 100-109: ܩ-ܩܛ
+    if (num >= 100 && num <= 109) {
+      return "ܩ" + (num === 100 ? "" : numberToSyriac(num - 100));
+    }
+
+    // Handle number 110: ܩܝ
+    if (num === 110) {
+      return "ܩܝ";
+    }
+
+    // Handle numbers 111-119: ܩܝܐ-ܩܝܛ
+    if (num >= 111 && num <= 119) {
+      return "ܩܝ" + numberToSyriac(num - 110);
+    }
+
+    // Handle number 120: ܩܟ
+    if (num === 120) {
+      return "ܩܟ";
+    }
+
+    // Handle numbers 121-129: ܩܟܐ-ܩܟܛ
+    if (num >= 121 && num <= 129) {
+      return "ܩܟ" + numberToSyriac(num - 120);
+    }
+
+    // For larger numbers, continue the pattern
+    if (num >= 130) {
+      // Find the largest base number that fits
+      const bases = [100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200];
+      for (let i = bases.length - 1; i >= 0; i--) {
+        if (num >= bases[i]) {
+          const base = bases[i];
+          const remainder = num - base;
+
+          // Handle base numbers that are multiples of 10
+          if (base % 10 === 0 && base !== 100) {
+            const tensDigit = Math.floor(base / 10);
+            let baseStr = "ܩ";
+            if (tensDigit === 11) baseStr = "ܩܝ";
+            else if (tensDigit === 12) baseStr = "ܩܟ";
+            else if (tensDigit === 13) baseStr = "ܩܠ";
+            else if (tensDigit === 14) baseStr = "ܩܡ";
+            else if (tensDigit === 15) baseStr = "ܩܢ";
+            else if (tensDigit === 16) baseStr = "ܩܣ";
+            else if (tensDigit === 17) baseStr = "ܩܥ";
+            else if (tensDigit === 18) baseStr = "ܩܦ";
+            else if (tensDigit === 19) baseStr = "ܩܨ";
+
+            return baseStr + (remainder === 0 ? "" : numberToSyriac(remainder));
+          }
+
+          // Handle base 100
+          if (base === 100) {
+            return "ܩ" + (remainder === 0 ? "" : numberToSyriac(remainder));
+          }
+        }
+      }
+    }
+
+    return "";
+  };
+
+  // Check if string contains Syriac characters
+  const containsSyriac = (str: string): boolean => {
+    return /[\u0700-\u074F]/.test(str);
+  };
+
   const handleUpdateFilePageNumberInBook = useCallback(
     (index: number, pageNumberInBook: string) => {
-      setAddPageForm((prev) => ({
-        files: prev.files.map((fileData, i) =>
-          i === index
-            ? {
-                ...fileData,
-                pageNumberInBook: pageNumberInBook.trim() || undefined,
-              }
-            : fileData
-        ),
-      }));
+      setAddPageForm((prev) => {
+        const newFiles = [...prev.files];
+        newFiles[index] = {
+          ...newFiles[index],
+          pageNumberInBook: pageNumberInBook.trim() || undefined,
+        };
+
+        // Auto-fill remaining Syriac numerals if the first one is Syriac
+        if (
+          pageNumberInBook.trim() &&
+          containsSyriac(pageNumberInBook.trim())
+        ) {
+          const firstSyriacNum = syriacToNumber(pageNumberInBook.trim());
+          if (firstSyriacNum > 0) {
+            // Fill subsequent pages with sequential Syriac numerals
+            for (let i = index + 1; i < newFiles.length; i++) {
+              const nextNum = firstSyriacNum + (i - index);
+              newFiles[i] = {
+                ...newFiles[i],
+                pageNumberInBook: numberToSyriac(nextNum),
+              };
+            }
+          }
+        }
+
+        return { files: newFiles };
+      });
     },
     []
   );
