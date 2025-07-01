@@ -741,21 +741,11 @@ export default function BookViewer() {
   };
 
   const openPageStatusDialog = useCallback(() => {
-    console.log("openPageStatusDialog called");
-    console.log("selectedPageIndex:", selectedPageIndex);
-    console.log("currentPage:", currentPage);
-    console.log("current pageStatusDialogOpen:", pageStatusDialogOpen);
-
     if (currentPage) {
-      const currentStatus = currentPage.status || "draft";
-      console.log("Setting status to:", currentStatus);
-      setSelectedPageStatus(currentStatus);
+      setSelectedPageStatus(currentPage.status || "draft");
       setPageStatusDialogOpen(true);
-      console.log("Dialog should now be open");
-    } else {
-      console.log("No page found at selectedPageIndex");
     }
-  }, [currentPage, selectedPageIndex, pageStatusDialogOpen]);
+  }, [currentPage]);
 
   // OCR function to recognize Syriac text from image
   const handleOCR = useCallback(async () => {
@@ -857,19 +847,9 @@ export default function BookViewer() {
         </div>
 
         {/* Page Status Change Dialog */}
-        {(() => {
-          console.log(
-            "Rendering dialog with pageStatusDialogOpen:",
-            pageStatusDialogOpen
-          );
-          return null;
-        })()}
         <Dialog
           open={pageStatusDialogOpen}
-          onOpenChange={(open) => {
-            console.log("Dialog onOpenChange called with:", open);
-            setPageStatusDialogOpen(open);
-          }}
+          onOpenChange={setPageStatusDialogOpen}
         >
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
@@ -929,19 +909,13 @@ export default function BookViewer() {
             <DialogFooter>
               <Button
                 variant="outline"
-                onClick={() => {
-                  console.log("Cancel button clicked");
-                  setPageStatusDialogOpen(false);
-                }}
+                onClick={() => setPageStatusDialogOpen(false)}
                 disabled={pageStatusLoading}
               >
                 Cancel
               </Button>
               <Button
-                onClick={() => {
-                  console.log("Update Status button clicked");
-                  handlePageStatusChange();
-                }}
+                onClick={handlePageStatusChange}
                 disabled={pageStatusLoading}
               >
                 {pageStatusLoading ? (
@@ -2188,32 +2162,22 @@ export default function BookViewer() {
                           )}
                         </div>
                         {/* Admin Status Change Button */}
-                        {(() => {
-                          console.log("Permissions check:", {
-                            canEdit: permissions.canEdit,
-                            userRole: userProfile?.role,
-                            isAdmin: userProfile?.role === "admin",
-                          });
-                          return (
-                            permissions.canEdit &&
-                            userProfile?.role === "admin" &&
-                            !isWhitelabel
-                          );
-                        })() && (
-                          <Button
-                            size="sm"
-                            variant="secondary"
-                            className="bg-white text-slate-900 hover:bg-slate-100 h-7 px-2 text-xs"
-                            onClick={(e) => {
-                              console.log("Change Status button clicked!");
-                              e.preventDefault();
-                              e.stopPropagation();
-                              openPageStatusDialog();
-                            }}
-                          >
-                            Change Status
-                          </Button>
-                        )}
+                        {permissions.canEdit &&
+                          userProfile?.role === "admin" &&
+                          !isWhitelabel && (
+                            <Button
+                              size="sm"
+                              variant="secondary"
+                              className="bg-white text-slate-900 hover:bg-slate-100 h-7 px-2 text-xs"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                openPageStatusDialog();
+                              }}
+                            >
+                              Change Status
+                            </Button>
+                          )}
                       </div>
                     </div>
                   </CardHeader>
@@ -2445,19 +2409,9 @@ export default function BookViewer() {
       </div>
 
       {/* Page Status Change Dialog */}
-      {(() => {
-        console.log(
-          "Rendering dialog with pageStatusDialogOpen:",
-          pageStatusDialogOpen
-        );
-        return null;
-      })()}
       <Dialog
         open={pageStatusDialogOpen}
-        onOpenChange={(open) => {
-          console.log("Dialog onOpenChange called with:", open);
-          setPageStatusDialogOpen(open);
-        }}
+        onOpenChange={setPageStatusDialogOpen}
       >
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -2516,19 +2470,13 @@ export default function BookViewer() {
           <DialogFooter>
             <Button
               variant="outline"
-              onClick={() => {
-                console.log("Cancel button clicked");
-                setPageStatusDialogOpen(false);
-              }}
+              onClick={() => setPageStatusDialogOpen(false)}
               disabled={pageStatusLoading}
             >
               Cancel
             </Button>
             <Button
-              onClick={() => {
-                console.log("Update Status button clicked");
-                handlePageStatusChange();
-              }}
+              onClick={handlePageStatusChange}
               disabled={pageStatusLoading}
             >
               {pageStatusLoading ? (
