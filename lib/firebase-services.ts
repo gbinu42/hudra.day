@@ -418,6 +418,28 @@ export const bookService = {
     return await firestoreService.getCollection("books");
   },
 
+  // Get all books without pages field (for performance)
+  async getAllBooksWithoutPages(): Promise<QuerySnapshot<DocumentData>> {
+    const snapshot = await firestoreService.getCollection("books");
+
+    // Filter out pages field from documents
+    const filteredSnapshot = {
+      ...snapshot,
+      docs: snapshot.docs.map((doc) => ({
+        ...doc,
+        id: doc.id, // Explicitly preserve the document ID
+        data: () => {
+          const data = doc.data();
+          const filteredData = { ...data };
+          delete filteredData.pages; // Exclude pages field for performance
+          return filteredData;
+        },
+      })),
+    };
+
+    return filteredSnapshot as QuerySnapshot<DocumentData>;
+  },
+
   // Listen to all books changes in real-time (excluding pages field for performance)
   onBooksSnapshot(
     callback: (snapshot: QuerySnapshot<DocumentData>) => void,
@@ -447,6 +469,7 @@ export const bookService = {
     return onSnapshot(
       booksCollection,
       wrappedCallback,
+
       onError || ((error) => console.error("Books snapshot error:", error))
     );
   },

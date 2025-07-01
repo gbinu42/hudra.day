@@ -1,7 +1,3 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -9,74 +5,38 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { useAuth } from "@/lib/hooks/useAuth";
-import { usePermissions } from "@/lib/rbac";
 import { bookService } from "@/lib/firebase-services";
-import { Book, CreateBookData, BookStatus } from "@/lib/types/book";
-import { Plus, Calendar, User, Tag, BookOpen, RefreshCw } from "lucide-react";
+import { Book, BookStatus } from "@/lib/types/book";
+import { Calendar, User, Tag, BookOpen } from "lucide-react";
 import Image from "next/image";
+import { AddBookDialogWrapper } from "@/components/AddBookDialogWrapper";
 
-export default function BooksPage() {
-  const [books, setBooks] = useState<Book[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [isCreating, setIsCreating] = useState(false);
-  const [createError, setCreateError] = useState<string | null>(null);
+// Revalidate the page every day to get new books
+export const revalidate = 86400;
 
-  const { user, userProfile } = useAuth();
-  const permissions = usePermissions(userProfile?.role || null);
-  const router = useRouter();
+// Server component that fetches books data at build time
+export default async function BooksPage() {
+  // Fetch books data on the server
+  const booksSnapshot = await bookService.getAllBooksWithoutPages();
+  const booksData = booksSnapshot.docs.map((doc) => {
+    const data = doc.data();
+    // Explicitly exclude pages field and create a clean book object
+    const { pages, ...bookDataWithoutPages } = data;
+    return {
+      id: doc.id,
+      ...bookDataWithoutPages,
+      tags: data.tags || [], // Ensure tags is always an array
+      createdAt: data.createdAt?.toDate?.() || new Date(),
+      updatedAt: data.updatedAt?.toDate?.() || new Date(),
+    };
+  }) as Book[];
 
-  // Form state for new book
-  const [newBookData, setNewBookData] = useState<CreateBookData>({
-    title: "",
-    syriacTitle: "",
-    author: "",
-    description: "",
-    language: "",
-    category: "",
-    status: "draft",
-    publicationYear: undefined,
-    isbn: "",
-    publisher: "",
-    placeOfPublication: "",
-    coverImage: "",
-    tags: [],
-  });
-
-  const [tagsInput, setTagsInput] = useState("");
-  const [bookIdInput, setBookIdInput] = useState("");
-  const [isBookIdManuallyEdited, setIsBookIdManuallyEdited] = useState(false);
-
-  // Generate a suggested book ID from the title
-  const generateBookIdFromTitle = (title: string): string => {
-    if (!title.trim()) return "";
-
-    return title
-      .trim()
-      .toLowerCase()
-      .replace(/[^a-zA-Z0-9\s-]/g, "") // Remove special characters except spaces and hyphens
-      .replace(/\s+/g, "-") // Replace spaces with hyphens
-      .replace(/-+/g, "-") // Replace multiple consecutive hyphens with single hyphen
-      .replace(/^-|-$/g, ""); // Remove leading/trailing hyphens
-  };
+  // Sort by creation date, newest first
+  booksData.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
   // Get status styling
   const getStatusStyling = (status: BookStatus) => {
@@ -118,607 +78,171 @@ export default function BooksPage() {
     }
   };
 
-  useEffect(() => {
-    setLoading(true);
-
-    // Set up real-time listener for books data
-    const unsubscribeBooks = bookService.onBooksSnapshot(
-      (booksSnapshot) => {
-        const booksData = booksSnapshot.docs.map((doc) => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            ...data,
-            tags: data.tags || [], // Ensure tags is always an array
-            createdAt: data.createdAt?.toDate?.() || new Date(),
-            updatedAt: data.updatedAt?.toDate?.() || new Date(),
-          };
-        }) as Book[];
-
-        // Sort by creation date, newest first
-        booksData.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-        setBooks(booksData);
-        setLoading(false);
-      },
-      (error) => {
-        console.error("Error fetching books:", error);
-        setLoading(false);
-      }
-    );
-
-    // Cleanup function
-    return () => {
-      unsubscribeBooks();
-    };
-  }, []);
-
-  // Auto-generate book ID from title if user hasn't manually edited it
-  useEffect(() => {
-    if (!isBookIdManuallyEdited && newBookData.title) {
-      const suggestedId = generateBookIdFromTitle(newBookData.title);
-      setBookIdInput(suggestedId);
-    }
-  }, [newBookData.title, isBookIdManuallyEdited]);
-
-  const handleCreateBook = async () => {
-    if (!user) return;
-
-    try {
-      setIsCreating(true);
-      setCreateError(null);
-
-      // Validate book ID if provided
-      const customBookId = bookIdInput.trim();
-      if (customBookId) {
-        // Basic validation for book ID (only alphanumeric, hyphens, underscores)
-        const validIdPattern = /^[a-zA-Z0-9_-]+$/;
-        if (!validIdPattern.test(customBookId)) {
-          setCreateError(
-            "Book ID can only contain letters, numbers, hyphens, and underscores"
-          );
-          return;
-        }
-      }
-
-      // Parse tags from comma-separated string
-      const tags = tagsInput
-        .split(",")
-        .map((tag) => tag.trim())
-        .filter((tag) => tag.length > 0);
-
-      const bookData = {
-        ...newBookData,
-        tags,
-        publicationYear: newBookData.publicationYear
-          ? Number(newBookData.publicationYear)
-          : undefined,
-      };
-
-      const bookId = await bookService.createBook(
-        bookData,
-        user.uid,
-        customBookId || undefined
-      );
-
-      // Reset form
-      setNewBookData({
-        title: "",
-        syriacTitle: "",
-        author: "",
-        description: "",
-        language: "",
-        category: "",
-        status: "draft",
-        publicationYear: undefined,
-        isbn: "",
-        publisher: "",
-        placeOfPublication: "",
-        coverImage: "",
-        tags: [],
-      });
-      setTagsInput("");
-      setBookIdInput("");
-      setCreateError(null);
-      setIsBookIdManuallyEdited(false);
-      setIsAddDialogOpen(false);
-
-      // Redirect to the book detail page
-      router.push(`/books/${bookId}`);
-    } catch (error: unknown) {
-      console.error("Error creating book:", error);
-      // Handle specific error cases
-      const errorWithCode = error as { code?: string; message?: string };
-      if (errorWithCode.code === "permission-denied") {
-        setCreateError("You don't have permission to create books");
-      } else if (
-        errorWithCode.message?.includes("already exists") ||
-        errorWithCode.code === "already-exists"
-      ) {
-        setCreateError(
-          "A book with this ID already exists. Please choose a different ID."
-        );
-      } else {
-        setCreateError("Failed to create book. Please try again.");
-      }
-    } finally {
-      setIsCreating(false);
-    }
-  };
-
-  const handleInputChange = (
-    field: keyof CreateBookData,
-    value: string | number
-  ) => {
-    setNewBookData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
-  const handleBookIdChange = (value: string) => {
-    setBookIdInput(value);
-    setIsBookIdManuallyEdited(true);
-  };
-
-  const handleRegenerateBookId = () => {
-    if (newBookData.title) {
-      const suggestedId = generateBookIdFromTitle(newBookData.title);
-      setBookIdInput(suggestedId);
-      setIsBookIdManuallyEdited(false);
-    }
-  };
-
-  const isFormValid = () => {
-    return (
-      newBookData.title.trim() &&
-      newBookData.author.trim() &&
-      newBookData.description.trim() &&
-      newBookData.language.trim() &&
-      newBookData.category.trim() &&
-      newBookData.status
-    );
-  };
-
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
       <div className="container mx-auto px-4 py-16">
-        <ProtectedRoute requireAuth={false}>
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h1 className="text-3xl font-bold text-foreground mb-2">
-                  Books Library
-                </h1>
-                <p className="text-muted-foreground">
-                  Explore our collection of Syriac texts and manuscripts
-                </p>
-              </div>
-              {permissions.canCreate && (
-                <Dialog
-                  open={isAddDialogOpen}
-                  onOpenChange={setIsAddDialogOpen}
-                >
-                  <DialogTrigger asChild>
-                    <Button className="flex items-center gap-2">
-                      <Plus className="w-4 h-4" />
-                      Add Book
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-                    <DialogHeader>
-                      <DialogTitle>Add New Book</DialogTitle>
-                      <DialogDescription>
-                        Enter the book metadata to add it to the library
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="title">Title *</Label>
-                          <Input
-                            id="title"
-                            value={newBookData.title}
-                            onChange={(e) =>
-                              handleInputChange("title", e.target.value)
-                            }
-                            placeholder="Enter book title"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="syriacTitle">Syriac Title</Label>
-                          <Input
-                            id="syriacTitle"
-                            value={newBookData.syriacTitle}
-                            onChange={(e) =>
-                              handleInputChange("syriacTitle", e.target.value)
-                            }
-                            placeholder="Enter Syriac title"
-                            dir="rtl"
-                            className="text-right"
-                            style={{
-                              fontFamily: '"East Syriac Adiabene", serif',
-                            }}
-                          />
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="author">Author *</Label>
-                          <Input
-                            id="author"
-                            value={newBookData.author}
-                            onChange={(e) =>
-                              handleInputChange("author", e.target.value)
-                            }
-                            placeholder="Enter author name"
-                          />
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="bookId">Book ID (Optional)</Label>
-                        <div className="flex gap-2">
-                          <Input
-                            id="bookId"
-                            value={bookIdInput}
-                            onChange={(e) => handleBookIdChange(e.target.value)}
-                            placeholder="Auto-generated from title"
-                            className="flex-1"
-                          />
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={handleRegenerateBookId}
-                            disabled={!newBookData.title.trim()}
-                            title="Regenerate from title"
-                          >
-                            <RefreshCw className="w-4 h-4" />
-                          </Button>
-                        </div>
-                        <p className="text-xs text-muted-foreground">
-                          Auto-generated from the book title. You can edit it or
-                          click the regenerate button.
-                        </p>
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="description">Description *</Label>
-                        <Input
-                          id="description"
-                          value={newBookData.description}
-                          onChange={(e) =>
-                            handleInputChange("description", e.target.value)
-                          }
-                          placeholder="Enter book description"
-                        />
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="language">Language *</Label>
-                          <Input
-                            id="language"
-                            value={newBookData.language}
-                            onChange={(e) =>
-                              handleInputChange("language", e.target.value)
-                            }
-                            placeholder="e.g., Syriac, Aramaic"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="category">Category *</Label>
-                          <Input
-                            id="category"
-                            value={newBookData.category}
-                            onChange={(e) =>
-                              handleInputChange("category", e.target.value)
-                            }
-                            placeholder="e.g., Liturgy, Theology"
-                          />
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="status">Status *</Label>
-                          <select
-                            id="status"
-                            value={newBookData.status}
-                            onChange={(e) =>
-                              handleInputChange(
-                                "status",
-                                e.target.value as BookStatus
-                              )
-                            }
-                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                          >
-                            <option value="draft">Draft</option>
-                            <option value="digitizing">Digitizing</option>
-                            <option value="transcribing">Transcribing</option>
-                            <option value="reviewing">Reviewing</option>
-                            <option value="completed">Completed</option>
-                            <option value="published">Published</option>
-                          </select>
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="publicationYear">
-                            Publication Year
-                          </Label>
-                          <Input
-                            id="publicationYear"
-                            type="number"
-                            value={newBookData.publicationYear || ""}
-                            onChange={(e) =>
-                              handleInputChange(
-                                "publicationYear",
-                                e.target.value ? Number(e.target.value) : ""
-                              )
-                            }
-                            placeholder="YYYY"
-                          />
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="isbn">ISBN</Label>
-                          <Input
-                            id="isbn"
-                            value={newBookData.isbn}
-                            onChange={(e) =>
-                              handleInputChange("isbn", e.target.value)
-                            }
-                            placeholder="ISBN number"
-                          />
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="publisher">Publisher</Label>
-                        <Input
-                          id="publisher"
-                          value={newBookData.publisher}
-                          onChange={(e) =>
-                            handleInputChange("publisher", e.target.value)
-                          }
-                          placeholder="Publisher name"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="placeOfPublication">
-                          Place of Publication
-                        </Label>
-                        <Input
-                          id="placeOfPublication"
-                          value={newBookData.placeOfPublication}
-                          onChange={(e) =>
-                            handleInputChange(
-                              "placeOfPublication",
-                              e.target.value
-                            )
-                          }
-                          placeholder="e.g., New York, London, Damascus"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="coverImage">Cover Image URL</Label>
-                        <Input
-                          id="coverImage"
-                          value={newBookData.coverImage}
-                          onChange={(e) =>
-                            handleInputChange("coverImage", e.target.value)
-                          }
-                          placeholder="https://example.com/cover.jpg"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="tags">Tags</Label>
-                        <Input
-                          id="tags"
-                          value={tagsInput}
-                          onChange={(e) => setTagsInput(e.target.value)}
-                          placeholder="Enter tags separated by commas"
-                        />
-                      </div>
-                    </div>
-                    {createError && (
-                      <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md">
-                        {createError}
-                      </div>
-                    )}
-                    <DialogFooter>
-                      <Button
-                        variant="outline"
-                        onClick={() => {
-                          setIsAddDialogOpen(false);
-                          setCreateError(null);
-                          setIsBookIdManuallyEdited(false);
-                        }}
-                      >
-                        Cancel
-                      </Button>
-                      <Button
-                        onClick={handleCreateBook}
-                        disabled={!isFormValid() || isCreating}
-                      >
-                        {isCreating ? "Creating..." : "Create Book"}
-                      </Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-              )}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-3xl font-bold text-foreground mb-2">
+                Books Library
+              </h1>
+              <p className="text-muted-foreground">
+                Explore our collection of Syriac texts and manuscripts
+              </p>
             </div>
-            <Separator />
+            <AddBookDialogWrapper />
           </div>
+          <Separator />
+        </div>
 
-          {loading ? (
-            <div className="flex items-center justify-center py-12">
-              <div className="text-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-                <p className="text-muted-foreground">Loading books...</p>
-              </div>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {!booksData || booksData.length === 0 ? (
+            <div className="col-span-full text-center py-12">
+              <BookOpen className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+              <h3 className="text-lg font-semibold mb-2">No books yet</h3>
+              <p className="text-muted-foreground mb-4">
+                The library is empty. Check back later for new additions.
+              </p>
             </div>
           ) : (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {!books || books.length === 0 ? (
-                <div className="col-span-full text-center py-12">
-                  <BookOpen className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">No books yet</h3>
-                  <p className="text-muted-foreground mb-4">
-                    The library is empty.{" "}
-                    {permissions.canCreate
-                      ? "Add the first book to get started."
-                      : "Check back later for new additions."}
-                  </p>
-                </div>
-              ) : (
-                books?.map((book) => (
-                  <div key={book.id} className="relative">
-                    <a href={`/books/${book.id}`}>
-                      <Card className="hover:shadow-lg transition-shadow h-full w-full max-w-lg mx-auto">
-                        <CardHeader>
-                          <div className="flex items-start gap-3">
+            booksData?.map((book) => (
+              <div key={book.id} className="relative">
+                <a href={`/books/${book.id}`}>
+                  <Card className="hover:shadow-lg transition-shadow h-full w-full max-w-lg mx-auto">
+                    <CardHeader>
+                      <div className="flex items-start gap-3">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start gap-2 mb-2">
                             <div className="flex-1 min-w-0">
-                              <div className="flex items-start gap-2 mb-2">
-                                <div className="flex-1 min-w-0">
-                                  <CardTitle className="line-clamp-2 text-base font-semibold leading-tight break-words">
-                                    {book.title}
-                                  </CardTitle>
-                                  {book.syriacTitle && (
-                                    <p
-                                      className="text-xl text-slate-600 mt-1 line-clamp-1 break-words"
-                                      dir="rtl"
-                                      style={{
-                                        fontFamily:
-                                          '"East Syriac Adiabene", serif',
-                                      }}
-                                    >
-                                      {book.syriacTitle}
-                                    </p>
-                                  )}
-                                </div>
-                              </div>
-                              <CardDescription className="flex items-center gap-2 text-sm mb-2 min-w-0">
-                                <User className="w-3 h-3 flex-shrink-0" />
-                                <span className="truncate max-w-32 sm:max-w-48 md:max-w-full">
-                                  {book.author}
-                                </span>
-                              </CardDescription>
-                              {(book.publisher || book.placeOfPublication) && (
-                                <div className="text-xs text-muted-foreground mb-1 truncate max-w-36 sm:max-w-52 md:max-w-full">
-                                  {book.publisher && (
-                                    <span>{book.publisher}</span>
-                                  )}
-                                  {book.publisher &&
-                                    book.placeOfPublication && <span>, </span>}
-                                  {book.placeOfPublication && (
-                                    <span>{book.placeOfPublication}</span>
-                                  )}
-                                </div>
-                              )}
-                              <div className="mt-2 space-y-2">
-                                <div className="flex items-center gap-2">
-                                  {book.publicationYear && (
-                                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                      <Calendar className="w-3 h-3" />
-                                      <span>{book.publicationYear}</span>
-                                    </div>
-                                  )}
-                                  <span
-                                    className={`text-xs font-medium rounded border px-2 py-0 ${getStatusStyling(
-                                      book.status
-                                    )}`}
-                                  >
-                                    {getStatusDisplayName(book.status)}
-                                  </span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                  <Badge
-                                    variant="secondary"
-                                    className="text-xs"
-                                  >
-                                    {book.language}
-                                  </Badge>
-                                  {book.category && (
-                                    <Badge
-                                      variant="outline"
-                                      className="text-xs"
-                                    >
-                                      {book.category}
-                                    </Badge>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                            <div className="flex-shrink-0 w-20">
-                              {book.coverImage ? (
-                                <div className="w-full">
-                                  <Image
-                                    src={book.coverImage}
-                                    alt={`Cover of ${book.title}`}
-                                    className="w-full h-28 object-cover rounded-lg border shadow-md"
-                                    width={80}
-                                    height={112}
-                                    unoptimized
-                                    onError={(e) => {
-                                      const target =
-                                        e.target as HTMLImageElement;
-                                      target.style.display = "none";
-                                    }}
-                                  />
-                                  {typeof book.pageCount === "number" && (
-                                    <div className="mt-1 text-center">
-                                      <span className="text-xs text-muted-foreground whitespace-nowrap">
-                                        {book.pageCount} pages
-                                      </span>
-                                    </div>
-                                  )}
-                                </div>
-                              ) : (
-                                <div className="w-full">
-                                  <div className="w-full h-28 bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg border shadow-md flex items-center justify-center">
-                                    <BookOpen className="w-10 h-10 text-slate-400" />
-                                  </div>
-                                  {typeof book.pageCount === "number" && (
-                                    <div className="mt-1 text-center">
-                                      <span className="text-xs text-muted-foreground whitespace-nowrap">
-                                        {book.pageCount} pages
-                                      </span>
-                                    </div>
-                                  )}
-                                </div>
+                              <CardTitle className="line-clamp-2 text-base font-semibold leading-tight break-words">
+                                {book.title}
+                              </CardTitle>
+                              {book.syriacTitle && (
+                                <p
+                                  className="text-xl text-slate-600 mt-1 line-clamp-1 break-words"
+                                  dir="rtl"
+                                  style={{
+                                    fontFamily: '"East Syriac Adiabene", serif',
+                                  }}
+                                >
+                                  {book.syriacTitle}
+                                </p>
                               )}
                             </div>
                           </div>
-                        </CardHeader>
-                        <CardContent className="pt-0">
-                          <p className="text-sm text-muted-foreground mb-2 line-clamp-3">
-                            {book.description}
-                          </p>
-                          {book.tags && book.tags.length > 0 && (
-                            <div className="flex items-center gap-1 flex-wrap pt-1">
-                              <Tag className="w-3 h-3 text-muted-foreground flex-shrink-0" />
-                              {book.tags.slice(0, 3).map((tag, index) => (
-                                <Badge
-                                  key={index}
-                                  variant="outline"
-                                  className="text-xs"
-                                >
-                                  {tag}
-                                </Badge>
-                              ))}
-                              {book.tags.length > 3 && (
-                                <span className="text-xs text-muted-foreground">
-                                  +{book.tags.length - 3}
-                                </span>
+                          <CardDescription className="flex items-center gap-2 text-sm mb-2 min-w-0">
+                            <User className="w-3 h-3 flex-shrink-0" />
+                            <span className="truncate max-w-32 sm:max-w-48 md:max-w-full">
+                              {book.author}
+                            </span>
+                          </CardDescription>
+                          {(book.publisher || book.placeOfPublication) && (
+                            <div className="text-xs text-muted-foreground mb-1 truncate max-w-36 sm:max-w-52 md:max-w-full">
+                              {book.publisher && <span>{book.publisher}</span>}
+                              {book.publisher && book.placeOfPublication && (
+                                <span>, </span>
+                              )}
+                              {book.placeOfPublication && (
+                                <span>{book.placeOfPublication}</span>
                               )}
                             </div>
                           )}
-                        </CardContent>
-                      </Card>
-                    </a>
-                  </div>
-                ))
-              )}
-            </div>
+                          <div className="mt-2 space-y-2">
+                            <div className="flex items-center gap-2">
+                              {book.publicationYear && (
+                                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                  <Calendar className="w-3 h-3" />
+                                  <span>{book.publicationYear}</span>
+                                </div>
+                              )}
+                              <span
+                                className={`text-xs font-medium rounded border px-2 py-0 ${getStatusStyling(
+                                  book.status
+                                )}`}
+                              >
+                                {getStatusDisplayName(book.status)}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Badge variant="secondary" className="text-xs">
+                                {book.language}
+                              </Badge>
+                              {book.category && (
+                                <Badge variant="outline" className="text-xs">
+                                  {book.category}
+                                </Badge>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex-shrink-0 w-20">
+                          {book.coverImage ? (
+                            <div className="w-full">
+                              <Image
+                                src={book.coverImage}
+                                alt={`Cover of ${book.title}`}
+                                className="w-full h-28 object-cover rounded-lg border shadow-md"
+                                width={80}
+                                height={112}
+                                unoptimized
+                              />
+                              {typeof book.pageCount === "number" && (
+                                <div className="mt-1 text-center">
+                                  <span className="text-xs text-muted-foreground whitespace-nowrap">
+                                    {book.pageCount} pages
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          ) : (
+                            <div className="w-full">
+                              <div className="w-full h-28 bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg border shadow-md flex items-center justify-center">
+                                <BookOpen className="w-10 h-10 text-slate-400" />
+                              </div>
+                              {typeof book.pageCount === "number" && (
+                                <div className="mt-1 text-center">
+                                  <span className="text-xs text-muted-foreground whitespace-nowrap">
+                                    {book.pageCount} pages
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <p className="text-sm text-muted-foreground mb-2 line-clamp-3">
+                        {book.description}
+                      </p>
+                      {book.tags && book.tags.length > 0 && (
+                        <div className="flex items-center gap-1 flex-wrap pt-1">
+                          <Tag className="w-3 h-3 text-muted-foreground flex-shrink-0" />
+                          {book.tags.slice(0, 3).map((tag, index) => (
+                            <Badge
+                              key={index}
+                              variant="outline"
+                              className="text-xs"
+                            >
+                              {tag}
+                            </Badge>
+                          ))}
+                          {book.tags.length > 3 && (
+                            <span className="text-xs text-muted-foreground">
+                              +{book.tags.length - 3}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </a>
+              </div>
+            ))
           )}
-        </ProtectedRoute>
+        </div>
       </div>
       <Footer />
     </div>

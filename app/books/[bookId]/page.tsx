@@ -7,7 +7,7 @@ import { Suspense } from "react";
 // Server-side function to generate static params
 export async function generateStaticParams() {
   try {
-    const booksSnapshot = await bookService.getAllBooks();
+    const booksSnapshot = await bookService.getAllBooksWithoutPages();
     const bookIds = booksSnapshot.docs.map((doc) => ({
       bookId: doc.id,
     }));
