@@ -6,6 +6,20 @@ export type BookStatus =
   | "completed" // Fully transcribed and reviewed
   | "published"; // Ready for public access
 
+export type PageStatus =
+  | "draft"
+  | "transcribing"
+  | "reviewing"
+  | "completed"
+  | "published";
+
+export interface BookPage {
+  pageId: string;
+  pageNumber: number;
+  pageNumberInBook?: string;
+  status?: PageStatus;
+}
+
 export interface Book {
   id: string;
   title: string;
@@ -19,7 +33,8 @@ export interface Book {
   isbn?: string;
   publisher?: string;
   placeOfPublication?: string;
-  pages?: number;
+  pageCount?: number; // Total number of pages
+  pages?: BookPage[]; // Array of page information
   coverImage?: string;
   downloadUrl?: string;
   createdAt: Date;

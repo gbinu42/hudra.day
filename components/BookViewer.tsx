@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +11,7 @@ import { useAuth } from "@/lib/hooks/useAuth";
 import { usePermissions } from "@/lib/rbac";
 import { bookService, pageService } from "@/lib/firebase-services";
 import { Book, BookStatus } from "@/lib/types/book";
-import { DocumentData } from "firebase/firestore";
+
 import {
   ArrowLeft,
   Calendar,
@@ -189,9 +189,9 @@ export default function BookViewer() {
   const searchParams = useSearchParams();
   const isWhitelabel = searchParams.get("whitelabel") === "1";
 
-  // Pages state
-  const [pages, setPages] = useState<Page[]>([]);
+  // Navigation state
   const [selectedPageIndex, setSelectedPageIndex] = useState(0);
+  const [currentPage, setCurrentPage] = useState<Page | null>(null);
   const [textContentJson, setTextContentJson] = useState<JSONContent | null>(
     null
   );
@@ -254,144 +254,6 @@ export default function BookViewer() {
   const [ocrLoading, setOcrLoading] = useState<boolean>(false);
   const [ocrProgress, setOcrProgress] = useState<string>("");
 
-  // Use ref to track if we're initializing pages for the first time
-  const isInitialPagesLoad = useRef(true);
-
-  // Memoize current page to avoid unnecessary updates
-  const currentPage = useMemo(() => {
-    return pages[selectedPageIndex] || null;
-  }, [pages, selectedPageIndex]);
-
-  useEffect(() => {
-    if (!bookId) return;
-
-    setLoading(true);
-
-    // Set up real-time listener for book data
-    const unsubscribeBook = bookService.onBookSnapshot(
-      bookId,
-      (bookDoc) => {
-        if (bookDoc.exists()) {
-          const bookData = bookDoc.data();
-          setBook({
-            id: bookDoc.id,
-            ...bookData,
-            createdAt: bookData.createdAt?.toDate?.() || new Date(),
-            updatedAt: bookData.updatedAt?.toDate?.() || new Date(),
-          } as Book);
-          setNotFound(false);
-        } else {
-          setNotFound(true);
-        }
-        setLoading(false);
-      },
-      (error) => {
-        console.error("Error fetching book:", error);
-        setNotFound(true);
-        setLoading(false);
-      }
-    );
-
-    // Cleanup function
-    return () => {
-      unsubscribeBook();
-    };
-  }, [bookId]);
-
-  // Optimized pages snapshot handler - removed selectedPageIndex dependency
-  const handlePagesSnapshot = useCallback(
-    (pagesSnap: DocumentData) => {
-      const pagesData = pagesSnap.docs
-        .map((doc: DocumentData) => {
-          const data = doc.data();
-          // Convert Firestore timestamps to Date objects for edits
-          const edits =
-            data.edits?.map((edit: DocumentData) => ({
-              ...edit,
-              createdAt: edit.createdAt?.toDate?.() || edit.createdAt,
-              verifiedAt: edit.verifiedAt?.toDate?.() || edit.verifiedAt,
-            })) || [];
-
-          return {
-            id: doc.id,
-            ...data,
-            edits,
-          };
-        })
-        .sort(
-          (a: unknown, b: unknown) =>
-            (a as Page).pageNumber - (b as Page).pageNumber
-        ) as Page[];
-
-      setPages(() => {
-        // Only update selected page index on initial load when we have no previous pages
-        if (isInitialPagesLoad.current && pagesData.length > 0) {
-          isInitialPagesLoad.current = false;
-          setSelectedPageIndex(0);
-        }
-        return pagesData;
-      });
-    },
-    [] // No dependencies to prevent unnecessary listener reattachments
-  );
-
-  useEffect(() => {
-    if (!bookId) return;
-
-    // Set up real-time listener for pages data
-    const unsubscribePages = pageService.onPagesSnapshot(
-      bookId,
-      handlePagesSnapshot,
-      (error) => {
-        console.error("Error fetching pages:", error);
-      }
-    );
-
-    // Cleanup function
-    return () => {
-      unsubscribePages();
-    };
-  }, [bookId, handlePagesSnapshot]);
-
-  // Track previous page ID to only reset image loading when actually changing pages
-  const previousPageId = useRef<string | null>(null);
-
-  // Separate effect to handle text content updates when page changes
-  useEffect(() => {
-    if (currentPage) {
-      console.log("Loading page data:", {
-        pageId: currentPage.id,
-        currentTextJson: currentPage.currentTextJson,
-        currentVersion: currentPage.currentVersion,
-      });
-      setTextContentJson(currentPage.currentTextJson || null);
-
-      // Only reset image loading if we're actually changing to a different page
-      if (previousPageId.current !== currentPage.id) {
-        setImageLoading(true);
-        previousPageId.current = currentPage.id;
-      }
-    }
-  }, [currentPage]);
-
-  // Show browser warning when trying to close page while in edit mode
-  useEffect(() => {
-    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      if (editMode) {
-        event.preventDefault();
-        event.returnValue =
-          "You have unsaved changes. Are you sure you want to leave?";
-        return "You have unsaved changes. Are you sure you want to leave?";
-      }
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [editMode]);
-
   // Memoize form validation to prevent unnecessary computations
   const isEditFormValid = useMemo(() => {
     return (
@@ -406,9 +268,9 @@ export default function BookViewer() {
 
   // Memoized navigation helpers
   const navigationHelpers = useMemo(() => {
+    const pageCount = book?.pages?.length ?? 0;
     const canGoToPrevious = selectedPageIndex > 0;
-    const canGoToNext = selectedPageIndex < pages.length - 1;
-
+    const canGoToNext = selectedPageIndex < pageCount - 1;
     const goToPreviousPage = () => {
       if (canGoToPrevious) {
         setTranscriptionLoading(true);
@@ -417,7 +279,6 @@ export default function BookViewer() {
         setTimeout(() => setTranscriptionLoading(false), 300);
       }
     };
-
     const goToNextPage = () => {
       if (canGoToNext) {
         setTranscriptionLoading(true);
@@ -426,14 +287,14 @@ export default function BookViewer() {
         setTimeout(() => setTranscriptionLoading(false), 300);
       }
     };
-
     return {
       canGoToPrevious,
       canGoToNext,
       goToPreviousPage,
       goToNextPage,
+      pageCount,
     };
-  }, [selectedPageIndex, pages.length]);
+  }, [selectedPageIndex, book?.pages]);
 
   const handleAddPageFormSubmit = async () => {
     if (!userProfile || addPageForm.files.length === 0) {
@@ -457,7 +318,7 @@ export default function BookViewer() {
       }
 
       // Check if page number already exists
-      const existingPage = pages.find(
+      const existingPage = book?.pages?.find(
         (p) => p.pageNumber === fileData.pageNumber
       );
       if (existingPage) {
@@ -507,15 +368,14 @@ export default function BookViewer() {
       // Wait a moment for the listener to update, then select the first new page
       setTimeout(() => {
         const firstNewPageNumber = Math.min(...pageNumbers);
-        const newPageIndex = pages.findIndex(
+        const newPageIndex = book?.pages?.findIndex(
           (p) => p.pageNumber === firstNewPageNumber
         );
-        if (newPageIndex >= 0) {
-          setSelectedPageIndex(newPageIndex);
-        } else {
-          // If not found, select the last page
-          setSelectedPageIndex(pages.length);
-        }
+        setSelectedPageIndex(
+          typeof newPageIndex === "number" && newPageIndex >= 0
+            ? newPageIndex
+            : 0
+        );
       }, 100);
 
       // Close dialog
@@ -536,8 +396,11 @@ export default function BookViewer() {
       );
 
       // Calculate starting page numbers
-      const nextSequentialPageNumber = pages.length + 1;
-      const maxPageNumber = Math.max(0, ...pages.map((p) => p.pageNumber));
+      const nextSequentialPageNumber = (book?.pages?.length ?? 0) + 1;
+      const maxPageNumber = Math.max(
+        0,
+        ...(book?.pages?.map((p) => p.pageNumber) ?? [])
+      );
       const startingPageNumber = Math.max(
         nextSequentialPageNumber,
         maxPageNumber + 1
@@ -553,7 +416,7 @@ export default function BookViewer() {
       setAddPageForm({ files: fileData });
       setAddPageError("");
     },
-    [pages]
+    [book?.pages]
   );
 
   const handleRemoveFile = useCallback((index: number) => {
@@ -718,7 +581,7 @@ export default function BookViewer() {
     []
   );
 
-  const { goToPreviousPage, goToNextPage } = navigationHelpers;
+  const { goToPreviousPage, goToNextPage, pageCount } = navigationHelpers;
 
   const handlePageStatusChange = async () => {
     if (!userProfile || !currentPage) return;
@@ -804,6 +667,95 @@ export default function BookViewer() {
     }
   }, [currentPage?.imageUrl, ocrLoading]);
 
+  // Fetch book document only
+  useEffect(() => {
+    if (!bookId) return;
+    setLoading(true);
+    const unsubscribeBook = bookService.onBookSnapshot(
+      bookId,
+      (bookDoc) => {
+        if (bookDoc.exists()) {
+          const bookData = bookDoc.data();
+          setBook({
+            id: bookDoc.id,
+            ...bookData,
+            createdAt: bookData.createdAt?.toDate?.() || new Date(),
+            updatedAt: bookData.updatedAt?.toDate?.() || new Date(),
+          } as Book);
+          setNotFound(false);
+        } else {
+          setNotFound(true);
+        }
+        setLoading(false);
+      },
+      (error) => {
+        console.error("Error fetching book:", error);
+        setNotFound(true);
+        setLoading(false);
+      }
+    );
+    return () => {
+      unsubscribeBook();
+    };
+  }, [bookId]);
+
+  // Fetch current page document when book or selectedPageIndex changes
+  useEffect(() => {
+    if (
+      !book ||
+      !book.pages ||
+      !Array.isArray(book.pages) ||
+      book.pages.length === 0
+    ) {
+      setCurrentPage(null);
+      return;
+    }
+    const pageInfo = (book?.pages ?? [])[selectedPageIndex];
+    if (!pageInfo) {
+      setCurrentPage(null);
+      return;
+    }
+    setTranscriptionLoading(true);
+    pageService
+      .getPage(pageInfo.pageId)
+      .then((pageDoc) => {
+        if (pageDoc.exists()) {
+          const data = pageDoc.data();
+          setCurrentPage({
+            id: pageDoc.id,
+            ...data,
+          } as Page);
+          setTextContentJson(data.currentTextJson || null);
+        } else {
+          setCurrentPage(null);
+        }
+        setTranscriptionLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching page:", err);
+        setCurrentPage(null);
+        setTranscriptionLoading(false);
+      });
+  }, [book, selectedPageIndex]);
+
+  // Show browser warning when trying to close page while in edit mode
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (editMode) {
+        event.preventDefault();
+        event.returnValue =
+          "You have unsaved changes. Are you sure you want to leave?";
+        return "You have unsaved changes. Are you sure you want to leave?";
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [editMode]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
@@ -856,7 +808,7 @@ export default function BookViewer() {
               <DialogTitle>Change Page Status</DialogTitle>
               <DialogDescription>
                 Update the status for Page{" "}
-                {pages[selectedPageIndex]?.pageNumber}
+                {book?.pages?.[selectedPageIndex]?.pageNumber}
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
@@ -1284,7 +1236,7 @@ export default function BookViewer() {
             <div className="w-20"></div>
 
             {/* Centered Navigation */}
-            {pages.length > 0 && (
+            {(book?.pages?.length ?? 0) > 0 && (
               <div className="flex items-center gap-3">
                 {/* For RTL documents (like Syriac), reverse the navigation */}
                 {book?.language === "Syriac" ||
@@ -1310,7 +1262,7 @@ export default function BookViewer() {
                         value={String(selectedPageIndex + 1)}
                         onValueChange={(value) => {
                           const pageNum = parseInt(value);
-                          if (pageNum >= 1 && pageNum <= pages.length) {
+                          if (pageNum >= 1 && pageNum <= pageCount) {
                             setTranscriptionLoading(true);
                             setSelectedPageIndex(pageNum - 1);
                             setEditMode(false);
@@ -1321,12 +1273,15 @@ export default function BookViewer() {
                           }
                         }}
                       >
-                        <SelectTrigger className="w-32 h-8">
+                        <SelectTrigger className="w-24 h-8">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="max-h-[300px] overflow-y-auto">
-                          {pages.map((page, index) => (
-                            <SelectItem key={page.id} value={String(index + 1)}>
+                          {(book?.pages ?? []).map((page, index) => (
+                            <SelectItem
+                              key={page.pageId}
+                              value={String(index + 1)}
+                            >
                               <div className="flex items-center justify-between w-full">
                                 <span>
                                   Page {index + 1}
@@ -1359,7 +1314,7 @@ export default function BookViewer() {
                         </SelectContent>
                       </Select>
                       <span className="text-sm text-slate-600 font-medium">
-                        of {pages.length}
+                        of {pageCount}
                       </span>
                     </div>
 
@@ -1368,7 +1323,7 @@ export default function BookViewer() {
                       variant="outline"
                       size="sm"
                       onClick={goToNextPage}
-                      disabled={selectedPageIndex === pages.length - 1}
+                      disabled={selectedPageIndex === pageCount - 1}
                       className="h-8 px-3 flex items-center gap-1"
                       title="Next Page"
                     >
@@ -1383,7 +1338,7 @@ export default function BookViewer() {
                       variant="outline"
                       size="sm"
                       onClick={goToNextPage}
-                      disabled={selectedPageIndex === pages.length - 1}
+                      disabled={selectedPageIndex === pageCount - 1}
                       className="h-8 px-3 flex items-center gap-1"
                       title="Next Page"
                     >
@@ -1397,7 +1352,7 @@ export default function BookViewer() {
                         value={String(selectedPageIndex + 1)}
                         onValueChange={(value) => {
                           const pageNum = parseInt(value);
-                          if (pageNum >= 1 && pageNum <= pages.length) {
+                          if (pageNum >= 1 && pageNum <= pageCount) {
                             setTranscriptionLoading(true);
                             setSelectedPageIndex(pageNum - 1);
                             setEditMode(false);
@@ -1408,12 +1363,15 @@ export default function BookViewer() {
                           }
                         }}
                       >
-                        <SelectTrigger className="w-32 h-8">
+                        <SelectTrigger className="w-24 h-8">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="max-h-[300px] overflow-y-auto">
-                          {pages.map((page, index) => (
-                            <SelectItem key={page.id} value={String(index + 1)}>
+                          {(book?.pages ?? []).map((page, index) => (
+                            <SelectItem
+                              key={page.pageId}
+                              value={String(index + 1)}
+                            >
                               <div className="flex items-center justify-between w-full">
                                 <span>
                                   Page {index + 1}
@@ -1446,7 +1404,7 @@ export default function BookViewer() {
                         </SelectContent>
                       </Select>
                       <span className="text-sm text-slate-600 font-medium">
-                        of {pages.length}
+                        of {pageCount}
                       </span>
                     </div>
 
@@ -1669,7 +1627,7 @@ export default function BookViewer() {
 
           {/* Content Area */}
           <div className="flex-1 mb-4">
-            {pages.length === 0 ? (
+            {(book?.pages?.length ?? 0) === 0 ? (
               <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-8 lg:p-16 text-center mx-2 sm:mx-4 lg:mx-0">
                 <div className="mx-auto w-16 h-16 sm:w-24 sm:h-24 bg-slate-100 rounded-full flex items-center justify-center mb-6">
                   <Upload className="w-8 h-8 sm:w-12 sm:h-12 text-slate-500" />
@@ -2233,7 +2191,7 @@ export default function BookViewer() {
           </div>
 
           {/* Bottom Page Navigation */}
-          {pages.length > 0 && (
+          {(book?.pages?.length ?? 0) > 0 && (
             <div className="flex items-center justify-center mt-6 mb-4 px-4">
               <div className="flex items-center gap-3">
                 {/* For RTL documents (like Syriac), reverse the navigation */}
@@ -2260,7 +2218,7 @@ export default function BookViewer() {
                         value={String(selectedPageIndex + 1)}
                         onValueChange={(value) => {
                           const pageNum = parseInt(value);
-                          if (pageNum >= 1 && pageNum <= pages.length) {
+                          if (pageNum >= 1 && pageNum <= pageCount) {
                             setTranscriptionLoading(true);
                             setSelectedPageIndex(pageNum - 1);
                             setEditMode(false);
@@ -2271,12 +2229,15 @@ export default function BookViewer() {
                           }
                         }}
                       >
-                        <SelectTrigger className="w-32 h-8">
+                        <SelectTrigger className="w-24 h-8">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="max-h-[300px] overflow-y-auto">
-                          {pages.map((page, index) => (
-                            <SelectItem key={page.id} value={String(index + 1)}>
+                          {(book?.pages ?? []).map((page, index) => (
+                            <SelectItem
+                              key={page.pageId}
+                              value={String(index + 1)}
+                            >
                               <div className="flex items-center justify-between w-full">
                                 <span>
                                   Page {index + 1}
@@ -2309,7 +2270,7 @@ export default function BookViewer() {
                         </SelectContent>
                       </Select>
                       <span className="text-sm text-slate-600 font-medium">
-                        of {pages.length}
+                        of {pageCount}
                       </span>
                     </div>
 
@@ -2318,7 +2279,7 @@ export default function BookViewer() {
                       variant="outline"
                       size="sm"
                       onClick={goToNextPage}
-                      disabled={selectedPageIndex === pages.length - 1}
+                      disabled={selectedPageIndex === pageCount - 1}
                       className="h-8 px-3 flex items-center gap-1"
                       title="Next Page"
                     >
@@ -2333,7 +2294,7 @@ export default function BookViewer() {
                       variant="outline"
                       size="sm"
                       onClick={goToNextPage}
-                      disabled={selectedPageIndex === pages.length - 1}
+                      disabled={selectedPageIndex === pageCount - 1}
                       className="h-8 px-3 flex items-center gap-1"
                       title="Next Page"
                     >
@@ -2347,7 +2308,7 @@ export default function BookViewer() {
                         value={String(selectedPageIndex + 1)}
                         onValueChange={(value) => {
                           const pageNum = parseInt(value);
-                          if (pageNum >= 1 && pageNum <= pages.length) {
+                          if (pageNum >= 1 && pageNum <= pageCount) {
                             setTranscriptionLoading(true);
                             setSelectedPageIndex(pageNum - 1);
                             setEditMode(false);
@@ -2358,12 +2319,15 @@ export default function BookViewer() {
                           }
                         }}
                       >
-                        <SelectTrigger className="w-32 h-8">
+                        <SelectTrigger className="w-24 h-8">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="max-h-[300px] overflow-y-auto">
-                          {pages.map((page, index) => (
-                            <SelectItem key={page.id} value={String(index + 1)}>
+                          {(book?.pages ?? []).map((page, index) => (
+                            <SelectItem
+                              key={page.pageId}
+                              value={String(index + 1)}
+                            >
                               <div className="flex items-center justify-between w-full">
                                 <span>
                                   Page {index + 1}
@@ -2396,7 +2360,7 @@ export default function BookViewer() {
                         </SelectContent>
                       </Select>
                       <span className="text-sm text-slate-600 font-medium">
-                        of {pages.length}
+                        of {pageCount}
                       </span>
                     </div>
 

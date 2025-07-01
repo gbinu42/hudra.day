@@ -39,6 +39,7 @@ export default function BooksPage() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [createError, setCreateError] = useState<string | null>(null);
+
   const { user, userProfile } = useAuth();
   const permissions = usePermissions(userProfile?.role || null);
   const router = useRouter();
@@ -568,143 +569,151 @@ export default function BooksPage() {
                 </div>
               ) : (
                 books?.map((book) => (
-                  <a key={book.id} href={`/books/${book.id}`}>
-                    <Card className="hover:shadow-lg transition-shadow h-full w-full max-w-lg mx-auto">
-                      <CardHeader>
-                        <div className="flex items-start gap-3">
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-start gap-2 mb-2">
-                              <div className="flex-1 min-w-0">
-                                <CardTitle className="line-clamp-2 text-base font-semibold leading-tight break-words">
-                                  {book.title}
-                                </CardTitle>
-                                {book.syriacTitle && (
-                                  <p
-                                    className="text-xl text-slate-600 mt-1 line-clamp-1 break-words"
-                                    dir="rtl"
-                                    style={{
-                                      fontFamily:
-                                        '"East Syriac Adiabene", serif',
-                                    }}
-                                  >
-                                    {book.syriacTitle}
-                                  </p>
-                                )}
-                              </div>
-                            </div>
-                            <CardDescription className="flex items-center gap-2 text-sm mb-2 min-w-0">
-                              <User className="w-3 h-3 flex-shrink-0" />
-                              <span className="truncate max-w-32 sm:max-w-48 md:max-w-full">
-                                {book.author}
-                              </span>
-                            </CardDescription>
-                            {(book.publisher || book.placeOfPublication) && (
-                              <div className="text-xs text-muted-foreground mb-1 truncate max-w-36 sm:max-w-52 md:max-w-full">
-                                {book.publisher && (
-                                  <span>{book.publisher}</span>
-                                )}
-                                {book.publisher && book.placeOfPublication && (
-                                  <span>, </span>
-                                )}
-                                {book.placeOfPublication && (
-                                  <span>{book.placeOfPublication}</span>
-                                )}
-                              </div>
-                            )}
-                            <div className="mt-2 space-y-2">
-                              <div className="flex items-center gap-2">
-                                {book.publicationYear && (
-                                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                    <Calendar className="w-3 h-3" />
-                                    <span>{book.publicationYear}</span>
-                                  </div>
-                                )}
-                                <span
-                                  className={`text-xs font-medium rounded border px-2 py-0 ${getStatusStyling(
-                                    book.status
-                                  )}`}
-                                >
-                                  {getStatusDisplayName(book.status)}
-                                </span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <Badge variant="secondary" className="text-xs">
-                                  {book.language}
-                                </Badge>
-                                {book.category && (
-                                  <Badge variant="outline" className="text-xs">
-                                    {book.category}
-                                  </Badge>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                          <div className="flex-shrink-0 w-20">
-                            {book.coverImage ? (
-                              <div className="w-full">
-                                <Image
-                                  src={book.coverImage}
-                                  alt={`Cover of ${book.title}`}
-                                  className="w-full h-28 object-cover rounded-lg border shadow-md"
-                                  width={80}
-                                  height={112}
-                                  unoptimized
-                                  onError={(e) => {
-                                    const target = e.target as HTMLImageElement;
-                                    target.style.display = "none";
-                                  }}
-                                />
-                                {book.pages && (
-                                  <div className="mt-1 text-center">
-                                    <span className="text-xs text-muted-foreground whitespace-nowrap">
-                                      {book.pages} pages
-                                    </span>
-                                  </div>
-                                )}
-                              </div>
-                            ) : (
-                              <div className="w-full">
-                                <div className="w-full h-28 bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg border shadow-md flex items-center justify-center">
-                                  <BookOpen className="w-10 h-10 text-slate-400" />
+                  <div key={book.id} className="relative">
+                    <a href={`/books/${book.id}`}>
+                      <Card className="hover:shadow-lg transition-shadow h-full w-full max-w-lg mx-auto">
+                        <CardHeader>
+                          <div className="flex items-start gap-3">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-start gap-2 mb-2">
+                                <div className="flex-1 min-w-0">
+                                  <CardTitle className="line-clamp-2 text-base font-semibold leading-tight break-words">
+                                    {book.title}
+                                  </CardTitle>
+                                  {book.syriacTitle && (
+                                    <p
+                                      className="text-xl text-slate-600 mt-1 line-clamp-1 break-words"
+                                      dir="rtl"
+                                      style={{
+                                        fontFamily:
+                                          '"East Syriac Adiabene", serif',
+                                      }}
+                                    >
+                                      {book.syriacTitle}
+                                    </p>
+                                  )}
                                 </div>
-                                {book.pages && (
-                                  <div className="mt-1 text-center">
-                                    <span className="text-xs text-muted-foreground whitespace-nowrap">
-                                      {book.pages} pages
-                                    </span>
-                                  </div>
-                                )}
                               </div>
-                            )}
+                              <CardDescription className="flex items-center gap-2 text-sm mb-2 min-w-0">
+                                <User className="w-3 h-3 flex-shrink-0" />
+                                <span className="truncate max-w-32 sm:max-w-48 md:max-w-full">
+                                  {book.author}
+                                </span>
+                              </CardDescription>
+                              {(book.publisher || book.placeOfPublication) && (
+                                <div className="text-xs text-muted-foreground mb-1 truncate max-w-36 sm:max-w-52 md:max-w-full">
+                                  {book.publisher && (
+                                    <span>{book.publisher}</span>
+                                  )}
+                                  {book.publisher &&
+                                    book.placeOfPublication && <span>, </span>}
+                                  {book.placeOfPublication && (
+                                    <span>{book.placeOfPublication}</span>
+                                  )}
+                                </div>
+                              )}
+                              <div className="mt-2 space-y-2">
+                                <div className="flex items-center gap-2">
+                                  {book.publicationYear && (
+                                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                      <Calendar className="w-3 h-3" />
+                                      <span>{book.publicationYear}</span>
+                                    </div>
+                                  )}
+                                  <span
+                                    className={`text-xs font-medium rounded border px-2 py-0 ${getStatusStyling(
+                                      book.status
+                                    )}`}
+                                  >
+                                    {getStatusDisplayName(book.status)}
+                                  </span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <Badge
+                                    variant="secondary"
+                                    className="text-xs"
+                                  >
+                                    {book.language}
+                                  </Badge>
+                                  {book.category && (
+                                    <Badge
+                                      variant="outline"
+                                      className="text-xs"
+                                    >
+                                      {book.category}
+                                    </Badge>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex-shrink-0 w-20">
+                              {book.coverImage ? (
+                                <div className="w-full">
+                                  <Image
+                                    src={book.coverImage}
+                                    alt={`Cover of ${book.title}`}
+                                    className="w-full h-28 object-cover rounded-lg border shadow-md"
+                                    width={80}
+                                    height={112}
+                                    unoptimized
+                                    onError={(e) => {
+                                      const target =
+                                        e.target as HTMLImageElement;
+                                      target.style.display = "none";
+                                    }}
+                                  />
+                                  {typeof book.pageCount === "number" && (
+                                    <div className="mt-1 text-center">
+                                      <span className="text-xs text-muted-foreground whitespace-nowrap">
+                                        {book.pageCount} pages
+                                      </span>
+                                    </div>
+                                  )}
+                                </div>
+                              ) : (
+                                <div className="w-full">
+                                  <div className="w-full h-28 bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg border shadow-md flex items-center justify-center">
+                                    <BookOpen className="w-10 h-10 text-slate-400" />
+                                  </div>
+                                  {typeof book.pageCount === "number" && (
+                                    <div className="mt-1 text-center">
+                                      <span className="text-xs text-muted-foreground whitespace-nowrap">
+                                        {book.pageCount} pages
+                                      </span>
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      </CardHeader>
-                      <CardContent className="pt-0">
-                        <p className="text-sm text-muted-foreground mb-2 line-clamp-3">
-                          {book.description}
-                        </p>
-                        {book.tags && book.tags.length > 0 && (
-                          <div className="flex items-center gap-1 flex-wrap pt-1">
-                            <Tag className="w-3 h-3 text-muted-foreground flex-shrink-0" />
-                            {book.tags.slice(0, 3).map((tag, index) => (
-                              <Badge
-                                key={index}
-                                variant="outline"
-                                className="text-xs"
-                              >
-                                {tag}
-                              </Badge>
-                            ))}
-                            {book.tags.length > 3 && (
-                              <span className="text-xs text-muted-foreground">
-                                +{book.tags.length - 3}
-                              </span>
-                            )}
-                          </div>
-                        )}
-                      </CardContent>
-                    </Card>
-                  </a>
+                        </CardHeader>
+                        <CardContent className="pt-0">
+                          <p className="text-sm text-muted-foreground mb-2 line-clamp-3">
+                            {book.description}
+                          </p>
+                          {book.tags && book.tags.length > 0 && (
+                            <div className="flex items-center gap-1 flex-wrap pt-1">
+                              <Tag className="w-3 h-3 text-muted-foreground flex-shrink-0" />
+                              {book.tags.slice(0, 3).map((tag, index) => (
+                                <Badge
+                                  key={index}
+                                  variant="outline"
+                                  className="text-xs"
+                                >
+                                  {tag}
+                                </Badge>
+                              ))}
+                              {book.tags.length > 3 && (
+                                <span className="text-xs text-muted-foreground">
+                                  +{book.tags.length - 3}
+                                </span>
+                              )}
+                            </div>
+                          )}
+                        </CardContent>
+                      </Card>
+                    </a>
+                  </div>
                 ))
               )}
             </div>

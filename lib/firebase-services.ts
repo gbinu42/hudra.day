@@ -39,7 +39,7 @@ import {
 } from "firebase/storage";
 import { auth, db, storage } from "./firebase";
 import { UserRole, UserProfile, ROLE_PERMISSIONS } from "./types/auth";
-import { CreateBookData } from "./types/book";
+import { CreateBookData, BookPage } from "./types/book";
 import { JSONContent } from "@tiptap/react";
 
 // Page status types
@@ -500,6 +500,45 @@ export const bookService = {
       { field: searchField, operator: "==", value: searchValue },
     ]);
   },
+
+  // Update page status in book.pages array
+  async updatePageStatusInBook(
+    bookId: string,
+    pageId: string,
+    newStatus: string
+  ): Promise<void> {
+    try {
+      // Get the current book document
+      const bookDoc = await this.getBookById(bookId);
+      if (!bookDoc.exists()) {
+        throw new Error("Book not found");
+      }
+
+      const bookData = bookDoc.data();
+      const currentPages = bookData?.pages || [];
+
+      // Find and update the page status in the pages array
+      const updatedPages = currentPages.map((page: BookPage) => {
+        if (page.pageId === pageId) {
+          return { ...page, status: newStatus };
+        }
+        return page;
+      });
+
+      // Update the book document
+      await this.updateBook(bookId, {
+        pages: updatedPages,
+        updatedAt: new Date(),
+      } as Partial<CreateBookData>);
+
+      console.log(
+        `Updated page status in book ${bookId} for page ${pageId} to ${newStatus}`
+      );
+    } catch (error) {
+      console.error("Error updating page status in book:", error);
+      throw error;
+    }
+  },
 };
 
 // Page Service for handling pages and their edits
@@ -600,39 +639,60 @@ export const pageService = {
     // Create the page document first
     const pageId = await firestoreService.addDocument("pages", newPage);
 
-    // Check if this is the first page for the book and update cover image
+    // Update book document with new page info and page count
     try {
-      // Get all pages for this book to check count
-      const pagesSnapshot = await this.getPages(bookId);
-      const pageCount = pagesSnapshot.docs.length;
-
-      // Get the book document to check if it has a cover image
+      // Get the book document
       const bookDoc = await bookService.getBookById(bookId);
       if (bookDoc.exists()) {
         const bookData = bookDoc.data();
+        const currentPages = bookData?.pages || [];
+        const currentPageCount = bookData?.pageCount || 0;
+
+        // Add new page to pages array
+        const newPageInfo = {
+          pageId,
+          pageNumber,
+          pageNumberInBook,
+        };
+
+        // Insert the new page in the correct position based on pageNumber
+        const updatedPages = [...currentPages];
+        const insertIndex = updatedPages.findIndex(
+          (p) => p.pageNumber > pageNumber
+        );
+        if (insertIndex === -1) {
+          updatedPages.push(newPageInfo);
+        } else {
+          updatedPages.splice(insertIndex, 0, newPageInfo);
+        }
+
         const updateData: Record<string, unknown> = {
-          pages: pageCount,
+          pages: updatedPages,
+          pageCount: currentPageCount + 1,
           updatedAt: new Date(),
         };
 
         // If this is the first page and the book doesn't have a cover image, set it
         if (
-          pageCount === 1 &&
+          currentPageCount === 0 &&
           (!bookData?.coverImage || bookData.coverImage === "")
         ) {
           updateData.coverImage = imageUrl;
         }
 
         // Auto-update status based on page count and current status
-        if (pageCount === 1 && bookData?.status === "draft") {
+        if (currentPageCount === 0 && bookData?.status === "draft") {
           updateData.status = "digitizing";
         }
 
         // Update the book document
-        await bookService.updateBook(bookId, updateData);
+        await bookService.updateBook(
+          bookId,
+          updateData as Partial<CreateBookData>
+        );
       }
     } catch (error) {
-      console.error("Error updating book cover/page count:", error);
+      console.error("Error updating book with new page:", error);
       // Don't throw error here as the page was successfully created
     }
 
@@ -758,5 +818,21 @@ export const pageService = {
       lastEditBy: userId,
     };
     await this.updatePage(pageId, updateData);
+
+    // Also update the page status in the book document
+    try {
+      // Get the page document to find the bookId
+      const pageDoc = await this.getPage(pageId);
+      if (pageDoc.exists()) {
+        const pageData = pageDoc.data();
+        const bookId = pageData.bookId;
+        if (bookId) {
+          await bookService.updatePageStatusInBook(bookId, pageId, status);
+        }
+      }
+    } catch (error) {
+      console.error("Error updating page status in book document:", error);
+      // Don't throw error here as the page status was successfully updated
+    }
   },
 };
