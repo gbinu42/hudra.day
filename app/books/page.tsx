@@ -24,11 +24,9 @@ export default async function BooksPage() {
   const booksSnapshot = await bookService.getAllBooksWithoutPages();
   const booksData = booksSnapshot.docs.map((doc) => {
     const data = doc.data();
-    // Explicitly exclude pages field and create a clean book object
-    const { pages, ...bookDataWithoutPages } = data;
     return {
       id: doc.id,
-      ...bookDataWithoutPages,
+      ...data,
       tags: data.tags || [], // Ensure tags is always an array
       createdAt: data.createdAt?.toDate?.() || new Date(),
       updatedAt: data.updatedAt?.toDate?.() || new Date(),
