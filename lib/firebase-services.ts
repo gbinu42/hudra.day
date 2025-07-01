@@ -648,12 +648,17 @@ export const pageService = {
         const currentPages = bookData?.pages || [];
         const currentPageCount = bookData?.pageCount || 0;
 
-        // Add new page to pages array
-        const newPageInfo = {
+        // Add new page to pages array, filtering out undefined values
+        const newPageInfo: Record<string, unknown> = {
           pageId,
           pageNumber,
-          pageNumberInBook,
+          status: "draft", // Default status for new pages
         };
+
+        // Only include pageNumberInBook if it has a defined value
+        if (pageNumberInBook !== undefined) {
+          newPageInfo.pageNumberInBook = pageNumberInBook;
+        }
 
         // Insert the new page in the correct position based on pageNumber
         const updatedPages = [...currentPages];

@@ -396,15 +396,11 @@ export default function BookViewer() {
       );
 
       // Calculate starting page numbers
-      const nextSequentialPageNumber = (book?.pages?.length ?? 0) + 1;
       const maxPageNumber = Math.max(
         0,
         ...(book?.pages?.map((p) => p.pageNumber) ?? [])
       );
-      const startingPageNumber = Math.max(
-        nextSequentialPageNumber,
-        maxPageNumber + 1
-      );
+      const startingPageNumber = maxPageNumber + 1;
 
       // Create file data with auto-assigned page numbers
       const fileData = sortedFiles.map((file, index) => ({
@@ -1273,7 +1269,7 @@ export default function BookViewer() {
                           }
                         }}
                       >
-                        <SelectTrigger className="w-24 h-8">
+                        <SelectTrigger className="w-32 h-8">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="max-h-[300px] overflow-y-auto">
@@ -1363,7 +1359,7 @@ export default function BookViewer() {
                           }
                         }}
                       >
-                        <SelectTrigger className="w-24 h-8">
+                        <SelectTrigger className="w-32 h-8">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="max-h-[300px] overflow-y-auto">
@@ -2229,7 +2225,7 @@ export default function BookViewer() {
                           }
                         }}
                       >
-                        <SelectTrigger className="w-24 h-8">
+                        <SelectTrigger className="w-32 h-8">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="max-h-[300px] overflow-y-auto">
@@ -2319,7 +2315,7 @@ export default function BookViewer() {
                           }
                         }}
                       >
-                        <SelectTrigger className="w-24 h-8">
+                        <SelectTrigger className="w-32 h-8">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="max-h-[300px] overflow-y-auto">
