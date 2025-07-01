@@ -1975,7 +1975,7 @@ export default function BookViewer() {
                           </>
                         )}
                       </div>
-                      <div className="flex items-center gap-2 py-100">
+                      <div className="flex items-center gap-2">
                         {/* Line Numbers Toggle */}
                         <Button
                           size="sm"
