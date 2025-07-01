@@ -3,6 +3,7 @@ import BookViewer from "@/components/BookViewer";
 import { Metadata } from "next";
 import { Book } from "@/lib/types/book";
 import { Suspense } from "react";
+import { notFound } from "next/navigation";
 
 // Server-side function to generate static params
 export async function generateStaticParams() {
@@ -94,11 +95,38 @@ export async function generateMetadata({
   }
 }
 
-// Server component that renders the client component
-export default function BookDetailPage() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <BookViewer />
-    </Suspense>
-  );
+// Server component that fetches book data at build time
+export default async function BookDetailPage({
+  params,
+}: {
+  params: Promise<{ bookId: string }>;
+}) {
+  try {
+    const { bookId } = await params;
+    const bookDoc = await bookService.getBookById(bookId);
+
+    if (!bookDoc.exists()) {
+      notFound();
+    }
+
+    const bookData = bookDoc.data() as Book & {
+      createdAt: { toDate: () => Date };
+      updatedAt: { toDate: () => Date };
+    };
+    const book: Book = {
+      ...bookData,
+      id: bookDoc.id,
+      createdAt: bookData.createdAt?.toDate?.() || new Date(),
+      updatedAt: bookData.updatedAt?.toDate?.() || new Date(),
+    };
+
+    return (
+      <Suspense fallback={<div>Loading...</div>}>
+        <BookViewer initialBook={book} />
+      </Suspense>
+    );
+  } catch (error) {
+    console.error("Error fetching book data:", error);
+    notFound();
+  }
 }

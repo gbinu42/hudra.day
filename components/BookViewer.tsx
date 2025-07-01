@@ -182,9 +182,9 @@ interface Page {
   updatedAt?: Date;
 }
 
-export default function BookViewer() {
-  const [book, setBook] = useState<Book | null>(null);
-  const [loading, setLoading] = useState(true);
+export default function BookViewer({ initialBook }: { initialBook?: Book }) {
+  const [book, setBook] = useState<Book | null>(initialBook || null);
+  const [loading, setLoading] = useState(!initialBook);
   const [notFound, setNotFound] = useState(false);
   const { userProfile } = useAuth();
   const permissions = usePermissions(userProfile?.role || null);
@@ -491,7 +491,7 @@ export default function BookViewer() {
         return { files: newFiles };
       });
     },
-    [numberToSyriac, syriacToNumber, containsSyriac]
+    []
   );
 
   // Handle save transcription
@@ -709,13 +709,14 @@ export default function BookViewer() {
     }
   }, [currentPage?.imageUrl, ocrLoading]);
 
-  // Fetch book document only
+  // If no initialBook provided, fetch book data once
   useEffect(() => {
-    if (!bookId) return;
+    if (!bookId || initialBook) return;
     setLoading(true);
-    const unsubscribeBook = bookService.onBookSnapshot(
-      bookId,
-      (bookDoc) => {
+
+    bookService
+      .getBookById(bookId)
+      .then((bookDoc) => {
         if (bookDoc.exists()) {
           const bookData = bookDoc.data();
           setBook({
@@ -729,17 +730,13 @@ export default function BookViewer() {
           setNotFound(true);
         }
         setLoading(false);
-      },
-      (error) => {
+      })
+      .catch((error) => {
         console.error("Error fetching book:", error);
         setNotFound(true);
         setLoading(false);
-      }
-    );
-    return () => {
-      unsubscribeBook();
-    };
-  }, [bookId]);
+      });
+  }, [bookId, initialBook]);
 
   // Fetch current page document when book or selectedPageIndex changes
   useEffect(() => {
