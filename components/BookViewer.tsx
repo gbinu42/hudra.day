@@ -11,6 +11,11 @@ import { useAuth } from "@/lib/hooks/useAuth";
 import { usePermissions } from "@/lib/rbac";
 import { bookService, pageService } from "@/lib/firebase-services";
 import { Book, BookStatus } from "@/lib/types/book";
+import {
+  syriacToNumber,
+  numberToSyriac,
+  containsSyriac,
+} from "@/lib/utils/syriacNumerals";
 
 import {
   ArrowLeft,
@@ -269,10 +274,8 @@ export default function BookViewer() {
   // Memoized navigation helpers
   const navigationHelpers = useMemo(() => {
     const pageCount = book?.pages?.length ?? 0;
-    const canGoToPrevious = selectedPageIndex > 0;
-    const canGoToNext = selectedPageIndex < pageCount - 1;
     const goToPreviousPage = () => {
-      if (canGoToPrevious) {
+      if (selectedPageIndex > 0) {
         setTranscriptionLoading(true);
         setSelectedPageIndex(selectedPageIndex - 1);
         setEditMode(false);
@@ -280,7 +283,7 @@ export default function BookViewer() {
       }
     };
     const goToNextPage = () => {
-      if (canGoToNext) {
+      if (selectedPageIndex < pageCount - 1) {
         setTranscriptionLoading(true);
         setSelectedPageIndex(selectedPageIndex + 1);
         setEditMode(false);
@@ -288,8 +291,6 @@ export default function BookViewer() {
       }
     };
     return {
-      canGoToPrevious,
-      canGoToNext,
       goToPreviousPage,
       goToNextPage,
       pageCount,
@@ -460,170 +461,6 @@ export default function BookViewer() {
     []
   );
 
-  // Syriac numeral mapping (alphabet to number)
-  const syriacNumerals: Record<string, number> = {
-    ܐ: 1,
-    ܒ: 2,
-    ܓ: 3,
-    ܕ: 4,
-    ܗ: 5,
-    ܘ: 6,
-    ܙ: 7,
-    ܚ: 8,
-    ܛ: 9,
-    ܝ: 10,
-    ܟ: 20,
-    ܠ: 30,
-    ܡ: 40,
-    ܢ: 50,
-    ܣ: 60,
-    ܥ: 70,
-    ܦ: 80,
-    ܨ: 90,
-    ܩ: 100,
-    ܪ: 200,
-    ܫ: 300,
-    ܬ: 400,
-  };
-
-  // Convert Syriac numeral to number
-  const syriacToNumber = (syriac: string): number => {
-    let result = 0;
-    for (let i = 0; i < syriac.length; i++) {
-      const char = syriac[i];
-      if (syriacNumerals[char]) {
-        result += syriacNumerals[char];
-      }
-    }
-    return result;
-  };
-
-  // Convert number to Syriac numeral
-  const numberToSyriac = (num: number): string => {
-    if (num <= 0) return "";
-
-    // Handle numbers 1-10: single letters ܐ - ܝ
-    if (num <= 10) {
-      const entries = Object.entries(syriacNumerals).filter(
-        ([_, value]) => value <= 10
-      );
-      for (const [char, value] of entries) {
-        if (value === num) return char;
-      }
-    }
-
-    // Handle numbers 11-19: ܝܐ-ܝܛ
-    if (num >= 11 && num <= 19) {
-      return "ܝ" + numberToSyriac(num - 10);
-    }
-
-    // Handle numbers 20-29: ܟ-ܟܛ
-    if (num >= 20 && num <= 29) {
-      return "ܟ" + (num === 20 ? "" : numberToSyriac(num - 20));
-    }
-
-    // Handle numbers 30-39: ܠ-ܠܛ
-    if (num >= 30 && num <= 39) {
-      return "ܠ" + (num === 30 ? "" : numberToSyriac(num - 30));
-    }
-
-    // Handle numbers 40-49: ܡ-ܡܛ
-    if (num >= 40 && num <= 49) {
-      return "ܡ" + (num === 40 ? "" : numberToSyriac(num - 40));
-    }
-
-    // Handle numbers 50-59: ܢ-ܢܛ
-    if (num >= 50 && num <= 59) {
-      return "ܢ" + (num === 50 ? "" : numberToSyriac(num - 50));
-    }
-
-    // Handle numbers 60-69: ܣ-ܣܛ
-    if (num >= 60 && num <= 69) {
-      return "ܣ" + (num === 60 ? "" : numberToSyriac(num - 60));
-    }
-
-    // Handle numbers 70-79: ܥ-ܥܛ
-    if (num >= 70 && num <= 79) {
-      return "ܥ" + (num === 70 ? "" : numberToSyriac(num - 70));
-    }
-
-    // Handle numbers 80-89: ܦ-ܦܛ
-    if (num >= 80 && num <= 89) {
-      return "ܦ" + (num === 80 ? "" : numberToSyriac(num - 80));
-    }
-
-    // Handle numbers 90-99: ܨ-ܨܛ
-    if (num >= 90 && num <= 99) {
-      return "ܨ" + (num === 90 ? "" : numberToSyriac(num - 90));
-    }
-
-    // Handle numbers 100-109: ܩ-ܩܛ
-    if (num >= 100 && num <= 109) {
-      return "ܩ" + (num === 100 ? "" : numberToSyriac(num - 100));
-    }
-
-    // Handle number 110: ܩܝ
-    if (num === 110) {
-      return "ܩܝ";
-    }
-
-    // Handle numbers 111-119: ܩܝܐ-ܩܝܛ
-    if (num >= 111 && num <= 119) {
-      return "ܩܝ" + numberToSyriac(num - 110);
-    }
-
-    // Handle number 120: ܩܟ
-    if (num === 120) {
-      return "ܩܟ";
-    }
-
-    // Handle numbers 121-129: ܩܟܐ-ܩܟܛ
-    if (num >= 121 && num <= 129) {
-      return "ܩܟ" + numberToSyriac(num - 120);
-    }
-
-    // For larger numbers, continue the pattern
-    if (num >= 130) {
-      // Find the largest base number that fits
-      const bases = [100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200];
-      for (let i = bases.length - 1; i >= 0; i--) {
-        if (num >= bases[i]) {
-          const base = bases[i];
-          const remainder = num - base;
-
-          // Handle base numbers that are multiples of 10
-          if (base % 10 === 0 && base !== 100) {
-            const tensDigit = Math.floor(base / 10);
-            let baseStr = "ܩ";
-            if (tensDigit === 11) baseStr = "ܩܝ";
-            else if (tensDigit === 12) baseStr = "ܩܟ";
-            else if (tensDigit === 13) baseStr = "ܩܠ";
-            else if (tensDigit === 14) baseStr = "ܩܡ";
-            else if (tensDigit === 15) baseStr = "ܩܢ";
-            else if (tensDigit === 16) baseStr = "ܩܣ";
-            else if (tensDigit === 17) baseStr = "ܩܥ";
-            else if (tensDigit === 18) baseStr = "ܩܦ";
-            else if (tensDigit === 19) baseStr = "ܩܨ";
-
-            return baseStr + (remainder === 0 ? "" : numberToSyriac(remainder));
-          }
-
-          // Handle base 100
-          if (base === 100) {
-            return "ܩ" + (remainder === 0 ? "" : numberToSyriac(remainder));
-          }
-        }
-      }
-    }
-
-    return "";
-  };
-
-  // Check if string contains Syriac characters
-  const containsSyriac = (str: string): boolean => {
-    return /[\u0700-\u074F]/.test(str);
-  };
-
   const handleUpdateFilePageNumberInBook = useCallback(
     (index: number, pageNumberInBook: string) => {
       setAddPageForm((prev) => {
@@ -654,7 +491,7 @@ export default function BookViewer() {
         return { files: newFiles };
       });
     },
-    []
+    [numberToSyriac, syriacToNumber, containsSyriac]
   );
 
   // Handle save transcription
