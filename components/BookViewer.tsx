@@ -25,6 +25,7 @@ import {
   Home,
   FileImage,
   X,
+  Scan,
 } from "lucide-react";
 import {
   Breadcrumb,
@@ -58,6 +59,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
+// Import Tesseract.js
+import Tesseract from "tesseract.js";
 
 // Page status types
 type PageStatus =
@@ -245,6 +249,10 @@ export default function BookViewer() {
   // Font selection state
   const [selectedFont, setSelectedFont] = useState<string>("default");
   const [selectedFontSize, setSelectedFontSize] = useState<string>("default");
+
+  // OCR state
+  const [ocrLoading, setOcrLoading] = useState<boolean>(false);
+  const [ocrProgress, setOcrProgress] = useState<string>("");
 
   // Use ref to track if we're initializing pages for the first time
   const isInitialPagesLoad = useRef(true);
@@ -748,6 +756,63 @@ export default function BookViewer() {
       console.log("No page found at selectedPageIndex");
     }
   }, [currentPage, selectedPageIndex, pageStatusDialogOpen]);
+
+  // OCR function to recognize Syriac text from image
+  const handleOCR = useCallback(async () => {
+    if (!currentPage?.imageUrl || ocrLoading) return;
+
+    setOcrLoading(true);
+    setOcrProgress("Initializing OCR...");
+
+    try {
+      // Use Tesseract.js v6 API with progress logger
+      const {
+        data: { text },
+      } = await Tesseract.recognize(
+        currentPage.imageUrl,
+        "syr", // Syriac language
+        {
+          logger: (m: { status?: string; progress?: number }) => {
+            if (m.status) {
+              setOcrProgress(
+                m.status +
+                  (m.progress ? ` (${Math.round(m.progress * 100)}%)` : "")
+              );
+            }
+          },
+        }
+      );
+
+      setOcrProgress("Text recognized successfully!");
+      const recognizedText = text.trim();
+
+      if (recognizedText) {
+        const newContent: JSONContent = {
+          type: "doc",
+          content: [
+            {
+              type: "paragraph",
+              content: [
+                {
+                  type: "text",
+                  text: recognizedText,
+                },
+              ],
+            },
+          ],
+        };
+        setTextContentJson(newContent);
+        setEditMode(true);
+        setOriginalTextContentJson(newContent);
+      }
+    } catch (error) {
+      console.error("OCR Error:", error);
+      setOcrProgress("OCR failed. Please try again.");
+    } finally {
+      setOcrLoading(false);
+      setOcrProgress("");
+    }
+  }, [currentPage?.imageUrl, ocrLoading]);
 
   if (loading) {
     return (
@@ -2090,6 +2155,28 @@ export default function BookViewer() {
                         )}
                       </div>
                       <div className="flex items-center gap-2">
+                        {/* OCR Button */}
+                        {permissions.canEdit &&
+                          !isWhitelabel &&
+                          currentPage?.imageUrl && (
+                            <Button
+                              size="sm"
+                              variant="secondary"
+                              className="bg-blue-600 text-white hover:bg-blue-700 h-7 px-2 text-xs flex items-center gap-1"
+                              onClick={handleOCR}
+                              disabled={ocrLoading}
+                              title="Recognize text from image"
+                            >
+                              {ocrLoading ? (
+                                <div className="animate-spin rounded-full h-3 w-3 border-2 border-white border-t-transparent"></div>
+                              ) : (
+                                <Scan className="w-3 h-3" />
+                              )}
+                              <span className="hidden sm:inline">
+                                {ocrLoading ? "Processing..." : "OCR"}
+                              </span>
+                            </Button>
+                          )}
                         {/* Page Status Badge */}
                         <div
                           className={`px-2 py-1 rounded-full text-xs font-medium border ${getPageStatusColor(
@@ -2136,6 +2223,16 @@ export default function BookViewer() {
                         {imageLoading && (
                           <div className="absolute inset-0 flex items-center justify-center bg-slate-50">
                             <div className="animate-spin rounded-full h-8 w-8 border-4 border-slate-300 border-t-slate-600"></div>
+                          </div>
+                        )}
+                        {ocrLoading && (
+                          <div className="absolute inset-0 flex items-center justify-center bg-slate-50/90 z-10">
+                            <div className="text-center">
+                              <div className="animate-spin rounded-full h-8 w-8 border-4 border-blue-300 border-t-blue-600 mx-auto mb-2"></div>
+                              <p className="text-sm text-slate-600">
+                                {ocrProgress}
+                              </p>
+                            </div>
                           </div>
                         )}
                         <Image
