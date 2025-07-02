@@ -276,18 +276,14 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
     const pageCount = book?.pages?.length ?? 0;
     const goToPreviousPage = () => {
       if (selectedPageIndex > 0) {
-        setTranscriptionLoading(true);
-        setSelectedPageIndex(selectedPageIndex - 1);
         setEditMode(false);
-        setTimeout(() => setTranscriptionLoading(false), 300);
+        setSelectedPageIndex(selectedPageIndex - 1);
       }
     };
     const goToNextPage = () => {
       if (selectedPageIndex < pageCount - 1) {
-        setTranscriptionLoading(true);
-        setSelectedPageIndex(selectedPageIndex + 1);
         setEditMode(false);
-        setTimeout(() => setTranscriptionLoading(false), 300);
+        setSelectedPageIndex(selectedPageIndex + 1);
       }
     };
     return {
@@ -747,14 +743,19 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
       book.pages.length === 0
     ) {
       setCurrentPage(null);
+      setTextContentJson(null);
       return;
     }
     const pageInfo = (book?.pages ?? [])[selectedPageIndex];
     if (!pageInfo) {
       setCurrentPage(null);
+      setTextContentJson(null);
       return;
     }
 
+    // Immediately reset content and set loading state when switching pages
+    setCurrentPage(null);
+    setTextContentJson(null);
     setTranscriptionLoading(true);
 
     // Set up real-time listener for the current page
@@ -763,19 +764,27 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
       (pageDoc) => {
         if (pageDoc.exists()) {
           const data = pageDoc.data();
-          setCurrentPage({
+          const newPage = {
             id: pageDoc.id,
             ...data,
-          } as Page);
+          } as Page;
+          setCurrentPage(newPage);
           setTextContentJson(data.currentTextJson || null);
+
+          // If we're not in edit mode, update the original content as well
+          if (!editMode) {
+            setOriginalTextContentJson(data.currentTextJson || null);
+          }
         } else {
           setCurrentPage(null);
+          setTextContentJson(null);
         }
         setTranscriptionLoading(false);
       },
       (err) => {
         console.error("Error listening to page:", err);
         setCurrentPage(null);
+        setTextContentJson(null);
         setTranscriptionLoading(false);
       }
     );
@@ -784,7 +793,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
     return () => {
       unsubscribe();
     };
-  }, [book, selectedPageIndex]);
+  }, [book, selectedPageIndex, editMode]);
 
   // Show browser warning when trying to close page while in edit mode
   useEffect(() => {
@@ -1311,13 +1320,8 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                         onValueChange={(value) => {
                           const pageNum = parseInt(value);
                           if (pageNum >= 1 && pageNum <= pageCount) {
-                            setTranscriptionLoading(true);
-                            setSelectedPageIndex(pageNum - 1);
                             setEditMode(false);
-                            setTimeout(
-                              () => setTranscriptionLoading(false),
-                              300
-                            );
+                            setSelectedPageIndex(pageNum - 1);
                           }
                         }}
                       >
@@ -1401,13 +1405,8 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                         onValueChange={(value) => {
                           const pageNum = parseInt(value);
                           if (pageNum >= 1 && pageNum <= pageCount) {
-                            setTranscriptionLoading(true);
-                            setSelectedPageIndex(pageNum - 1);
                             setEditMode(false);
-                            setTimeout(
-                              () => setTranscriptionLoading(false),
-                              300
-                            );
+                            setSelectedPageIndex(pageNum - 1);
                           }
                         }}
                       >
@@ -2267,13 +2266,8 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                         onValueChange={(value) => {
                           const pageNum = parseInt(value);
                           if (pageNum >= 1 && pageNum <= pageCount) {
-                            setTranscriptionLoading(true);
-                            setSelectedPageIndex(pageNum - 1);
                             setEditMode(false);
-                            setTimeout(
-                              () => setTranscriptionLoading(false),
-                              300
-                            );
+                            setSelectedPageIndex(pageNum - 1);
                           }
                         }}
                       >
@@ -2357,13 +2351,8 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                         onValueChange={(value) => {
                           const pageNum = parseInt(value);
                           if (pageNum >= 1 && pageNum <= pageCount) {
-                            setTranscriptionLoading(true);
-                            setSelectedPageIndex(pageNum - 1);
                             setEditMode(false);
-                            setTimeout(
-                              () => setTranscriptionLoading(false),
-                              300
-                            );
+                            setSelectedPageIndex(pageNum - 1);
                           }
                         }}
                       >
