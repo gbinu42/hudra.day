@@ -738,7 +738,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
       });
   }, [bookId, initialBook]);
 
-  // Fetch current page document when book or selectedPageIndex changes
+  // Set up real-time listener for current page document when book or selectedPageIndex changes
   useEffect(() => {
     if (
       !book ||
@@ -754,10 +754,13 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
       setCurrentPage(null);
       return;
     }
+
     setTranscriptionLoading(true);
-    pageService
-      .getPage(pageInfo.pageId)
-      .then((pageDoc) => {
+
+    // Set up real-time listener for the current page
+    const unsubscribe = pageService.onPageSnapshot(
+      pageInfo.pageId,
+      (pageDoc) => {
         if (pageDoc.exists()) {
           const data = pageDoc.data();
           setCurrentPage({
@@ -769,12 +772,18 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
           setCurrentPage(null);
         }
         setTranscriptionLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error fetching page:", err);
+      },
+      (err) => {
+        console.error("Error listening to page:", err);
         setCurrentPage(null);
         setTranscriptionLoading(false);
-      });
+      }
+    );
+
+    // Cleanup function to unsubscribe when the effect re-runs or component unmounts
+    return () => {
+      unsubscribe();
+    };
   }, [book, selectedPageIndex]);
 
   // Show browser warning when trying to close page while in edit mode

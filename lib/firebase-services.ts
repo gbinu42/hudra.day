@@ -653,6 +653,20 @@ export const pageService = {
     return await firestoreService.getDocument("pages", pageId);
   },
 
+  // Listen to a specific page document in real-time
+  onPageSnapshot(
+    pageId: string,
+    callback: (snapshot: DocumentSnapshot<DocumentData>) => void,
+    onError?: (error: Error) => void
+  ): Unsubscribe {
+    const pageDocRef = doc(db, "pages", pageId);
+    return onSnapshot(
+      pageDocRef,
+      callback,
+      onError || ((error) => console.error("Page snapshot error:", error))
+    );
+  },
+
   // Create a new page document
   async createPage(
     bookId: string,
