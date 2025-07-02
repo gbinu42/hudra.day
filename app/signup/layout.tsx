@@ -18,10 +18,10 @@ export const metadata: Metadata = {
     title: "Sign Up for Hudra.day - Create Your Free Account",
     description:
       "Create a free account to access East Syriac liturgical texts and contribute to our digital preservation project.",
-    url: "https://www.hudra.day/signup",
+    url: "https://hudra.day/signup",
     images: [
       {
-        url: "https://www.hudra.day/images/sliwa.png",
+        url: "https://hudra.day/images/sliwa.png",
         width: 1200,
         height: 630,
         alt: "Sign Up for Hudra.day",
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   alternates: {
-    canonical: "https://www.hudra.day/signup",
+    canonical: "https://hudra.day/signup",
   },
 };
 

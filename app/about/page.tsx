@@ -29,10 +29,10 @@ export const metadata: Metadata = {
       "About Hudra.day - Preserving Church of the East Liturgical Heritage",
     description:
       "Learn about our mission to digitize and preserve East Syriac liturgical texts from three major Church of the East traditions. A Hendo Academy initiative.",
-    url: "https://www.hudra.day/about",
+    url: "https://hudra.day/about",
     images: [
       {
-        url: "https://www.hudra.day/images/sliwa.png",
+        url: "https://hudra.day/images/sliwa.png",
         width: 1200,
         height: 630,
         alt: "About Hudra.day - Preserving Liturgical Heritage",
@@ -45,10 +45,10 @@ export const metadata: Metadata = {
       "About Hudra.day - Preserving Church of the East Liturgical Heritage",
     description:
       "Learn about our mission to digitize and preserve East Syriac liturgical texts from three major Church of the East traditions.",
-    images: ["https://www.hudra.day/images/sliwa.png"],
+    images: ["https://hudra.day/images/sliwa.png"],
   },
   alternates: {
-    canonical: "https://www.hudra.day/about",
+    canonical: "https://hudra.day/about",
   },
 };
 

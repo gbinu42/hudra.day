@@ -25,10 +25,10 @@ export const metadata: Metadata = {
     title: "East Syriac Text Editor - Online Syriac & Karshon Editor | Hudra",
     description:
       "Free online text editor for East Syriac and Karshon with full Unicode support, on-screen keyboard, and liturgical formatting tools.",
-    url: "https://www.hudra.day/editor",
+    url: "https://hudra.day/editor",
     images: [
       {
-        url: "https://www.hudra.day/images/sliwa.png",
+        url: "https://hudra.day/images/sliwa.png",
         width: 1200,
         height: 630,
         alt: "East Syriac Text Editor",
@@ -40,10 +40,10 @@ export const metadata: Metadata = {
     title: "East Syriac Text Editor - Online Syriac & Karshon Editor",
     description:
       "Free online text editor for East Syriac and Karshon with full Unicode support and on-screen keyboard.",
-    images: ["https://www.hudra.day/images/sliwa.png"],
+    images: ["https://hudra.day/images/sliwa.png"],
   },
   alternates: {
-    canonical: "https://www.hudra.day/editor",
+    canonical: "https://hudra.day/editor",
   },
 };
 

@@ -22,10 +22,10 @@ export const metadata: Metadata = {
     title: "Liturgical Texts Archive - Browse East Syriac Texts | Hudra",
     description:
       "Browse our comprehensive collection of digitized East Syriac liturgical texts from three major Church of the East traditions. Free access to prayers, hymns, and liturgical services.",
-    url: "https://www.hudra.day/texts",
+    url: "https://hudra.day/texts",
     images: [
       {
-        url: "https://www.hudra.day/images/sliwa.png",
+        url: "https://hudra.day/images/sliwa.png",
         width: 1200,
         height: 630,
         alt: "East Syriac Liturgical Texts Archive",
@@ -37,10 +37,10 @@ export const metadata: Metadata = {
     title: "Liturgical Texts Archive - Browse East Syriac Texts",
     description:
       "Browse our comprehensive collection of digitized East Syriac liturgical texts from three major Church of the East traditions.",
-    images: ["https://www.hudra.day/images/sliwa.png"],
+    images: ["https://hudra.day/images/sliwa.png"],
   },
   alternates: {
-    canonical: "https://www.hudra.day/texts",
+    canonical: "https://hudra.day/texts",
   },
 };
 

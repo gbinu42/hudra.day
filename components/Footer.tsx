@@ -33,25 +33,19 @@ export default function Footer() {
             <ul className="space-y-2 text-white/80">
               <li>
                 <Link
-                  href="/type"
+                  href="/editor"
                   className="hover:text-white transition-colors"
                 >
                   Text Editor
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/prayers"
-                  className="hover:text-white transition-colors"
-                >
+                <Link href="#" className="hover:text-white transition-colors">
                   Daily Prayers
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/calendar"
-                  className="hover:text-white transition-colors"
-                >
+                <Link href="#" className="hover:text-white transition-colors">
                   Liturgical Calendar
                 </Link>
               </li>
@@ -77,10 +71,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/contribute"
-                  className="hover:text-white transition-colors"
-                >
+                <Link href="#" className="hover:text-white transition-colors">
                   Contribute
                 </Link>
               </li>

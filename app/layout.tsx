@@ -52,21 +52,21 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://www.hudra.day",
+    url: "https://hudra.day",
     siteName: "Hudra - Church of the East Liturgical Texts",
     title: "Hudra - Digital Archive of Church of the East Liturgical Texts",
     description:
       "Free digital archive of East Syriac liturgical texts from three major churches: Assyrian Church of the East, Chaldean Catholic Church, and Syro-Malabar Church. Access ancient manuscripts and use our online Syriac text editor.",
     images: [
       {
-        url: "https://www.hudra.day/images/sliwa.png",
+        url: "https://hudra.day/images/sliwa.png",
         width: 1200,
         height: 630,
         alt: "Hudra - East Syriac Liturgical Texts Archive",
         type: "image/png",
       },
       {
-        url: "https://www.hudra.day/images/header.png",
+        url: "https://hudra.day/images/header.png",
         width: 1200,
         height: 630,
         alt: "Church of the East Liturgical Heritage",
@@ -82,7 +82,7 @@ export const metadata: Metadata = {
     site: "@HudraDay",
     creator: "@HendoAcademy",
     images: {
-      url: "https://www.hudra.day/images/sliwa.png",
+      url: "https://hudra.day/images/sliwa.png",
       alt: "Hudra - East Syriac Liturgical Texts",
     },
   },
@@ -96,17 +96,16 @@ export const metadata: Metadata = {
     "whatsapp:title": "Hudra - Church of the East Liturgical Texts",
     "whatsapp:description":
       "Free digital archive of East Syriac liturgical texts and manuscripts",
-    "whatsapp:image": "https://www.hudra.day/images/sliwa.png",
+    "whatsapp:image": "https://hudra.day/images/sliwa.png",
     // Telegram
     "telegram:channel": "@hudraday", // Replace with actual channel if available
     // Discord
     "theme-color": "#8A1538",
   },
   alternates: {
-    canonical: "https://www.hudra.day",
+    canonical: "https://hudra.day",
     languages: {
-      "en-US": "https://www.hudra.day",
-      "ar-SY": "https://www.hudra.day/ar", // If Arabic version exists
+      "en-US": "https://hudra.day",
     },
   },
   verification: {
@@ -123,7 +122,7 @@ export const metadata: Metadata = {
     shortcut: "/favicon.ico",
   },
   manifest: "/site.webmanifest",
-  metadataBase: new URL("https://www.hudra.day"),
+  metadataBase: new URL("https://hudra.day"),
 };
 
 export const viewport: Viewport = {

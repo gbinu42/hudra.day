@@ -26,10 +26,10 @@ export const metadata: Metadata = {
     title: "Contact Hudra.day - Get in Touch with Our Team",
     description:
       "Contact us for inquiries about East Syriac liturgical texts, collaboration opportunities, or technical support. We welcome scholars, clergy, and community members.",
-    url: "https://www.hudra.day/contact",
+    url: "https://hudra.day/contact",
     images: [
       {
-        url: "https://www.hudra.day/images/sliwa.png",
+        url: "https://hudra.day/images/sliwa.png",
         width: 1200,
         height: 630,
         alt: "Contact Hudra.day Team",
@@ -41,10 +41,10 @@ export const metadata: Metadata = {
     title: "Contact Hudra.day - Get in Touch with Our Team",
     description:
       "Contact us for inquiries about East Syriac liturgical texts, collaboration opportunities, or technical support.",
-    images: ["https://www.hudra.day/images/sliwa.png"],
+    images: ["https://hudra.day/images/sliwa.png"],
   },
   alternates: {
-    canonical: "https://www.hudra.day/contact",
+    canonical: "https://hudra.day/contact",
   },
 };
 

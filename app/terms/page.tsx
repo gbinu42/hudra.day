@@ -23,10 +23,10 @@ export const metadata: Metadata = {
     title: "Terms of Service - Hudra.day Usage Agreement",
     description:
       "Read the terms of service for using Hudra.day and accessing our East Syriac liturgical texts collection.",
-    url: "https://www.hudra.day/terms",
+    url: "https://hudra.day/terms",
     images: [
       {
-        url: "https://www.hudra.day/images/sliwa.png",
+        url: "https://hudra.day/images/sliwa.png",
         width: 1200,
         height: 630,
         alt: "Hudra.day Terms of Service",
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   alternates: {
-    canonical: "https://www.hudra.day/terms",
+    canonical: "https://hudra.day/terms",
   },
 };
 

@@ -17,10 +17,10 @@ export const metadata: Metadata = {
     title: "Sign In to Hudra.day - Access Your Account",
     description:
       "Sign in to access your personalized collection of East Syriac liturgical texts and contribute to our digital preservation project.",
-    url: "https://www.hudra.day/signin",
+    url: "https://hudra.day/signin",
     images: [
       {
-        url: "https://www.hudra.day/images/sliwa.png",
+        url: "https://hudra.day/images/sliwa.png",
         width: 1200,
         height: 630,
         alt: "Sign In to Hudra.day",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   alternates: {
-    canonical: "https://www.hudra.day/signin",
+    canonical: "https://hudra.day/signin",
   },
 };
 

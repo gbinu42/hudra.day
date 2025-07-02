@@ -78,6 +78,9 @@ export async function generateMetadata({
         ...(book.publisher ? [book.publisher] : []),
       ].join(", "),
       authors: [{ name: book.author }],
+      alternates: {
+        canonical: `https://hudra.day/books/${bookId}`,
+      },
       ...(book.publicationYear && {
         other: {
           "book:publication_date": book.publicationYear.toString(),

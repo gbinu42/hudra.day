@@ -21,10 +21,10 @@ export const metadata: Metadata = {
     title: "Dashboard - Manage Your Hudra Account",
     description:
       "Access your personalized dashboard to manage your account and contributions to the East Syriac liturgical texts archive.",
-    url: "https://www.hudra.day/dashboard",
+    url: "https://hudra.day/dashboard",
     images: [
       {
-        url: "https://www.hudra.day/images/sliwa.png",
+        url: "https://hudra.day/images/sliwa.png",
         width: 1200,
         height: 630,
         alt: "Hudra Dashboard",
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   alternates: {
-    canonical: "https://www.hudra.day/dashboard",
+    canonical: "https://hudra.day/dashboard",
   },
 };
 

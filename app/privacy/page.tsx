@@ -23,10 +23,10 @@ export const metadata: Metadata = {
     title: "Privacy Policy - Hudra.day Data Protection",
     description:
       "Learn how Hudra.day protects your privacy and handles your personal information with transparency and security.",
-    url: "https://www.hudra.day/privacy",
+    url: "https://hudra.day/privacy",
     images: [
       {
-        url: "https://www.hudra.day/images/sliwa.png",
+        url: "https://hudra.day/images/sliwa.png",
         width: 1200,
         height: 630,
         alt: "Hudra.day Privacy Policy",
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   alternates: {
-    canonical: "https://www.hudra.day/privacy",
+    canonical: "https://hudra.day/privacy",
   },
 };
 
