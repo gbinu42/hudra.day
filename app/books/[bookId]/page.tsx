@@ -2,7 +2,7 @@ import { bookService } from "@/lib/firebase-services";
 import BookViewer from "@/components/BookViewer";
 import { Metadata } from "next";
 import { Book } from "@/lib/types/book";
-import { Suspense } from "react";
+
 import { notFound } from "next/navigation";
 
 // Server-side function to generate static params
@@ -123,11 +123,7 @@ export default async function BookDetailPage({
       updatedAt: bookData.updatedAt?.toDate?.() || new Date(),
     };
 
-    return (
-      <Suspense fallback={<div>Loading...</div>}>
-        <BookViewer initialBook={book} />
-      </Suspense>
-    );
+    return <BookViewer initialBook={book} />;
   } catch (error) {
     console.error("Error fetching book data:", error);
     notFound();
