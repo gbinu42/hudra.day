@@ -33,8 +33,8 @@ export default async function BooksPage() {
     };
   }) as Book[];
 
-  // Sort by creation date, newest first
-  booksData.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  // Sort by creation date, oldest first
+  booksData.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
 
   // Get status styling
   const getStatusStyling = (status: BookStatus) => {
