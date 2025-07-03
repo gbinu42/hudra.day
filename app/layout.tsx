@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import Script from "next/script";
 import { Toaster } from "@/components/ui/sonner";
+import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
+import NetworkStatus from "@/components/NetworkStatus";
 
 export const metadata: Metadata = {
   title: {
@@ -158,6 +160,8 @@ export default function RootLayout({
       <body className="antialiased">
         {children}
         <Toaster />
+        <ServiceWorkerRegistration />
+        <NetworkStatus />
       </body>
     </html>
   );
