@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
     unoptimized: true,
   },
   // Enable service worker for production builds
-  trailingSlash: true,
+  trailingSlash: false,
   assetPrefix: process.env.NODE_ENV === "production" ? "" : "",
 };
 

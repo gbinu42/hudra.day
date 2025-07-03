@@ -7,12 +7,14 @@ This application now includes offline support using Serwist, a modern service wo
 ### 1. Service Worker Configuration
 
 - **File**: `app/sw.ts`
-- **Purpose**: Configures the service worker with caching strategies for different types of content
+- **Purpose**: Configures the service worker with comprehensive offline support for all routes
 - **Features**:
-  - Precaches static assets for offline access
-  - Uses default caching strategies from Serwist
-  - Handles Firebase Storage images
-  - Caches API responses and pages
+  - **Custom Navigation Handler**: Handles all HTML pages including `/books`, `/type.html`, and dynamic routes
+  - **Network-First Strategy**: Tries network first, falls back to cache automatically
+  - **Complete Route Coverage**: Covers navigation requests, documents, and all HTML files
+  - **Smart Offline Fallback**: Shows styled offline page when content not cached
+  - **Image Caching**: Cache-first strategy for optimal performance and offline viewing
+  - **Firebase Storage**: Dedicated caching for Firebase-hosted images and content
 
 ### 2. Service Worker Registration
 
@@ -92,12 +94,17 @@ export default finalConfig;
 
 ### Caching Strategy
 
-1. **Static Assets**: Cached using CacheFirst strategy for long-term storage
-2. **Pages**: Cached using NetworkFirst with 24-hour expiration
-3. **API Responses**: Cached using NetworkFirst with 24-hour expiration
-4. **Images**: Cached using CacheFirst for 30 days
-5. **Fonts**: Cached using CacheFirst for 1 year
-6. **Firebase Images**: Cached using CacheFirst for 30 days
+1. **Navigation & HTML Pages**: Network-first with cache fallback and offline page as last resort
+   - Covers `/books`, `/type.html`, `/texts`, `/admin`, and all other routes
+   - Automatically caches successful responses for offline access
+2. **Images**: Cache-first strategy for optimal performance
+   - Local images cached indefinitely until manually cleared
+   - Instant loading when cached
+3. **Firebase Storage**: Cache-first with dedicated cache storage
+   - Book images and uploaded content cached for offline viewing
+   - Reduces Firebase bandwidth usage
+4. **Static Assets**: Serwist default caching for CSS, JS, and other static files
+5. **Offline Fallback**: Custom styled offline page when content unavailable
 
 ### User Experience
 
@@ -124,11 +131,26 @@ Users can install the app on their devices:
 
 ## Testing Offline Functionality
 
-1. **Development**: Service worker is disabled for easier debugging
-2. **Production**:
-   - Build the app: `npm run build`
-   - Serve statically: Use any static file server
-   - Test offline: Use browser DevTools to simulate offline conditions
+### Quick Test Steps:
+
+1. **Build the app**: `npm run build`
+2. **Serve the static files**: Use any static server (e.g., `npx serve out`)
+3. **Visit pages while online**: Go to `/books`, `/type.html`, and other routes
+4. **Go offline**: Use DevTools Network tab → "Offline" checkbox
+5. **Test offline access**: Navigate to previously visited pages
+6. **Test offline fallback**: Try visiting new pages to see offline page
+
+### Expected Behavior:
+
+- ✅ Previously visited pages load instantly from cache
+- ✅ Images and Firebase content appear if cached
+- ✅ New pages show styled "You're Offline" message with retry button
+- ✅ Network status indicator shows when you go offline/online
+
+### Development vs Production:
+
+- **Development** (`npm run dev`): Service worker disabled for easier debugging
+- **Production** (`npm run build`): Full offline functionality enabled
 
 ## Browser Support
 
@@ -161,13 +183,21 @@ The configuration has been optimized to work with Next.js Turbopack:
 
 ## Troubleshooting
 
-If the service worker isn't working:
+### Fixed Issues in Latest Version:
 
-1. Check browser console for errors
-2. Ensure you're running a production build
-3. Verify HTTPS is being used (or localhost)
-4. Clear browser cache and service worker registration
-5. Check Network tab in DevTools for service worker registration
+✅ **Offline support for `/books` and other routes**: Custom navigation handler now properly caches all HTML pages and routes
+✅ **Static HTML files (like `/type.html`)**: Service worker now handles `.html` files specifically  
+✅ **Turbopack compatibility**: Conditional Serwist loading eliminates webpack warnings
+✅ **Dynamic route coverage**: All app routes now have proper offline fallback
+
+### If the service worker still isn't working:
+
+1. **Clear existing service worker**: Go to DevTools > Application > Storage > Clear Storage
+2. **Check browser console**: Look for service worker registration errors
+3. **Verify production build**: Service worker only works in production (`npm run build`)
+4. **HTTPS requirement**: Must use HTTPS in production (localhost is exempt)
+5. **Check Network tab**: Verify service worker is intercepting requests
+6. **Force refresh**: Try Ctrl+Shift+R to bypass cache and re-register service worker
 
 ## Future Enhancements
 
