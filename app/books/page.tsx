@@ -130,13 +130,18 @@ export default async function BooksPage() {
                               )}
                             </div>
                           </div>
-                          <CardDescription className="flex items-center gap-2 text-sm mb-2 min-w-0">
-                            <User className="w-3 h-3 flex-shrink-0" />
-                            <span className="truncate max-w-32 sm:max-w-48 md:max-w-full">
+                          <CardDescription className="flex items-start gap-2 text-sm mb-2 min-w-0">
+                            <User className="w-3 h-3 flex-shrink-0 mt-0.5" />
+                            <span
+                              className="break-words leading-tight"
+                              title={book.author}
+                            >
                               {book.author}
                             </span>
                           </CardDescription>
-                          {(book.publisher || book.placeOfPublication) && (
+                          {(book.publisher ||
+                            book.placeOfPublication ||
+                            book.isbn) && (
                             <div className="text-xs text-muted-foreground mb-1 truncate max-w-36 sm:max-w-52 md:max-w-full">
                               {book.publisher && <span>{book.publisher}</span>}
                               {book.publisher && book.placeOfPublication && (
@@ -144,6 +149,13 @@ export default async function BooksPage() {
                               )}
                               {book.placeOfPublication && (
                                 <span>{book.placeOfPublication}</span>
+                              )}
+                              {(book.publisher || book.placeOfPublication) &&
+                                book.isbn && <span> • </span>}
+                              {book.isbn && (
+                                <span className="font-mono">
+                                  ISBN: {book.isbn}
+                                </span>
                               )}
                             </div>
                           )}
@@ -212,7 +224,7 @@ export default async function BooksPage() {
                       </div>
                     </CardHeader>
                     <CardContent className="pt-0">
-                      <p className="text-sm text-muted-foreground mb-2 line-clamp-3">
+                      <p className="text-sm text-muted-foreground mb-2">
                         {book.description}
                       </p>
                       {book.tags && book.tags.length > 0 && (

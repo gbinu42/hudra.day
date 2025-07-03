@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { usePermissions } from "@/lib/rbac";
@@ -281,11 +282,13 @@ export function AddBookDialog() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="description">Description *</Label>
-            <Input
+            <Textarea
               id="description"
               value={newBookData.description}
               onChange={(e) => handleInputChange("description", e.target.value)}
               placeholder="Enter book description"
+              rows={4}
+              className="resize-none"
             />
           </div>
           <div className="grid grid-cols-2 gap-4">
