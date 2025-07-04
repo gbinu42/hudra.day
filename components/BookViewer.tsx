@@ -31,6 +31,7 @@ import {
   FileImage,
   X,
   Scan,
+  Wifi,
 } from "lucide-react";
 import {
   Breadcrumb,
@@ -187,8 +188,25 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
   const [book, setBook] = useState<Book | null>(initialBook || null);
   const [loading, setLoading] = useState(!initialBook);
   const [notFound, setNotFound] = useState(false);
+  const [isOffline, setIsOffline] = useState(false);
   const { userProfile } = useAuth();
-  const permissions = usePermissions(userProfile?.role || null);
+
+  // Handle offline scenario by providing default viewer role
+  const effectiveUserProfile =
+    userProfile ||
+    (isOffline
+      ? {
+          uid: "offline-viewer",
+          email: "offline@hudra.day",
+          displayName: "Offline Viewer",
+          role: "viewer" as const,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          isActive: true,
+        }
+      : null);
+
+  const permissions = usePermissions(effectiveUserProfile?.role || null);
   const params = useParams();
   const router = useRouter();
   const bookId = params.bookId as string;
@@ -723,6 +741,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
             updatedAt: bookData.updatedAt?.toDate?.() || new Date(),
           } as Book);
           setNotFound(false);
+          setIsOffline(false);
         } else {
           setNotFound(true);
         }
@@ -730,7 +749,26 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
       })
       .catch((error) => {
         console.error("Error fetching book:", error);
-        setNotFound(true);
+
+        // Check if this is likely an offline/authentication error
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+        const isOfflineError =
+          errorMessage.includes("permission") ||
+          errorMessage.includes("unauthenticated") ||
+          errorMessage.includes("auth") ||
+          errorMessage.includes("network") ||
+          errorMessage.includes("Failed to fetch");
+
+        if (isOfflineError) {
+          console.log(
+            "Detected offline/authentication error, enabling offline mode"
+          );
+          setIsOffline(true);
+          setNotFound(false);
+        } else {
+          setNotFound(true);
+        }
         setLoading(false);
       });
   }, [bookId, initialBook]);
@@ -980,7 +1018,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                   </Breadcrumb>
 
                   {/* Edit Button */}
-                  {permissions.canEdit && (
+                  {permissions.canEdit && !isOffline && (
                     <Dialog
                       open={editBookDialogOpen}
                       onOpenChange={setEditBookDialogOpen}
@@ -1254,9 +1292,22 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-3">
                   <div className="flex-1">
                     <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2 sm:gap-4">
-                      <h1 className="text-xl sm:text-2xl font-bold text-slate-900 break-words flex-1 min-w-0">
-                        {book.title}
-                      </h1>
+                      <div className="flex-1 min-w-0">
+                        <h1 className="text-xl sm:text-2xl font-bold text-slate-900 break-words">
+                          {book.title}
+                        </h1>
+                        {isOffline && (
+                          <div className="flex items-center gap-2 mt-2">
+                            <Badge variant="secondary" className="text-xs">
+                              <Wifi className="w-3 h-3 mr-1" />
+                              Offline Mode
+                            </Badge>
+                            <span className="text-xs text-slate-500">
+                              Reading cached content
+                            </span>
+                          </div>
+                        )}
+                      </div>
                       {book.syriacTitle && (
                         <span
                           className="text-2xl sm:text-3xl text-slate-700 break-words sm:flex-shrink-0 text-right"
@@ -1522,7 +1573,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
 
               {/* Add Button on the right */}
               <div className="flex items-center">
-                {permissions.canCreate && !isWhitelabel && (
+                {permissions.canCreate && !isWhitelabel && !isOffline && (
                   <Dialog
                     open={addPageDialogOpen}
                     onOpenChange={(open) => {
@@ -1738,7 +1789,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                     Start by uploading the first page of your book to begin
                     transcription.
                   </p>
-                  {permissions.canCreate && !isWhitelabel && (
+                  {permissions.canCreate && !isWhitelabel && !isOffline && (
                     <Dialog
                       open={addPageDialogOpen}
                       onOpenChange={(open) => {
@@ -2074,7 +2125,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                                     onClick={handleSaveTranscription}
                                     variant="default"
                                     className="bg-white text-red-900 hover:bg-slate-100 h-7 sm:h-8 px-2 sm:px-3 text-xs"
-                                    disabled={saving}
+                                    disabled={saving || isOffline}
                                   >
                                     {saving ? (
                                       <div className="flex items-center gap-1">
@@ -2090,12 +2141,17 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                                 <Button
                                   size="sm"
                                   onClick={() => {
-                                    setEditMode(true);
-                                    // Store original content when entering edit mode
-                                    setOriginalTextContentJson(textContentJson);
+                                    if (!isOffline) {
+                                      setEditMode(true);
+                                      // Store original content when entering edit mode
+                                      setOriginalTextContentJson(
+                                        textContentJson
+                                      );
+                                    }
                                   }}
                                   variant="outline"
                                   className="border-slate-300 text-slate-700 hover:bg-slate-50 h-7 sm:h-8 px-2 sm:px-3 text-xs"
+                                  disabled={isOffline}
                                 >
                                   Edit
                                 </Button>
@@ -2112,13 +2168,30 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                         </div>
                       ) : editMode ? (
                         <div className="flex-1 flex flex-col">
-                          <SyriacEditor
-                            content={textContentJson || undefined}
-                            onUpdate={(_html: string, json?: JSONContent) => {
-                              if (json) setTextContentJson(json);
-                            }}
-                            className="flex-1 w-full"
-                          />
+                          {isOffline ? (
+                            <div className="flex-1 flex items-center justify-center">
+                              <div className="text-center">
+                                <p className="text-slate-500 mb-4">
+                                  Editing is not available in offline mode
+                                </p>
+                                <Button
+                                  onClick={() => setEditMode(false)}
+                                  variant="outline"
+                                  size="sm"
+                                >
+                                  Exit Edit Mode
+                                </Button>
+                              </div>
+                            </div>
+                          ) : (
+                            <SyriacEditor
+                              content={textContentJson || undefined}
+                              onUpdate={(_html: string, json?: JSONContent) => {
+                                if (json) setTextContentJson(json);
+                              }}
+                              className="flex-1 w-full"
+                            />
+                          )}
                         </div>
                       ) : (
                         <div className="px-2 lg:px-4  flex-1 flex flex-col">
@@ -2139,22 +2212,24 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                                 <p className="text-slate-500 text-base sm:text-lg mb-4">
                                   No transcription yet
                                 </p>
-                                {permissions.canEdit && !isWhitelabel && (
-                                  <Button
-                                    onClick={() => {
-                                      setEditMode(true);
-                                      // Store original content when entering edit mode
-                                      setOriginalTextContentJson(
-                                        textContentJson
-                                      );
-                                    }}
-                                    variant="outline"
-                                    size="sm"
-                                    className="border-slate-300 text-slate-700 hover:bg-slate-50"
-                                  >
-                                    Edit
-                                  </Button>
-                                )}
+                                {permissions.canEdit &&
+                                  !isWhitelabel &&
+                                  !isOffline && (
+                                    <Button
+                                      onClick={() => {
+                                        setEditMode(true);
+                                        // Store original content when entering edit mode
+                                        setOriginalTextContentJson(
+                                          textContentJson
+                                        );
+                                      }}
+                                      variant="outline"
+                                      size="sm"
+                                      className="border-slate-300 text-slate-700 hover:bg-slate-50"
+                                    >
+                                      Edit
+                                    </Button>
+                                  )}
                               </div>
                             </div>
                           )}
@@ -2191,6 +2266,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                           {/* OCR Button */}
                           {permissions.canEdit &&
                             !isWhitelabel &&
+                            !isOffline &&
                             currentPage?.imageUrl && (
                               <Button
                                 size="sm"
@@ -2235,7 +2311,8 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                           {/* Admin Status Change Button */}
                           {permissions.canEdit &&
                             userProfile?.role === "admin" &&
-                            !isWhitelabel && (
+                            !isWhitelabel &&
+                            !isOffline && (
                               <Button
                                 size="sm"
                                 variant="secondary"

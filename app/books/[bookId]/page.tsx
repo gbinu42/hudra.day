@@ -130,6 +130,24 @@ export default async function BookDetailPage({
     );
   } catch (error) {
     console.error("Error fetching book data:", error);
+
+    // Check if this is likely an offline/authentication error
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const isOfflineError =
+      errorMessage.includes("permission") ||
+      errorMessage.includes("unauthenticated") ||
+      errorMessage.includes("auth") ||
+      errorMessage.includes("network");
+
+    if (isOfflineError) {
+      // Return a component that will handle offline viewing
+      return (
+        <Suspense>
+          <BookViewer initialBook={undefined} />
+        </Suspense>
+      );
+    }
+
     notFound();
   }
 }
