@@ -852,7 +852,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
     };
   }, [editMode]);
 
-  if (loading) {
+  if (loading && !isOffline) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
         {!isWhitelabel && <Navbar />}
@@ -869,7 +869,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
     );
   }
 
-  if (notFound || !book) {
+  if ((notFound || !book) && !isOffline) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
         {!isWhitelabel && <Navbar />}
@@ -982,6 +982,39 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
         {!isWhitelabel && <Footer />}
       </div>
     );
+  }
+
+  // Show offline message when book is not available offline
+  if (isOffline && !book) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+        {!isWhitelabel && <Navbar />}
+        <div className="container mx-auto px-4 py-16">
+          <div className="text-center py-24">
+            <div className="mx-auto w-24 h-24 bg-slate-200 rounded-full flex items-center justify-center mb-6">
+              <Wifi className="w-12 h-12 text-slate-500" />
+            </div>
+            <h1 className="text-3xl font-bold text-slate-900 mb-4">
+              Offline Mode
+            </h1>
+            <p className="text-lg text-slate-600 mb-8 max-w-md mx-auto">
+              This book is not available offline. Please check your connection
+              and try again.
+            </p>
+            <Button onClick={handleBackClick} size="lg" className="px-8">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Books
+            </Button>
+          </div>
+        </div>
+        {!isWhitelabel && <Footer />}
+      </div>
+    );
+  }
+
+  // Ensure book is available before rendering
+  if (!book) {
+    return null;
   }
 
   return (
