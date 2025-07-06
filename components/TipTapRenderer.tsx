@@ -54,6 +54,7 @@ interface TipTapRendererProps {
   showLineNumbers?: boolean;
   selectedFont?: string;
   selectedFontSize?: string;
+  textDirection?: "rtl" | "ltr";
 }
 
 export default function TipTapRenderer({
@@ -61,6 +62,7 @@ export default function TipTapRenderer({
   showLineNumbers = true,
   selectedFont = "default",
   selectedFontSize = "default",
+  textDirection = "rtl",
 }: TipTapRendererProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [linePositions, setLinePositions] = useState<number[]>([]);
@@ -84,6 +86,8 @@ export default function TipTapRenderer({
         return '"Estrangelo Edessa", Karshon, serif';
       case "Estrangelo Qenneshrin":
         return '"Estrangelo Qenneshrin", "Estrangelo Edessa", Karshon, serif';
+      case "Noto Sans Malayalam":
+        return '"Noto Sans Malayalam", Karshon, serif';
       default:
         return 'Karshon, "East Syriac Malankara", serif';
     }
@@ -115,7 +119,7 @@ export default function TipTapRenderer({
       TextAlign.configure({
         types: ["paragraph"],
         alignments: ["left", "center", "right", "justify"],
-        defaultAlignment: "right",
+        defaultAlignment: textDirection === "rtl" ? "right" : "left",
       }),
       ParagraphExtension,
     ],
@@ -242,18 +246,10 @@ export default function TipTapRenderer({
         fontSize: selectedFontSize !== "default" ? selectedFontSize : "24pt",
         marginTop: "70px",
         overflow: "visible",
+        flexDirection: textDirection === "ltr" ? "row" : "row-reverse",
       }}
     >
-      {/* Text content */}
-      <div
-        ref={containerRef}
-        className="flex-1"
-        style={{ overflow: "visible" }}
-      >
-        <EditorContent editor={editor} />
-      </div>
-
-      {/* Line numbers container - normal flow on the right */}
+      {/* Line numbers container - positioned based on text direction */}
       <div
         className="select-none pointer-events-none"
         style={{
@@ -263,6 +259,7 @@ export default function TipTapRenderer({
           fontFamily: "monospace",
           position: "relative",
           visibility: showLineNumbers ? "visible" : "hidden",
+          order: textDirection === "ltr" ? 1 : 2,
         }}
       >
         {linePositions.map((position, index) => (
@@ -271,11 +268,13 @@ export default function TipTapRenderer({
             style={{
               position: "absolute",
               top: `${position}px`,
-              left: "8px",
+              left: textDirection === "ltr" ? "0px" : "8px",
+              right: textDirection === "ltr" ? "8px" : "auto",
               transform: "translateY(-50%)",
               display: "flex",
               alignItems: "center",
-              justifyContent: "flex-start",
+              justifyContent:
+                textDirection === "ltr" ? "flex-end" : "flex-start",
               whiteSpace: "nowrap",
             }}
           >
@@ -283,6 +282,19 @@ export default function TipTapRenderer({
           </div>
         ))}
       </div>
+
+      {/* Text content */}
+      <div
+        ref={containerRef}
+        className="flex-1"
+        style={{
+          overflow: "visible",
+          order: textDirection === "ltr" ? 2 : 1,
+        }}
+      >
+        <EditorContent editor={editor} />
+      </div>
+
       <style jsx global>{`
         .ProseMirror {
           line-height: 1.4 !important;

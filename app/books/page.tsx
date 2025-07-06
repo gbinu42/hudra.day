@@ -224,7 +224,12 @@ export default async function BooksPage() {
                       </div>
                     </CardHeader>
                     <CardContent className="pt-0">
-                      <p className="text-sm text-muted-foreground mb-2">
+                      <p
+                        className="text-sm text-muted-foreground mb-2"
+                        style={{
+                          fontFamily: '"Noto Sans Malayalam", sans-serif',
+                        }}
+                      >
                         {book.description}
                       </p>
                       {book.tags && book.tags.length > 0 && (

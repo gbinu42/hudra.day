@@ -42,6 +42,7 @@ export interface Book {
   createdBy: string;
   isPublished: boolean;
   tags: string[];
+  textDirection?: "rtl" | "ltr";
 }
 
 export interface CreateBookData {
@@ -58,4 +59,5 @@ export interface CreateBookData {
   placeOfPublication?: string;
   coverImage?: string;
   tags: string[];
+  textDirection?: "rtl" | "ltr";
 }

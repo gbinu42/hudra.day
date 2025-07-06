@@ -255,6 +255,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
     placeOfPublication: "",
     coverImage: "",
     tags: [] as string[],
+    textDirection: "rtl" as "rtl" | "ltr",
   });
   const [editBookTagsInput, setEditBookTagsInput] = useState("");
   const [editBookLoading, setEditBookLoading] = useState<boolean>(false);
@@ -589,6 +590,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
       placeOfPublication: book.placeOfPublication || "",
       coverImage: book.coverImage || "",
       tags: book.tags || [],
+      textDirection: (book as any).textDirection || "rtl",
     });
     setEditBookTagsInput((book.tags || []).join(", "));
     setEditBookError("");
@@ -614,6 +616,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
         publicationYear: editBookForm.publicationYear
           ? Number(editBookForm.publicationYear)
           : undefined,
+        textDirection: editBookForm.textDirection,
       };
 
       await bookService.updateBook(book.id, updateData);
@@ -629,7 +632,10 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
   };
 
   const handleEditBookInputChange = useCallback(
-    (field: keyof typeof editBookForm, value: string | number | BookStatus) => {
+    (
+      field: keyof typeof editBookForm,
+      value: string | number | BookStatus | "rtl" | "ltr"
+    ) => {
       setEditBookForm((prev) => ({
         ...prev,
         [field]: value,
@@ -809,11 +815,6 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
           } as Page;
           setCurrentPage(newPage);
           setTextContentJson(data.currentTextJson || null);
-
-          // If we're not in edit mode, update the original content as well
-          if (!editMode) {
-            setOriginalTextContentJson(data.currentTextJson || null);
-          }
         } else {
           setCurrentPage(null);
           setTextContentJson(null);
@@ -832,7 +833,14 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
     return () => {
       unsubscribe();
     };
-  }, [book, selectedPageIndex, editMode]);
+  }, [book, selectedPageIndex]);
+
+  // Separate effect to handle original content when edit mode changes
+  useEffect(() => {
+    if (!editMode && textContentJson) {
+      setOriginalTextContentJson(textContentJson);
+    }
+  }, [editMode, textContentJson]);
 
   // Show browser warning when trying to close page while in edit mode
   useEffect(() => {
@@ -1017,6 +1025,393 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
     return null;
   }
 
+  // Page Navigation Component
+  const PageNavigation = ({
+    showAddButton = false,
+    className = "",
+  }: {
+    showAddButton?: boolean;
+    className?: string;
+  }) => {
+    if ((book?.pages?.length ?? 0) === 0) return null;
+
+    return (
+      <div
+        className={`flex items-center ${
+          showAddButton ? "justify-between" : "justify-center"
+        } px-4 ${className}`}
+      >
+        {/* Empty left spacer when showing add button */}
+        {showAddButton && <div className="w-20"></div>}
+
+        {/* Navigation */}
+        <div className="flex items-center gap-3">
+          {/* For RTL documents, reverse the navigation */}
+          {(book as any)?.textDirection === "rtl" ? (
+            <>
+              {/* Next Page (leftmost for RTL) */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={goToNextPage}
+                disabled={selectedPageIndex === pageCount - 1}
+                className="h-8 px-3 flex items-center gap-1"
+                title="Next Page"
+              >
+                <ChevronLeft className="w-3 h-3" />
+                <span className="text-xs hidden sm:inline">Next</span>
+              </Button>
+
+              {/* Page Selector */}
+              <div className="flex items-center gap-2">
+                <Select
+                  value={String(selectedPageIndex + 1)}
+                  onValueChange={(value) => {
+                    const pageNum = parseInt(value);
+                    if (pageNum >= 1 && pageNum <= pageCount) {
+                      setEditMode(false);
+                      setSelectedPageIndex(pageNum - 1);
+                    }
+                  }}
+                >
+                  <SelectTrigger className="w-32 h-8">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[300px] overflow-y-auto">
+                    {(book?.pages ?? []).map((page, index) => (
+                      <SelectItem key={page.pageId} value={String(index + 1)}>
+                        <div className="flex items-center justify-between w-full">
+                          <span>
+                            Page {index + 1}
+                            {page.pageNumberInBook && (
+                              <>
+                                {" | "}
+                                <span
+                                  style={{
+                                    fontFamily: '"East Syriac Adiabene", serif',
+                                  }}
+                                >
+                                  {page.pageNumberInBook}
+                                </span>
+                              </>
+                            )}
+                          </span>
+                          <div
+                            className={`ml-2 px-1 py-0.5 rounded text-xs ${getPageStatusColor(
+                              page.status || "draft"
+                            )}`}
+                          >
+                            {getPageStatusDisplayName(page.status || "draft")}
+                          </div>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <span className="text-sm text-slate-600 font-medium">
+                  of {pageCount}
+                </span>
+              </div>
+
+              {/* Previous Page (rightmost for RTL) */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={goToPreviousPage}
+                disabled={selectedPageIndex === 0}
+                className="h-8 px-3 flex items-center gap-1"
+                title="Previous Page"
+              >
+                <span className="text-xs hidden sm:inline">Previous</span>
+                <ChevronRight className="w-3 h-3" />
+              </Button>
+            </>
+          ) : (
+            <>
+              {/* Previous Page (leftmost for LTR) */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={goToPreviousPage}
+                disabled={selectedPageIndex === 0}
+                className="h-8 px-3 flex items-center gap-1"
+                title="Previous Page"
+              >
+                <ChevronLeft className="w-3 h-3" />
+                <span className="text-xs hidden sm:inline">Previous</span>
+              </Button>
+
+              {/* Page Selector */}
+              <div className="flex items-center gap-2">
+                <Select
+                  value={String(selectedPageIndex + 1)}
+                  onValueChange={(value) => {
+                    const pageNum = parseInt(value);
+                    if (pageNum >= 1 && pageNum <= pageCount) {
+                      setEditMode(false);
+                      setSelectedPageIndex(pageNum - 1);
+                    }
+                  }}
+                >
+                  <SelectTrigger className="w-32 h-8">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[300px] overflow-y-auto">
+                    {(book?.pages ?? []).map((page, index) => (
+                      <SelectItem key={page.pageId} value={String(index + 1)}>
+                        <div className="flex items-center justify-between w-full">
+                          <span>
+                            Page {index + 1}
+                            {page.pageNumberInBook && (
+                              <>
+                                {" | "}
+                                <span
+                                  style={{
+                                    fontFamily: '"East Syriac Adiabene", serif',
+                                  }}
+                                >
+                                  {page.pageNumberInBook}
+                                </span>
+                              </>
+                            )}
+                          </span>
+                          <div
+                            className={`ml-2 px-1 py-0.5 rounded text-xs ${getPageStatusColor(
+                              page.status || "draft"
+                            )}`}
+                          >
+                            {getPageStatusDisplayName(page.status || "draft")}
+                          </div>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <span className="text-sm text-slate-600 font-medium">
+                  of {pageCount}
+                </span>
+              </div>
+
+              {/* Next Page (rightmost for LTR) */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={goToNextPage}
+                disabled={selectedPageIndex === pageCount - 1}
+                className="h-8 px-3 flex items-center gap-1"
+                title="Next Page"
+              >
+                <span className="text-xs hidden sm:inline">Next</span>
+                <ChevronRight className="w-3 h-3" />
+              </Button>
+            </>
+          )}
+        </div>
+
+        {/* Add Button on the right - only show when showAddButton is true */}
+        {showAddButton && (
+          <div className="flex items-center">
+            {permissions.canCreate && !isWhitelabel && !isOffline && (
+              <Dialog
+                open={addPageDialogOpen}
+                onOpenChange={(open) => {
+                  setAddPageDialogOpen(open);
+                  if (open) {
+                    setAddPageForm({ files: [] });
+                    setAddPageError("");
+                  }
+                }}
+              >
+                <DialogTrigger asChild>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-8 px-3 text-sm flex items-center gap-1 ml-2 sm:ml-4"
+                  >
+                    <Plus className="w-3 h-3" />
+                    <span className="hidden sm:inline">Add</span>
+                    <span className="sm:hidden">+</span>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-2xl max-h-[80vh] flex flex-col">
+                  <DialogHeader>
+                    <DialogTitle>Add Pages</DialogTitle>
+                    <DialogDescription>
+                      Upload one or more page images. Files will be sorted by
+                      name and assigned sequential page numbers.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="flex-1 overflow-y-auto">
+                    <div className="grid gap-4 py-4">
+                      {/* Multi-file Upload Area */}
+                      <div className="grid gap-2">
+                        <Label>Page Images</Label>
+                        <div className="relative border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-gray-400 transition-colors">
+                          <input
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={(e) => {
+                              const files = Array.from(e.target.files || []);
+                              if (files.length > 0) {
+                                handleMultipleFileSelect(files);
+                              }
+                            }}
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                            disabled={addPageLoading}
+                          />
+                          <div className="text-center">
+                            <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                            <div className="space-y-2">
+                              <p className="text-sm font-medium text-gray-900">
+                                Drop files here or click to browse
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                Select multiple images (up to 50MB each)
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* File Preview and Configuration */}
+                      {addPageForm.files.length > 0 && (
+                        <div className="grid gap-2">
+                          <Label>
+                            Selected Files ({addPageForm.files.length})
+                          </Label>
+                          <div className="max-h-60 overflow-y-auto border rounded-lg p-2 space-y-2">
+                            {addPageForm.files.map((fileData, index) => (
+                              <div
+                                key={index}
+                                className="flex items-center gap-3 p-2 bg-gray-50 rounded border"
+                              >
+                                {/* File preview */}
+                                <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center flex-shrink-0">
+                                  <FileImage className="w-6 h-6 text-gray-500" />
+                                </div>
+
+                                {/* File info and controls */}
+                                <div className="flex-1 min-w-0 grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                  {/* File name */}
+                                  <div className="min-w-0">
+                                    <p className="text-sm font-medium text-gray-900 truncate">
+                                      {fileData.file.name}
+                                    </p>
+                                    <p className="text-xs text-gray-500">
+                                      {(
+                                        fileData.file.size /
+                                        (1024 * 1024)
+                                      ).toFixed(1)}{" "}
+                                      MB
+                                    </p>
+                                  </div>
+
+                                  {/* Page number input */}
+                                  <div>
+                                    <Input
+                                      type="number"
+                                      min="1"
+                                      value={fileData.pageNumber}
+                                      onChange={(e) => {
+                                        const pageNum =
+                                          parseInt(e.target.value) || 0;
+                                        handleUpdateFilePageNumber(
+                                          index,
+                                          pageNum
+                                        );
+                                      }}
+                                      placeholder="Page #"
+                                      className="text-sm h-8"
+                                    />
+                                  </div>
+
+                                  {/* Page in book input */}
+                                  <div>
+                                    <Input
+                                      type="text"
+                                      value={fileData.pageNumberInBook || ""}
+                                      onChange={(e) => {
+                                        handleUpdateFilePageNumberInBook(
+                                          index,
+                                          e.target.value
+                                        );
+                                      }}
+                                      placeholder="Page in book (optional)"
+                                      className="text-sm h-8"
+                                      dir={
+                                        (book as any)?.textDirection || "rtl"
+                                      }
+                                      style={{
+                                        fontFamily:
+                                          '"East Syriac Adiabene", serif',
+                                      }}
+                                    />
+                                  </div>
+                                </div>
+
+                                {/* Remove button */}
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleRemoveFile(index)}
+                                  className="h-8 w-8 p-0 flex-shrink-0"
+                                >
+                                  <X className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {addPageError && (
+                        <div className="bg-red-50 border border-red-200 rounded p-3">
+                          <p className="text-sm text-red-600">{addPageError}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      onClick={() => setAddPageDialogOpen(false)}
+                      disabled={addPageLoading}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="button"
+                      onClick={handleAddPageFormSubmit}
+                      disabled={
+                        addPageLoading || addPageForm.files.length === 0
+                      }
+                    >
+                      {addPageLoading ? (
+                        <div className="flex items-center gap-2">
+                          <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                          Adding...
+                        </div>
+                      ) : (
+                        <>
+                          <Plus className="w-4 h-4 mr-2" />
+                          Add {addPageForm.files.length} Page
+                          {addPageForm.files.length !== 1 ? "s" : ""}
+                        </>
+                      )}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col">
       {!isWhitelabel && <Navbar />}
@@ -1103,7 +1498,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                                   )
                                 }
                                 placeholder="Enter Syriac title"
-                                dir="rtl"
+                                dir={editBookForm.textDirection}
                                 className="text-right"
                                 style={{
                                   fontFamily: '"East Syriac Adiabene", serif',
@@ -1173,6 +1568,34 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                                 }
                                 placeholder="e.g., Liturgy, Theology"
                               />
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="editTextDirection">
+                                Text Direction
+                              </Label>
+                              <Select
+                                value={editBookForm.textDirection}
+                                onValueChange={(value) =>
+                                  handleEditBookInputChange(
+                                    "textDirection",
+                                    value as "rtl" | "ltr"
+                                  )
+                                }
+                              >
+                                <SelectTrigger>
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="rtl">
+                                    Right-to-Left (RTL)
+                                  </SelectItem>
+                                  <SelectItem value="ltr">
+                                    Left-to-Right (LTR)
+                                  </SelectItem>
+                                </SelectContent>
+                              </Select>
                             </div>
                           </div>
                           <div className="grid grid-cols-2 gap-4">
@@ -1344,7 +1767,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                       {book.syriacTitle && (
                         <span
                           className="text-2xl sm:text-3xl text-slate-700 break-words sm:flex-shrink-0 text-right"
-                          dir="rtl"
+                          dir={(book as any)?.textDirection || "rtl"}
                           style={{
                             fontFamily: '"East Syriac Adiabene", serif',
                           }}
@@ -1381,7 +1804,12 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                 {/* Book Description */}
                 {book.description && (
                   <div className="mb-3">
-                    <p className="text-sm text-slate-700 leading-relaxed">
+                    <p
+                      className="text-sm text-slate-700 leading-relaxed"
+                      style={{
+                        fontFamily: '"Noto Sans Malayalam", sans-serif',
+                      }}
+                    >
                       {book.description}
                     </p>
                   </div>
@@ -1416,397 +1844,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
             </Card>
 
             {/* Page Navigation */}
-            <div className="flex items-center justify-between mb-4 px-4">
-              {/* Empty left spacer to center the navigation */}
-              <div className="w-20"></div>
-
-              {/* Centered Navigation */}
-              {(book?.pages?.length ?? 0) > 0 && (
-                <div className="flex items-center gap-3">
-                  {/* For RTL documents (like Syriac), reverse the navigation */}
-                  {book?.language === "Syriac" ||
-                  book?.language === "Arabic" ||
-                  book?.language === "Hebrew" ? (
-                    <>
-                      {/* Previous Page (leftmost for RTL) */}
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={goToPreviousPage}
-                        disabled={selectedPageIndex === 0}
-                        className="h-8 px-3 flex items-center gap-1"
-                        title="Previous Page"
-                      >
-                        <span className="text-xs hidden sm:inline">
-                          Previous
-                        </span>
-                        <ChevronRight className="w-3 h-3" />
-                      </Button>
-
-                      {/* Page Selector */}
-                      <div className="flex items-center gap-2">
-                        <Select
-                          value={String(selectedPageIndex + 1)}
-                          onValueChange={(value) => {
-                            const pageNum = parseInt(value);
-                            if (pageNum >= 1 && pageNum <= pageCount) {
-                              setEditMode(false);
-                              setSelectedPageIndex(pageNum - 1);
-                            }
-                          }}
-                        >
-                          <SelectTrigger className="w-32 h-8">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent className="max-h-[300px] overflow-y-auto">
-                            {(book?.pages ?? []).map((page, index) => (
-                              <SelectItem
-                                key={page.pageId}
-                                value={String(index + 1)}
-                              >
-                                <div className="flex items-center justify-between w-full">
-                                  <span>
-                                    Page {index + 1}
-                                    {page.pageNumberInBook && (
-                                      <>
-                                        {" | "}
-                                        <span
-                                          style={{
-                                            fontFamily:
-                                              '"East Syriac Adiabene", serif',
-                                          }}
-                                        >
-                                          {page.pageNumberInBook}
-                                        </span>
-                                      </>
-                                    )}
-                                  </span>
-                                  <div
-                                    className={`ml-2 px-1 py-0.5 rounded text-xs ${getPageStatusColor(
-                                      page.status || "draft"
-                                    )}`}
-                                  >
-                                    {getPageStatusDisplayName(
-                                      page.status || "draft"
-                                    )}
-                                  </div>
-                                </div>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <span className="text-sm text-slate-600 font-medium">
-                          of {pageCount}
-                        </span>
-                      </div>
-
-                      {/* Next Page (rightmost for RTL) */}
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={goToNextPage}
-                        disabled={selectedPageIndex === pageCount - 1}
-                        className="h-8 px-3 flex items-center gap-1"
-                        title="Next Page"
-                      >
-                        <ChevronLeft className="w-3 h-3" />
-                        <span className="text-xs hidden sm:inline">Next</span>
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      {/* Next Page (leftmost for LTR) */}
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={goToNextPage}
-                        disabled={selectedPageIndex === pageCount - 1}
-                        className="h-8 px-3 flex items-center gap-1"
-                        title="Next Page"
-                      >
-                        <ChevronLeft className="w-3 h-3" />
-                        <span className="text-xs hidden sm:inline">Next</span>
-                      </Button>
-
-                      {/* Page Selector */}
-                      <div className="flex items-center gap-2">
-                        <Select
-                          value={String(selectedPageIndex + 1)}
-                          onValueChange={(value) => {
-                            const pageNum = parseInt(value);
-                            if (pageNum >= 1 && pageNum <= pageCount) {
-                              setEditMode(false);
-                              setSelectedPageIndex(pageNum - 1);
-                            }
-                          }}
-                        >
-                          <SelectTrigger className="w-32 h-8">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent className="max-h-[300px] overflow-y-auto">
-                            {(book?.pages ?? []).map((page, index) => (
-                              <SelectItem
-                                key={page.pageId}
-                                value={String(index + 1)}
-                              >
-                                <div className="flex items-center justify-between w-full">
-                                  <span>
-                                    Page {index + 1}
-                                    {page.pageNumberInBook && (
-                                      <>
-                                        {" | "}
-                                        <span
-                                          style={{
-                                            fontFamily:
-                                              '"East Syriac Adiabene", serif',
-                                          }}
-                                        >
-                                          {page.pageNumberInBook}
-                                        </span>
-                                      </>
-                                    )}
-                                  </span>
-                                  <div
-                                    className={`ml-2 px-1 py-0.5 rounded text-xs ${getPageStatusColor(
-                                      page.status || "draft"
-                                    )}`}
-                                  >
-                                    {getPageStatusDisplayName(
-                                      page.status || "draft"
-                                    )}
-                                  </div>
-                                </div>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <span className="text-sm text-slate-600 font-medium">
-                          of {pageCount}
-                        </span>
-                      </div>
-
-                      {/* Previous Page (rightmost for LTR) */}
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={goToPreviousPage}
-                        disabled={selectedPageIndex === 0}
-                        className="h-8 px-3 flex items-center gap-1"
-                        title="Previous Page"
-                      >
-                        <span className="text-xs hidden sm:inline">
-                          Previous
-                        </span>
-                        <ChevronRight className="w-3 h-3" />
-                      </Button>
-                    </>
-                  )}
-                </div>
-              )}
-
-              {/* Add Button on the right */}
-              <div className="flex items-center">
-                {permissions.canCreate && !isWhitelabel && !isOffline && (
-                  <Dialog
-                    open={addPageDialogOpen}
-                    onOpenChange={(open) => {
-                      setAddPageDialogOpen(open);
-                      if (open) {
-                        setAddPageForm({ files: [] });
-                        setAddPageError("");
-                      }
-                    }}
-                  >
-                    <DialogTrigger asChild>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="h-8 px-3 text-sm flex items-center gap-1 ml-2 sm:ml-4"
-                      >
-                        <Plus className="w-3 h-3" />
-                        <span className="hidden sm:inline">Add</span>
-                        <span className="sm:hidden">+</span>
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-2xl max-h-[80vh] flex flex-col">
-                      <DialogHeader>
-                        <DialogTitle>Add Pages</DialogTitle>
-                        <DialogDescription>
-                          Upload one or more page images. Files will be sorted
-                          by name and assigned sequential page numbers.
-                        </DialogDescription>
-                      </DialogHeader>
-                      <div className="flex-1 overflow-y-auto">
-                        <div className="grid gap-4 py-4">
-                          {/* Multi-file Upload Area */}
-                          <div className="grid gap-2">
-                            <Label>Page Images</Label>
-                            <div className="relative border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-gray-400 transition-colors">
-                              <input
-                                type="file"
-                                accept="image/*"
-                                multiple
-                                onChange={(e) => {
-                                  const files = Array.from(
-                                    e.target.files || []
-                                  );
-                                  if (files.length > 0) {
-                                    handleMultipleFileSelect(files);
-                                  }
-                                }}
-                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                disabled={addPageLoading}
-                              />
-                              <div className="text-center">
-                                <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                                <div className="space-y-2">
-                                  <p className="text-sm font-medium text-gray-900">
-                                    Drop files here or click to browse
-                                  </p>
-                                  <p className="text-xs text-gray-500">
-                                    Select multiple images (up to 50MB each)
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* File Preview and Configuration */}
-                          {addPageForm.files.length > 0 && (
-                            <div className="grid gap-2">
-                              <Label>
-                                Selected Files ({addPageForm.files.length})
-                              </Label>
-                              <div className="max-h-60 overflow-y-auto border rounded-lg p-2 space-y-2">
-                                {addPageForm.files.map((fileData, index) => (
-                                  <div
-                                    key={index}
-                                    className="flex items-center gap-3 p-2 bg-gray-50 rounded border"
-                                  >
-                                    {/* File preview */}
-                                    <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center flex-shrink-0">
-                                      <FileImage className="w-6 h-6 text-gray-500" />
-                                    </div>
-
-                                    {/* File info and controls */}
-                                    <div className="flex-1 min-w-0 grid grid-cols-1 sm:grid-cols-3 gap-2">
-                                      {/* File name */}
-                                      <div className="min-w-0">
-                                        <p className="text-sm font-medium text-gray-900 truncate">
-                                          {fileData.file.name}
-                                        </p>
-                                        <p className="text-xs text-gray-500">
-                                          {(
-                                            fileData.file.size /
-                                            (1024 * 1024)
-                                          ).toFixed(1)}{" "}
-                                          MB
-                                        </p>
-                                      </div>
-
-                                      {/* Page number input */}
-                                      <div>
-                                        <Input
-                                          type="number"
-                                          min="1"
-                                          value={fileData.pageNumber}
-                                          onChange={(e) => {
-                                            const pageNum =
-                                              parseInt(e.target.value) || 0;
-                                            handleUpdateFilePageNumber(
-                                              index,
-                                              pageNum
-                                            );
-                                          }}
-                                          placeholder="Page #"
-                                          className="text-sm h-8"
-                                        />
-                                      </div>
-
-                                      {/* Page in book input */}
-                                      <div>
-                                        <Input
-                                          type="text"
-                                          value={
-                                            fileData.pageNumberInBook || ""
-                                          }
-                                          onChange={(e) => {
-                                            handleUpdateFilePageNumberInBook(
-                                              index,
-                                              e.target.value
-                                            );
-                                          }}
-                                          placeholder="Page in book (optional)"
-                                          className="text-sm h-8"
-                                          dir="rtl"
-                                          style={{
-                                            fontFamily:
-                                              '"East Syriac Adiabene", serif',
-                                          }}
-                                        />
-                                      </div>
-                                    </div>
-
-                                    {/* Remove button */}
-                                    <Button
-                                      type="button"
-                                      variant="ghost"
-                                      size="sm"
-                                      onClick={() => handleRemoveFile(index)}
-                                      className="h-8 w-8 p-0 flex-shrink-0"
-                                    >
-                                      <X className="h-4 w-4" />
-                                    </Button>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-
-                          {addPageError && (
-                            <div className="bg-red-50 border border-red-200 rounded p-3">
-                              <p className="text-sm text-red-600">
-                                {addPageError}
-                              </p>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                      <DialogFooter>
-                        <Button
-                          type="button"
-                          variant="secondary"
-                          onClick={() => setAddPageDialogOpen(false)}
-                          disabled={addPageLoading}
-                        >
-                          Cancel
-                        </Button>
-                        <Button
-                          type="button"
-                          onClick={handleAddPageFormSubmit}
-                          disabled={
-                            addPageLoading || addPageForm.files.length === 0
-                          }
-                        >
-                          {addPageLoading ? (
-                            <div className="flex items-center gap-2">
-                              <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                              Adding...
-                            </div>
-                          ) : (
-                            <>
-                              <Plus className="w-4 h-4 mr-2" />
-                              Add {addPageForm.files.length} Page
-                              {addPageForm.files.length !== 1 ? "s" : ""}
-                            </>
-                          )}
-                        </Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
-                )}
-              </div>
-            </div>
+            <PageNavigation showAddButton={true} className="mb-4" />
 
             {/* Content Area */}
             <div className="flex-1 mb-4">
@@ -1949,7 +1987,10 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                                             }}
                                             placeholder="Page in book (optional)"
                                             className="text-sm h-8"
-                                            dir="rtl"
+                                            dir={
+                                              (book as any)?.textDirection ||
+                                              "rtl"
+                                            }
                                             style={{
                                               fontFamily:
                                                 '"East Syriac Adiabene", serif',
@@ -2018,9 +2059,19 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                   )}
                 </div>
               ) : (
-                <div className="flex flex-col lg:grid lg:grid-cols-2 gap-4 lg:gap-8 h-full">
-                  {/* Left: Text / Editor */}
-                  <Card className="shadow-lg border-0 flex flex-col h-full py-0 gap-0">
+                <div
+                  className={`flex flex-col lg:grid lg:grid-cols-2 gap-4 lg:gap-8 h-full ${
+                    (book as any)?.textDirection === "ltr"
+                      ? "lg:grid-flow-col-dense"
+                      : ""
+                  }`}
+                >
+                  {/* Text / Editor */}
+                  <Card
+                    className={`shadow-lg border-0 flex flex-col h-full py-0 gap-0 ${
+                      (book as any)?.textDirection === "ltr" ? "lg:order-2" : ""
+                    }`}
+                  >
                     <CardHeader className="bg-red-900 text-white h-12 flex items-center rounded-t-lg">
                       <div className="flex items-center justify-between w-full h-6">
                         <div className="flex items-center gap-3">
@@ -2073,6 +2124,9 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                                     </SelectItem>
                                     <SelectItem value="Estrangelo Qenneshrin">
                                       Estrangelo Qenneshrin
+                                    </SelectItem>
+                                    <SelectItem value="Noto Sans Malayalam">
+                                      Noto Sans Malayalam
                                     </SelectItem>
                                   </SelectContent>
                                 </Select>
@@ -2217,25 +2271,45 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                               </div>
                             </div>
                           ) : (
-                            <SyriacEditor
-                              content={textContentJson || undefined}
-                              onUpdate={(_html: string, json?: JSONContent) => {
-                                if (json) setTextContentJson(json);
-                              }}
-                              className="flex-1 w-full"
-                            />
+                            <div
+                              className="flex-1 w-full h-full flex flex-col"
+                              dir={(book as any)?.textDirection || "rtl"}
+                            >
+                              <SyriacEditor
+                                key={`editor-${
+                                  currentPage?.id || "default"
+                                }-${selectedPageIndex}`}
+                                content={textContentJson || undefined}
+                                onUpdate={(
+                                  _html: string,
+                                  json?: JSONContent
+                                ) => {
+                                  if (json) setTextContentJson(json);
+                                }}
+                                className="flex-1 w-full h-full"
+                                textDirection={
+                                  (book as any)?.textDirection || "rtl"
+                                }
+                              />
+                            </div>
                           )}
                         </div>
                       ) : (
-                        <div className="px-2 lg:px-4  flex-1 flex flex-col">
+                        <div className="px-2 lg:px-4 flex-1 flex flex-col">
                           {textContentJson ? (
                             <div className="flex-1 p-2 sm:p-4 overflow-y-auto">
-                              <div className="prose prose-sm sm:prose-lg max-w-none leading-relaxed">
+                              <div
+                                className="prose prose-sm sm:prose-lg max-w-none leading-relaxed"
+                                dir={(book as any)?.textDirection || "rtl"}
+                              >
                                 <TipTapRenderer
                                   content={textContentJson}
                                   showLineNumbers={showLineNumbers}
                                   selectedFont={selectedFont}
                                   selectedFontSize={selectedFontSize}
+                                  textDirection={
+                                    (book as any)?.textDirection || "rtl"
+                                  }
                                 />
                               </div>
                             </div>
@@ -2271,8 +2345,12 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                     </CardContent>
                   </Card>
 
-                  {/* Right: Page Image */}
-                  <Card className="shadow-lg border-0 overflow-hidden flex flex-col h-full py-0 gap-0">
+                  {/* Page Image */}
+                  <Card
+                    className={`shadow-lg border-0 overflow-hidden flex flex-col h-full py-0 gap-0 ${
+                      (book as any)?.textDirection === "ltr" ? "lg:order-1" : ""
+                    }`}
+                  >
                     <CardHeader className="bg-gradient-to-r from-slate-900 to-slate-800 text-white h-12 flex items-center">
                       <div className="flex items-center justify-between w-full h-full">
                         <div className="flex items-center gap-2 text-sm font-medium">
@@ -2362,9 +2440,9 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                         </div>
                       </div>
                     </CardHeader>
-                    <CardContent className="p-0 flex-1 flex items-center justify-center bg-slate-50 min-h-[300px] relative">
+                    <CardContent className="p-0 flex-1 flex items-center justify-center bg-slate-50 min-h-[300px] relative overflow-hidden">
                       {currentPage?.imageUrl ? (
-                        <div className="w-full h-full flex items-center justify-center">
+                        <div className="w-full h-full flex items-center justify-center relative">
                           {imageLoading && (
                             <div className="absolute inset-0 flex items-center justify-center bg-slate-50">
                               <div className="animate-spin rounded-full h-8 w-8 border-4 border-slate-300 border-t-slate-600"></div>
@@ -2384,7 +2462,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                             key={`page-${currentPage.id}-${currentPage.imageUrl}`}
                             src={currentPage.imageUrl}
                             alt={`Page ${currentPage.pageNumber}`}
-                            className="max-w-full max-h-full object-contain"
+                            className="max-w-full max-h-full object-contain transition-opacity duration-200"
                             width={800}
                             height={1200}
                             priority
@@ -2393,7 +2471,9 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                           />
                         </div>
                       ) : (
-                        <p className="text-slate-500">No image available</p>
+                        <div className="flex items-center justify-center h-full">
+                          <p className="text-slate-500">No image available</p>
+                        </div>
                       )}
                     </CardContent>
                   </Card>
@@ -2402,190 +2482,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
             </div>
 
             {/* Bottom Page Navigation */}
-            {(book?.pages?.length ?? 0) > 0 && (
-              <div className="flex items-center justify-center mt-6 mb-4 px-4">
-                <div className="flex items-center gap-3">
-                  {/* For RTL documents (like Syriac), reverse the navigation */}
-                  {book?.language === "Syriac" ||
-                  book?.language === "Arabic" ||
-                  book?.language === "Hebrew" ? (
-                    <>
-                      {/* Previous Page (leftmost for RTL) */}
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={goToPreviousPage}
-                        disabled={selectedPageIndex === 0}
-                        className="h-8 px-3 flex items-center gap-1"
-                        title="Previous Page"
-                      >
-                        <span className="text-xs hidden sm:inline">
-                          Previous
-                        </span>
-                        <ChevronRight className="w-3 h-3" />
-                      </Button>
-
-                      {/* Page Selector */}
-                      <div className="flex items-center gap-2">
-                        <Select
-                          value={String(selectedPageIndex + 1)}
-                          onValueChange={(value) => {
-                            const pageNum = parseInt(value);
-                            if (pageNum >= 1 && pageNum <= pageCount) {
-                              setEditMode(false);
-                              setSelectedPageIndex(pageNum - 1);
-                            }
-                          }}
-                        >
-                          <SelectTrigger className="w-32 h-8">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent className="max-h-[300px] overflow-y-auto">
-                            {(book?.pages ?? []).map((page, index) => (
-                              <SelectItem
-                                key={page.pageId}
-                                value={String(index + 1)}
-                              >
-                                <div className="flex items-center justify-between w-full">
-                                  <span>
-                                    Page {index + 1}
-                                    {page.pageNumberInBook && (
-                                      <>
-                                        {" | "}
-                                        <span
-                                          style={{
-                                            fontFamily:
-                                              '"East Syriac Adiabene", serif',
-                                          }}
-                                        >
-                                          {page.pageNumberInBook}
-                                        </span>
-                                      </>
-                                    )}
-                                  </span>
-                                  <div
-                                    className={`ml-2 px-1 py-0.5 rounded text-xs ${getPageStatusColor(
-                                      page.status || "draft"
-                                    )}`}
-                                  >
-                                    {getPageStatusDisplayName(
-                                      page.status || "draft"
-                                    )}
-                                  </div>
-                                </div>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <span className="text-sm text-slate-600 font-medium">
-                          of {pageCount}
-                        </span>
-                      </div>
-
-                      {/* Next Page (rightmost for RTL) */}
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={goToNextPage}
-                        disabled={selectedPageIndex === pageCount - 1}
-                        className="h-8 px-3 flex items-center gap-1"
-                        title="Next Page"
-                      >
-                        <ChevronLeft className="w-3 h-3" />
-                        <span className="text-xs hidden sm:inline">Next</span>
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      {/* Next Page (leftmost for LTR) */}
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={goToNextPage}
-                        disabled={selectedPageIndex === pageCount - 1}
-                        className="h-8 px-3 flex items-center gap-1"
-                        title="Next Page"
-                      >
-                        <ChevronLeft className="w-3 h-3" />
-                        <span className="text-xs hidden sm:inline">Next</span>
-                      </Button>
-
-                      {/* Page Selector */}
-                      <div className="flex items-center gap-2">
-                        <Select
-                          value={String(selectedPageIndex + 1)}
-                          onValueChange={(value) => {
-                            const pageNum = parseInt(value);
-                            if (pageNum >= 1 && pageNum <= pageCount) {
-                              setEditMode(false);
-                              setSelectedPageIndex(pageNum - 1);
-                            }
-                          }}
-                        >
-                          <SelectTrigger className="w-32 h-8">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent className="max-h-[300px] overflow-y-auto">
-                            {(book?.pages ?? []).map((page, index) => (
-                              <SelectItem
-                                key={page.pageId}
-                                value={String(index + 1)}
-                              >
-                                <div className="flex items-center justify-between w-full">
-                                  <span>
-                                    Page {index + 1}
-                                    {page.pageNumberInBook && (
-                                      <>
-                                        {" | "}
-                                        <span
-                                          style={{
-                                            fontFamily:
-                                              '"East Syriac Adiabene", serif',
-                                          }}
-                                        >
-                                          {page.pageNumberInBook}
-                                        </span>
-                                      </>
-                                    )}
-                                  </span>
-                                  <div
-                                    className={`ml-2 px-1 py-0.5 rounded text-xs ${getPageStatusColor(
-                                      page.status || "draft"
-                                    )}`}
-                                  >
-                                    {getPageStatusDisplayName(
-                                      page.status || "draft"
-                                    )}
-                                  </div>
-                                </div>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <span className="text-sm text-slate-600 font-medium">
-                          of {pageCount}
-                        </span>
-                      </div>
-
-                      {/* Previous Page (rightmost for LTR) */}
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={goToPreviousPage}
-                        disabled={selectedPageIndex === 0}
-                        className="h-8 px-3 flex items-center gap-1"
-                        title="Previous Page"
-                      >
-                        <span className="text-xs hidden sm:inline">
-                          Previous
-                        </span>
-                        <ChevronRight className="w-3 h-3" />
-                      </Button>
-                    </>
-                  )}
-                </div>
-              </div>
-            )}
+            <PageNavigation showAddButton={false} className="mt-6 mb-4" />
           </div>
         </ProtectedRoute>
       </div>

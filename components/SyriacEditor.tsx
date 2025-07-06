@@ -46,6 +46,7 @@ const fonts = [
   { name: "East Syriac Ctesiphon", value: "East Syriac Ctesiphon" },
   { name: "Estrangela Edessa", value: "Estrangelo Edessa" },
   { name: "Estrangela Qenneshrin", value: "Estrangelo Qenneshrin" },
+  { name: "Noto Sans Malayalam", value: "Noto Sans Malayalam" },
 ];
 
 const fontSizes = [
@@ -100,55 +101,60 @@ interface SyriacEditorProps {
   onUpdate?: (content: string, json?: JSONContent) => void;
   editable?: boolean;
   className?: string;
+  textDirection?: "rtl" | "ltr";
 }
 
-const isRTL = true;
+// This will be set from props in the component
 
-// Custom extension to add line height and direction to paragraphs
-const ParagraphExtension = Extension.create({
-  name: "paragraphExtension",
+// Custom extension factory to add line height and direction to paragraphs
+const createParagraphExtension = (defaultDirection: "rtl" | "ltr") =>
+  Extension.create({
+    name: "paragraphExtension",
 
-  addGlobalAttributes() {
-    return [
-      {
-        types: ["paragraph"],
-        attributes: {
-          lineHeight: {
-            default: "1.4",
-            parseHTML: (element) => element.style.lineHeight || "1.4",
-            renderHTML: (attributes) => {
-              if (!attributes.lineHeight) {
-                return {};
-              }
-              return {
-                style: `line-height: ${attributes.lineHeight}`,
-              };
+    addGlobalAttributes() {
+      return [
+        {
+          types: ["paragraph"],
+          attributes: {
+            lineHeight: {
+              default: "1.4",
+              parseHTML: (element) => element.style.lineHeight || "1.4",
+              renderHTML: (attributes) => {
+                if (!attributes.lineHeight) {
+                  return {};
+                }
+                return {
+                  style: `line-height: ${attributes.lineHeight}`,
+                };
+              },
             },
-          },
-          dir: {
-            default: "rtl",
-            parseHTML: (element) => element.getAttribute("dir") || "rtl",
-            renderHTML: (attributes) => {
-              if (!attributes.dir) {
-                return {};
-              }
-              return {
-                dir: attributes.dir,
-              };
+            dir: {
+              default: defaultDirection,
+              parseHTML: (element) =>
+                element.getAttribute("dir") || defaultDirection,
+              renderHTML: (attributes) => {
+                if (!attributes.dir) {
+                  return {};
+                }
+                return {
+                  dir: attributes.dir,
+                };
+              },
             },
           },
         },
-      },
-    ];
-  },
-});
+      ];
+    },
+  });
 
 export default function SyriacEditor({
   content = "",
   onUpdate,
   editable = true,
   className = "",
+  textDirection = "rtl",
 }: SyriacEditorProps) {
+  const isRTL = textDirection === "rtl";
   const [selectedFont, setSelectedFont] = useState("Karshon");
   const [fontSize, setFontSize] = useState("");
   const [fontSizeInput, setFontSizeInput] = useState("");
@@ -197,47 +203,18 @@ export default function SyriacEditor({
         alignments: ["left", "center", "right", "justify"],
         defaultAlignment: isRTL ? "right" : "left",
       }),
-      ParagraphExtension,
+      createParagraphExtension(textDirection),
     ],
     content,
     editable,
     immediatelyRender: false,
-
     onUpdate: ({ editor, transaction }) => {
-      // Check if this update was caused by a paste operation
-      if (transaction.docChanged && transaction.getMeta("paste")) {
-        // Transform Syriac characters after paste
+      // Only replace if transaction has meaningful changes
+      if (transaction.docChanged) {
         const content = editor.getHTML();
+
+        // Replace common Unicode characters with their proper Syriac alternatives
         const transformedContent = content
-          .replace(/ܬܼܵ/g, "ܬ݂ܵ") // Replace ܬܼܵ with ܬ݂ܵ
-          .replace(/ܡܼܢ/g, "ܡ̣ܢ") // Replace ܡܼܢ with ܡ̣ܢ
-          .replace(/ܕܿ/g, "ܕ݁") // Replace ܕܿ with ܕ݁
-          .replace(/ܡ݂ܢ/g, "ܡ̣ܢ") // Replace ܡ݂ܢ with ܡ̣ܢ
-          .replace(/ܕܼ/g, "ܕ݂") // Replace ܕܼ with ܕ݂
-          .replace(/ܒܹܿ/g, "ܒܹ݁") // Replace ܒܹܿ with ܒܹܿ
-          .replace(/ܐ݇ܡܹܝܢ/g, "ܐܵܡܹܝܢ")
-          .replace(/ܡܳܪܶ/g, "ܡܵܪܵ")
-          .replace(/ܐܿ/g, "ܐܵ")
-          .replace(/\*/g, "܀")
-          .replace(/ܟܷ/g, "ܟ݂")
-          .replace(/ܥܵܢܲܝܢ/g, "ܥܵܢܹܝܢ")
-          .replace(/ܐܲܡܹܝܢ/g, "ܐܵܡܹܝܢ")
-          .replace(/ܙܲܒ݂ܢܲܐ/g, "ܙܲܒ݂ܢܹ̈ܐ")
-          .replace(/ܙܲܒ݂ܪܹܐ/g, "ܙܲܒ݂ܢܹ̈ܐ")
-          .replace(/ܥܸܕܵܪܹܐ/g, "ܥܸܕܵܢܹܐ")
-          .replace(/ܕܒܲܬܲܪ/g, "ܕܒ݂ܵܬܲܪ")
-          .replace(/ܡܸܢ/g, "ܡ̣ܢ")
-          .replace(/ܒ̇/g, "ܒ݁") // Replace ܒ̇ with ܒ݁
-          .replace(/ܒ̣/g, "ܒ݂") // Replace ܒ̣ with ܒ݂
-          .replace(/ܬ̇/g, "ܬ݁") // Replace ܬ̇ with ܬ݁
-          .replace(/ܬ̣/g, "ܬ݂") // Replace ܬ̣ with ܬ݂
-          .replace(/ܟ̇/g, "ܟ݁") // Replace ܟ̇ with ܟ݁
-          .replace(/ܟ̣/g, "ܟ݂") // Replace ܟ̣ with ܟ݂
-          .replace(/ܓ̣/g, "ܓ݁") // Replace ܓ̣ with ܓ݁
-          .replace(/ܓ̇/g, "ܓ݁") // Replace ܓ̇ with ܓ݁
-          .replace(/ܟܼ/g, "ܟ݂") // Replace ܟܼ with ܟ݂
-          .replace(/ܬܿ/g, "ܬ݁") // Replace ܬܿ with ܬ݁
-          .replace(/ܬܼ/g, "ܬ݂") // Replace ܬܼ with ܬ݂
           .replace(/ܒܿ/g, "ܒ݁") // Replace ܒܿ with ܒ݁
           .replace(/ܒܼ/g, "ܒ݂") // Replace ܒܼ with ܒ݂
           .replace(/ܓܼ/g, "ܓ݂") // Replace ܓܼ with ܓ݂
@@ -271,7 +248,7 @@ export default function SyriacEditor({
       editor.commands.selectAll();
       editor.commands.updateAttributes("paragraph", {
         lineHeight: "1.4",
-        dir: "rtl",
+        dir: textDirection,
       });
       editor.commands.setTextSelection(0);
 
@@ -290,6 +267,15 @@ export default function SyriacEditor({
       }
     },
   });
+
+  // Cleanup editor on unmount to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (editor) {
+        editor.destroy();
+      }
+    };
+  }, [editor]);
 
   const updateCurrentAttributes = useCallback(() => {
     if (!editor) return;
@@ -358,7 +344,7 @@ export default function SyriacEditor({
       if (colors.size === 1) setCurrentColor(Array.from(colors)[0] as string);
       if (aligns.size === 1) setCurrentAlign(Array.from(aligns)[0] as string);
     }
-  }, [editor, selectedFont, fontSize, fontColor]);
+  }, [editor, selectedFont, fontSize, fontColor, isRTL]);
 
   useEffect(() => {
     updateCurrentAttributes();

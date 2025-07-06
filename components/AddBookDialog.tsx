@@ -45,6 +45,7 @@ export function AddBookDialog() {
     placeOfPublication: "",
     coverImage: "",
     tags: [],
+    textDirection: "rtl",
   });
 
   const [tagsInput, setTagsInput] = useState("");
@@ -132,6 +133,7 @@ export function AddBookDialog() {
         placeOfPublication: "",
         coverImage: "",
         tags: [],
+        textDirection: "rtl",
       });
       setTagsInput("");
       setBookIdInput("");
@@ -164,7 +166,7 @@ export function AddBookDialog() {
 
   const handleInputChange = (
     field: keyof CreateBookData,
-    value: string | number
+    value: string | number | "rtl" | "ltr"
   ) => {
     setNewBookData((prev) => ({
       ...prev,
@@ -235,7 +237,7 @@ export function AddBookDialog() {
                   handleInputChange("syriacTitle", e.target.value)
                 }
                 placeholder="Enter Syriac title"
-                dir="rtl"
+                dir={newBookData.textDirection}
                 className="text-right"
                 style={{
                   fontFamily: '"East Syriac Adiabene", serif',
@@ -309,6 +311,25 @@ export function AddBookDialog() {
                 onChange={(e) => handleInputChange("category", e.target.value)}
                 placeholder="e.g., Liturgy, Theology"
               />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="textDirection">Text Direction</Label>
+              <select
+                id="textDirection"
+                value={newBookData.textDirection}
+                onChange={(e) =>
+                  handleInputChange(
+                    "textDirection",
+                    e.target.value as "rtl" | "ltr"
+                  )
+                }
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <option value="rtl">Right-to-Left (RTL)</option>
+                <option value="ltr">Left-to-Right (LTR)</option>
+              </select>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
