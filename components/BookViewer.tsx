@@ -590,7 +590,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
       placeOfPublication: book.placeOfPublication || "",
       coverImage: book.coverImage || "",
       tags: book.tags || [],
-      textDirection: (book as any).textDirection || "rtl",
+      textDirection: book.textDirection || "rtl",
     });
     setEditBookTagsInput((book.tags || []).join(", "));
     setEditBookError("");
@@ -1047,7 +1047,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
         {/* Navigation */}
         <div className="flex items-center gap-3">
           {/* For RTL documents, reverse the navigation */}
-          {(book as any)?.textDirection === "rtl" ? (
+          {book.textDirection === "rtl" ? (
             <>
               {/* Next Page (leftmost for RTL) */}
               <Button
@@ -1339,9 +1339,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                                       }}
                                       placeholder="Page in book (optional)"
                                       className="text-sm h-8"
-                                      dir={
-                                        (book as any)?.textDirection || "rtl"
-                                      }
+                                      dir={book.textDirection || "rtl"}
                                       style={{
                                         fontFamily:
                                           '"East Syriac Adiabene", serif',
@@ -1767,7 +1765,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                       {book.syriacTitle && (
                         <span
                           className="text-2xl sm:text-3xl text-slate-700 break-words sm:flex-shrink-0 text-right"
-                          dir={(book as any)?.textDirection || "rtl"}
+                          dir={book.textDirection || "rtl"}
                           style={{
                             fontFamily: '"East Syriac Adiabene", serif',
                           }}
@@ -1987,10 +1985,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                                             }}
                                             placeholder="Page in book (optional)"
                                             className="text-sm h-8"
-                                            dir={
-                                              (book as any)?.textDirection ||
-                                              "rtl"
-                                            }
+                                            dir={book.textDirection || "rtl"}
                                             style={{
                                               fontFamily:
                                                 '"East Syriac Adiabene", serif',
@@ -2061,15 +2056,13 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
               ) : (
                 <div
                   className={`flex flex-col lg:grid lg:grid-cols-2 gap-4 lg:gap-8 h-full ${
-                    (book as any)?.textDirection === "ltr"
-                      ? "lg:grid-flow-col-dense"
-                      : ""
+                    book.textDirection === "ltr" ? "lg:grid-flow-col-dense" : ""
                   }`}
                 >
                   {/* Text / Editor */}
                   <Card
                     className={`shadow-lg border-0 flex flex-col h-full py-0 gap-0 ${
-                      (book as any)?.textDirection === "ltr" ? "lg:order-2" : ""
+                      book.textDirection === "ltr" ? "lg:order-2" : ""
                     }`}
                   >
                     <CardHeader className="bg-red-900 text-white h-12 flex items-center rounded-t-lg">
@@ -2273,7 +2266,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                           ) : (
                             <div
                               className="flex-1 w-full h-full flex flex-col"
-                              dir={(book as any)?.textDirection || "rtl"}
+                              dir={book.textDirection || "rtl"}
                             >
                               <SyriacEditor
                                 key={`editor-${
@@ -2287,9 +2280,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                                   if (json) setTextContentJson(json);
                                 }}
                                 className="flex-1 w-full h-full"
-                                textDirection={
-                                  (book as any)?.textDirection || "rtl"
-                                }
+                                textDirection={book.textDirection || "rtl"}
                               />
                             </div>
                           )}
@@ -2300,16 +2291,14 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                             <div className="flex-1 p-2 sm:p-4 overflow-y-auto">
                               <div
                                 className="prose prose-sm sm:prose-lg max-w-none leading-relaxed"
-                                dir={(book as any)?.textDirection || "rtl"}
+                                dir={book.textDirection || "rtl"}
                               >
                                 <TipTapRenderer
                                   content={textContentJson}
                                   showLineNumbers={showLineNumbers}
                                   selectedFont={selectedFont}
                                   selectedFontSize={selectedFontSize}
-                                  textDirection={
-                                    (book as any)?.textDirection || "rtl"
-                                  }
+                                  textDirection={book.textDirection || "rtl"}
                                 />
                               </div>
                             </div>
@@ -2348,7 +2337,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                   {/* Page Image */}
                   <Card
                     className={`shadow-lg border-0 overflow-hidden flex flex-col h-full py-0 gap-0 ${
-                      (book as any)?.textDirection === "ltr" ? "lg:order-1" : ""
+                      book.textDirection === "ltr" ? "lg:order-1" : ""
                     }`}
                   >
                     <CardHeader className="bg-gradient-to-r from-slate-900 to-slate-800 text-white h-12 flex items-center">
