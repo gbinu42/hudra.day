@@ -226,7 +226,9 @@ export default function SyriacEditor({
                 .replace(/ണ്ടു(?=\s|$)/g, "ണ്ട്") // Replace ണ്ടു with ണ്ട് at end of word
                 .replace(/നു(?=\s|$)/g, "ന്") // Replace നു with ന് at end of word
                 .replace(/ത്തു(?=\s|$)/g, "ത്ത്") // Replace ത്തു with ത്ത് at end of word
-                .replace(/ക്കു(?=\s|$)/g, "ക്ക്");
+                .replace(/ക്കു(?=\s|$)/g, "ക്ക്")
+                .replace(/ട്ടു(?=\s|$)/g, "ട്ട്")
+                .replace(/തു(?=\s|$)/g, "ത്");
             }
 
             // Apply Syriac transformations to all languages
