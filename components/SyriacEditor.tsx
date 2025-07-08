@@ -102,6 +102,7 @@ interface SyriacEditorProps {
   editable?: boolean;
   className?: string;
   textDirection?: "rtl" | "ltr";
+  bookLanguage?: string;
 }
 
 // This will be set from props in the component
@@ -153,6 +154,7 @@ export default function SyriacEditor({
   editable = true,
   className = "",
   textDirection = "rtl",
+  bookLanguage = "",
 }: SyriacEditorProps) {
   const isRTL = textDirection === "rtl";
   const [selectedFont, setSelectedFont] = useState("Karshon");
@@ -208,28 +210,77 @@ export default function SyriacEditor({
     content,
     editable,
     immediatelyRender: false,
-    onUpdate: ({ editor, transaction }) => {
-      // Only replace if transaction has meaningful changes
-      if (transaction.docChanged) {
-        const content = editor.getHTML();
+    editorProps: {
+      handlePaste: (view, event) => {
+        const clipboardData = event.clipboardData;
+        if (clipboardData && clipboardData.getData) {
+          let pastedText = clipboardData.getData("text/plain");
+          if (pastedText) {
+            event.preventDefault();
 
-        // Replace common Unicode characters with their proper Syriac alternatives
-        const transformedContent = content
-          .replace(/ܒܿ/g, "ܒ݁") // Replace ܒܿ with ܒ݁
-          .replace(/ܒܼ/g, "ܒ݂") // Replace ܒܼ with ܒ݂
-          .replace(/ܓܼ/g, "ܓ݂") // Replace ܓܼ with ܓ݂
-          .replace(/ܓܿ/g, "ܓ݁") // Replace ܓܿ with ܓ݁
-          .replace(/ܐ̄/g, "ܐ݇")
-          .replace(/ܗ̄/g, "ܗ݇")
-          .replace(/ܠ̄/g, "ܠ݇")
-          .replace(/ܢ̄/g, "ܢ݇");
+            // Process Malayalam text if applicable
+            if (bookLanguage === "Malayalam") {
+              pastedText = pastedText
+                .replace(/\n|\r\n|\r/g, "") // Remove all newlines
+                .replace(/ൻറെ/g, "ന്റെ"); // Replace ൻറെ with ന്റെ
+            }
 
-        if (transformedContent !== content) {
-          // Only update if there were changes to avoid infinite loops
-          editor.commands.setContent(transformedContent, false);
+            // Apply Syriac transformations to all languages
+            const processedText = pastedText
+              .replace(/ܬܼܵ/g, "ܬ݂ܵ") // Replace ܬܼܵ with ܬ݂ܵ
+              .replace(/ܡܼܢ/g, "ܡ̣ܢ") // Replace ܡܼܢ with ܡ̣ܢ
+              .replace(/ܕܿ/g, "ܕ݁") // Replace ܕܿ with ܕ݁
+              .replace(/ܡ݂ܢ/g, "ܡ̣ܢ") // Replace ܡ݂ܢ with ܡ̣ܢ
+              .replace(/ܕܼ/g, "ܕ݂") // Replace ܕܼ with ܕ݂
+              .replace(/ܒܹܿ/g, "ܒܹ݁") // Replace ܒܹܿ with ܒܹ݁
+              .replace(/ܐ݇ܡܹܝܢ/g, "ܐܵܡܹܝܢ")
+              .replace(/ܡܳܪܶ/g, "ܡܵܪܵ")
+              .replace(/ܐܿ/g, "ܐܵ")
+              .replace(/\*/g, "܀")
+              .replace(/ܟܷ/g, "ܟ݂")
+              .replace(/ܥܵܢܲܝܢ/g, "ܥܵܢܹܝܢ")
+              .replace(/ܐܲܡܹܝܢ/g, "ܐܵܡܹܝܢ")
+              .replace(/ܙܲܒ݂ܢܲܐ/g, "ܙܲܒ݂ܢܹ̈ܐ")
+              .replace(/ܙܲܒ݂ܪܹܐ/g, "ܙܲܒ݂ܢܹ̈ܐ")
+              .replace(/ܥܸܕܵܪܹܐ/g, "ܥܸܕܵܢܹܐ")
+              .replace(/ܕܒܲܬܲܪ/g, "ܕܒ݂ܵܬܲܪ")
+              .replace(/ܡܸܢ/g, "ܡ̣ܢ")
+              .replace(/ܒ̇/g, "ܒ݁") // Replace ܒ̇ with ܒ݁
+              .replace(/ܒ̣/g, "ܒ݂") // Replace ܒ̣ with ܒ݂
+              .replace(/ܬ̇/g, "ܬ݁") // Replace ܬ̇ with ܬ݁
+              .replace(/ܬ̣/g, "ܬ݂") // Replace ܬ̣ with ܬ݂
+              .replace(/ܟ̇/g, "ܟ݁") // Replace ܟ̇ with ܟ݁
+              .replace(/ܟ̣/g, "ܟ݂") // Replace ܟ̣ with ܟ݂
+              .replace(/ܓ̣/g, "ܓ݁") // Replace ܓ̣ with ܓ݁
+              .replace(/ܓ̇/g, "ܓ݁") // Replace ܓ̇ with ܓ݁
+              .replace(/ܟܼ/g, "ܟ݂") // Replace ܟܼ with ܟ݂
+              .replace(/ܬܿ/g, "ܬ݁") // Replace ܬܿ with ܬ݁
+              .replace(/ܬܼ/g, "ܬ݂") // Replace ܬܼ with ܬ݂
+              .replace(/ܒܿ/g, "ܒ݁") // Replace ܒܿ with ܒ݁
+              .replace(/ܒܼ/g, "ܒ݂") // Replace ܒܼ with ܒ݂
+              .replace(/ܓܼ/g, "ܓ݂") // Replace ܓܼ with ܓ݂
+              .replace(/ܓܿ/g, "ܓ݁") // Replace ܓܿ with ܓ݁
+              .replace(/ܐ̄/g, "ܐ݇")
+              .replace(/ܗ̄/g, "ܗ݇")
+              .replace(/ܠ̄/g, "ܠ݇")
+              .replace(/ܢ̄/g, "ܢ݇");
+
+            // Insert the processed text
+            view.dispatch(
+              view.state.tr.insertText(
+                processedText,
+                view.state.selection.from,
+                view.state.selection.to
+              )
+            );
+
+            return true; // Prevent default paste behavior
+          }
         }
-      }
-
+        return false; // Allow default paste behavior if no text data
+      },
+    },
+    onUpdate: ({ editor }) => {
       if (onUpdate) {
         onUpdate(editor.getHTML(), editor.getJSON());
       }

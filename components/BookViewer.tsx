@@ -2281,6 +2281,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                                 }}
                                 className="flex-1 w-full h-full"
                                 textDirection={book.textDirection || "rtl"}
+                                bookLanguage={book.language}
                               />
                             </div>
                           )}
