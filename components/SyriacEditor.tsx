@@ -222,7 +222,11 @@ export default function SyriacEditor({
             if (bookLanguage === "Malayalam") {
               pastedText = pastedText
                 .replace(/\n|\r\n|\r/g, "") // Remove all newlines
-                .replace(/ൻറെ/g, "ന്റെ"); // Replace ൻറെ with ന്റെ
+                .replace(/ൻറെ/g, "ന്റെ") // Replace ൻറെ with ന്റെ
+                .replace(/ണ്ടു(?=\s|$)/g, "ണ്ട്") // Replace ണ്ടു with ണ്ട് at end of word
+                .replace(/നു(?=\s|$)/g, "ന്") // Replace നു with ന് at end of word
+                .replace(/ത്തു(?=\s|$)/g, "ത്ത്") // Replace ത്തു with ത്ത് at end of word
+                .replace(/ക്കു(?=\s|$)/g, "ക്ക്");
             }
 
             // Apply Syriac transformations to all languages
