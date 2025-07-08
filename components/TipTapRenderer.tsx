@@ -106,7 +106,6 @@ export default function TipTapRenderer({
         listItem: false,
         blockquote: false,
         heading: false,
-        horizontalRule: false,
       }),
       TextStyle,
       Color,
