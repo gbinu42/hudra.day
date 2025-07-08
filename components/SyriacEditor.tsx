@@ -164,6 +164,15 @@ export default function SyriacEditor({
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [keyboardCollapsed, setKeyboardCollapsed] = useState(false);
 
+  // Set default keyboard state based on language and mobile
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
+      if (bookLanguage === "Malayalam" || bookLanguage === "English") {
+        setKeyboardCollapsed(true);
+      }
+    }
+  }, [bookLanguage]);
+
   // Current selection attributes
   const [currentFont, setCurrentFont] = useState("Karshon");
   const [currentFontSize, setCurrentFontSize] = useState("24pt");
@@ -223,14 +232,14 @@ export default function SyriacEditor({
               pastedText = pastedText
                 .replace(/\n|\r\n|\r/g, "") // Remove all newlines
                 .replace(/ൻറെ/g, "ന്റെ") // Replace ൻറെ with ന്റെ
-                .replace(/ണ്ടു(?=\s|$)/g, "ണ്ട്") // Replace ണ്ടു with ണ്ട് at end of word
-                .replace(/നു(?=\s|$)/g, "ന്") // Replace നു with ന് at end of word
-                .replace(/ത്തു(?=\s|$)/g, "ത്ത്") // Replace ത്തു with ത്ത് at end of word
-                .replace(/ക്കു(?=\s|$)/g, "ക്ക്")
-                .replace(/ട്ടു(?=\s|$)/g, "ട്ട്")
-                .replace(/തു(?=\s|$)/g, "ത്")
-                .replace(/തു്(?=\s|$)/g, "ത്")
-                .replace(/ടു(?=\s|$)/g, "ട്");
+                .replace(/ണ്ടു(?=[\s.,;:!?]|$)/g, "ണ്ട്") // Replace ണ്ടു with ണ്ട് at end of word
+                .replace(/നു(?=[\s.,;:!?]|$)/g, "ന്") // Replace നു with ന് at end of word
+                .replace(/ത്തു(?=[\s.,;:!?]|$)/g, "ത്ത്") // Replace ത്തു with ത്ത് at end of word
+                .replace(/ക്കു(?=[\s.,;:!?]|$)/g, "ക്ക്")
+                .replace(/ട്ടു(?=[\s.,;:!?]|$)/g, "ട്ട്")
+                .replace(/തു(?=[\s.,;:!?]|$)/g, "ത്")
+                .replace(/തു്(?=[\s.,;:!?]|$)/g, "ത്")
+                .replace(/ടു(?=[\s.,;:!?]|$)/g, "ട്");
             }
 
             // Apply Syriac transformations to all languages
