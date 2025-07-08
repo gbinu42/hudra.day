@@ -233,7 +233,7 @@ export default function SyriacEditor({
                 .replace(/\n|\r\n|\r/g, "") // Remove all newlines
                 .replace(/ൻറെ/g, "ന്റെ") // Replace ൻറെ with ന്റെ
                 .replace(/ണ്ടു(?=[\s.,;:!?]|$)/g, "ണ്ട്") // Replace ണ്ടു with ണ്ട് at end of word
-                .replace(/നു(?=[\s.,;:!?]|$)/g, "ന്") // Replace നു with ന് at end of word
+                .replace(/(?<!ന്)നു(?=[\s.,;:!?]|$)/g, "ന്") // Replace നു with ന് at end of word, but not if ന് is already in front
                 .replace(/ത്തു(?=[\s.,;:!?]|$)/g, "ത്ത്") // Replace ത്തു with ത്ത് at end of word
                 .replace(/ക്കു(?=[\s.,;:!?]|$)/g, "ക്ക്")
                 .replace(/ട്ടു(?=[\s.,;:!?]|$)/g, "ട്ട്")
