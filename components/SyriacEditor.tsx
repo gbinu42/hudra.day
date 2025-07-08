@@ -32,6 +32,7 @@ import {
   Undo,
   Redo,
   Keyboard,
+  Minus,
 } from "lucide-react";
 import SyriacKeyboard from "./SyriacKeyboard";
 
@@ -199,7 +200,6 @@ export default function SyriacEditor({
         listItem: false,
         blockquote: false,
         heading: false,
-        horizontalRule: false,
       }),
       TextStyle,
       Color,
@@ -739,6 +739,20 @@ export default function SyriacEditor({
                   })}
                 </SelectContent>
               </Select>
+            </div>
+
+            <Separator orientation="vertical" className="h-6" />
+
+            {/* Horizontal Rule */}
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => editor.chain().focus().setHorizontalRule().run()}
+                title="Insert Horizontal Rule"
+              >
+                <Minus size={16} />
+              </Button>
             </div>
 
             <Separator orientation="vertical" className="h-6" />
