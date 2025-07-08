@@ -673,7 +673,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
     }
   }, [currentPage]);
 
-  // OCR function to recognize Syriac text from image
+  // OCR function to recognize text from image based on book language
   const handleOCR = useCallback(async () => {
     if (!currentPage?.imageUrl || ocrLoading) return;
 
@@ -681,23 +681,34 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
     setOcrProgress("Initializing OCR...");
 
     try {
+      // Map book language to Tesseract language codes
+      const getOCRLanguage = (bookLanguage: string): string => {
+        const lang = bookLanguage.toLowerCase();
+        if (lang.includes("malayalam")) return "mal";
+        if (lang.includes("syriac") || lang.includes("aramaic")) return "syr";
+        if (lang.includes("arabic")) return "ara";
+        if (lang.includes("english")) return "eng";
+        if (lang.includes("hindi")) return "hin";
+        if (lang.includes("tamil")) return "tam";
+        // Default to Syriac for unknown languages
+        return "syr";
+      };
+
+      const ocrLanguage = getOCRLanguage(book?.language || "");
+
       // Use Tesseract.js v6 API with progress logger
       const {
         data: { text },
-      } = await Tesseract.recognize(
-        currentPage.imageUrl,
-        "syr", // Syriac language
-        {
-          logger: (m: { status?: string; progress?: number }) => {
-            if (m.status) {
-              setOcrProgress(
-                m.status +
-                  (m.progress ? ` (${Math.round(m.progress * 100)}%)` : "")
-              );
-            }
-          },
-        }
-      );
+      } = await Tesseract.recognize(currentPage.imageUrl, ocrLanguage, {
+        logger: (m: { status?: string; progress?: number }) => {
+          if (m.status) {
+            setOcrProgress(
+              m.status +
+                (m.progress ? ` (${Math.round(m.progress * 100)}%)` : "")
+            );
+          }
+        },
+      });
 
       setOcrProgress("Text recognized successfully!");
       const recognizedText = text.trim();
