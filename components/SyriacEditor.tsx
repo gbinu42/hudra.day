@@ -228,7 +228,9 @@ export default function SyriacEditor({
                 .replace(/ത്തു(?=\s|$)/g, "ത്ത്") // Replace ത്തു with ത്ത് at end of word
                 .replace(/ക്കു(?=\s|$)/g, "ക്ക്")
                 .replace(/ട്ടു(?=\s|$)/g, "ട്ട്")
-                .replace(/തു(?=\s|$)/g, "ത്");
+                .replace(/തു(?=\s|$)/g, "ത്")
+                .replace(/തു്(?=\s|$)/g, "ത്")
+                .replace(/ടു(?=\s|$)/g, "ട്");
             }
 
             // Apply Syriac transformations to all languages
