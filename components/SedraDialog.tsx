@@ -9,6 +9,12 @@ interface TooltipState {
   word: string;
 }
 
+interface DragState {
+  isDragging: boolean;
+  dragOffset: { x: number; y: number };
+  dialogPosition: { x: number; y: number };
+}
+
 interface SedraDialogProps {
   language: string;
   containerRef: React.RefObject<HTMLDivElement | null>;
@@ -25,6 +31,12 @@ export default function SedraDialog({
     y: 0,
     loading: false,
     word: "",
+  });
+
+  const [dragState, setDragState] = useState<DragState>({
+    isDragging: false,
+    dragOffset: { x: 0, y: 0 },
+    dialogPosition: { x: 0, y: 0 },
   });
 
   // Check if language is Syriac
@@ -179,6 +191,19 @@ export default function SedraDialog({
         return;
       }
 
+      // Calculate initial dialog position (center of screen)
+      const dialogWidth = 400;
+      const dialogHeight = 500;
+      const initialX = Math.max(0, (window.innerWidth - dialogWidth) / 2);
+      const initialY = Math.max(0, (window.innerHeight - dialogHeight) / 2);
+
+      // Initialize drag position first
+      setDragState({
+        isDragging: false,
+        dragOffset: { x: 0, y: 0 },
+        dialogPosition: { x: initialX, y: initialY },
+      });
+
       // Show loading tooltip
       setTooltip({
         isVisible: true,
@@ -208,7 +233,61 @@ export default function SedraDialog({
   // Function to hide tooltip
   const hideTooltip = () => {
     setTooltip((prev) => ({ ...prev, isVisible: false, word: "" }));
+    setDragState({
+      isDragging: false,
+      dragOffset: { x: 0, y: 0 },
+      dialogPosition: { x: 0, y: 0 },
+    });
   };
+
+  // Drag handlers
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    const dialogRect = (
+      e.currentTarget.closest(".sedra-dropdown") as HTMLElement
+    )?.getBoundingClientRect();
+
+    if (dialogRect) {
+      setDragState({
+        isDragging: true,
+        dragOffset: {
+          x: e.clientX - dialogRect.left,
+          y: e.clientY - dialogRect.top,
+        },
+        dialogPosition: {
+          x: dialogRect.left,
+          y: dialogRect.top,
+        },
+      });
+    }
+  }, []);
+
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (!dragState.isDragging) return;
+
+      const newX = e.clientX - dragState.dragOffset.x;
+      const newY = e.clientY - dragState.dragOffset.y;
+
+      // Keep dialog within viewport bounds
+      const dialogWidth = 400;
+      const dialogHeight = 500;
+      const maxX = window.innerWidth - dialogWidth;
+      const maxY = window.innerHeight - dialogHeight;
+
+      const clampedX = Math.max(0, Math.min(newX, maxX));
+      const clampedY = Math.max(0, Math.min(newY, maxY));
+
+      setDragState((prev) => ({
+        ...prev,
+        dialogPosition: { x: clampedX, y: clampedY },
+      }));
+    },
+    [dragState.isDragging, dragState.dragOffset]
+  );
+
+  const handleMouseUp = useCallback(() => {
+    setDragState((prev) => ({ ...prev, isDragging: false }));
+  }, []);
 
   // Hide dropdown when clicking outside
   useEffect(() => {
@@ -224,6 +303,18 @@ export default function SedraDialog({
       return () => document.removeEventListener("click", handleClickOutside);
     }
   }, [tooltip.isVisible]);
+
+  // Handle drag events
+  useEffect(() => {
+    if (dragState.isDragging) {
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
+      return () => {
+        document.removeEventListener("mousemove", handleMouseMove);
+        document.removeEventListener("mouseup", handleMouseUp);
+      };
+    }
+  }, [dragState.isDragging, handleMouseMove, handleMouseUp]);
 
   // Add click event listener for word lookup
   useEffect(() => {
@@ -251,6 +342,20 @@ export default function SedraDialog({
     };
   }, [language, handleWordClick, containerRef]);
 
+  // Calculate dialog position with fallback to center
+  const getDialogPosition = () => {
+    if (dragState.dialogPosition.x === 0 && dragState.dialogPosition.y === 0) {
+      // If position is not set, center the dialog
+      const dialogWidth = 400;
+      const dialogHeight = 500;
+      return {
+        x: Math.max(0, (window.innerWidth - dialogWidth) / 2),
+        y: Math.max(0, (window.innerHeight - dialogHeight) / 2),
+      };
+    }
+    return dragState.dialogPosition;
+  };
+
   return (
     <>
       {/* SEDRA Dialog */}
@@ -267,19 +372,25 @@ export default function SedraDialog({
           <div
             className="fixed z-50 sedra-dropdown bg-white shadow-lg rounded-lg overflow-hidden"
             style={{
-              top: Math.min(tooltip.y, window.innerHeight - 450),
-              left: Math.min(tooltip.x, window.innerWidth - 450),
+              top: getDialogPosition().y,
+              left: getDialogPosition().x,
               width: "400px",
               maxWidth: "90vw",
               maxHeight: "500px",
               direction: "ltr",
               textAlign: "left",
+              cursor: dragState.isDragging ? "grabbing" : "default",
             }}
           >
             {/* Sticky Title */}
             <div
-              className="bg-white border-b border-gray-200 px-4 py-1"
-              style={{ direction: "ltr", textAlign: "left" }}
+              className="bg-white border-b border-gray-200 px-4 py-1 select-none"
+              style={{
+                direction: "ltr",
+                textAlign: "left",
+                cursor: dragState.isDragging ? "grabbing" : "grab",
+              }}
+              onMouseDown={handleMouseDown}
             >
               <div
                 className="flex items-center justify-between gap-3"
@@ -291,6 +402,7 @@ export default function SedraDialog({
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 text-gray-800 hover:text-blue-600 transition-colors no-underline flex-shrink-0"
+                    onMouseDown={(e) => e.stopPropagation()}
                   >
                     <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                     <span className="font-semibold text-sm">SEDRA IV</span>
@@ -314,6 +426,7 @@ export default function SedraDialog({
                       target="_blank"
                       rel="noopener noreferrer"
                       className=" flex items-center gap-2 text-lg text-gray-800 hover:text-blue-600 transition-colors no-underline flex-shrink-0"
+                      onMouseDown={(e) => e.stopPropagation()}
                       style={{
                         fontFamily: '"East Syriac Adiabene", Karshon, serif',
                         fontSize: "24px",
@@ -342,6 +455,7 @@ export default function SedraDialog({
                 {/* Close button */}
                 <button
                   onClick={hideTooltip}
+                  onMouseDown={(e) => e.stopPropagation()}
                   className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-all duration-200 p-2 rounded-md"
                   title="Close"
                   aria-label="Close dialog"
