@@ -2311,6 +2311,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                                   selectedFont={selectedFont}
                                   selectedFontSize={selectedFontSize}
                                   textDirection={book.textDirection || "rtl"}
+                                  language={book.language}
                                 />
                               </div>
                             </div>

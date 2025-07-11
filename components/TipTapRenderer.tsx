@@ -9,6 +9,7 @@ import TextStyle from "@tiptap/extension-text-style";
 import Color from "@tiptap/extension-color";
 import FontSize from "@tiptap/extension-font-size";
 import { Extension } from "@tiptap/core";
+import SedraDialog from "./SedraDialog";
 
 // Custom extension to add line height and direction to paragraphs
 const ParagraphExtension = Extension.create({
@@ -55,6 +56,7 @@ interface TipTapRendererProps {
   selectedFont?: string;
   selectedFontSize?: string;
   textDirection?: "rtl" | "ltr";
+  language?: string; // Add language prop
 }
 
 export default function TipTapRenderer({
@@ -63,9 +65,17 @@ export default function TipTapRenderer({
   selectedFont = "default",
   selectedFontSize = "default",
   textDirection = "rtl",
+  language = "",
 }: TipTapRendererProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [linePositions, setLinePositions] = useState<number[]>([]);
+
+  // Function to check if language is Syriac
+  const isSyriacLanguage = (lang: string): boolean => {
+    const syriacLanguages = ["syriac", "classical syriac"];
+    const isMatch = syriacLanguages.includes(lang.toLowerCase());
+    return isMatch;
+  };
 
   // Get font family based on selected font
   const getFontFamily = (fontType: string): string => {
@@ -294,6 +304,9 @@ export default function TipTapRenderer({
         <EditorContent editor={editor} />
       </div>
 
+      {/* Sedra Dialog */}
+      <SedraDialog language={language} containerRef={containerRef} />
+
       <style jsx global>{`
         .ProseMirror {
           line-height: 1.4 !important;
@@ -321,24 +334,33 @@ export default function TipTapRenderer({
             "locl" 1, "mark" 1, "mkmk" 1;
         }
 
+        /* Add cursor pointer for clickable words in Syriac */
+        ${isSyriacLanguage(language)
+          ? `
+        .ProseMirror {
+          cursor: pointer !important;
+        }
+        .ProseMirror p {
+          cursor: pointer !important;
+        }
+        .ProseMirror span {
+          cursor: pointer !important;
+        }
+        .ProseMirror div {
+          cursor: pointer !important;
+        }
+        .ProseMirror * {
+          cursor: pointer !important;
+        }
+        `
+          : ""}
+
         .ProseMirror ::selection {
           background-color: #e5e7eb !important; /* Light gray */
         }
 
         .ProseMirror ::-moz-selection {
           background-color: #e5e7eb !important; /* Light gray for Firefox */
-        }
-
-        /* Ensure ligatures work for all Syriac fonts */
-        [style*="font-family"] {
-          font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1,
-            "locl" 1, "mark" 1, "mkmk" 1 !important;
-          font-variant-ligatures: common-ligatures contextual !important;
-          text-rendering: optimizeLegibility !important;
-          -webkit-font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1,
-            "locl" 1, "mark" 1, "mkmk" 1 !important;
-          -moz-font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1,
-            "locl" 1, "mark" 1, "mkmk" 1 !important;
         }
       `}</style>
     </div>
