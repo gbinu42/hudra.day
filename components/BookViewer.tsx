@@ -739,7 +739,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
       setOcrLoading(false);
       setOcrProgress("");
     }
-  }, [currentPage?.imageUrl, ocrLoading]);
+  }, [currentPage?.imageUrl, ocrLoading, book?.language]);
 
   // If no initialBook provided, fetch book data once
   useEffect(() => {

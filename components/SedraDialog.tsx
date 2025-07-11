@@ -43,9 +43,9 @@ export default function SedraDialog({
   };
 
   // Function to convert URLs to clickable links and process existing links
-  const convertUrlsToLinks = (html: string): string => {
+  const convertUrlsToLinks = useCallback((html: string): string => {
     // First, process existing anchor tags to ensure they open in new tabs
-    html = html.replace(/<a([^>]*?)>/gi, (match, attributes) => {
+    html = html.replace(/<a([^>]*?)>/gi, (_, attributes) => {
       // Add target="_blank" and rel="noopener noreferrer" if not already present
       const hasTarget = /target\s*=/i.test(attributes);
       const hasRel = /rel\s*=/i.test(attributes);
@@ -64,7 +64,7 @@ export default function SedraDialog({
     // Then convert bare URLs to links if no anchor tags exist
     if (!html.includes("<a") && !html.includes("</a>")) {
       const urlRegex = /(^|[^"'>])(https?:\/\/[^\s<>"']+)/gi;
-      html = html.replace(urlRegex, (match, prefix, url) => {
+      html = html.replace(urlRegex, (_, prefix, url) => {
         return `${prefix}<a href="${url}" target="_blank" rel="noopener noreferrer" style="color: #2563eb; text-decoration: underline; font-weight: normal; word-break: break-all;">${url}</a>`;
       });
     }
@@ -73,31 +73,34 @@ export default function SedraDialog({
     html = wrapSyriacText(html);
 
     return html;
-  };
+  }, []);
 
   // Function to query Sedra API
-  const queryWordAPI = useCallback(async (word: string): Promise<string> => {
-    try {
-      // URL encode the word for the API
-      const encodedWord = encodeURIComponent(word);
-      const response = await fetch(
-        `https://sedra.bethmardutho.org/api/word/${encodedWord}.html`
-      );
+  const queryWordAPI = useCallback(
+    async (word: string): Promise<string> => {
+      try {
+        // URL encode the word for the API
+        const encodedWord = encodeURIComponent(word);
+        const response = await fetch(
+          `https://sedra.bethmardutho.org/api/word/${encodedWord}.html`
+        );
 
-      if (!response.ok) {
-        if (response.status === 404) {
-          return `<div style="color: red;">Word not found</div>`;
+        if (!response.ok) {
+          if (response.status === 404) {
+            return `<div style="color: red;">Word not found</div>`;
+          }
+          throw new Error(`API request failed: ${response.status}`);
         }
-        throw new Error(`API request failed: ${response.status}`);
-      }
 
-      const htmlContent = await response.text();
-      return convertUrlsToLinks(htmlContent);
-    } catch (error) {
-      console.error("Error querying Sedra API:", error);
-      return `<div style="color: red;">Error loading word information</div>`;
-    }
-  }, []);
+        const htmlContent = await response.text();
+        return convertUrlsToLinks(htmlContent);
+      } catch (error) {
+        console.error("Error querying Sedra API:", error);
+        return `<div style="color: red;">Error loading word information</div>`;
+      }
+    },
+    [convertUrlsToLinks]
+  );
 
   // Function to handle word click
   const handleWordClick = useCallback(
