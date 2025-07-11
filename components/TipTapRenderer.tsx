@@ -193,6 +193,62 @@ export default function TipTapRenderer({
     }
   }, [editor, measureParagraphPositions]);
 
+  // Add word IDs to rendered content after TipTap renders
+  useEffect(() => {
+    if (editor && containerRef.current) {
+      const addWordIds = () => {
+        const proseMirrorElement =
+          containerRef.current?.querySelector(".ProseMirror");
+        if (!proseMirrorElement) return;
+
+        const textNodes: Text[] = [];
+        const walker = document.createTreeWalker(
+          proseMirrorElement,
+          NodeFilter.SHOW_TEXT,
+          null
+        );
+
+        let node;
+        while ((node = walker.nextNode())) {
+          textNodes.push(node as Text);
+        }
+
+        textNodes.forEach((textNode, nodeIndex) => {
+          const text = textNode.textContent || "";
+          if (text.trim()) {
+            const words = text.split(/(\s+)/);
+            if (words.length > 1) {
+              const fragment = document.createDocumentFragment();
+
+              words.forEach((word, wordIndex) => {
+                if (word.trim()) {
+                  const span = document.createElement("span");
+                  span.textContent = word;
+                  span.setAttribute(
+                    "data-word-id",
+                    `word-${Date.now()}-${nodeIndex}-${wordIndex}`
+                  );
+                  span.style.display = "inline";
+                  fragment.appendChild(span);
+                } else {
+                  // Keep whitespace as text nodes
+                  fragment.appendChild(document.createTextNode(word));
+                }
+              });
+
+              textNode.parentNode?.replaceChild(fragment, textNode);
+            }
+          }
+        });
+      };
+
+      // Run after editor renders
+      const timer = setTimeout(addWordIds, 100);
+
+      return () => clearTimeout(timer);
+    }
+  }, [editor, content]);
+
   // Update font family and size dynamically
   useEffect(() => {
     // Remove existing style if present
@@ -296,6 +352,7 @@ export default function TipTapRenderer({
       <div
         ref={containerRef}
         className="flex-1"
+        data-testid="tiptap-text-content"
         style={{
           overflow: "visible",
           order: textDirection === "ltr" ? 2 : 1,
@@ -361,6 +418,17 @@ export default function TipTapRenderer({
 
         .ProseMirror ::-moz-selection {
           background-color: #e5e7eb !important; /* Light gray for Firefox */
+        }
+
+        /* Ensure word spans are visible and clickable */
+        .ProseMirror [data-word-id] {
+          display: inline !important;
+          cursor: pointer !important;
+          position: relative !important;
+        }
+
+        .ProseMirror [data-word-id]:hover {
+          background-color: rgba(229, 231, 235, 0.5) !important;
         }
       `}</style>
     </div>
