@@ -276,74 +276,24 @@ export default function SedraDialog({
               textAlign: "left",
             }}
           >
-            {/* Close button */}
-            <button
-              onClick={hideTooltip}
-              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-all duration-200 p-2  z-20 bg-white "
-              title="Close"
-              aria-label="Close dialog"
-            >
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M18 6L6 18M6 6l12 12" />
-              </svg>
-            </button>
-
             {/* Sticky Title */}
             <div
               className="bg-white border-b border-gray-200 px-4 py-1"
               style={{ direction: "ltr", textAlign: "left" }}
             >
               <div
-                className="flex items-center justify-start gap-3"
+                className="flex items-center justify-between gap-3"
                 style={{ direction: "ltr", textAlign: "left" }}
               >
-                <a
-                  href="https://sedra.bethmardutho.org/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-gray-800 hover:text-blue-600 transition-colors no-underline flex-shrink-0"
-                >
-                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                  <span className="font-semibold text-sm">SEDRA IV</span>
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    className="opacity-50"
-                  >
-                    <path d="M7 17L17 7M17 7H7M17 7V17" />
-                  </svg>
-                </a>
-                {tooltip.word && (
+                <div className="flex items-center gap-3">
                   <a
-                    href={`https://sedra.bethmardutho.org/api/word/${encodeURIComponent(
-                      tooltip.word
-                    )}.html`}
+                    href="https://sedra.bethmardutho.org/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className=" flex items-center gap-2 text-lg text-gray-800 hover:text-blue-600 transition-colors no-underline flex-shrink-0"
-                    style={{
-                      fontFamily: '"East Syriac Adiabene", Karshon, serif',
-                      fontSize: "24px",
-                      fontFeatureSettings:
-                        '"liga" 1, "clig" 1, "calt" 1, "ccmp" 1, "locl" 1, "mark" 1, "mkmk" 1',
-                      fontVariantLigatures: "common-ligatures contextual",
-                      textRendering: "optimizeLegibility",
-                    }}
+                    className="flex items-center gap-2 text-gray-800 hover:text-blue-600 transition-colors no-underline flex-shrink-0"
                   >
-                    {tooltip.word}
+                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                    <span className="font-semibold text-sm">SEDRA IV</span>
                     <svg
                       width="12"
                       height="12"
@@ -356,7 +306,59 @@ export default function SedraDialog({
                       <path d="M7 17L17 7M17 7H7M17 7V17" />
                     </svg>
                   </a>
-                )}
+                  {tooltip.word && (
+                    <a
+                      href={`https://sedra.bethmardutho.org/api/word/${encodeURIComponent(
+                        tooltip.word
+                      )}.html`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className=" flex items-center gap-2 text-lg text-gray-800 hover:text-blue-600 transition-colors no-underline flex-shrink-0"
+                      style={{
+                        fontFamily: '"East Syriac Adiabene", Karshon, serif',
+                        fontSize: "24px",
+                        fontFeatureSettings:
+                          '"liga" 1, "clig" 1, "calt" 1, "ccmp" 1, "locl" 1, "mark" 1, "mkmk" 1',
+                        fontVariantLigatures: "common-ligatures contextual",
+                        textRendering: "optimizeLegibility",
+                      }}
+                    >
+                      {tooltip.word}
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        className="opacity-50"
+                      >
+                        <path d="M7 17L17 7M17 7H7M17 7V17" />
+                      </svg>
+                    </a>
+                  )}
+                </div>
+
+                {/* Close button */}
+                <button
+                  onClick={hideTooltip}
+                  className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-all duration-200 p-2 rounded-md"
+                  title="Close"
+                  aria-label="Close dialog"
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M18 6L6 18M6 6l12 12" />
+                  </svg>
+                </button>
               </div>
             </div>
 
