@@ -288,7 +288,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
   const transcriptContainerRef = useRef<HTMLDivElement>(null);
   const imageContainerRef = useRef<HTMLDivElement>(null);
 
-  // Scroll synchronization function
+  // Optimized scroll synchronization function
   const syncScroll = useCallback(
     (sourceContainer: HTMLDivElement, targetContainer: HTMLDivElement) => {
       if (!isScrollLocked || viewMode !== "vertical") return;
@@ -318,7 +318,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
   const [ocrLoading, setOcrLoading] = useState<boolean>(false);
   const [ocrProgress, setOcrProgress] = useState<string>("");
 
-  // Add scroll event listeners for synchronization
+  // Add scroll event listeners for synchronization with throttling
   useEffect(() => {
     const transcriptContainer = transcriptContainerRef.current;
     const imageContainer = imageContainerRef.current;
@@ -334,29 +334,47 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
 
     let isTranscriptScrolling = false;
     let isImageScrolling = false;
+    let transcriptThrottleId: NodeJS.Timeout | null = null;
+    let imageThrottleId: NodeJS.Timeout | null = null;
 
     const handleTranscriptScroll = () => {
       if (isImageScrolling) return;
-      isTranscriptScrolling = true;
-      syncScroll(transcriptContainer, imageContainer);
-      setTimeout(() => {
-        isTranscriptScrolling = false;
-      }, 100);
+
+      if (transcriptThrottleId) clearTimeout(transcriptThrottleId);
+
+      transcriptThrottleId = setTimeout(() => {
+        isTranscriptScrolling = true;
+        syncScroll(transcriptContainer, imageContainer);
+        setTimeout(() => {
+          isTranscriptScrolling = false;
+        }, 50);
+      }, 16); // ~60fps throttling
     };
 
     const handleImageScroll = () => {
       if (isTranscriptScrolling) return;
-      isImageScrolling = true;
-      syncScroll(imageContainer, transcriptContainer);
-      setTimeout(() => {
-        isImageScrolling = false;
-      }, 100);
+
+      if (imageThrottleId) clearTimeout(imageThrottleId);
+
+      imageThrottleId = setTimeout(() => {
+        isImageScrolling = true;
+        syncScroll(imageContainer, transcriptContainer);
+        setTimeout(() => {
+          isImageScrolling = false;
+        }, 50);
+      }, 16); // ~60fps throttling
     };
 
-    transcriptContainer.addEventListener("scroll", handleTranscriptScroll);
-    imageContainer.addEventListener("scroll", handleImageScroll);
+    transcriptContainer.addEventListener("scroll", handleTranscriptScroll, {
+      passive: true,
+    });
+    imageContainer.addEventListener("scroll", handleImageScroll, {
+      passive: true,
+    });
 
     return () => {
+      if (transcriptThrottleId) clearTimeout(transcriptThrottleId);
+      if (imageThrottleId) clearTimeout(imageThrottleId);
       transcriptContainer.removeEventListener("scroll", handleTranscriptScroll);
       imageContainer.removeEventListener("scroll", handleImageScroll);
     };
@@ -2656,15 +2674,22 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                             src={currentPage.imageUrl}
                             alt={`Page ${currentPage.pageNumber}`}
                             className={`transition-opacity duration-200 ${
+                              imageLoading ? "opacity-0" : "opacity-100"
+                            } ${
                               viewMode === "vertical"
                                 ? "w-full h-auto object-contain"
                                 : "max-w-full max-h-full object-contain"
                             }`}
                             width={800}
                             height={1200}
-                            priority
+                            priority={selectedPageIndex < 2} // Only prioritize first few pages
+                            loading={selectedPageIndex < 2 ? "eager" : "lazy"}
+                            quality={85} // Optimize quality vs file size
+                            placeholder="blur"
+                            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
                             onLoad={() => setImageLoading(false)}
                             onError={() => setImageLoading(false)}
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                             style={{
                               ...(viewMode === "vertical" && {
                                 alignSelf: "flex-start",
