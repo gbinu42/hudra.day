@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -283,9 +283,84 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
   // Headers visibility state
   const [showHeaders, setShowHeaders] = useState<boolean>(true);
 
+  // Scroll lock state for vertical view
+  const [isScrollLocked, setIsScrollLocked] = useState<boolean>(false);
+  const transcriptContainerRef = useRef<HTMLDivElement>(null);
+  const imageContainerRef = useRef<HTMLDivElement>(null);
+
+  // Scroll synchronization function
+  const syncScroll = useCallback(
+    (sourceContainer: HTMLDivElement, targetContainer: HTMLDivElement) => {
+      if (!isScrollLocked || viewMode !== "vertical") return;
+
+      const sourceScrollTop = sourceContainer.scrollTop;
+      const sourceScrollHeight = sourceContainer.scrollHeight;
+      const sourceClientHeight = sourceContainer.clientHeight;
+      const sourceMaxScroll = sourceScrollHeight - sourceClientHeight;
+
+      if (sourceMaxScroll <= 0) return;
+
+      const scrollPercentage = sourceScrollTop / sourceMaxScroll;
+
+      const targetScrollHeight = targetContainer.scrollHeight;
+      const targetClientHeight = targetContainer.clientHeight;
+      const targetMaxScroll = targetScrollHeight - targetClientHeight;
+
+      if (targetMaxScroll <= 0) return;
+
+      const targetScrollTop = scrollPercentage * targetMaxScroll;
+      targetContainer.scrollTop = targetScrollTop;
+    },
+    [isScrollLocked, viewMode]
+  );
+
   // OCR state
   const [ocrLoading, setOcrLoading] = useState<boolean>(false);
   const [ocrProgress, setOcrProgress] = useState<string>("");
+
+  // Add scroll event listeners for synchronization
+  useEffect(() => {
+    const transcriptContainer = transcriptContainerRef.current;
+    const imageContainer = imageContainerRef.current;
+
+    if (
+      !transcriptContainer ||
+      !imageContainer ||
+      !isScrollLocked ||
+      viewMode !== "vertical"
+    ) {
+      return;
+    }
+
+    let isTranscriptScrolling = false;
+    let isImageScrolling = false;
+
+    const handleTranscriptScroll = () => {
+      if (isImageScrolling) return;
+      isTranscriptScrolling = true;
+      syncScroll(transcriptContainer, imageContainer);
+      setTimeout(() => {
+        isTranscriptScrolling = false;
+      }, 100);
+    };
+
+    const handleImageScroll = () => {
+      if (isTranscriptScrolling) return;
+      isImageScrolling = true;
+      syncScroll(imageContainer, transcriptContainer);
+      setTimeout(() => {
+        isImageScrolling = false;
+      }, 100);
+    };
+
+    transcriptContainer.addEventListener("scroll", handleTranscriptScroll);
+    imageContainer.addEventListener("scroll", handleImageScroll);
+
+    return () => {
+      transcriptContainer.removeEventListener("scroll", handleTranscriptScroll);
+      imageContainer.removeEventListener("scroll", handleImageScroll);
+    };
+  }, [isScrollLocked, viewMode, syncScroll]);
 
   // Memoize form validation to prevent unnecessary computations
   const isEditFormValid = useMemo(() => {
@@ -1097,6 +1172,25 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                 {showHeaders ? "Reading Mode" : "Exit Reading Mode"}
               </span>
             </Button>
+            {/* Scroll Lock Toggle - only show in vertical view */}
+            {viewMode === "vertical" && (
+              <div className="flex items-center gap-2 h-8 px-3 border border-gray-300 rounded-md bg-white">
+                <input
+                  type="checkbox"
+                  id="scroll-lock"
+                  checked={isScrollLocked}
+                  onChange={(e) => setIsScrollLocked(e.target.checked)}
+                  className="w-3 h-3"
+                />
+                <label
+                  htmlFor="scroll-lock"
+                  className="text-xs cursor-pointer select-none"
+                  title="Lock scroll between transcript and image"
+                >
+                  🔗 Lock Scroll
+                </label>
+              </div>
+            )}
           </div>
         )}
 
@@ -2321,6 +2415,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                       </CardHeader>
                     )}
                     <CardContent
+                      ref={transcriptContainerRef}
                       className={`p-0 flex flex-col relative ${
                         viewMode === "vertical"
                           ? "overflow-auto h-[360px]"
@@ -2524,6 +2619,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                       </CardHeader>
                     )}
                     <CardContent
+                      ref={imageContainerRef}
                       className={`p-0 ${
                         viewMode === "vertical"
                           ? "flex flex-col overflow-y-auto h-[360px]"
