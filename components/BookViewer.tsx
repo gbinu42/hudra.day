@@ -275,6 +275,14 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
   const [selectedFont, setSelectedFont] = useState<string>("default");
   const [selectedFontSize, setSelectedFontSize] = useState<string>("default");
 
+  // View mode state - horizontal (default) or vertical
+  const [viewMode, setViewMode] = useState<"horizontal" | "vertical">(
+    "horizontal"
+  );
+
+  // Headers visibility state
+  const [showHeaders, setShowHeaders] = useState<boolean>(true);
+
   // OCR state
   const [ocrLoading, setOcrLoading] = useState<boolean>(false);
   const [ocrProgress, setOcrProgress] = useState<string>("");
@@ -1052,8 +1060,45 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
           showAddButton ? "justify-between" : "justify-center"
         } px-4 ${className}`}
       >
-        {/* Empty left spacer when showing add button */}
-        {showAddButton && <div className="w-20"></div>}
+        {/* Control buttons on the left when showing add button */}
+        {showAddButton && (
+          <div className="flex items-center gap-2">
+            {/* View Mode Toggle - show on large screens */}
+            <Button
+              size="sm"
+              onClick={() =>
+                setViewMode(
+                  viewMode === "horizontal" ? "vertical" : "horizontal"
+                )
+              }
+              variant="outline"
+              className="hidden lg:flex h-8 px-3 text-xs items-center gap-1"
+              title={
+                viewMode === "horizontal"
+                  ? "Switch to vertical view"
+                  : "Switch to horizontal view"
+              }
+            >
+              {viewMode === "horizontal" ? "⥯" : "⥮"}
+              <span className="hidden xl:inline">
+                {viewMode === "horizontal" ? "Vertical" : "Horizontal"}
+              </span>
+            </Button>
+            {/* Reading Mode Toggle */}
+            <Button
+              size="sm"
+              onClick={() => setShowHeaders(!showHeaders)}
+              variant="outline"
+              className="h-8 px-3 text-xs flex items-center gap-1"
+              title={showHeaders ? "Enter reading mode" : "Exit reading mode"}
+            >
+              {showHeaders ? "👁️" : "👁️‍🗨️"}
+              <span className="hidden xl:inline">
+                {showHeaders ? "Reading Mode" : "Exit Reading Mode"}
+              </span>
+            </Button>
+          </div>
+        )}
 
         {/* Navigation */}
         <div className="flex items-center gap-3">
@@ -1423,14 +1468,14 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col">
-      {!isWhitelabel && <Navbar />}
-      <div className="container mx-auto px-4 py-4 sm:py-8 flex-1 flex flex-col">
+      {!isWhitelabel && showHeaders && <Navbar />}
+      <div className="container mx-auto flex-1 flex flex-col px-4 py-4 sm:py-8">
         <ProtectedRoute requireAuth={false}>
           {/* Title Section - Breadcrumbs and Header */}
           <div className="relative">
             {/* Breadcrumbs and Edit Button */}
-            {!isWhitelabel && (
-              <div className="px-4 mb-4">
+            {!isWhitelabel && showHeaders && (
+              <div className="mb-4 px-4">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                   <Breadcrumb>
                     <BreadcrumbList>
@@ -1752,105 +1797,107 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
             )}
 
             {/* Book Details Card */}
-            <Card className="mb-4 shadow-sm">
-              <CardContent className="p-3 sm:px-4 sm:py-2">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-3">
-                  <div className="flex-1">
-                    <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2 sm:gap-4">
-                      <div className="flex-1 min-w-0">
-                        <h1 className="text-xl sm:text-2xl font-bold text-slate-900 break-words">
-                          {book.title}
-                        </h1>
-                        {isOffline && (
-                          <div className="flex items-center gap-2 mt-2">
-                            <Badge variant="secondary" className="text-xs">
-                              <Wifi className="w-3 h-3 mr-1" />
-                              Offline Mode
-                            </Badge>
-                            <span className="text-xs text-slate-500">
-                              Reading cached content
-                            </span>
-                          </div>
+            {showHeaders && (
+              <Card className="mb-4 shadow-sm">
+                <CardContent className="p-3 sm:px-4 sm:py-2">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-3">
+                    <div className="flex-1">
+                      <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2 sm:gap-4">
+                        <div className="flex-1 min-w-0">
+                          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 break-words">
+                            {book.title}
+                          </h1>
+                          {isOffline && (
+                            <div className="flex items-center gap-2 mt-2">
+                              <Badge variant="secondary" className="text-xs">
+                                <Wifi className="w-3 h-3 mr-1" />
+                                Offline Mode
+                              </Badge>
+                              <span className="text-xs text-slate-500">
+                                Reading cached content
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                        {book.syriacTitle && (
+                          <span
+                            className="text-2xl sm:text-3xl text-slate-700 break-words sm:flex-shrink-0 text-right"
+                            dir={book.textDirection || "rtl"}
+                            style={{
+                              fontFamily: '"East Syriac Adiabene", serif',
+                            }}
+                          >
+                            {book.syriacTitle}
+                          </span>
                         )}
                       </div>
-                      {book.syriacTitle && (
-                        <span
-                          className="text-2xl sm:text-3xl text-slate-700 break-words sm:flex-shrink-0 text-right"
-                          dir={book.textDirection || "rtl"}
-                          style={{
-                            fontFamily: '"East Syriac Adiabene", serif',
-                          }}
-                        >
-                          {book.syriacTitle}
-                        </span>
-                      )}
                     </div>
                   </div>
-                </div>
-                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-slate-600 mb-3">
-                  <div className="flex items-center gap-2">
-                    <User className="w-4 h-4 shrink-0" />
-                    <span className="font-medium break-words">
-                      {book.author}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 shrink-0" />
-                    <span className="text-sm sm:text-base">
-                      {book.publicationYear || "Publication year unknown"}
-                    </span>
-                  </div>
-                  <Badge variant="secondary" className="w-fit px-3 py-1">
-                    {book.language}
-                  </Badge>
-                  {book.category && (
-                    <Badge variant="outline" className="w-fit px-3 py-1">
-                      {book.category}
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-slate-600 mb-3">
+                    <div className="flex items-center gap-2">
+                      <User className="w-4 h-4 shrink-0" />
+                      <span className="font-medium break-words">
+                        {book.author}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4 shrink-0" />
+                      <span className="text-sm sm:text-base">
+                        {book.publicationYear || "Publication year unknown"}
+                      </span>
+                    </div>
+                    <Badge variant="secondary" className="w-fit px-3 py-1">
+                      {book.language}
                     </Badge>
-                  )}
-                </div>
-
-                {/* Book Description */}
-                {book.description && (
-                  <div className="mb-3">
-                    <p
-                      className="text-sm text-slate-700 leading-relaxed"
-                      style={{
-                        fontFamily: '"Noto Sans Malayalam", sans-serif',
-                      }}
-                    >
-                      {book.description}
-                    </p>
-                  </div>
-                )}
-
-                {/* Publication Details */}
-                {(book.publisher || book.placeOfPublication) && (
-                  <div className="mb-3">
-                    <div className="flex items-center gap-2 text-sm text-slate-600 flex-wrap">
-                      {book.publisher && <span>{book.publisher}</span>}
-                      {book.placeOfPublication && (
-                        <span>{book.placeOfPublication}</span>
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                {book.tags && book.tags.length > 0 && (
-                  <div className="flex items-center gap-2 flex-wrap">
-                    {book.tags.map((tag, index) => (
-                      <Badge
-                        key={index}
-                        variant="outline"
-                        className="px-2 py-1 text-xs"
-                      >
-                        {tag}
+                    {book.category && (
+                      <Badge variant="outline" className="w-fit px-3 py-1">
+                        {book.category}
                       </Badge>
-                    ))}
+                    )}
                   </div>
-                )}
-              </CardContent>
-            </Card>
+
+                  {/* Book Description */}
+                  {book.description && (
+                    <div className="mb-3">
+                      <p
+                        className="text-sm text-slate-700 leading-relaxed"
+                        style={{
+                          fontFamily: '"Noto Sans Malayalam", sans-serif',
+                        }}
+                      >
+                        {book.description}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Publication Details */}
+                  {(book.publisher || book.placeOfPublication) && (
+                    <div className="mb-3">
+                      <div className="flex items-center gap-2 text-sm text-slate-600 flex-wrap">
+                        {book.publisher && <span>{book.publisher}</span>}
+                        {book.placeOfPublication && (
+                          <span>{book.placeOfPublication}</span>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {book.tags && book.tags.length > 0 && (
+                    <div className="flex items-center gap-2 flex-wrap">
+                      {book.tags.map((tag, index) => (
+                        <Badge
+                          key={index}
+                          variant="outline"
+                          className="px-2 py-1 text-xs"
+                        >
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
 
             {/* Page Navigation */}
             <PageNavigation showAddButton={true} className="mb-4" />
@@ -2066,193 +2113,220 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                 </div>
               ) : (
                 <div
-                  className={`flex flex-col lg:grid lg:grid-cols-2 gap-4 lg:gap-8 h-full ${
-                    book.textDirection === "ltr" ? "lg:grid-flow-col-dense" : ""
+                  className={`${
+                    viewMode === "vertical"
+                      ? "flex flex-col gap-4 mx-auto max-w-4xl"
+                      : `flex flex-col lg:grid lg:grid-cols-2 gap-4 lg:gap-8 h-full ${
+                          book.textDirection === "ltr"
+                            ? "lg:grid-flow-col-dense"
+                            : ""
+                        }`
                   }`}
+                  style={
+                    viewMode === "vertical"
+                      ? {
+                          maxWidth: "95%",
+                        }
+                      : {}
+                  }
                 >
                   {/* Text / Editor */}
                   <Card
-                    className={`shadow-lg border-0 flex flex-col h-full py-0 gap-0 ${
-                      book.textDirection === "ltr" ? "lg:order-2" : ""
-                    }`}
+                    className={`shadow-lg border-0 flex flex-col py-0 gap-0 transition-all duration-200 ${
+                      viewMode === "vertical"
+                        ? ""
+                        : `h-full ${
+                            book.textDirection === "ltr" ? "lg:order-2" : ""
+                          }`
+                    } ${!showHeaders ? "rounded-t-lg" : ""}`}
                   >
-                    <CardHeader className="bg-red-900 text-white h-12 flex items-center rounded-t-lg">
-                      <div className="flex items-center justify-between w-full h-6">
-                        <div className="flex items-center gap-3">
-                          <CardTitle className="flex items-center gap-2 text-sm">
-                            <Edit className="w-4 h-4" />
-                            Transcription
-                          </CardTitle>
-                          {/* Font Selector and Font Size Selector - only show when not in edit mode and hide on mobile */}
-                          {!editMode && (
-                            <>
-                              <div className="flex items-center gap-2">
-                                <label className="hidden md:block text-xs text-white/80">
-                                  Font:
-                                </label>
-                                <Select
-                                  value={selectedFont}
-                                  onValueChange={setSelectedFont}
-                                >
-                                  <SelectTrigger
-                                    className="w-24 md:w-32 bg-white text-red-900 hover:bg-slate-100 text-xs"
-                                    style={{
-                                      height: "32px",
-                                      minHeight: "20px",
-                                      padding: "0 8px",
-                                    }}
+                    {showHeaders && (
+                      <CardHeader className="bg-red-900 text-white h-12 flex items-center rounded-t-lg">
+                        <div className="flex items-center justify-between w-full h-6">
+                          <div className="flex items-center gap-3">
+                            <CardTitle className="flex items-center gap-2 text-sm">
+                              <Edit className="w-4 h-4" />
+                              Transcription
+                            </CardTitle>
+                            {/* Font Selector and Font Size Selector - only show when not in edit mode and hide on mobile */}
+                            {!editMode && (
+                              <>
+                                <div className="flex items-center gap-2">
+                                  <label className="hidden md:block text-xs text-white/80">
+                                    Font:
+                                  </label>
+                                  <Select
+                                    value={selectedFont}
+                                    onValueChange={setSelectedFont}
                                   >
-                                    <SelectValue />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="default">
-                                      Default
-                                    </SelectItem>
-                                    <SelectItem value="East Syriac Adiabene">
-                                      East Syriac Adiabene
-                                    </SelectItem>
-                                    <SelectItem value="East Syriac Malankara">
-                                      East Syriac Malankara
-                                    </SelectItem>
-                                    <SelectItem value="East Syriac Malankara Classical">
-                                      East Syriac Malankara Classical
-                                    </SelectItem>
-                                    <SelectItem value="East Syriac Ctesiphon">
-                                      East Syriac Ctesiphon
-                                    </SelectItem>
-                                    <SelectItem value="Karshon">
-                                      Karshon
-                                    </SelectItem>
-                                    <SelectItem value="Estrangelo Edessa">
-                                      Estrangelo Edessa
-                                    </SelectItem>
-                                    <SelectItem value="Estrangelo Qenneshrin">
-                                      Estrangelo Qenneshrin
-                                    </SelectItem>
-                                    <SelectItem value="Noto Sans Malayalam">
-                                      Noto Sans Malayalam
-                                    </SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              </div>
-                              <div className="hidden md:flex items-center gap-2">
-                                <label className="text-xs text-white/80">
-                                  Size:
-                                </label>
-                                <Select
-                                  value={selectedFontSize}
-                                  onValueChange={setSelectedFontSize}
-                                >
-                                  <SelectTrigger
-                                    className="w-16 bg-white text-red-900 hover:bg-slate-100 text-xs"
-                                    style={{
-                                      height: "32px",
-                                      minHeight: "20px",
-                                      padding: "0 8px",
-                                    }}
+                                    <SelectTrigger
+                                      className="w-24 md:w-32 bg-white text-red-900 hover:bg-slate-100 text-xs"
+                                      style={{
+                                        height: "32px",
+                                        minHeight: "20px",
+                                        padding: "0 8px",
+                                      }}
+                                    >
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="default">
+                                        Default
+                                      </SelectItem>
+                                      <SelectItem value="East Syriac Adiabene">
+                                        East Syriac Adiabene
+                                      </SelectItem>
+                                      <SelectItem value="East Syriac Malankara">
+                                        East Syriac Malankara
+                                      </SelectItem>
+                                      <SelectItem value="East Syriac Malankara Classical">
+                                        East Syriac Malankara Classical
+                                      </SelectItem>
+                                      <SelectItem value="East Syriac Ctesiphon">
+                                        East Syriac Ctesiphon
+                                      </SelectItem>
+                                      <SelectItem value="Karshon">
+                                        Karshon
+                                      </SelectItem>
+                                      <SelectItem value="Estrangelo Edessa">
+                                        Estrangelo Edessa
+                                      </SelectItem>
+                                      <SelectItem value="Estrangelo Qenneshrin">
+                                        Estrangelo Qenneshrin
+                                      </SelectItem>
+                                      <SelectItem value="Noto Sans Malayalam">
+                                        Noto Sans Malayalam
+                                      </SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                                <div className="hidden md:flex items-center gap-2">
+                                  <label className="text-xs text-white/80">
+                                    Size:
+                                  </label>
+                                  <Select
+                                    value={selectedFontSize}
+                                    onValueChange={setSelectedFontSize}
                                   >
-                                    <SelectValue />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="default">
-                                      Default
-                                    </SelectItem>
-                                    <SelectItem value="12pt">12pt</SelectItem>
-                                    <SelectItem value="14pt">14pt</SelectItem>
-                                    <SelectItem value="16pt">16pt</SelectItem>
-                                    <SelectItem value="18pt">18pt</SelectItem>
-                                    <SelectItem value="20pt">20pt</SelectItem>
-                                    <SelectItem value="22pt">22pt</SelectItem>
-                                    <SelectItem value="24pt">24pt</SelectItem>
-                                    <SelectItem value="28pt">28pt</SelectItem>
-                                    <SelectItem value="32pt">32pt</SelectItem>
-                                    <SelectItem value="36pt">36pt</SelectItem>
-                                    <SelectItem value="48pt">48pt</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              </div>
-                            </>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          {/* Line Numbers Toggle */}
-                          <Button
-                            size="sm"
-                            onClick={() => setShowLineNumbers(!showLineNumbers)}
-                            variant="secondary"
-                            className={`h-7 px-2 text-xs ${
-                              showLineNumbers
-                                ? "bg-white text-red-900 hover:bg-slate-100"
-                                : "bg-white/20 text-white hover:bg-white/30"
-                            }`}
-                            title={
-                              showLineNumbers
-                                ? "Hide line numbers"
-                                : "Show line numbers"
-                            }
-                          >
-                            123
-                          </Button>
-                          {permissions.canEdit && !isWhitelabel && (
-                            <div className="flex gap-1 sm:gap-2">
-                              {editMode ? (
-                                <>
+                                    <SelectTrigger
+                                      className="w-16 bg-white text-red-900 hover:bg-slate-100 text-xs"
+                                      style={{
+                                        height: "32px",
+                                        minHeight: "20px",
+                                        padding: "0 8px",
+                                      }}
+                                    >
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="default">
+                                        Default
+                                      </SelectItem>
+                                      <SelectItem value="12pt">12pt</SelectItem>
+                                      <SelectItem value="14pt">14pt</SelectItem>
+                                      <SelectItem value="16pt">16pt</SelectItem>
+                                      <SelectItem value="18pt">18pt</SelectItem>
+                                      <SelectItem value="20pt">20pt</SelectItem>
+                                      <SelectItem value="22pt">22pt</SelectItem>
+                                      <SelectItem value="24pt">24pt</SelectItem>
+                                      <SelectItem value="28pt">28pt</SelectItem>
+                                      <SelectItem value="32pt">32pt</SelectItem>
+                                      <SelectItem value="36pt">36pt</SelectItem>
+                                      <SelectItem value="48pt">48pt</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                              </>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {/* Line Numbers Toggle */}
+                            <Button
+                              size="sm"
+                              onClick={() =>
+                                setShowLineNumbers(!showLineNumbers)
+                              }
+                              variant="secondary"
+                              className={`h-7 px-2 text-xs ${
+                                showLineNumbers
+                                  ? "bg-white text-red-900 hover:bg-slate-100"
+                                  : "bg-white/20 text-white hover:bg-white/30"
+                              }`}
+                              title={
+                                showLineNumbers
+                                  ? "Hide line numbers"
+                                  : "Show line numbers"
+                              }
+                            >
+                              123
+                            </Button>
+                            {permissions.canEdit && !isWhitelabel && (
+                              <div className="flex gap-1 sm:gap-2">
+                                {editMode ? (
+                                  <>
+                                    <Button
+                                      size="sm"
+                                      onClick={() => {
+                                        setEditMode(false);
+                                        // Reset content to original values
+                                        setTextContentJson(
+                                          currentPage?.currentTextJson || null
+                                        );
+                                      }}
+                                      variant="secondary"
+                                      className="bg-white text-red-900 hover:bg-slate-100 h-7 sm:h-8 px-2 sm:px-3 text-xs"
+                                    >
+                                      Cancel
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      onClick={handleSaveTranscription}
+                                      variant="default"
+                                      className="bg-white text-red-900 hover:bg-slate-100 h-7 sm:h-8 px-2 sm:px-3 text-xs"
+                                      disabled={saving || isOffline}
+                                    >
+                                      {saving ? (
+                                        <div className="flex items-center gap-1">
+                                          <div className="animate-spin rounded-full h-3 w-3 border-2 border-red-900 border-t-transparent"></div>
+                                          <span>Saving...</span>
+                                        </div>
+                                      ) : (
+                                        "Save"
+                                      )}
+                                    </Button>
+                                  </>
+                                ) : (
                                   <Button
                                     size="sm"
                                     onClick={() => {
-                                      setEditMode(false);
-                                      // Reset content to original values
-                                      setTextContentJson(
-                                        currentPage?.currentTextJson || null
-                                      );
+                                      if (!isOffline) {
+                                        setEditMode(true);
+                                        // Store original content when entering edit mode
+                                        setOriginalTextContentJson(
+                                          textContentJson
+                                        );
+                                      }
                                     }}
-                                    variant="secondary"
-                                    className="bg-white text-red-900 hover:bg-slate-100 h-7 sm:h-8 px-2 sm:px-3 text-xs"
+                                    variant="outline"
+                                    className="border-slate-300 text-slate-700 hover:bg-slate-50 h-7 sm:h-8 px-2 sm:px-3 text-xs"
+                                    disabled={isOffline}
                                   >
-                                    Cancel
+                                    Edit
                                   </Button>
-                                  <Button
-                                    size="sm"
-                                    onClick={handleSaveTranscription}
-                                    variant="default"
-                                    className="bg-white text-red-900 hover:bg-slate-100 h-7 sm:h-8 px-2 sm:px-3 text-xs"
-                                    disabled={saving || isOffline}
-                                  >
-                                    {saving ? (
-                                      <div className="flex items-center gap-1">
-                                        <div className="animate-spin rounded-full h-3 w-3 border-2 border-red-900 border-t-transparent"></div>
-                                        <span>Saving...</span>
-                                      </div>
-                                    ) : (
-                                      "Save"
-                                    )}
-                                  </Button>
-                                </>
-                              ) : (
-                                <Button
-                                  size="sm"
-                                  onClick={() => {
-                                    if (!isOffline) {
-                                      setEditMode(true);
-                                      // Store original content when entering edit mode
-                                      setOriginalTextContentJson(
-                                        textContentJson
-                                      );
-                                    }
-                                  }}
-                                  variant="outline"
-                                  className="border-slate-300 text-slate-700 hover:bg-slate-50 h-7 sm:h-8 px-2 sm:px-3 text-xs"
-                                  disabled={isOffline}
-                                >
-                                  Edit
-                                </Button>
-                              )}
-                            </div>
-                          )}
+                                )}
+                              </div>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="p-0 flex-1 flex flex-col min-h-[300px] relative">
+                      </CardHeader>
+                    )}
+                    <CardContent
+                      className={`p-0 flex flex-col relative ${
+                        viewMode === "vertical"
+                          ? "overflow-auto h-[360px]"
+                          : "flex-1 min-h-[300px]"
+                      } ${!showHeaders ? "rounded-t-lg" : ""}`}
+                    >
                       {transcriptionLoading ? (
                         <div className="flex-1 flex items-center justify-center">
                           <div className="animate-spin rounded-full h-8 w-8 border-4 border-slate-300 border-t-red-900"></div>
@@ -2349,102 +2423,123 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
 
                   {/* Page Image */}
                   <Card
-                    className={`shadow-lg border-0 overflow-hidden flex flex-col h-full py-0 gap-0 ${
-                      book.textDirection === "ltr" ? "lg:order-1" : ""
-                    }`}
+                    className={`shadow-lg border-0 overflow-hidden flex flex-col py-0 gap-0 transition-all duration-200 ${
+                      viewMode === "vertical"
+                        ? ""
+                        : `h-full ${
+                            book.textDirection === "ltr" ? "lg:order-1" : ""
+                          }`
+                    } ${!showHeaders ? "rounded-t-lg" : ""}`}
                   >
-                    <CardHeader className="bg-gradient-to-r from-slate-900 to-slate-800 text-white h-12 flex items-center">
-                      <div className="flex items-center justify-between w-full h-full">
-                        <div className="flex items-center gap-2 text-sm font-medium">
-                          <BookOpen className="w-4 h-4" />
-                          <span className="font-normal">
-                            Page {currentPage?.pageNumber}
-                          </span>
-                          {currentPage?.pageNumberInBook && (
-                            <>
-                              <span className="text-gray-300">|</span>
-                              <span
-                                className="text-lg font-normal"
-                                style={{
-                                  fontFamily: '"East Syriac Adiabene", serif',
-                                  marginBottom: "-2px",
-                                }}
-                              >
-                                {currentPage.pageNumberInBook}
-                              </span>
-                            </>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          {/* OCR Button */}
-                          {permissions.canEdit &&
-                            !isWhitelabel &&
-                            !isOffline &&
-                            currentPage?.imageUrl && (
-                              <Button
-                                size="sm"
-                                variant="secondary"
-                                className="bg-blue-600 text-white hover:bg-blue-700 h-7 px-2 text-xs flex items-center gap-1"
-                                onClick={handleOCR}
-                                disabled={
-                                  ocrLoading ||
-                                  (currentPage?.currentTextJson &&
-                                    currentPage.currentTextJson.content &&
-                                    currentPage.currentTextJson.content.length >
-                                      0)
-                                }
-                                title={
-                                  currentPage?.currentTextJson &&
-                                  currentPage.currentTextJson.content &&
-                                  currentPage.currentTextJson.content.length > 0
-                                    ? "OCR disabled - text already present"
-                                    : "Recognize text from image"
-                                }
-                              >
-                                {ocrLoading ? (
-                                  <div className="animate-spin rounded-full h-3 w-3 border-2 border-white border-t-transparent"></div>
-                                ) : (
-                                  <Scan className="w-3 h-3" />
-                                )}
-                                <span className="hidden sm:inline">
-                                  {ocrLoading ? "Processing..." : "OCR"}
+                    {showHeaders && (
+                      <CardHeader className="bg-gradient-to-r from-slate-900 to-slate-800 text-white h-12 flex items-center">
+                        <div className="flex items-center justify-between w-full h-full">
+                          <div className="flex items-center gap-2 text-sm font-medium">
+                            <BookOpen className="w-4 h-4" />
+                            <span className="font-normal">
+                              Page {currentPage?.pageNumber}
+                            </span>
+                            {currentPage?.pageNumberInBook && (
+                              <>
+                                <span className="text-gray-300">|</span>
+                                <span
+                                  className="text-lg font-normal"
+                                  style={{
+                                    fontFamily: '"East Syriac Adiabene", serif',
+                                    marginBottom: "-2px",
+                                  }}
+                                >
+                                  {currentPage.pageNumberInBook}
                                 </span>
-                              </Button>
-                            )}
-                          {/* Page Status Badge */}
-                          <div
-                            className={`px-2 py-1 rounded-full text-xs font-medium border ${getPageStatusColor(
-                              currentPage?.status || "draft"
-                            )}`}
-                          >
-                            {getPageStatusDisplayName(
-                              currentPage?.status || "draft"
+                              </>
                             )}
                           </div>
-                          {/* Admin Status Change Button */}
-                          {permissions.canEdit &&
-                            userProfile?.role === "admin" &&
-                            !isWhitelabel &&
-                            !isOffline && (
-                              <Button
-                                size="sm"
-                                variant="secondary"
-                                className="bg-white text-slate-900 hover:bg-slate-100 h-7 px-2 text-xs"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  openPageStatusDialog();
-                                }}
-                              >
-                                Change Status
-                              </Button>
-                            )}
+                          <div className="flex items-center gap-2">
+                            {/* OCR Button */}
+                            {permissions.canEdit &&
+                              !isWhitelabel &&
+                              !isOffline &&
+                              currentPage?.imageUrl && (
+                                <Button
+                                  size="sm"
+                                  variant="secondary"
+                                  className="bg-blue-600 text-white hover:bg-blue-700 h-7 px-2 text-xs flex items-center gap-1"
+                                  onClick={handleOCR}
+                                  disabled={
+                                    ocrLoading ||
+                                    (currentPage?.currentTextJson &&
+                                      currentPage.currentTextJson.content &&
+                                      currentPage.currentTextJson.content
+                                        .length > 0)
+                                  }
+                                  title={
+                                    currentPage?.currentTextJson &&
+                                    currentPage.currentTextJson.content &&
+                                    currentPage.currentTextJson.content.length >
+                                      0
+                                      ? "OCR disabled - text already present"
+                                      : "Recognize text from image"
+                                  }
+                                >
+                                  {ocrLoading ? (
+                                    <div className="animate-spin rounded-full h-3 w-3 border-2 border-white border-t-transparent"></div>
+                                  ) : (
+                                    <Scan className="w-3 h-3" />
+                                  )}
+                                  <span className="hidden sm:inline">
+                                    {ocrLoading ? "Processing..." : "OCR"}
+                                  </span>
+                                </Button>
+                              )}
+                            {/* Page Status Badge */}
+                            <div
+                              className={`px-2 py-1 rounded-full text-xs font-medium border ${getPageStatusColor(
+                                currentPage?.status || "draft"
+                              )}`}
+                            >
+                              {getPageStatusDisplayName(
+                                currentPage?.status || "draft"
+                              )}
+                            </div>
+                            {/* Admin Status Change Button */}
+                            {permissions.canEdit &&
+                              userProfile?.role === "admin" &&
+                              !isWhitelabel &&
+                              !isOffline && (
+                                <Button
+                                  size="sm"
+                                  variant="secondary"
+                                  className="bg-white text-slate-900 hover:bg-slate-100 h-7 px-2 text-xs"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    openPageStatusDialog();
+                                  }}
+                                >
+                                  Change Status
+                                </Button>
+                              )}
+                          </div>
                         </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="p-0 flex-1 flex items-center justify-center bg-slate-50 min-h-[300px] relative overflow-hidden">
+                      </CardHeader>
+                    )}
+                    <CardContent
+                      className={`p-0 ${
+                        viewMode === "vertical"
+                          ? "flex flex-col overflow-y-auto h-[360px]"
+                          : "flex-1 flex items-center justify-center overflow-hidden min-h-[300px]"
+                      } bg-slate-50 relative ${
+                        !showHeaders ? "rounded-t-lg" : ""
+                      }`}
+                    >
                       {currentPage?.imageUrl ? (
-                        <div className="w-full h-full flex items-center justify-center relative">
+                        <div
+                          className={`w-full h-full relative ${
+                            viewMode === "vertical"
+                              ? "flex flex-col"
+                              : "flex items-center justify-center"
+                          }`}
+                        >
                           {imageLoading && (
                             <div className="absolute inset-0 flex items-center justify-center bg-slate-50">
                               <div className="animate-spin rounded-full h-8 w-8 border-4 border-slate-300 border-t-slate-600"></div>
@@ -2464,12 +2559,23 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                             key={`page-${currentPage.id}-${currentPage.imageUrl}`}
                             src={currentPage.imageUrl}
                             alt={`Page ${currentPage.pageNumber}`}
-                            className="max-w-full max-h-full object-contain transition-opacity duration-200"
+                            className={`transition-opacity duration-200 ${
+                              viewMode === "vertical"
+                                ? "w-full h-auto object-contain"
+                                : "max-w-full max-h-full object-contain"
+                            }`}
                             width={800}
                             height={1200}
                             priority
                             onLoad={() => setImageLoading(false)}
                             onError={() => setImageLoading(false)}
+                            style={{
+                              ...(viewMode === "vertical" && {
+                                alignSelf: "flex-start",
+                                maxWidth: "100%",
+                                height: "auto",
+                              }),
+                            }}
                           />
                         </div>
                       ) : (
@@ -2484,7 +2590,9 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
             </div>
 
             {/* Bottom Page Navigation */}
-            <PageNavigation showAddButton={false} className="mt-6 mb-4" />
+            {showHeaders && (
+              <PageNavigation showAddButton={false} className="mt-6 mb-4" />
+            )}
           </div>
         </ProtectedRoute>
       </div>
@@ -2573,7 +2681,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
         </DialogContent>
       </Dialog>
 
-      {!isWhitelabel && <Footer />}
+      {!isWhitelabel && showHeaders && <Footer />}
     </div>
   );
 }

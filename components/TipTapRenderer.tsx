@@ -178,6 +178,14 @@ export default function TipTapRenderer({
     }
   }, [editor, measureParagraphPositions, content]);
 
+  // Remeasure line positions when text size changes
+  useEffect(() => {
+    if (editor) {
+      const timer = setTimeout(measureParagraphPositions, 150);
+      return () => clearTimeout(timer);
+    }
+  }, [selectedFontSize, measureParagraphPositions, editor]);
+
   // Remeasure when editor updates
   useEffect(() => {
     if (editor) {
