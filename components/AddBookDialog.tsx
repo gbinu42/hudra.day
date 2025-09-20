@@ -44,6 +44,7 @@ export function AddBookDialog() {
     publisher: "",
     placeOfPublication: "",
     coverImage: "",
+    private: false, // Default to public
     tags: [],
     textDirection: "rtl",
   });
@@ -132,6 +133,7 @@ export function AddBookDialog() {
         publisher: "",
         placeOfPublication: "",
         coverImage: "",
+        private: false, // Default to public
         tags: [],
         textDirection: "rtl",
       });
@@ -166,7 +168,7 @@ export function AddBookDialog() {
 
   const handleInputChange = (
     field: keyof CreateBookData,
-    value: string | number | "rtl" | "ltr"
+    value: string | number | boolean | "rtl" | "ltr"
   ) => {
     setNewBookData((prev) => ({
       ...prev,
@@ -351,6 +353,24 @@ export function AddBookDialog() {
                 <option value="published">Published</option>
               </select>
             </div>
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2">
+                <input
+                  id="private"
+                  type="checkbox"
+                  checked={newBookData.private || false}
+                  onChange={(e) =>
+                    handleInputChange("private", e.target.checked)
+                  }
+                  className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+                />
+                <Label htmlFor="private" className="text-sm font-medium">
+                  Private (only visible to editors and admins)
+                </Label>
+              </div>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="publicationYear">Publication Year</Label>
               <Input

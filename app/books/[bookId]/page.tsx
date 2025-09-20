@@ -121,8 +121,11 @@ export default async function BookDetailPage({
       id: bookDoc.id,
       createdAt: bookData.createdAt?.toDate?.() || new Date(),
       updatedAt: bookData.updatedAt?.toDate?.() || new Date(),
+      private: bookData.private ?? false, // Default to public if not set
     };
 
+    // Note: Server-side access control is handled by the BookViewer component
+    // since we need access to the user's authentication state
     return (
       <Suspense>
         <BookViewer initialBook={book} />

@@ -189,7 +189,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
   const [loading, setLoading] = useState(!initialBook);
   const [notFound, setNotFound] = useState(false);
   const [isOffline, setIsOffline] = useState(false);
-  const { userProfile } = useAuth();
+  const { userProfile, loading: authLoading } = useAuth();
 
   // Handle offline scenario by providing default viewer role
   const effectiveUserProfile =
@@ -844,20 +844,35 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
 
   // If no initialBook provided, fetch book data once
   useEffect(() => {
-    if (!bookId || initialBook) return;
+    if (!bookId || initialBook || authLoading) return;
     setLoading(true);
 
     bookService
       .getBookById(bookId)
-      .then((bookDoc) => {
+      .then(async (bookDoc) => {
         if (bookDoc.exists()) {
           const bookData = bookDoc.data();
-          setBook({
+          const bookWithData = {
             id: bookDoc.id,
             ...bookData,
             createdAt: bookData.createdAt?.toDate?.() || new Date(),
             updatedAt: bookData.updatedAt?.toDate?.() || new Date(),
-          } as Book);
+            private: bookData.private ?? false, // Default to public if not set
+          } as Book;
+
+          // Check if user can access this book
+          const canAccess = await bookService.canUserAccessBook(
+            bookId,
+            effectiveUserProfile?.role || null
+          );
+
+          if (!canAccess) {
+            setNotFound(true);
+            setLoading(false);
+            return;
+          }
+
+          setBook(bookWithData);
           setNotFound(false);
           setIsOffline(false);
         } else {
@@ -889,7 +904,35 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
         }
         setLoading(false);
       });
-  }, [bookId, initialBook]);
+  }, [bookId, initialBook, effectiveUserProfile?.role, authLoading]);
+
+  // Check access control for initialBook when user profile changes
+  useEffect(() => {
+    if (!initialBook || !bookId) return;
+
+    const checkInitialBookAccess = async () => {
+      // Wait for auth state to be determined
+      if (authLoading) return;
+
+      const canAccess = await bookService.canUserAccessBook(
+        bookId,
+        effectiveUserProfile?.role || null
+      );
+
+      if (!canAccess) {
+        setNotFound(true);
+        setBook(null);
+      } else {
+        // If access is allowed but book was previously set to null, restore it
+        if (!book && initialBook) {
+          setBook(initialBook);
+          setNotFound(false);
+        }
+      }
+    };
+
+    checkInitialBookAccess();
+  }, [initialBook, bookId, effectiveUserProfile?.role, authLoading, book]);
 
   // Set up real-time listener for current page document when book or selectedPageIndex changes
   useEffect(() => {

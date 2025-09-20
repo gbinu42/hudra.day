@@ -41,6 +41,7 @@ export interface Book {
   updatedAt: Date;
   createdBy: string;
   isPublished: boolean;
+  private: boolean; // Private books only visible to editors and admins
   tags: string[];
   textDirection?: "rtl" | "ltr";
 }
@@ -58,6 +59,7 @@ export interface CreateBookData {
   publisher?: string;
   placeOfPublication?: string;
   coverImage?: string;
+  private?: boolean; // Private books only visible to editors and admins
   tags: string[];
   textDirection?: "rtl" | "ltr";
 }

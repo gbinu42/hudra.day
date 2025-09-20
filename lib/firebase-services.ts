@@ -440,6 +440,45 @@ export const bookService = {
     return filteredSnapshot as QuerySnapshot<DocumentData>;
   },
 
+  // Get all books filtered by privacy and user role (for performance)
+  async getAllBooksWithoutPagesFiltered(
+    userRole?: string | null
+  ): Promise<QuerySnapshot<DocumentData>> {
+    // Get all books first
+    const snapshot = await firestoreService.getCollection("books");
+
+    // Filter based on user role and privacy settings
+    const filteredDocs = snapshot.docs.filter((doc) => {
+      const data = doc.data();
+      const isPrivate = data.private ?? false; // Default to public if not set
+
+      if (!userRole || userRole === "viewer") {
+        // Not logged in or viewer - only show public books
+        return !isPrivate;
+      } else {
+        // Editors and admins see all books
+        return true;
+      }
+    });
+
+    // Filter out pages field from documents
+    const filteredSnapshot = {
+      ...snapshot,
+      docs: filteredDocs.map((doc) => ({
+        ...doc,
+        id: doc.id, // Explicitly preserve the document ID
+        data: () => {
+          const data = doc.data();
+          const filteredData = { ...data };
+          delete filteredData.pages; // Exclude pages field for performance
+          return filteredData;
+        },
+      })),
+    };
+
+    return filteredSnapshot as QuerySnapshot<DocumentData>;
+  },
+
   // Listen to all books changes in real-time (excluding pages field for performance)
   onBooksSnapshot(
     callback: (snapshot: QuerySnapshot<DocumentData>) => void,
@@ -474,9 +513,84 @@ export const bookService = {
     );
   },
 
+  // Listen to books changes filtered by privacy and user role in real-time
+  onBooksSnapshotFiltered(
+    userRole: string | null,
+    callback: (snapshot: QuerySnapshot<DocumentData>) => void,
+    onError?: (error: Error) => void
+  ): Unsubscribe {
+    const booksCollection = collection(db, "books");
+
+    // Wrapper callback to filter based on user role and privacy settings
+    const wrappedCallback = (snapshot: QuerySnapshot<DocumentData>) => {
+      // Filter documents based on user role and privacy
+      const filteredDocs = snapshot.docs.filter((doc) => {
+        const data = doc.data();
+        const isPrivate = data.private ?? false; // Default to public if not set
+
+        if (!userRole || userRole === "viewer") {
+          // Not logged in or viewer - only show public books
+          return !isPrivate;
+        } else {
+          // Editors and admins see all books
+          return true;
+        }
+      });
+
+      // Create a new snapshot-like object with filtered documents
+      const filteredSnapshot = {
+        ...snapshot,
+        docs: filteredDocs.map((doc) => ({
+          ...doc,
+          id: doc.id, // Explicitly preserve the document ID
+          data: () => {
+            const data = doc.data();
+            const filteredData = { ...data };
+            delete filteredData.pages; // Exclude pages field for performance
+            return filteredData;
+          },
+        })),
+      };
+      callback(filteredSnapshot as QuerySnapshot<DocumentData>);
+    };
+
+    return onSnapshot(
+      booksCollection,
+      wrappedCallback,
+      onError || ((error) => console.error("Books snapshot error:", error))
+    );
+  },
+
   // Get book by ID
   async getBookById(bookId: string): Promise<DocumentSnapshot<DocumentData>> {
     return await firestoreService.getDocument("books", bookId);
+  },
+
+  // Check if user can access a book based on privacy settings
+  async canUserAccessBook(
+    bookId: string,
+    userRole?: string | null
+  ): Promise<boolean> {
+    try {
+      const bookDoc = await this.getBookById(bookId);
+      if (!bookDoc.exists()) {
+        return false;
+      }
+
+      const bookData = bookDoc.data();
+      const isPrivate = bookData?.private ?? false; // Default to public if not set
+
+      // If book is public, anyone can access (including non-signed in users)
+      if (!isPrivate) {
+        return true;
+      }
+
+      // If book is private, only editors and admins can access
+      return userRole === "editor" || userRole === "admin";
+    } catch (error) {
+      console.error("Error checking book access:", error);
+      return false;
+    }
   },
 
   // Listen to book changes in real-time
@@ -505,6 +619,7 @@ export const bookService = {
       updatedAt: new Date(),
       createdBy: userId,
       isPublished: false,
+      private: bookData.private ?? false, // Default to public
     };
 
     if (customBookId && customBookId.trim()) {
