@@ -44,7 +44,7 @@ export default function HomePage() {
               <span className="text-primary font-bold">ഹുദ്റാ</span>
             </h1>
             <h2 className="text-2xl md:text-3xl font-semibold text-muted-foreground mb-6">
-              Digital Archive of Church of the East Liturgical Texts
+              Digital Archive of East Syriac Liturgical Texts
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
               Hudra.day is an initiative by{" "}
@@ -57,8 +57,8 @@ export default function HomePage() {
                 Hendo Academy
               </a>{" "}
               dedicated to digitizing and making freely available the rich
-              liturgical tradition of the Church of the East for scholars,
-              clergy, and communities worldwide.
+              Eastern Syriac liturgical tradition for scholars, clergy, and
+              communities worldwide.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
               <Button size="lg" className="text-lg px-8" asChild>
@@ -89,8 +89,8 @@ export default function HomePage() {
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Mission</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Preserving and freely sharing the ancient liturgical heritage of
-              the Church of the East through modern digital technology, making
+              Preserving and freely sharing the ancient Eastern Syriac
+              liturgical heritage through modern digital technology, making
               these sacred texts accessible to all.
             </p>
           </div>
@@ -112,7 +112,7 @@ export default function HomePage() {
                 <Globe className="h-12 w-12 mx-auto text-primary mb-4" />
                 <CardTitle>Share Freely</CardTitle>
                 <CardDescription>
-                  Making Church of the East liturgical texts freely available to
+                  Making Eastern Syriac liturgical texts freely available to
                   scholars, clergy, and communities worldwide
                 </CardDescription>
               </CardHeader>
@@ -123,8 +123,8 @@ export default function HomePage() {
                 <Users className="h-12 w-12 mx-auto text-primary mb-4" />
                 <CardTitle>Preserve</CardTitle>
                 <CardDescription>
-                  Ensuring the liturgical heritage of the Church of the East
-                  continues to be accessible for future generations
+                  Ensuring the Eastern Syriac liturgical heritage continues to
+                  be accessible for future generations
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -141,8 +141,8 @@ export default function HomePage() {
             </h2>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
               Our work serves the manuscript traditions of three churches that
-              were part of the Church of the East tradition, each with their
-              unique heritage and contributions to Christian liturgical life.
+              were part of the East Syraic tradition, each with their unique
+              heritage and contributions to Christian liturgical life.
             </p>
           </div>
 
@@ -265,7 +265,7 @@ export default function HomePage() {
                     >
                       ܐܲܒ݂ܘܼܢ ܕܒܲܫܡܲܝܵܐ ܢܸـܬ݂ܩܲܕܲܫ ܫܡܵـܟ݂ ܬܹܐܬܸܐ ܡܲܠܟܘܼܬ݂ܵܟ݂
                       ܢܸܗܘܸܐ ܨܸܒ݂ܝܵـܢܵـܟ݂: ܐܲܝܟܲܢܵܐ ܕܒܲܫܡܲܝܵܐ ܐܵܦ ܒܐܲܪܥܵܐ.
-                      ܗܲܒ݂ܠܲܢ ܠܲܚܡܵܐ ܕܣܘܼܢܩܵܢܲܢ ܝܲܘܡܵܢܵܐ: ܘܲܫܒ݂ܘܿܩ ܠܲܢ ܚܲܘ̈ܒܲܝܢ
+                      ܗܲܒ݂ܠܲܢ ܠܲܚܡܵܐ ܕܣܘܼܢܩܵܢܲܢ ܝܵܘܡܵܢܵܐ: ܘܲܫܒ݂ܘܿܩ ܠܲܢ ܚܵܘ̈ܒܲܝܢ
                       ܘܲܚܛܵܗܲܝ̈ܢ: ܐܲܝܟܲܢܵܐ ܕܐܵܦ ܚܢܲܢ ܫܒܲܩܢ ܠܚܲܝܵܒܲܝ̈ܢ. ܘܠܵܐ ܬܲܥܠܲܢ
                       ܠܢܸܣܝܘܿܢܵܐ: ܐܸܠܵܐ ܦܲـܨܵܢ ܡ̣ܢ ܒܝܼܫܵܐ: ܡܸܛܠ ܕܕ݂ܝܼܠܵܟ݂ ܗ݇ܝܼ
                       ܡܲܠܟܘܼܬ݂ܵܐ ܘܚܲܝܠܵܐ ܘܬ݂ܸܫܒܘܿܚܬܵܐ ܠܥܵܠܲܡ ܥܵܠܡܝܼܢ: ܐܵܡܹܝܢ.
