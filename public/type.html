@@ -504,17 +504,23 @@
         top: 53%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 0.4em;
+        width: 0.45em;
         height: 0.4em;
-        background-color: rgba(255, 255, 255, 0.8);
+        background-color: rgba(255, 255, 255, 0.7);
         pointer-events: none;
-        border-radius: 2px;
         z-index: 1;
       }
 
       /* Remove overlay from Arabic Tatweel button */
       .vowels-diacritics-section .keyboard-key[data-syriac="ـ"]::before {
         display: none;
+      }
+
+      /* Adjust overlay position for East Syriac Malankara Classical font */
+      body.malankara-classical-font
+        .vowels-diacritics-section
+        .keyboard-key::before {
+        top: 45%;
       }
       @media (max-width: 768px) {
         .container {
@@ -3401,6 +3407,25 @@
           const saveButton = $(".save-button");
           const cancelButton = $(".cancel-button");
 
+          // Function to update font classes on document
+          function updateFontClasses(fontName) {
+            // Remove all font classes
+            document.body.classList.remove(
+              "malankara-font",
+              "malankara-classical-font",
+              "karshon-font"
+            );
+
+            // Add appropriate class based on font
+            if (fontName === "EastSyriacMalankara") {
+              document.body.classList.add("malankara-font");
+            } else if (fontName === "EastSyriacMalankaraClassical") {
+              document.body.classList.add("malankara-classical-font");
+            } else {
+              document.body.classList.add("karshon-font");
+            }
+          }
+
           // Load saved preferences
           const savedFont = localStorage.getItem("syriacFont") || "Karshon";
           const savedLineHeight = localStorage.getItem("lineHeight") || "1.5";
@@ -3414,6 +3439,9 @@
             "--line-height",
             savedLineHeight
           );
+
+          // Apply font class
+          updateFontClasses(savedFont);
 
           textarea.css({
             "font-family": savedFont,
@@ -3483,6 +3511,9 @@
               "--line-height",
               selectedLineHeight
             );
+
+            // Update font classes
+            updateFontClasses(selectedFont);
 
             // Update textarea styles
             textarea.css({
