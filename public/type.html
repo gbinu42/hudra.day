@@ -492,6 +492,30 @@
         font-family: Arial, sans-serif;
         margin-top: 1px;
       }
+
+      /* Overlay for vowels and diacritics section */
+      .vowels-diacritics-section .keyboard-key {
+        position: relative;
+      }
+
+      .vowels-diacritics-section .keyboard-key::before {
+        content: "";
+        position: absolute;
+        top: 53%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 0.4em;
+        height: 0.4em;
+        background-color: rgba(255, 255, 255, 0.8);
+        pointer-events: none;
+        border-radius: 2px;
+        z-index: 1;
+      }
+
+      /* Remove overlay from Arabic Tatweel button */
+      .vowels-diacritics-section .keyboard-key[data-syriac="ـ"]::before {
+        display: none;
+      }
       @media (max-width: 768px) {
         .container {
           max-width: 100%;
@@ -1609,7 +1633,7 @@
           </div>
         </div>
 
-        <div class="keyboard-section">
+        <div class="keyboard-section vowels-diacritics-section">
           <div class="keyboard-section-title">Vowels and Diacritics</div>
           <div class="keyboard-grid">
             <!-- Vowels and Diacritics -->
