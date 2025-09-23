@@ -1046,7 +1046,8 @@
       }
 
       /* Settings button styles */
-      .settings-button {
+      .settings-button,
+      .collaborate-button {
         position: absolute;
         border-radius: 50%;
         background-color: rgba(128, 128, 128, 0.5);
@@ -1063,18 +1064,30 @@
         height: 36px;
       }
 
-      .settings-button:hover {
+      .settings-button:hover,
+      .collaborate-button:hover {
         background-color: rgba(209, 0, 31, 0.8);
         transform: scale(1.05);
       }
 
-      .settings-button:active {
+      .settings-button:active,
+      .collaborate-button:active {
         transform: scale(0.95);
       }
 
-      .settings-button svg {
+      .settings-button svg,
+      .collaborate-button svg {
         width: 20px;
         height: 20px;
+      }
+
+      /* Collaborative button - default gray, green when active */
+      .collaborate-button.active {
+        background-color: rgba(76, 175, 80, 0.5);
+      }
+
+      .collaborate-button.active:hover {
+        background-color: rgba(76, 175, 80, 0.8);
       }
 
       /* Regular buttons (non-touch) */
@@ -1083,10 +1096,21 @@
         right: 148px; /* Position to the left of pdf button */
       }
 
+      .non-touch-button.collaborate-button {
+        bottom: 25px;
+        right: 194px; /* Position to the left of settings button */
+      }
+
       /* Touch buttons inside keyboard */
       .touch-button.settings-button {
         top: -42px;
         right: 148px;
+        z-index: 1020;
+      }
+
+      .touch-button.collaborate-button {
+        top: -42px;
+        right: 194px;
         z-index: 1020;
       }
 
@@ -1262,6 +1286,162 @@
         transform: scale(1.1);
         box-shadow: 0 0 0 2px var(--primary-color);
       }
+
+      /* Collaborate dialog styles */
+      .collaborate-dialog {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        z-index: 1100;
+        min-width: 400px;
+        max-width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+      }
+
+      .collaborate-dialog.active {
+        display: block;
+      }
+
+      .collaborate-dialog-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1090;
+      }
+
+      .collaborate-dialog-overlay.active {
+        display: block;
+      }
+
+      .collaborate-dialog h3 {
+        margin: 0 0 20px 0;
+        color: var(--primary-color);
+        font-size: 1.3rem;
+      }
+
+      .collaborate-info p {
+        margin-bottom: 20px;
+        color: #555;
+        line-height: 1.5;
+      }
+
+      .collaborate-features,
+      .collaborate-warning {
+        margin-bottom: 20px;
+        padding: 15px;
+        border-radius: 6px;
+      }
+
+      .collaborate-features {
+        background: #f0f9f0;
+        border-left: 4px solid #4caf50;
+      }
+
+      .collaborate-warning {
+        background: #fff8e1;
+        border-left: 4px solid #ff9800;
+      }
+
+      .collaborate-features h4,
+      .collaborate-warning h4 {
+        margin: 0 0 10px 0;
+        font-size: 1rem;
+        color: #333;
+      }
+
+      .collaborate-features ul,
+      .collaborate-warning ul {
+        margin: 0;
+        padding-left: 20px;
+      }
+
+      .collaborate-features li,
+      .collaborate-warning li {
+        margin-bottom: 5px;
+        font-size: 0.9rem;
+        line-height: 1.4;
+      }
+
+      .collaborate-session-info {
+        margin-bottom: 20px;
+        padding: 15px;
+        background: #e3f2fd;
+        border-left: 4px solid #2196f3;
+        border-radius: 6px;
+      }
+
+      .session-detail-item {
+        margin-bottom: 10px;
+      }
+
+      .session-detail-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .copy-session-url-btn:hover {
+        background: #1976d2;
+      }
+
+      .copy-session-url-btn:active {
+        transform: scale(0.95);
+      }
+
+      .collaborate-dialog .buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 20px;
+      }
+
+      .collaborate-dialog button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 0.9rem;
+      }
+
+      .collaborate-create-button {
+        background: #4caf50;
+        color: white;
+      }
+
+      .collaborate-cancel-button {
+        background: #f5f5f5;
+        color: #333;
+      }
+
+      .collaborate-dialog button:hover {
+        opacity: 0.9;
+      }
+
+      .collaborate-dialog button:active {
+        transform: scale(0.98);
+      }
+
+      @media (max-width: 600px) {
+        .collaborate-dialog {
+          min-width: 320px;
+          margin: 20px;
+        }
+
+        .collaborate-features,
+        .collaborate-warning {
+          padding: 12px;
+        }
+      }
     </style>
   </head>
   <body>
@@ -1321,6 +1501,21 @@
             />
           </svg>
         </button>
+        <button
+          class="collaborate-button non-touch-button"
+          title="Create Collaborative Session"
+        >
+          <svg
+            class="collaborate-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path
+              d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zM4 18v-4h3v4h2v-7.5c0-1.1.9-2 2-2h2c1.1 0 2 .9 2 2V18h2v-4h3v4h1v2H3v-2h1zm8-12.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5S14.33 7 13.5 7 12 6.33 12 5.5zM7.5 6c.83 0 1.5.67 1.5 1.5S8.33 9 7.5 9 6 8.33 6 7.5 6.67 6 7.5 6zM6 10.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5S8.33 12 7.5 12 6 11.33 6 10.5z"
+            />
+          </svg>
+        </button>
       </div>
       <div class="keyboard hidden">
         <button class="share-button touch-button" title="Share as Image">
@@ -1366,6 +1561,21 @@
           >
             <path
               d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"
+            />
+          </svg>
+        </button>
+        <button
+          class="collaborate-button touch-button"
+          title="Create Collaborative Session"
+        >
+          <svg
+            class="collaborate-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path
+              d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zM4 18v-4h3v4h2v-7.5c0-1.1.9-2 2-2h2c1.1 0 2 .9 2 2V18h2v-4h3v4h1v2H3v-2h1zm8-12.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5S14.33 7 13.5 7 12 6.33 12 5.5zM7.5 6c.83 0 1.5.67 1.5 1.5S8.33 9 7.5 9 6 8.33 6 7.5 6.67 6 7.5 6zM6 10.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5S8.33 12 7.5 12 6 11.33 6 10.5z"
             />
           </svg>
         </button>
@@ -2161,6 +2371,19 @@
               Click on the settings(⚙️) button to change the font and line
               height
             </li>
+            <li>
+              Collaborative Mode: Click the collaboration button to create or
+              view shared editing sessions
+            </li>
+            <li>
+              Cross-Device Sync: Open the same collaborative link on mobile and
+              web simultaneously - anything typed in one place will appear in
+              real-time on all other devices
+            </li>
+            <li>
+              Permanent Links: Collaborative session links are permanent and can
+              be bookmarked, shared, and reused anytime
+            </li>
           </ul>
         </div>
       </div>
@@ -2197,6 +2420,126 @@
       </div>
     </div>
 
+    <!-- Collaborative Session Dialog -->
+    <div class="collaborate-dialog-overlay"></div>
+    <div class="collaborate-dialog">
+      <h3 class="collaborate-dialog-title">🔗 Create Collaborative Session</h3>
+
+      <!-- Content for creating new session -->
+      <div class="collaborate-create-content">
+        <div class="collaborate-info">
+          <p>
+            Create a shared editing session for real-time collaboration across
+            devices.
+          </p>
+
+          <div class="collaborate-features">
+            <h4>✨ Features:</h4>
+            <ul>
+              <li>Real-time sync across mobile and web</li>
+              <li>Type on one device, see changes instantly on others</li>
+              <li>Share via URL - no accounts needed</li>
+              <li>Permanent links - bookmark and reuse anytime</li>
+              <li>Automatic cloud saving</li>
+            </ul>
+          </div>
+
+          <div class="collaborate-warning">
+            <h4>⚠️ Notes:</h4>
+            <ul>
+              <li>Current text will be copied to the new session</li>
+              <li>Anyone with the URL can view and edit</li>
+              <li>Sessions are public - avoid sensitive content</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content for existing session details -->
+      <div class="collaborate-details-content" style="display: none">
+        <div class="collaborate-info">
+          <p>
+            Active collaborative session with real-time synchronization across
+            all devices.
+          </p>
+
+          <div class="collaborate-session-info">
+            <h4>📋 Session Details:</h4>
+            <div class="session-detail-item">
+              <strong>Document ID:</strong>
+              <code
+                class="session-id"
+                style="
+                  background: #f0f0f0;
+                  padding: 4px 8px;
+                  border-radius: 4px;
+                  font-family: monospace;
+                  margin-left: 8px;
+                "
+              ></code>
+            </div>
+            <div class="session-detail-item" style="margin-top: 15px">
+              <strong>Share URL:</strong>
+              <div
+                class="url-container"
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 8px;
+                  margin-top: 8px;
+                "
+              >
+                <input
+                  type="text"
+                  class="session-url"
+                  readonly
+                  style="
+                    flex: 1;
+                    padding: 8px;
+                    border: 1px solid #ddd;
+                    border-radius: 4px;
+                    font-family: monospace;
+                    font-size: 0.85rem;
+                    background: #f9f9f9;
+                  "
+                />
+                <button
+                  class="copy-session-url-btn"
+                  style="
+                    padding: 8px 12px;
+                    background: #2196f3;
+                    color: white;
+                    border: none;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    font-size: 0.8rem;
+                  "
+                >
+                  Copy
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="collaborate-features">
+            <h4>✨ How it works:</h4>
+            <ul>
+              <li>Open this URL on mobile and web simultaneously</li>
+              <li>Type on one device, see changes instantly on others</li>
+              <li>Share the URL to invite others to edit</li>
+              <li>This link is permanent - bookmark and reuse anytime</li>
+              <li>All changes auto-save to the cloud</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button class="collaborate-cancel-button">Close</button>
+        <button class="collaborate-create-button">Create Session</button>
+      </div>
+    </div>
+
     <footer>
       <div class="footer-bottom">
         <p>
@@ -2208,7 +2551,120 @@
       </div>
     </footer>
 
-    <script>
+    <!-- Firebase SDK - Modern modular approach -->
+    <script type="module">
+      /* 
+      COLLABORATIVE EDITING SETUP:
+      
+      To enable collaborative editing features:
+      1. Create a Firebase project at https://console.firebase.google.com/
+      2. Enable Realtime Database in your Firebase project
+      3. Set database rules to allow read/write (for testing):
+         {
+           "rules": {
+             ".read": true,
+             ".write": true
+           }
+         }
+      4. Get your Firebase config from Project Settings > General > Web apps
+      5. Replace the firebaseConfig object below with your actual config
+      
+      Without proper Firebase setup, the app will fall back to localStorage mode.
+      */
+
+      // Import only the Firebase services we need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+      import {
+        getDatabase,
+        ref,
+        set,
+        onValue,
+        off,
+        serverTimestamp,
+        remove,
+      } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-database.js";
+
+      // Firebase configuration - Replace with your own Firebase project credentials
+      const firebaseConfig = {
+        apiKey: "AIzaSyCgS9iRPMpwhCqTzI6JkrW9AIeJ_RzIpFU",
+        authDomain: "hudra-d80ee.firebaseapp.com",
+        databaseURL:
+          "https://hudra-d80ee-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "hudra-d80ee",
+        storageBucket: "hudra-d80ee.firebasestorage.app",
+        messagingSenderId: "52181458787",
+        appId: "1:52181458787:web:273d7156c6951578e37d56",
+        measurementId: "G-3H9YRKGHQH",
+      };
+
+      // Initialize Firebase only if we have an ID parameter
+      let firebaseApp = null;
+      let database = null;
+      let collaborativeMode = false;
+      let currentDocumentId = null;
+
+      // Function to generate 9-character alphanumeric ID
+      function generateDocumentId() {
+        const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+        let result = "";
+        for (let i = 0; i < 9; i++) {
+          result += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return result;
+      }
+
+      // Function to validate document ID format
+      function isValidDocumentId(id) {
+        return /^[a-z0-9]{9}$/.test(id);
+      }
+
+      // Parse URL parameters
+      function getUrlParameter(name) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
+      }
+
+      // Check for ID parameter and initialize Firebase if needed
+      const urlId = getUrlParameter("id");
+      if (urlId) {
+        if (isValidDocumentId(urlId)) {
+          currentDocumentId = urlId;
+          collaborativeMode = true;
+
+          // Initialize Firebase with error handling
+          try {
+            firebaseApp = initializeApp(firebaseConfig);
+            database = getDatabase(firebaseApp);
+            console.log(
+              "Collaborative mode enabled for document:",
+              currentDocumentId
+            );
+          } catch (error) {
+            console.warn(
+              "Firebase initialization failed, falling back to localStorage:",
+              error
+            );
+            collaborativeMode = false;
+            currentDocumentId = null;
+            database = null;
+            firebaseApp = null;
+
+            // Show a user-friendly message
+            setTimeout(() => {
+              alert(
+                "Collaborative features are not available. Please check the Firebase configuration. Your work will be saved locally."
+              );
+            }, 1000);
+          }
+        } else {
+          // Invalid ID format, redirect to generate a new one
+          const newId = generateDocumentId();
+          const currentUrl = new URL(window.location);
+          currentUrl.searchParams.set("id", newId);
+          window.location.href = currentUrl.toString();
+        }
+      }
+
       $(document).ready(function () {
         const textarea = $("#syriacInput");
         const fontSizeSelect = $("#fontSize");
@@ -2441,7 +2897,7 @@
         });
 
         // Handle keyboard key clicks
-        keyboardKeys.on("click", function () {
+        keyboardKeys.on("click", async function () {
           const $key = $(this);
           const cursorPos = textarea[0].selectionStart;
           const text = textarea.val();
@@ -2471,7 +2927,7 @@
               )
             ) {
               textarea.val("");
-              Storage.remove("syriacText");
+              await Storage.remove("syriacText");
               adjustTextareaHeight();
             }
           } else if ($key.hasClass("numeric-toggle-key")) {
@@ -2545,8 +3001,8 @@
             if (saveTimeout) {
               clearTimeout(saveTimeout);
             }
-            saveTimeout = setTimeout(() => {
-              Storage.save("syriacText", textarea.val());
+            saveTimeout = setTimeout(async () => {
+              await Storage.save("syriacText", textarea.val());
             }, 1000); // Less frequent saves during rapid deletion
           }
         }
@@ -2567,9 +3023,33 @@
         // Initial height adjustment
         adjustTextareaHeight();
 
-        // Storage system with fallbacks
+        // Storage system with Firebase and localStorage fallbacks
         const Storage = {
-          save(key, value) {
+          async save(key, value) {
+            if (collaborativeMode && database && key === "syriacText") {
+              try {
+                // Save to Firebase Realtime Database
+                await set(
+                  ref(database, `documents/${currentDocumentId}/content`),
+                  value
+                );
+                await set(
+                  ref(database, `documents/${currentDocumentId}/lastModified`),
+                  serverTimestamp()
+                );
+                console.log(`Saved to Firebase: ${currentDocumentId}`);
+                return true;
+              } catch (e) {
+                console.warn("Firebase save failed:", e);
+                // Fallback to localStorage
+                return this.saveLocal(key, value);
+              }
+            } else {
+              return this.saveLocal(key, value);
+            }
+          },
+
+          saveLocal(key, value) {
             try {
               // Try localStorage first (synchronous)
               localStorage.setItem(key, value);
@@ -2583,7 +3063,47 @@
             }
           },
 
-          load(key) {
+          async load(key) {
+            if (collaborativeMode && database && key === "syriacText") {
+              try {
+                // Load from Firebase Realtime Database
+                return new Promise((resolve, reject) => {
+                  const docRef = ref(
+                    database,
+                    `documents/${currentDocumentId}/content`
+                  );
+                  onValue(
+                    docRef,
+                    (snapshot) => {
+                      const value = snapshot.val();
+                      if (value !== null) {
+                        console.log(
+                          `Loaded from Firebase: ${currentDocumentId}`
+                        );
+                        resolve(value);
+                      } else {
+                        resolve(null);
+                      }
+                      // Remove the listener after getting the value once
+                      off(docRef);
+                    },
+                    (error) => {
+                      reject(error);
+                    },
+                    { onlyOnce: true }
+                  );
+                });
+              } catch (e) {
+                console.warn("Firebase load failed:", e);
+                // Fallback to localStorage
+                return this.loadLocal(key);
+              }
+            } else {
+              return this.loadLocal(key);
+            }
+          },
+
+          loadLocal(key) {
             try {
               // Try localStorage first
               const value = localStorage.getItem(key);
@@ -2614,7 +3134,24 @@
             }
           },
 
-          remove(key) {
+          async remove(key) {
+            if (collaborativeMode && database && key === "syriacText") {
+              try {
+                // Remove from Firebase Realtime Database
+                await remove(ref(database, `documents/${currentDocumentId}`));
+                console.log(`Removed from Firebase: ${currentDocumentId}`);
+                return true;
+              } catch (e) {
+                console.warn("Firebase remove failed:", e);
+                // Fallback to localStorage
+                return this.removeLocal(key);
+              }
+            } else {
+              return this.removeLocal(key);
+            }
+          },
+
+          removeLocal(key) {
             try {
               localStorage.removeItem(key);
               this.eraseCookie(key);
@@ -2661,7 +3198,7 @@
           },
         };
 
-        // Update persistence related code to work with synchronous API
+        // Update persistence related code to work with async API
         let saveTimeout;
         textarea.on("input", function () {
           // Clear previous timeout
@@ -2670,15 +3207,15 @@
           }
 
           // Set new timeout to save after 500ms of no typing
-          saveTimeout = setTimeout(() => {
+          saveTimeout = setTimeout(async () => {
             const text = $(this).val();
-            Storage.save("syriacText", text);
+            await Storage.save("syriacText", text);
           }, 500);
         });
 
-        // Load saved text when page loads (synchronous)
-        function loadSavedText() {
-          const savedText = Storage.load("syriacText");
+        // Load saved text when page loads (async)
+        async function loadSavedText() {
+          const savedText = await Storage.load("syriacText");
           if (savedText) {
             textarea.val(savedText);
             adjustTextareaHeight();
@@ -2688,15 +3225,251 @@
         // Call loadSavedText when document is ready
         loadSavedText();
 
-        // Update clear functionality to use the synchronous storage system
-        $(".clear-key").on("click", function () {
+        // Set up real-time synchronization for collaborative mode
+        if (collaborativeMode && database) {
+          let isUpdatingFromFirebase = false;
+
+          // Listen for changes in Firebase
+          const contentRef = ref(
+            database,
+            `documents/${currentDocumentId}/content`
+          );
+          onValue(contentRef, (snapshot) => {
+            const value = snapshot.val();
+            if (value !== null && !isUpdatingFromFirebase) {
+              // Only update if the content is different from current textarea content
+              if (textarea.val() !== value) {
+                // Store cursor position
+                const cursorPos = textarea[0].selectionStart;
+                const cursorEnd = textarea[0].selectionEnd;
+
+                // Update textarea content
+                textarea.val(value);
+                adjustTextareaHeight();
+
+                // Restore cursor position (if still valid)
+                if (cursorPos <= value.length) {
+                  textarea[0].selectionStart = cursorPos;
+                  textarea[0].selectionEnd =
+                    cursorEnd <= value.length ? cursorEnd : cursorPos;
+                } else {
+                  // Place cursor at end if previous position is invalid
+                  textarea[0].selectionStart = value.length;
+                  textarea[0].selectionEnd = value.length;
+                }
+
+                console.log("Content updated from Firebase");
+              }
+            }
+          });
+
+          // Override the save function to prevent loops
+          const originalSave = Storage.save.bind(Storage);
+          Storage.save = async function (key, value) {
+            if (key === "syriacText") {
+              isUpdatingFromFirebase = true;
+              const result = await originalSave(key, value);
+              // Small delay to prevent race conditions
+              setTimeout(() => {
+                isUpdatingFromFirebase = false;
+              }, 100);
+              return result;
+            }
+            return originalSave(key, value);
+          };
+
+          console.log("Real-time synchronization enabled");
+        }
+
+        // Show appropriate UI controls based on mode
+        if (collaborativeMode) {
+          $(".collaborate-button").show().addClass("active"); // Show button and make it green
+        } else {
+          $(".collaborate-button").show().removeClass("active"); // Show button in default gray
+        }
+
+        // Handle create collaborative session button - show dialog
+        $(".collaborate-button").on("click", function () {
+          if (collaborativeMode) {
+            // Show session details
+            $(".collaborate-dialog-title").text(
+              "🔗 Collaborative Session Details"
+            );
+            $(".collaborate-create-content").hide();
+            $(".collaborate-details-content").show();
+            $(".collaborate-create-button").hide();
+            $(".collaborate-cancel-button").text("Close");
+
+            // Populate session details
+            $(".session-id").text(currentDocumentId);
+            $(".session-url").val(window.location.href);
+          } else {
+            // Show create session dialog
+            $(".collaborate-dialog-title").text(
+              "🔗 Create Collaborative Session"
+            );
+            $(".collaborate-create-content").show();
+            $(".collaborate-details-content").hide();
+            $(".collaborate-create-button").show();
+            $(".collaborate-cancel-button").text("Cancel");
+          }
+
+          $(".collaborate-dialog").addClass("active");
+          $(".collaborate-dialog-overlay").addClass("active");
+        });
+
+        // Handle collaborate dialog buttons
+        $(".collaborate-cancel-button").on("click", function () {
+          $(".collaborate-dialog").removeClass("active");
+          $(".collaborate-dialog-overlay").removeClass("active");
+        });
+
+        $(".collaborate-dialog-overlay").on("click", function () {
+          $(".collaborate-dialog").removeClass("active");
+          $(".collaborate-dialog-overlay").removeClass("active");
+        });
+
+        $(".collaborate-create-button").on("click", function () {
+          const newId = generateDocumentId();
+          const currentUrl = new URL(window.location);
+          currentUrl.searchParams.set("id", newId);
+
+          // Copy current text content to the new collaborative session
+          const currentText = textarea.val();
+          if (currentText.trim()) {
+            // Store in localStorage temporarily to transfer to the new session
+            localStorage.setItem("tempCollaborativeText", currentText);
+          }
+
+          // Navigate to the new collaborative URL
+          window.location.href = currentUrl.toString();
+        });
+
+        // Handle copy session URL button
+        $(document).on("click", ".copy-session-url-btn", function () {
+          const urlInput = $(".session-url")[0];
+          const url = urlInput.value;
+
+          if (navigator.clipboard && window.isSecureContext) {
+            // Use the modern clipboard API
+            navigator.clipboard
+              .writeText(url)
+              .then(() => {
+                showTemporaryMessage("Session URL copied to clipboard!");
+              })
+              .catch(() => {
+                fallbackCopyToClipboard(url);
+              });
+          } else {
+            // Fallback for older browsers or insecure contexts
+            fallbackCopyToClipboard(url);
+          }
+        });
+
+        // Handle copy URL button
+        $("#copyUrlButton").on("click", function () {
+          const currentUrl = window.location.href;
+
+          if (navigator.clipboard && window.isSecureContext) {
+            // Use the modern clipboard API
+            navigator.clipboard
+              .writeText(currentUrl)
+              .then(() => {
+                showTemporaryMessage("URL copied to clipboard!");
+              })
+              .catch(() => {
+                fallbackCopyToClipboard(currentUrl);
+              });
+          } else {
+            // Fallback for older browsers or insecure contexts
+            fallbackCopyToClipboard(currentUrl);
+          }
+        });
+
+        // Fallback copy function
+        function fallbackCopyToClipboard(text) {
+          const textArea = document.createElement("textarea");
+          textArea.value = text;
+          textArea.style.position = "fixed";
+          textArea.style.left = "-999999px";
+          textArea.style.top = "-999999px";
+          document.body.appendChild(textArea);
+          textArea.focus();
+          textArea.select();
+
+          try {
+            document.execCommand("copy");
+            showTemporaryMessage("URL copied to clipboard!");
+          } catch (err) {
+            console.error("Failed to copy URL:", err);
+            showTemporaryMessage(
+              "Failed to copy URL. Please copy manually from the address bar."
+            );
+          }
+
+          document.body.removeChild(textArea);
+        }
+
+        // Show temporary message function
+        function showTemporaryMessage(message) {
+          const messageEl = $("<div>")
+            .css({
+              position: "fixed",
+              top: "20px",
+              right: "20px",
+              background: "#4CAF50",
+              color: "white",
+              padding: "10px 15px",
+              borderRadius: "4px",
+              zIndex: "10000",
+              fontSize: "0.9rem",
+              boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
+            })
+            .text(message);
+
+          $("body").append(messageEl);
+
+          setTimeout(() => {
+            messageEl.fadeOut(300, () => messageEl.remove());
+          }, 2000);
+        }
+
+        // Check if we need to load temporary collaborative text
+        if (collaborativeMode) {
+          const tempText = localStorage.getItem("tempCollaborativeText");
+          if (tempText) {
+            // Only set if the Firebase document is empty
+            const tempContentRef = ref(
+              database,
+              `documents/${currentDocumentId}/content`
+            );
+            onValue(
+              tempContentRef,
+              (snapshot) => {
+                if (!snapshot.exists() || !snapshot.val()) {
+                  textarea.val(tempText);
+                  Storage.save("syriacText", tempText);
+                  adjustTextareaHeight();
+                }
+                // Clean up temporary storage
+                localStorage.removeItem("tempCollaborativeText");
+                // Remove the listener after checking once
+                off(tempContentRef);
+              },
+              { onlyOnce: true }
+            );
+          }
+        }
+
+        // Update clear functionality to use the async storage system
+        $(".clear-key").on("click", async function () {
           if (
             confirm(
               "Are you sure you want to clear all text? This cannot be undone."
             )
           ) {
             textarea.val("");
-            Storage.remove("syriacText");
+            await Storage.remove("syriacText");
             adjustTextareaHeight();
           }
         });
