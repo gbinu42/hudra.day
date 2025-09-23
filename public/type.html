@@ -2583,6 +2583,9 @@
         off,
         serverTimestamp,
         remove,
+        goOffline,
+        goOnline,
+        onDisconnect,
       } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-database.js";
 
       // Firebase configuration - Replace with your own Firebase project credentials
@@ -3215,6 +3218,8 @@
         if (collaborativeMode && database) {
           let lastSavedContent = "";
           let isUpdatingFromRemote = false;
+          let isConnected = true;
+          let reconnectTimeout = null;
 
           // Listen for changes in Firebase
           const contentRef = ref(
@@ -3266,7 +3271,84 @@
             }
           };
 
-          onValue(contentRef, handleFirebaseUpdate);
+          // Set up Firebase listener
+          const unsubscribe = onValue(contentRef, handleFirebaseUpdate);
+
+          // Mobile-specific: Handle visibility changes
+          const handleVisibilityChange = () => {
+            if (document.hidden) {
+              console.log(
+                "App went to background - maintaining Firebase connection"
+              );
+              // Don't go offline, but prepare for potential reconnection
+              clearTimeout(reconnectTimeout);
+            } else {
+              console.log(
+                "App came to foreground - ensuring Firebase connection"
+              );
+              // Force reconnection after a short delay
+              reconnectTimeout = setTimeout(() => {
+                goOffline();
+                setTimeout(() => {
+                  goOnline();
+                  console.log("Firebase reconnected");
+                }, 100);
+              }, 500);
+            }
+          };
+
+          // Mobile-specific: Handle page focus/blur
+          const handleFocus = () => {
+            console.log("Window focused - ensuring real-time sync");
+            // Force a fresh connection
+            clearTimeout(reconnectTimeout);
+            reconnectTimeout = setTimeout(() => {
+              goOffline();
+              setTimeout(() => {
+                goOnline();
+                // Also force a save of current content to trigger sync
+                const currentContent = textarea.val();
+                if (currentContent !== lastSavedContent) {
+                  Storage.save("syriacText", currentContent);
+                }
+              }, 100);
+            }, 200);
+          };
+
+          const handleBlur = () => {
+            console.log("Window blurred - maintaining connection");
+            clearTimeout(reconnectTimeout);
+          };
+
+          // Add event listeners for mobile browser behavior
+          document.addEventListener("visibilitychange", handleVisibilityChange);
+          window.addEventListener("focus", handleFocus);
+          window.addEventListener("blur", handleBlur);
+
+          // Mobile-specific: Handle page unload
+          window.addEventListener("beforeunload", () => {
+            console.log("Page unloading - cleaning up Firebase connection");
+            if (unsubscribe) unsubscribe();
+          });
+
+          // Add connection state monitoring
+          const connectedRef = ref(database, ".info/connected");
+          onValue(connectedRef, (snapshot) => {
+            if (snapshot.val() === true) {
+              if (!isConnected) {
+                console.log("Firebase reconnected");
+                isConnected = true;
+                // Force sync current content when reconnecting
+                const currentContent = textarea.val();
+                if (currentContent !== lastSavedContent) {
+                  Storage.save("syriacText", currentContent);
+                }
+              }
+            } else {
+              console.log("Firebase disconnected");
+              isConnected = false;
+            }
+          });
 
           // Override the save function for collaborative mode
           const originalSave = Storage.save.bind(Storage);
@@ -3286,6 +3368,39 @@
             }
             return originalSave(key, value);
           };
+
+          // Mobile-specific: Add touch event listeners to ensure sync
+          if (isTouchDevice) {
+            let touchSyncTimeout = null;
+
+            const forceMobileSync = () => {
+              clearTimeout(touchSyncTimeout);
+              touchSyncTimeout = setTimeout(() => {
+                const currentContent = textarea.val();
+                if (currentContent !== lastSavedContent) {
+                  console.log("Mobile touch triggered sync");
+                  Storage.save("syriacText", currentContent);
+                }
+              }, 100);
+            };
+
+            // Add multiple event listeners for mobile
+            textarea.on("touchend", forceMobileSync);
+            textarea.on("input", forceMobileSync);
+            textarea.on("change", forceMobileSync);
+            textarea.on("blur", forceMobileSync);
+
+            // Also add a periodic sync for mobile browsers
+            setInterval(() => {
+              if (!document.hidden && isConnected) {
+                const currentContent = textarea.val();
+                if (currentContent !== lastSavedContent) {
+                  console.log("Mobile periodic sync");
+                  Storage.save("syriacText", currentContent);
+                }
+              }
+            }, 2000); // Every 2 seconds when active
+          }
 
           console.log(
             "Real-time synchronization enabled for document:",
