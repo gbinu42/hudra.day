@@ -269,7 +269,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
     useState<PageStatus>("draft");
 
   // Line numbers toggle state
-  const [showLineNumbers, setShowLineNumbers] = useState<boolean>(false);
+  const [showLineNumbers, setShowLineNumbers] = useState<boolean>(true);
 
   // Font selection state
   const [selectedFont, setSelectedFont] = useState<string>("default");
