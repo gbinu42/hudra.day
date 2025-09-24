@@ -521,20 +521,26 @@ export const bookService = {
   ): Unsubscribe {
     const booksCollection = collection(db, "books");
 
-    // Wrapper callback to filter based on user role and privacy settings
+    // Wrapper callback to filter based on user role and privacy/protection settings
     const wrappedCallback = (snapshot: QuerySnapshot<DocumentData>) => {
-      // Filter documents based on user role and privacy
+      // Filter documents based on user role and privacy/protection
       const filteredDocs = snapshot.docs.filter((doc) => {
         const data = doc.data();
         const isPrivate = data.private ?? false; // Default to public if not set
+        const isProtected = data.protected ?? false; // Default to not protected if not set
 
-        if (!userRole || userRole === "viewer") {
-          // Not logged in or viewer - only show public books
-          return !isPrivate;
-        } else {
-          // Editors and admins see all books
-          return true;
+        // If book is protected, only admins can see it
+        if (isProtected) {
+          return userRole === "admin";
         }
+
+        // If book is private, only editors and admins can see it
+        if (isPrivate) {
+          return userRole === "editor" || userRole === "admin";
+        }
+
+        // If book is public, everyone can see it (including non-signed in users)
+        return true;
       });
 
       // Create a new snapshot-like object with filtered documents
@@ -566,7 +572,7 @@ export const bookService = {
     return await firestoreService.getDocument("books", bookId);
   },
 
-  // Check if user can access a book based on privacy settings
+  // Check if user can access a book based on privacy and protection settings
   async canUserAccessBook(
     bookId: string,
     userRole?: string | null
@@ -579,14 +585,20 @@ export const bookService = {
 
       const bookData = bookDoc.data();
       const isPrivate = bookData?.private ?? false; // Default to public if not set
+      const isProtected = bookData?.protected ?? false; // Default to not protected if not set
 
-      // If book is public, anyone can access (including non-signed in users)
-      if (!isPrivate) {
-        return true;
+      // If book is protected, only admins can access
+      if (isProtected) {
+        return userRole === "admin";
       }
 
       // If book is private, only editors and admins can access
-      return userRole === "editor" || userRole === "admin";
+      if (isPrivate) {
+        return userRole === "editor" || userRole === "admin";
+      }
+
+      // If book is public, anyone can access (including non-signed in users)
+      return true;
     } catch (error) {
       console.error("Error checking book access:", error);
       return false;

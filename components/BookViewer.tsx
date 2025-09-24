@@ -254,6 +254,8 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
     publisher: "",
     placeOfPublication: "",
     coverImage: "",
+    private: false,
+    protected: false,
     tags: [] as string[],
     textDirection: "rtl" as "rtl" | "ltr",
   });
@@ -690,6 +692,8 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
       publisher: book.publisher || "",
       placeOfPublication: book.placeOfPublication || "",
       coverImage: book.coverImage || "",
+      private: book.private || false,
+      protected: book.protected || false,
       tags: book.tags || [],
       textDirection: book.textDirection || "rtl",
     });
@@ -735,7 +739,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
   const handleEditBookInputChange = useCallback(
     (
       field: keyof typeof editBookForm,
-      value: string | number | BookStatus | "rtl" | "ltr"
+      value: string | number | boolean | BookStatus | "rtl" | "ltr"
     ) => {
       setEditBookForm((prev) => ({
         ...prev,
@@ -858,6 +862,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
             createdAt: bookData.createdAt?.toDate?.() || new Date(),
             updatedAt: bookData.updatedAt?.toDate?.() || new Date(),
             private: bookData.private ?? false, // Default to public if not set
+            protected: bookData.protected ?? false, // Default to not protected if not set
           } as Book;
 
           // Check if user can access this book
@@ -1908,6 +1913,52 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                               }
                               placeholder="https://example.com/cover.jpg"
                             />
+                          </div>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <div className="flex items-center space-x-2">
+                                <input
+                                  id="editPrivate"
+                                  type="checkbox"
+                                  checked={editBookForm.private}
+                                  onChange={(e) =>
+                                    handleEditBookInputChange(
+                                      "private",
+                                      e.target.checked
+                                    )
+                                  }
+                                  className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+                                />
+                                <Label
+                                  htmlFor="editPrivate"
+                                  className="text-sm font-medium"
+                                >
+                                  Private (only visible to editors and admins)
+                                </Label>
+                              </div>
+                              {userProfile?.role === "admin" && (
+                                <div className="flex items-center space-x-2">
+                                  <input
+                                    id="editProtected"
+                                    type="checkbox"
+                                    checked={editBookForm.protected}
+                                    onChange={(e) =>
+                                      handleEditBookInputChange(
+                                        "protected",
+                                        e.target.checked
+                                      )
+                                    }
+                                    className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+                                  />
+                                  <Label
+                                    htmlFor="editProtected"
+                                    className="text-sm font-medium"
+                                  >
+                                    Protected (only visible to admins)
+                                  </Label>
+                                </div>
+                              )}
+                            </div>
                           </div>
                           <div className="space-y-2">
                             <Label htmlFor="editTags">Tags</Label>

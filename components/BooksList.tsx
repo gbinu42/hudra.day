@@ -33,6 +33,7 @@ export default function BooksList() {
             createdAt: data.createdAt?.toDate?.() || new Date(),
             updatedAt: data.updatedAt?.toDate?.() || new Date(),
             private: data.private ?? false, // Default to public if not set
+            protected: data.protected ?? false, // Default to not protected if not set
           };
         }) as Book[];
 
@@ -124,7 +125,18 @@ export default function BooksList() {
                         <div className="flex-1 min-w-0">
                           <CardTitle className="line-clamp-2 text-base font-semibold leading-tight break-words">
                             {book.title}
+                            {book.protected &&
+                              userProfile &&
+                              userProfile.role === "admin" && (
+                                <Badge
+                                  variant="destructive"
+                                  className="ml-2 text-xs"
+                                >
+                                  Protected
+                                </Badge>
+                              )}
                             {book.private &&
+                              !book.protected &&
                               userProfile &&
                               (userProfile.role === "editor" ||
                                 userProfile.role === "admin") && (

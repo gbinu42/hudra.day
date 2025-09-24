@@ -122,6 +122,7 @@ export default async function BookDetailPage({
       createdAt: bookData.createdAt?.toDate?.() || new Date(),
       updatedAt: bookData.updatedAt?.toDate?.() || new Date(),
       private: bookData.private ?? false, // Default to public if not set
+      protected: bookData.protected ?? false, // Default to not protected if not set
     };
 
     // Note: Server-side access control is handled by the BookViewer component

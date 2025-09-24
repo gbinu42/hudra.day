@@ -45,6 +45,7 @@ export function AddBookDialog() {
     placeOfPublication: "",
     coverImage: "",
     private: false, // Default to public
+    protected: false, // Default to not protected
     tags: [],
     textDirection: "rtl",
   });
@@ -134,6 +135,7 @@ export function AddBookDialog() {
         placeOfPublication: "",
         coverImage: "",
         private: false, // Default to public
+        protected: false, // Default to not protected
         tags: [],
         textDirection: "rtl",
       });
@@ -368,6 +370,22 @@ export function AddBookDialog() {
                   Private (only visible to editors and admins)
                 </Label>
               </div>
+              {userProfile?.role === "admin" && (
+                <div className="flex items-center space-x-2">
+                  <input
+                    id="protected"
+                    type="checkbox"
+                    checked={newBookData.protected || false}
+                    onChange={(e) =>
+                      handleInputChange("protected", e.target.checked)
+                    }
+                    className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+                  />
+                  <Label htmlFor="protected" className="text-sm font-medium">
+                    Protected (only visible to admins)
+                  </Label>
+                </div>
+              )}
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">

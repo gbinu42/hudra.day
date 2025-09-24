@@ -21,6 +21,11 @@ service cloud.firestore {
       return request.auth != null && getUserRole() in ['editor', 'admin'];
     }
 
+    // Helper function to check if user can read protected books
+    function canReadProtectedBooks() {
+      return request.auth != null && getUserRole() == 'admin';
+    }
+
     // Users collection rules
     match /users/{userId} {
       // Users can read their own profile
@@ -30,16 +35,20 @@ service cloud.firestore {
       allow read, write: if request.auth != null && getUserRole() == 'admin';
     }
 
-    // Books collection rules with private field support
+    // Books collection rules with private and protected field support
     match /books/{bookId} {
-      // Allow read for public books (private == false or undefined) to any authenticated user
-      allow read: if canReadBooks() && (
-        !('private' in resource.data) ||  // Field doesn't exist (default public)
-        resource.data.private == false    // Explicitly public
-      );
+      // Allow read for protected books only to admins
+      allow read: if resource.data.protected == true && canReadProtectedBooks();
 
-      // Allow read for private books only to editors and admins
-      allow read: if resource.data.private == true && canReadPrivateBooks();
+      // Allow read for private books only to editors and admins (if not protected)
+      allow read: if resource.data.private == true &&
+        (!('protected' in resource.data) || resource.data.protected == false) &&
+        canReadPrivateBooks();
+
+      // Allow read for public books to any authenticated user (if not private or protected)
+      allow read: if canReadBooks() &&
+        (!('private' in resource.data) || resource.data.private == false) &&
+        (!('protected' in resource.data) || resource.data.protected == false);
 
       // Allow create only to admins
       allow create: if request.auth != null && getUserRole() == 'admin';
@@ -59,10 +68,15 @@ service cloud.firestore {
       function canAccessParentBook() {
         let book = get(/databases/$(database)/documents/books/$(resource.data.bookId));
         return (
-          // Public book (private field doesn't exist or is false)
-          (!('private' in book.data) || book.data.private == false) ||
-          // Private book but user has editor/admin role
-          (book.data.private == true && canReadPrivateBooks())
+          // Protected book - only admins can access
+          (book.data.protected == true && canReadProtectedBooks()) ||
+          // Private book (if not protected) - editors and admins can access
+          (book.data.private == true &&
+           (!('protected' in book.data) || book.data.protected == false) &&
+           canReadPrivateBooks()) ||
+          // Public book (not private and not protected) - any authenticated user can access
+          ((!('private' in book.data) || book.data.private == false) &&
+           (!('protected' in book.data) || book.data.protected == false))
         );
       }
 
@@ -83,16 +97,18 @@ service cloud.firestore {
 
 ## Key Security Features:
 
-1. **Public Books**: Books without the `private` field or with `private: false` are accessible to all authenticated users
-2. **Private Books**: Books with `private: true` are only accessible to editors and admins
-3. **Unauthenticated Users**: Cannot access any books (server-side protection)
-4. **Viewers**: Can only access public books
-5. **Pages**: Inherit privacy settings from their parent book
-6. **Creation/Editing**: Only admins can create books, editors and admins can edit (but not change creator)
+1. **Public Books**: Books without the `private` and `protected` fields (or with both set to `false`) are accessible to all authenticated users
+2. **Private Books**: Books with `private: true` (but not `protected: true`) are only accessible to editors and admins
+3. **Protected Books**: Books with `protected: true` are only accessible to admins (regardless of private setting)
+4. **Unauthenticated Users**: Cannot access any books (server-side protection)
+5. **Viewers**: Can only access public books
+6. **Pages**: Inherit privacy and protection settings from their parent book
+7. **Creation/Editing**: Only admins can create books, editors and admins can edit (but not change creator)
 
 ## Important Notes:
 
 - These rules provide **server-side protection** in addition to the client-side filtering
 - Unauthenticated requests will be blocked entirely at the database level
-- The `!('private' in resource.data)` check handles existing books without the private field
+- The `!('private' in resource.data)` and `!('protected' in resource.data)` checks handle existing books without these fields
+- Protected books take precedence over private books - if a book is protected, only admins can access it regardless of the private setting
 - Helper functions make the rules more readable and maintainable
