@@ -209,21 +209,29 @@ const PageCard = memo(
           <span className="font-semibold text-sm text-gray-900">
             Page {page.pageNumber}
           </span>
-          <Button
-            size="sm"
-            variant="default"
-            onClick={() => onSave(page.pageId)}
-            disabled={isLoading}
-            className="h-6 px-2 text-xs"
-          >
-            {isLoading ? "..." : "Save"}
-          </Button>
+          {isLoading && (
+            <div className="flex items-center text-xs text-gray-500">
+              <div className="animate-spin rounded-full h-3 w-3 border border-gray-300 border-t-blue-500 mr-1"></div>
+              Saving...
+            </div>
+          )}
         </div>
 
         <input
           type="text"
           value={editValue}
           onChange={(e) => onEditChange(page.pageId, e.target.value)}
+          onBlur={() => {
+            // Only save if the value has changed and we're not already saving
+            if (!isLoading && editValue !== (page.pageNumberInBook ?? "")) {
+              onSave(page.pageId);
+            }
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              (e.target as HTMLInputElement).blur(); // This will trigger onBlur and save
+            }
+          }}
           className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="Page # in book"
           disabled={isLoading}
