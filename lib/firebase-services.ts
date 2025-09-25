@@ -709,6 +709,54 @@ export const bookService = {
       throw error;
     }
   },
+
+  // Update page number in book in book.pages array
+  async updatePageNumberInBook(
+    bookId: string,
+    pageId: string,
+    pageNumberInBook?: string
+  ): Promise<void> {
+    try {
+      // Get the current book document
+      const bookDoc = await this.getBookById(bookId);
+      if (!bookDoc.exists()) {
+        throw new Error("Book not found");
+      }
+
+      const bookData = bookDoc.data();
+      const currentPages = bookData?.pages || [];
+
+      // Find and update the pageNumberInBook in the pages array
+      const updatedPages = currentPages.map((page: BookPage) => {
+        if (page.pageId === pageId) {
+          const updatedPage = { ...page };
+          if (pageNumberInBook) {
+            updatedPage.pageNumberInBook = pageNumberInBook;
+          } else {
+            // Remove the property if empty
+            delete updatedPage.pageNumberInBook;
+          }
+          return updatedPage;
+        }
+        return page;
+      });
+
+      // Update the book document
+      await this.updateBook(bookId, {
+        pages: updatedPages,
+        updatedAt: new Date(),
+      } as Partial<CreateBookData>);
+
+      console.log(
+        `Updated page number in book ${bookId} for page ${pageId} to ${
+          pageNumberInBook || "empty"
+        }`
+      );
+    } catch (error) {
+      console.error("Error updating page number in book:", error);
+      throw error;
+    }
+  },
 };
 
 // Page Service for handling pages and their edits

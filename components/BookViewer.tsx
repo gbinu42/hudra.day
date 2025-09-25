@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef, memo } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -184,6 +184,57 @@ interface Page {
   updatedAt?: Date;
 }
 
+// Memoized PageCard component for grid layout
+const PageCard = memo(
+  ({
+    page,
+    editValue,
+    onEditChange,
+    onSave,
+    isLoading,
+  }: {
+    page: {
+      pageId: string;
+      pageNumber: number;
+      pageNumberInBook?: string;
+    };
+    editValue: string;
+    onEditChange: (pageId: string, value: string) => void;
+    onSave: (pageId: string) => void;
+    isLoading: boolean;
+  }) => {
+    return (
+      <div className="bg-white border border-gray-200 rounded-lg p-3 hover:shadow-sm transition-shadow">
+        <div className="flex items-center justify-between mb-2">
+          <span className="font-semibold text-sm text-gray-900">
+            Page {page.pageNumber}
+          </span>
+          <Button
+            size="sm"
+            variant="default"
+            onClick={() => onSave(page.pageId)}
+            disabled={isLoading}
+            className="h-6 px-2 text-xs"
+          >
+            {isLoading ? "..." : "Save"}
+          </Button>
+        </div>
+
+        <input
+          type="text"
+          value={editValue}
+          onChange={(e) => onEditChange(page.pageId, e.target.value)}
+          className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Page # in book"
+          disabled={isLoading}
+        />
+      </div>
+    );
+  }
+);
+
+PageCard.displayName = "PageCard";
+
 export default function BookViewer({ initialBook }: { initialBook?: Book }) {
   const [book, setBook] = useState<Book | null>(initialBook || null);
   const [loading, setLoading] = useState(!initialBook);
@@ -319,6 +370,13 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
   // OCR state
   const [ocrLoading, setOcrLoading] = useState<boolean>(false);
   const [ocrProgress, setOcrProgress] = useState<string>("");
+
+  // Admin page management state
+  const [pageManagementOpen, setPageManagementOpen] = useState<boolean>(false);
+  const [savingPages, setSavingPages] = useState<Set<string>>(new Set());
+  const [editingPages, setEditingPages] = useState<{
+    [pageId: string]: string;
+  }>({});
 
   // Add scroll event listeners for synchronization with throttling
   useEffect(() => {
@@ -770,6 +828,77 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
       setPageStatusLoading(false);
     }
   };
+
+  // Optimized callback functions for PageRow
+  const handleEditChange = useCallback((pageId: string, value: string) => {
+    setEditingPages((prev) => ({
+      ...prev,
+      [pageId]: value,
+    }));
+  }, []);
+
+  const handleSave = useCallback(
+    async (pageId: string) => {
+      const newValue = editingPages[pageId];
+      if (newValue === undefined || !book?.id) return;
+
+      // Add to saving state
+      setSavingPages((prev) => new Set(prev).add(pageId));
+
+      try {
+        const trimmedValue = newValue.trim();
+
+        // Update both the individual page document and the book's pages array
+        await Promise.all([
+          pageService.updatePage(pageId, {
+            pageNumberInBook: trimmedValue || undefined,
+          }),
+          bookService.updatePageNumberInBook(
+            book.id,
+            pageId,
+            trimmedValue || undefined
+          ),
+        ]);
+
+        // Update the local book state to reflect the change
+        setBook((prevBook) => {
+          if (!prevBook?.pages) return prevBook;
+
+          const updatedPages = prevBook.pages.map((page) => {
+            if (page.pageId === pageId) {
+              return {
+                ...page,
+                pageNumberInBook: trimmedValue || undefined,
+              };
+            }
+            return page;
+          });
+
+          return {
+            ...prevBook,
+            pages: updatedPages,
+          };
+        });
+
+        console.log(
+          `Page number in book updated for page ${pageId} to: ${
+            trimmedValue || "empty"
+          }`
+        );
+      } catch (error) {
+        console.error("Error updating page number in book:", error);
+        alert("Failed to save page number. Please try again.");
+      } finally {
+        // Remove from saving state
+        setSavingPages((prev) => {
+          const updated = new Set(prev);
+          updated.delete(pageId);
+          return updated;
+        });
+      }
+    },
+    [editingPages, book?.id]
+  );
 
   const openPageStatusDialog = useCallback(() => {
     if (currentPage) {
@@ -2811,6 +2940,74 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
           </div>
         </ProtectedRoute>
       </div>
+
+      {/* Admin Page Management Section */}
+      {userProfile?.role === "admin" &&
+        book &&
+        book.pages &&
+        book.pages.length > 0 && (
+          <div className="bg-slate-50 border-t">
+            <div className="max-w-7xl mx-auto px-4 py-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold text-gray-900">
+                  Page Management (Admin)
+                </h2>
+                <Button
+                  onClick={() => {
+                    const newState = !pageManagementOpen;
+                    setPageManagementOpen(newState);
+
+                    // Initialize all pages in edit mode when opening
+                    if (newState && book?.pages) {
+                      const initialEditingState: { [pageId: string]: string } =
+                        {};
+                      book.pages.forEach((page) => {
+                        // Initialize with current value or empty string
+                        initialEditingState[page.pageId] =
+                          page.pageNumberInBook ?? "";
+                      });
+                      setEditingPages(initialEditingState);
+                    } else if (!newState) {
+                      // Clear editing state when closing
+                      setEditingPages({});
+                    }
+                  }}
+                  variant="outline"
+                  size="sm"
+                >
+                  {pageManagementOpen ? "Hide" : "Show"} Page List
+                </Button>
+              </div>
+
+              {pageManagementOpen && (
+                <div className="bg-gray-50 rounded-lg border p-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 max-h-96 overflow-y-auto">
+                    {book.pages
+                      .sort((a, b) => a.pageNumber - b.pageNumber)
+                      .map((page) => {
+                        // Use editingPages value if it exists, otherwise use the current page value
+                        const editValue =
+                          editingPages[page.pageId] ??
+                          page.pageNumberInBook ??
+                          "";
+
+                        return (
+                          <PageCard
+                            key={page.pageId}
+                            page={page}
+                            editValue={editValue}
+                            onEditChange={handleEditChange}
+                            onSave={handleSave}
+                            isLoading={savingPages.has(page.pageId)}
+                          />
+                        );
+                      })}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
       {/* Page Status Change Dialog */}
       <Dialog
