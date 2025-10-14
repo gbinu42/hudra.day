@@ -74,6 +74,14 @@ export default function Navbar() {
             </NavigationMenuItem>
             <NavigationMenuItem>
               <NavigationMenuLink
+                href="/hymns"
+                className="group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-primary hover:text-primary/80 transition-colors focus:text-primary focus:outline-none"
+              >
+                Hymns
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink
                 href="/type"
                 className="group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-primary hover:text-primary/80 transition-colors focus:text-primary focus:outline-none"
               >
@@ -162,6 +170,12 @@ export default function Navbar() {
                 className="text-lg font-medium text-primary hover:text-primary/80 transition-colors"
               >
                 Books
+              </Link>
+              <Link
+                href="/hymns"
+                className="text-lg font-medium text-primary hover:text-primary/80 transition-colors"
+              >
+                Hymns
               </Link>
               <Link
                 href="/type"

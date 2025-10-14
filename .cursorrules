@@ -1,0 +1,16 @@
+# Cursor Rules for Syriac Hymn Archive
+
+## Firebase Data Handling
+
+### No Undefined Values in Firebase Documents
+
+- Firebase does not support `undefined` values in documents
+- Always filter out `undefined` values before calling Firebase methods (addDoc, setDoc, updateDoc)
+- Use `Object.entries().filter()` to remove undefined fields from data objects
+- Example:
+  ```typescript
+  const cleanData = Object.fromEntries(
+    Object.entries(data).filter(([_, value]) => value !== undefined)
+  );
+  ```
+- For optional fields, omit them entirely rather than setting them to `undefined`
