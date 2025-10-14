@@ -89,7 +89,7 @@ export default function NewHymnPage() {
               <CardContent className="py-12 text-center">
                 <h2 className="text-2xl font-bold mb-4">Access Denied</h2>
                 <p className="text-muted-foreground mb-6">
-                  You don't have permission to add hymns.
+                  You don&apos;t have permission to add hymns.
                 </p>
               </CardContent>
             </Card>

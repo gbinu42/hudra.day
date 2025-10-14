@@ -122,7 +122,7 @@ export default function NewPersonPage() {
     try {
       // Filter out undefined values for Firebase
       const cleanData = Object.fromEntries(
-        Object.entries(data).filter(([_, value]) => value !== undefined)
+        Object.entries(data).filter(([, value]) => value !== undefined)
       ) as Partial<PersonFormData>;
 
       await personService.createPerson(
@@ -130,7 +130,7 @@ export default function NewPersonPage() {
           ...cleanData,
           name: data.name, // name is required
           role: selectedRoles,
-        } as any,
+        },
         user!.uid
       );
       toast.success("Person added successfully!");
@@ -191,7 +191,7 @@ export default function NewPersonPage() {
             <CardContent className="py-12 text-center">
               <h2 className="text-2xl font-bold mb-4">Access Denied</h2>
               <p className="text-muted-foreground mb-6">
-                You don't have permission to add persons.
+                You don&apos;t have permission to add persons.
               </p>
             </CardContent>
           </Card>

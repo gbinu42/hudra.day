@@ -30,7 +30,7 @@ import {
   RecordingType,
   CHURCH_TRADITIONS,
 } from "@/lib/types/hymn";
-import { Plus, Trash2, Upload, Music, Video, ExternalLink } from "lucide-react";
+import { Plus, Trash2, Music, Video, ExternalLink } from "lucide-react";
 import { useEffect } from "react";
 
 const recordingSchema = z.object({
@@ -389,4 +389,3 @@ export default function RecordingsManager({
     </Card>
   );
 }
-

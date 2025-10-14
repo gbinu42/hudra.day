@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Timestamp } from "firebase/firestore";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { hymnService, personService } from "@/lib/hymn-services";
-import { Hymn, Person } from "@/lib/types/hymn";
+import { Hymn, Person, HymnRecording } from "@/lib/types/hymn";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -57,9 +58,14 @@ export default function AdminHymnsPage() {
             ...data,
             createdAt: data.createdAt?.toDate?.() || new Date(data.createdAt),
             updatedAt: data.updatedAt?.toDate?.() || new Date(data.updatedAt),
-            recordings: (data.recordings || []).map((rec: any) => ({
+            recordings: (data.recordings || []).map((rec: HymnRecording) => ({
               ...rec,
-              createdAt: rec.createdAt?.toDate?.() || new Date(rec.createdAt),
+              createdAt:
+                rec.createdAt &&
+                typeof rec.createdAt === "object" &&
+                "toDate" in rec.createdAt
+                  ? (rec.createdAt as unknown as Timestamp).toDate()
+                  : new Date(rec.createdAt),
             })),
           } as Hymn;
         });

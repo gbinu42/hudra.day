@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Timestamp } from "firebase/firestore";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import HymnsList from "@/components/hymns/HymnsList";
-import { Hymn } from "@/lib/types/hymn";
+import { Hymn, HymnRecording } from "@/lib/types/hymn";
 import { hymnService } from "@/lib/hymn-services";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -27,9 +28,14 @@ export default function HymnsPage() {
             ...data,
             createdAt: data.createdAt?.toDate?.() || new Date(data.createdAt),
             updatedAt: data.updatedAt?.toDate?.() || new Date(data.updatedAt),
-            recordings: (data.recordings || []).map((rec: any) => ({
+            recordings: (data.recordings || []).map((rec: HymnRecording) => ({
               ...rec,
-              createdAt: rec.createdAt?.toDate?.() || new Date(rec.createdAt),
+              createdAt:
+                rec.createdAt &&
+                typeof rec.createdAt === "object" &&
+                "toDate" in rec.createdAt
+                  ? (rec.createdAt as unknown as Timestamp).toDate()
+                  : new Date(rec.createdAt),
             })),
           } as Hymn;
         });

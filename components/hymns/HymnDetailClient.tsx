@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Timestamp } from "firebase/firestore";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { hymnService } from "@/lib/hymn-services";
-import { Hymn } from "@/lib/types/hymn";
+import { Hymn, HymnRecording } from "@/lib/types/hymn";
 import HymnDetail from "@/components/hymns/HymnDetail";
 import RecordingsManager from "@/components/hymns/RecordingsManager";
-import ChurchImagesManager from "@/components/hymns/ChurchImagesManager";
-import { Button } from "@/components/ui/button";
+import HymnImagesManager from "@/components/hymns/HymnImagesManager";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -62,9 +62,14 @@ export default function HymnDetailClient({ hymnId }: HymnDetailClientProps) {
             ...data,
             createdAt: data.createdAt?.toDate?.() || new Date(data.createdAt),
             updatedAt: data.updatedAt?.toDate?.() || new Date(data.updatedAt),
-            recordings: (data.recordings || []).map((rec: any) => ({
+            recordings: (data.recordings || []).map((rec: HymnRecording) => ({
               ...rec,
-              createdAt: rec.createdAt?.toDate?.() || new Date(rec.createdAt),
+              createdAt:
+                rec.createdAt &&
+                typeof rec.createdAt === "object" &&
+                "toDate" in rec.createdAt
+                  ? (rec.createdAt as unknown as Timestamp).toDate()
+                  : new Date(rec.createdAt),
             })),
           } as Hymn;
           setHymn(hymnData);
@@ -131,7 +136,7 @@ export default function HymnDetailClient({ hymnId }: HymnDetailClientProps) {
             <CardContent className="py-12 text-center">
               <h2 className="text-2xl font-bold mb-4">Access Denied</h2>
               <p className="text-muted-foreground mb-6">
-                You don't have permission to view this hymn.
+                You don&apos;t have permission to view this hymn.
               </p>
             </CardContent>
           </Card>
@@ -169,7 +174,7 @@ export default function HymnDetailClient({ hymnId }: HymnDetailClientProps) {
             <CardContent className="py-12 text-center">
               <h2 className="text-2xl font-bold mb-4">Hymn Not Found</h2>
               <p className="text-muted-foreground mb-6">
-                The hymn you're looking for doesn't exist.
+                The hymn you&apos;re looking for doesn&apos;t exist.
               </p>
             </CardContent>
           </Card>
@@ -215,7 +220,7 @@ export default function HymnDetailClient({ hymnId }: HymnDetailClientProps) {
 
       {canEdit && user && (
         <div className="mt-8 space-y-8">
-          <ChurchImagesManager
+          <HymnImagesManager
             hymnId={hymnId}
             imageGroups={hymn.bookPageImageGroups}
             onUpdate={handleRefresh}

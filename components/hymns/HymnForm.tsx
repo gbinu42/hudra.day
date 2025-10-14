@@ -37,6 +37,8 @@ import {
   TextTranslation,
   HymnAuthor,
   BookPageImageGroup,
+  HymnCategory,
+  HymnOccasion,
 } from "@/lib/types/hymn";
 import { hymnService, personService } from "@/lib/hymn-services";
 import { X, Plus } from "lucide-react";
@@ -109,9 +111,9 @@ export default function HymnForm({
   const [translations, setTranslations] = useState<TextTranslation[]>(
     initialData?.translations || []
   );
-  const [bookPageImageGroups, setBookPageImageGroups] = useState<
-    BookPageImageGroup[]
-  >(initialData?.bookPageImageGroups || []);
+  const [bookPageImageGroups] = useState<BookPageImageGroup[]>(
+    initialData?.bookPageImageGroups || []
+  );
 
   // Convert old titles format to new structure
   const getInitialTitles = () => {
@@ -163,7 +165,7 @@ export default function HymnForm({
     },
   });
 
-  const { handleSubmit, control, setValue } = form;
+  const { handleSubmit, control } = form;
 
   useEffect(() => {
     if (initialTitles.alternateEnglishTitles) {
@@ -173,7 +175,7 @@ export default function HymnForm({
     // Check if category is custom (not in predefined list)
     if (
       initialData?.category &&
-      !HYMN_CATEGORIES.includes(initialData.category as any)
+      !HYMN_CATEGORIES.includes(initialData.category as HymnCategory)
     ) {
       setCustomCategory(initialData.category);
     }
@@ -181,10 +183,11 @@ export default function HymnForm({
     // Check if occasion is custom (not in predefined list)
     if (
       initialData?.occasion &&
-      !HYMN_OCCASIONS.includes(initialData.occasion as any)
+      !HYMN_OCCASIONS.includes(initialData.occasion as HymnOccasion)
     ) {
       setCustomOccasion(initialData.occasion);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Load authors
@@ -328,7 +331,7 @@ export default function HymnForm({
   const updateChurchVersion = (
     index: number,
     field: keyof ChurchTextVersion,
-    value: any
+    value: string | boolean
   ) => {
     const updated = [...churchVersions];
     updated[index] = { ...updated[index], [field]: value };
@@ -349,7 +352,7 @@ export default function HymnForm({
   const updateTranslation = (
     index: number,
     field: keyof TextTranslation,
-    value: any
+    value: string
   ) => {
     const updated = [...translations];
     updated[index] = { ...updated[index], [field]: value };
@@ -365,7 +368,11 @@ export default function HymnForm({
     setAuthors([...authors, { name: "" }]);
   };
 
-  const updateAuthor = (index: number, field: keyof HymnAuthor, value: any) => {
+  const updateAuthor = (
+    index: number,
+    field: keyof HymnAuthor,
+    value: string
+  ) => {
     const updated = [...authors];
     updated[index] = { ...updated[index], [field]: value };
     setAuthors(updated);
@@ -373,28 +380,6 @@ export default function HymnForm({
 
   const removeAuthor = (index: number) => {
     setAuthors(authors.filter((_, i) => i !== index));
-  };
-
-  // Image group management
-  const addImageGroup = () => {
-    setBookPageImageGroups([
-      ...bookPageImageGroups,
-      { churchName: "", images: [], source: "", description: "" },
-    ]);
-  };
-
-  const updateImageGroup = (
-    index: number,
-    field: keyof BookPageImageGroup,
-    value: any
-  ) => {
-    const updated = [...bookPageImageGroups];
-    updated[index] = { ...updated[index], [field]: value };
-    setBookPageImageGroups(updated);
-  };
-
-  const removeImageGroup = (index: number) => {
-    setBookPageImageGroups(bookPageImageGroups.filter((_, i) => i !== index));
   };
 
   return (

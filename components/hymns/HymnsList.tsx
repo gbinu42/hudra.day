@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Hymn, HYMN_CATEGORIES, HYMN_OCCASIONS } from "@/lib/types/hymn";
-import { Search, Music, Calendar, Tag, User, Book } from "lucide-react";
+import { Search, Music, User, Book } from "lucide-react";
 
 interface HymnsListProps {
   hymns: Hymn[];
@@ -192,7 +192,9 @@ export default function HymnsList({
                 </label>
                 <Select
                   value={sortBy}
-                  onValueChange={(value: any) => setSortBy(value)}
+                  onValueChange={(value: "title" | "author" | "date") =>
+                    setSortBy(value)
+                  }
                 >
                   <SelectTrigger>
                     <SelectValue />
@@ -286,7 +288,7 @@ export default function HymnsList({
                         {hymn.churchVersions?.length > 0 && (
                           <span>{hymn.churchVersions.length} versions</span>
                         )}
-                        {hymn.translations?.length > 0 && (
+                        {hymn.translations && hymn.translations.length > 0 && (
                           <span>{hymn.translations.length} translations</span>
                         )}
                         {hymn.recordings?.length > 0 && (

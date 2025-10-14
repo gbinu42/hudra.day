@@ -32,25 +32,25 @@ import {
 } from "@/lib/types/hymn";
 import { Plus, Trash2, Image as ImageIcon } from "lucide-react";
 
-const churchImageSchema = z.object({
+const hymnImageSchema = z.object({
   churchName: z.string().min(1, "Church name is required"),
   description: z.string().optional(),
   source: z.string().optional(),
 });
 
-type ChurchImageFormData = z.infer<typeof churchImageSchema>;
+type HymnImageFormData = z.infer<typeof hymnImageSchema>;
 
-interface ChurchImagesManagerProps {
+interface HymnImagesManagerProps {
   hymnId: string;
   imageGroups?: BookPageImageGroup[];
   onUpdate: () => void;
 }
 
-export default function ChurchImagesManager({
+export default function HymnImagesManager({
   hymnId,
   imageGroups = [],
   onUpdate,
-}: ChurchImagesManagerProps) {
+}: HymnImagesManagerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
@@ -63,8 +63,8 @@ export default function ChurchImagesManager({
     setValue,
     reset,
     formState: { errors },
-  } = useForm<ChurchImageFormData>({
-    resolver: zodResolver(churchImageSchema),
+  } = useForm<HymnImageFormData>({
+    resolver: zodResolver(hymnImageSchema),
     defaultValues: {
       churchName: "",
       description: "",
@@ -92,7 +92,7 @@ export default function ChurchImagesManager({
     }
   };
 
-  const onSubmit = async (data: ChurchImageFormData) => {
+  const onSubmit = async (data: HymnImageFormData) => {
     if (selectedFiles.length === 0) {
       toast.error("Please select at least one image file");
       return;

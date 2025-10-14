@@ -104,6 +104,7 @@ export interface Hymn {
 
   // Basic information
   authors: HymnAuthor[]; // Multiple authors
+  authorName?: string; // For backward compatibility and display
   originYear?: number; // Year the hymn was composed
 
   // Classification
@@ -230,8 +231,8 @@ export function sortByChurchPriority<
   return [...items].sort((a, b) => {
     const churchA = a.churchName || a.church || "";
     const churchB = b.churchName || b.church || "";
-    const indexA = CHURCH_DISPLAY_ORDER.indexOf(churchA as any);
-    const indexB = CHURCH_DISPLAY_ORDER.indexOf(churchB as any);
+    const indexA = CHURCH_DISPLAY_ORDER.indexOf(churchA as ChurchTradition);
+    const indexB = CHURCH_DISPLAY_ORDER.indexOf(churchB as ChurchTradition);
 
     // If not found in order list, put at end
     const priorityA = indexA === -1 ? 999 : indexA;

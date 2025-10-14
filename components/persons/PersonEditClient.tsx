@@ -153,14 +153,14 @@ export default function PersonEditClient({ personId }: PersonEditClientProps) {
     try {
       // Filter out undefined values for Firebase
       const cleanData = Object.fromEntries(
-        Object.entries(data).filter(([_, value]) => value !== undefined)
+        Object.entries(data).filter(([, value]) => value !== undefined)
       ) as Partial<PersonFormData>;
 
       await personService.updatePerson(personId, {
         ...cleanData,
         name: data.name, // name is required
         role: selectedRoles,
-      } as any);
+      });
       toast.success("Person updated successfully!");
       router.push("/admin/hymns");
     } catch (error) {
@@ -222,7 +222,7 @@ export default function PersonEditClient({ personId }: PersonEditClientProps) {
           <CardContent className="py-12 text-center">
             <h2 className="text-2xl font-bold mb-4">Access Denied</h2>
             <p className="text-muted-foreground mb-6">
-              You don't have permission to edit persons.
+              You don&apos;t have permission to edit persons.
             </p>
           </CardContent>
         </Card>
@@ -258,7 +258,7 @@ export default function PersonEditClient({ personId }: PersonEditClientProps) {
           <CardContent className="py-12 text-center">
             <h2 className="text-2xl font-bold mb-4">Person Not Found</h2>
             <p className="text-muted-foreground mb-6">
-              The person you're trying to edit doesn't exist.
+              The person you&apos;re trying to edit doesn&apos;t exist.
             </p>
           </CardContent>
         </Card>

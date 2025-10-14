@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Timestamp } from "firebase/firestore";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { hymnService } from "@/lib/hymn-services";
-import { Hymn, CreateHymnData } from "@/lib/types/hymn";
+import { Hymn, CreateHymnData, HymnRecording } from "@/lib/types/hymn";
 import HymnForm from "@/components/hymns/HymnForm";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -59,9 +59,14 @@ export default function HymnEditClient({ hymnId }: HymnEditClientProps) {
             ...data,
             createdAt: data.createdAt?.toDate?.() || new Date(data.createdAt),
             updatedAt: data.updatedAt?.toDate?.() || new Date(data.updatedAt),
-            recordings: (data.recordings || []).map((rec: any) => ({
+            recordings: (data.recordings || []).map((rec: HymnRecording) => ({
               ...rec,
-              createdAt: rec.createdAt?.toDate?.() || new Date(rec.createdAt),
+              createdAt:
+                rec.createdAt &&
+                typeof rec.createdAt === "object" &&
+                "toDate" in rec.createdAt
+                  ? (rec.createdAt as unknown as Timestamp).toDate()
+                  : new Date(rec.createdAt),
             })),
           } as Hymn;
           setHymn(hymnData);
@@ -132,7 +137,7 @@ export default function HymnEditClient({ hymnId }: HymnEditClientProps) {
             <CardContent className="py-12 text-center">
               <h2 className="text-2xl font-bold mb-4">Access Denied</h2>
               <p className="text-muted-foreground mb-6">
-                You don't have permission to edit hymns.
+                You don&apos;t have permission to edit hymns.
               </p>
             </CardContent>
           </Card>
@@ -170,7 +175,7 @@ export default function HymnEditClient({ hymnId }: HymnEditClientProps) {
             <CardContent className="py-12 text-center">
               <h2 className="text-2xl font-bold mb-4">Hymn Not Found</h2>
               <p className="text-muted-foreground mb-6">
-                The hymn you're trying to edit doesn't exist.
+                The hymn you&apos;re trying to edit doesn&apos;t exist.
               </p>
             </CardContent>
           </Card>

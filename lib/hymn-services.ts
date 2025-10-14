@@ -9,20 +9,16 @@ import {
   setDoc,
   query,
   where,
-  orderBy,
   onSnapshot,
   type DocumentData,
   type QuerySnapshot,
   type DocumentSnapshot,
   type Unsubscribe,
-  type WhereFilterOp,
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "./firebase";
 import {
-  Hymn,
   CreateHymnData,
-  Person,
   CreatePersonData,
   HymnRecording,
   CreateRecordingData,
