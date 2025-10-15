@@ -36,12 +36,13 @@ import {
   ChurchTextVersion,
   TextTranslation,
   HymnAuthor,
-  BookPageImageGroup,
+  HymnImageGroup,
   HymnCategory,
   HymnOccasion,
 } from "@/lib/types/hymn";
 import { hymnService, personService } from "@/lib/hymn-services";
 import { X, Plus } from "lucide-react";
+import SyriacEditor from "@/components/SyriacEditor";
 
 // Function to generate a URL-safe slug from title
 const generateSlug = (title: string): string => {
@@ -90,9 +91,7 @@ export default function HymnForm({
   onCancel,
 }: HymnFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [personsList, setPersonsList] = useState<
-    Array<{ id: string; name: string }>
-  >([]);
+  const [, setPersonsList] = useState<Array<{ id: string; name: string }>>([]);
   const [tagInput, setTagInput] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>(
     initialData?.tags || []
@@ -111,8 +110,11 @@ export default function HymnForm({
   const [translations, setTranslations] = useState<TextTranslation[]>(
     initialData?.translations || []
   );
-  const [bookPageImageGroups] = useState<BookPageImageGroup[]>(
-    initialData?.bookPageImageGroups || []
+  const [hymnImageGroups] = useState<HymnImageGroup[]>(
+    initialData?.hymnImageGroups || []
+  );
+  const [mainTextHtml, setMainTextHtml] = useState<string>(
+    initialData?.text || ""
   );
 
   // Convert old titles format to new structure
@@ -255,7 +257,7 @@ export default function HymnForm({
         authors,
         churchVersions,
         translations,
-        bookPageImageGroups,
+        hymnImageGroups,
         recordings: initialData?.recordings || [],
         tags: selectedTags,
         isPublished: true, // Always published by default
@@ -268,7 +270,7 @@ export default function HymnForm({
       if (data.meter) hymnData.meter = data.meter;
       if (data.description) hymnData.description = data.description;
       if (data.context) hymnData.context = data.context;
-      if (data.text) hymnData.text = data.text;
+      if (mainTextHtml) hymnData.text = mainTextHtml;
 
       if (hymnId) {
         await hymnService.updateHymn(hymnId, hymnData);
@@ -338,6 +340,12 @@ export default function HymnForm({
     setChurchVersions(updated);
   };
 
+  const updateChurchVersionText = (index: number, html: string) => {
+    const updated = [...churchVersions];
+    updated[index] = { ...updated[index], text: html };
+    setChurchVersions(updated);
+  };
+
   const removeChurchVersion = (index: number) => {
     setChurchVersions(churchVersions.filter((_, i) => i !== index));
   };
@@ -383,170 +391,138 @@ export default function HymnForm({
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {/* Titles Section */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Titles</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {/* Main English Title */}
-            <FormField
-              control={control}
-              name="mainEnglishTitle"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Main English Title *</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter the main English title"
-                      {...field}
+    <div className="space-y-6">
+      <Form {...form}>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          {/* Header Section - Similar to HymnDetail */}
+          <div className="flex justify-between items-start">
+            <div className="space-y-3 flex-1">
+              <h1 className="text-3xl font-bold">
+                <div className="space-y-4">
+                  {/* Main English Title */}
+                  <FormField
+                    control={control}
+                    name="mainEnglishTitle"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            placeholder="Enter the main English title"
+                            className="text-3xl font-bold border-2 border-primary/20 focus:border-primary h-16"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className="flex flex-wrap items-center gap-3">
+                    {/* Syriac Title (Vocalized) */}
+                    <FormField
+                      control={control}
+                      name="syriacTitle"
+                      render={({ field }) => (
+                        <FormItem className="flex-1 min-w-[300px]">
+                          <FormControl>
+                            <Input
+                              placeholder="ܡܰܪܝܳܐ ܪܰܚܶܡ ܥܠܰܝܢ"
+                              className="font-['East_Syriac_Adiabene'] text-4xl font-normal border-2 border-primary/20 focus:border-primary h-16"
+                              dir="rtl"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
-            {/* Syriac Title (Vocalized) */}
-            <FormField
-              control={control}
-              name="syriacTitle"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Syriac Title (Vocalized)</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter the Syriac title with vowel marks"
-                      className="!text-2xl font-['East_Syriac_Adiabene'] h-14"
-                      dir="rtl"
-                      style={{ fontSize: "24px" }}
-                      {...field}
+                    {/* Syriac Title (Non-Vocalized) */}
+                    <FormField
+                      control={control}
+                      name="syriacTitleNonVocalized"
+                      render={({ field }) => (
+                        <FormItem className="flex-1 min-w-[250px]">
+                          <FormControl>
+                            <Input
+                              placeholder="ܡܪܝܐ ܪܚܡ ܥܠܝܢ"
+                              className="text-2xl font-normal border-2 border-primary/20 focus:border-primary h-14"
+                              dir="rtl"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                  </FormControl>
-                  <FormDescription>With vowel marks (ܙܘܥ̈ܐ)</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Syriac Title (Non-Vocalized) */}
-            <FormField
-              control={control}
-              name="syriacTitleNonVocalized"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Syriac Title (Non-Vocalized)</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter the Syriac title without vowel marks"
-                      className="!text-2xl font-['East_Syriac_Adiabene'] h-14"
-                      dir="rtl"
-                      style={{ fontSize: "24px" }}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>Without vowel marks</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Alternate English Titles */}
-            <div className="space-y-3">
-              <Label className="text-sm font-medium">
-                Alternate English Titles (Spellings)
-              </Label>
-              <div className="flex gap-2">
-                <Input
-                  value={alternateTitle}
-                  onChange={(e) => setAlternateTitle(e.target.value)}
-                  placeholder="Add an alternate spelling"
-                  onKeyPress={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      addAlternateTitle();
-                    }
-                  }}
-                />
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={addAlternateTitle}
-                >
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
-              {alternateTitles.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {alternateTitles.map((title, idx) => (
-                    <Badge key={idx} variant="secondary">
-                      {title}
-                      <button
-                        type="button"
-                        onClick={() => removeAlternateTitle(title)}
-                        className="ml-2 hover:text-red-500"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </Badge>
-                  ))}
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Basic Information */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Basic Information</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {/* Authors */}
-            <div className="space-y-4">
-              <Label className="text-base font-semibold">Authors</Label>
-              {authors.map((author, index) => (
-                <div key={index} className="flex gap-4 items-start">
-                  <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label className="text-sm">Author Name *</Label>
-                      <Input
-                        value={author.name}
-                        onChange={(e) =>
-                          updateAuthor(index, "name", e.target.value)
-                        }
-                        placeholder="Enter author name"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="text-sm">Person ID (optional)</Label>
-                      <Select
-                        value={author.id || ""}
-                        onValueChange={(value) =>
-                          updateAuthor(index, "id", value)
-                        }
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select from persons" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {personsList.map((person) => (
-                            <SelectItem key={person.id} value={person.id}>
-                              {person.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
                   </div>
+                </div>
+              </h1>
+
+              {/* Alternate English Titles */}
+              <div className="space-y-3">
+                <div className="flex gap-2">
+                  <Input
+                    value={alternateTitle}
+                    onChange={(e) => setAlternateTitle(e.target.value)}
+                    placeholder="Add alternate title"
+                    className="text-lg"
+                    onKeyPress={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        addAlternateTitle();
+                      }
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={addAlternateTitle}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+                {alternateTitles.length > 0 && (
+                  <div className="text-lg text-muted-foreground">
+                    {alternateTitles.map((title, idx) => (
+                      <span key={idx}>
+                        {idx > 0 && " • "}
+                        {title}
+                        <button
+                          type="button"
+                          onClick={() => removeAlternateTitle(title)}
+                          className="ml-2 hover:text-red-500 text-sm"
+                        >
+                          <X className="h-3 w-3 inline" />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Information Section - Compact like HymnDetail */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+            {/* Authors */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Authors</Label>
+              {authors.map((author, index) => (
+                <div key={index} className="flex gap-2 items-center">
+                  <Input
+                    value={author.name}
+                    onChange={(e) =>
+                      updateAuthor(index, "name", e.target.value)
+                    }
+                    placeholder="Author name"
+                    className="flex-1"
+                  />
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
                     onClick={() => removeAuthor(index)}
-                    className="mt-7"
                   >
                     <X className="h-4 w-4" />
                   </Button>
@@ -563,127 +539,121 @@ export default function HymnForm({
               </Button>
             </div>
 
-            {/* Origin Year Row */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <FormField
-                control={control}
-                name="originYear"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Origin Year</FormLabel>
+            {/* Origin Year */}
+            <FormField
+              control={control}
+              name="originYear"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Origin Year</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="e.g., 350"
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(e.target.valueAsNumber || undefined)
+                      }
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Category */}
+            <FormField
+              control={control}
+              name="category"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Category</FormLabel>
+                  {field.value === "Other" ? (
                     <FormControl>
                       <Input
-                        type="number"
-                        placeholder="e.g., 350"
-                        {...field}
-                        onChange={(e) =>
-                          field.onChange(e.target.valueAsNumber || undefined)
-                        }
+                        placeholder="Enter custom category"
+                        value={customCategory}
+                        onChange={(e) => {
+                          setCustomCategory(e.target.value);
+                          field.onChange(e.target.value);
+                        }}
                       />
                     </FormControl>
-                    <FormDescription>
-                      Approximate year of composition
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            {/* Category & Occasion Row */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <FormField
-                control={control}
-                name="category"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Category</FormLabel>
-                    {field.value === "Other" ? (
+                  ) : (
+                    <Select
+                      onValueChange={(value) => {
+                        if (value === "Other") {
+                          setCustomCategory("");
+                        }
+                        field.onChange(value);
+                      }}
+                      defaultValue={field.value}
+                    >
                       <FormControl>
-                        <Input
-                          placeholder="Enter custom category"
-                          value={customCategory}
-                          onChange={(e) => {
-                            setCustomCategory(e.target.value);
-                            field.onChange(e.target.value);
-                          }}
-                        />
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select category" />
+                        </SelectTrigger>
                       </FormControl>
-                    ) : (
-                      <Select
-                        onValueChange={(value) => {
-                          if (value === "Other") {
-                            setCustomCategory("");
-                          }
-                          field.onChange(value);
-                        }}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select category" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {HYMN_CATEGORIES.map((cat) => (
-                            <SelectItem key={cat} value={cat}>
-                              {cat}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    )}
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      <SelectContent>
+                        {HYMN_CATEGORIES.map((cat) => (
+                          <SelectItem key={cat} value={cat}>
+                            {cat}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-              <FormField
-                control={control}
-                name="occasion"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Occasion</FormLabel>
-                    {field.value === "Other" ? (
-                      <FormControl>
-                        <Input
-                          placeholder="Enter custom occasion"
-                          value={customOccasion}
-                          onChange={(e) => {
-                            setCustomOccasion(e.target.value);
-                            field.onChange(e.target.value);
-                          }}
-                        />
-                      </FormControl>
-                    ) : (
-                      <Select
-                        onValueChange={(value) => {
-                          if (value === "Other") {
-                            setCustomOccasion("");
-                          }
-                          field.onChange(value);
+            {/* Occasion */}
+            <FormField
+              control={control}
+              name="occasion"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Occasion</FormLabel>
+                  {field.value === "Other" ? (
+                    <FormControl>
+                      <Input
+                        placeholder="Enter custom occasion"
+                        value={customOccasion}
+                        onChange={(e) => {
+                          setCustomOccasion(e.target.value);
+                          field.onChange(e.target.value);
                         }}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select occasion" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {HYMN_OCCASIONS.map((occ) => (
-                            <SelectItem key={occ} value={occ}>
-                              {occ}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    )}
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+                      />
+                    </FormControl>
+                  ) : (
+                    <Select
+                      onValueChange={(value) => {
+                        if (value === "Other") {
+                          setCustomOccasion("");
+                        }
+                        field.onChange(value);
+                      }}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select occasion" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {HYMN_OCCASIONS.map((occ) => (
+                          <SelectItem key={occ} value={occ}>
+                            {occ}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             {/* Meter */}
             <FormField
@@ -695,57 +665,13 @@ export default function HymnForm({
                   <FormControl>
                     <Input placeholder="e.g., 7+7" {...field} />
                   </FormControl>
-                  <FormDescription>
-                    Poetic meter pattern (if applicable)
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Description */}
-            <FormField
-              control={control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Brief description of the hymn"
-                      rows={3}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Context */}
-            <FormField
-              control={control}
-              name="context"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Context</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Historical or liturgical context"
-                      rows={2}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    When and how this hymn is traditionally used
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
             {/* Tags */}
-            <div className="space-y-3">
+            <div className="space-y-2">
               <Label className="text-sm font-medium">Tags</Label>
               <div className="flex gap-2">
                 <Input
@@ -759,7 +685,12 @@ export default function HymnForm({
                     }
                   }}
                 />
-                <Button type="button" variant="outline" onClick={addTag}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={addTag}
+                >
                   <Plus className="h-4 w-4" />
                 </Button>
               </div>
@@ -780,251 +711,291 @@ export default function HymnForm({
                 </div>
               )}
             </div>
-          </CardContent>
-        </Card>
+          </div>
 
-        {/* Main Text */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Main Text</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <FormField
-              control={control}
-              name="text"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Hymn Text (Syriac)</FormLabel>
-                  <FormControl>
+          {/* Description */}
+          <Card>
+            <CardHeader className="pb-2 px-8">
+              <CardTitle>Description</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0 px-8">
+              <FormField
+                control={control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Brief description of the hymn"
+                        rows={3}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+
+          {/* Context */}
+          <Card>
+            <CardHeader className="pb-2 px-8">
+              <CardTitle>Context</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0 px-8">
+              <FormField
+                control={control}
+                name="context"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Historical or liturgical context"
+                        rows={2}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      When and how this hymn is traditionally used
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+
+          {/* Text */}
+          <Card>
+            <CardHeader className="pb-2 px-8">
+              <CardTitle>Text</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0 px-8">
+              <div className="space-y-2">
+                <div className="border rounded-md min-h-[400px]">
+                  <SyriacEditor
+                    content={mainTextHtml}
+                    onUpdate={(html) => setMainTextHtml(html)}
+                    textDirection="rtl"
+                  />
+                </div>
+                <FormDescription>
+                  Enter the full text of the hymn in Syriac script
+                </FormDescription>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Translations */}
+          <Card>
+            <CardHeader className="pb-2 px-8">
+              <CardTitle>Translations</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0 px-8 space-y-4">
+              {translations.map((translation, index) => (
+                <div key={index} className="space-y-4 p-4 border rounded">
+                  <div className="flex justify-between items-center">
+                    <Label className="text-sm font-medium">
+                      Translation {index + 1}
+                    </Label>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => removeTranslation(index)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">Language</Label>
+                      <Input
+                        value={translation.language}
+                        onChange={(e) =>
+                          updateTranslation(index, "language", e.target.value)
+                        }
+                        placeholder="e.g., english, malayalam"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">
+                        Translator Name (optional)
+                      </Label>
+                      <Input
+                        value={translation.translatorName || ""}
+                        onChange={(e) =>
+                          updateTranslation(
+                            index,
+                            "translatorName",
+                            e.target.value
+                          )
+                        }
+                        placeholder="Translator name"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">
+                      Translation Text
+                    </Label>
                     <Textarea
-                      placeholder="Enter the main text of the hymn in Syriac"
-                      rows={12}
-                      className="!text-2xl font-['East_Syriac_Adiabene'] leading-loose"
-                      dir="rtl"
-                      style={{ fontSize: "24px" }}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Enter the full text of the hymn in Syriac script
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </CardContent>
-        </Card>
-
-        {/* Translations */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Translations</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {translations.map((translation, index) => (
-              <div key={index} className="space-y-4 p-4 border rounded">
-                <div className="flex justify-between items-center">
-                  <Label className="text-sm font-medium">
-                    Translation {index + 1}
-                  </Label>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => removeTranslation(index)}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium">Language</Label>
-                    <Input
-                      value={translation.language}
+                      value={translation.text}
                       onChange={(e) =>
-                        updateTranslation(index, "language", e.target.value)
+                        updateTranslation(index, "text", e.target.value)
                       }
-                      placeholder="e.g., english, malayalam"
+                      placeholder="Translated text"
+                      rows={6}
                     />
                   </div>
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">
-                      Translator Name (optional)
+                      Notes (optional)
                     </Label>
                     <Input
-                      value={translation.translatorName || ""}
+                      value={translation.notes || ""}
                       onChange={(e) =>
-                        updateTranslation(
-                          index,
-                          "translatorName",
-                          e.target.value
-                        )
+                        updateTranslation(index, "notes", e.target.value)
                       }
-                      placeholder="Translator name"
+                      placeholder="Translation notes"
                     />
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium">
-                    Translation Text
-                  </Label>
-                  <Textarea
-                    value={translation.text}
-                    onChange={(e) =>
-                      updateTranslation(index, "text", e.target.value)
-                    }
-                    placeholder="Translated text"
-                    rows={6}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium">
-                    Notes (optional)
-                  </Label>
-                  <Input
-                    value={translation.notes || ""}
-                    onChange={(e) =>
-                      updateTranslation(index, "notes", e.target.value)
-                    }
-                    placeholder="Translation notes"
-                  />
-                </div>
-              </div>
-            ))}
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={addTranslation}
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Add Translation
-            </Button>
-          </CardContent>
-        </Card>
+              ))}
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addTranslation}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add Translation
+              </Button>
+            </CardContent>
+          </Card>
 
-        {/* Church Versions */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Church-Specific Versions</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {churchVersions.map((version, index) => (
-              <div key={index} className="space-y-4 p-4 border rounded">
-                <div className="flex justify-between items-center">
-                  <Label className="text-sm font-medium">
-                    Version {index + 1}
-                  </Label>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => removeChurchVersion(index)}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Church Versions */}
+          <Card>
+            <CardHeader className="pb-2 px-8">
+              <CardTitle>Church-Specific Versions</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0 px-8 space-y-4">
+              {churchVersions.map((version, index) => (
+                <div key={index} className="space-y-4 p-4 border rounded">
+                  <div className="flex justify-between items-center">
+                    <Label className="text-sm font-medium">
+                      Version {index + 1}
+                    </Label>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => removeChurchVersion(index)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">
+                        Church Tradition
+                      </Label>
+                      <Select
+                        value={version.churchName}
+                        onValueChange={(value) =>
+                          updateChurchVersion(index, "churchName", value)
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select church" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {CHURCH_TRADITIONS.map((church) => (
+                            <SelectItem key={church} value={church}>
+                              {church}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="flex items-center pt-6">
+                      <input
+                        type="checkbox"
+                        id={`main-version-${index}`}
+                        checked={version.isMainVersion}
+                        onChange={(e) =>
+                          updateChurchVersion(
+                            index,
+                            "isMainVersion",
+                            e.target.checked
+                          )
+                        }
+                        className="mr-2 h-4 w-4"
+                      />
+                      <Label
+                        htmlFor={`main-version-${index}`}
+                        className="cursor-pointer"
+                      >
+                        Main Version
+                      </Label>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">Text (Syriac)</Label>
+                    <div className="border rounded-md min-h-[300px]">
+                      <SyriacEditor
+                        content={version.text}
+                        onUpdate={(html) =>
+                          updateChurchVersionText(index, html)
+                        }
+                        textDirection="rtl"
+                      />
+                    </div>
+                  </div>
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">
-                      Church Tradition
+                      Notes (optional)
                     </Label>
-                    <Select
-                      value={version.churchName}
-                      onValueChange={(value) =>
-                        updateChurchVersion(index, "churchName", value)
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select church" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {CHURCH_TRADITIONS.map((church) => (
-                          <SelectItem key={church} value={church}>
-                            {church}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="flex items-center pt-6">
-                    <input
-                      type="checkbox"
-                      id={`main-version-${index}`}
-                      checked={version.isMainVersion}
+                    <Input
+                      value={version.notes || ""}
                       onChange={(e) =>
-                        updateChurchVersion(
-                          index,
-                          "isMainVersion",
-                          e.target.checked
-                        )
+                        updateChurchVersion(index, "notes", e.target.value)
                       }
-                      className="mr-2 h-4 w-4"
+                      placeholder="Additional notes"
                     />
-                    <Label
-                      htmlFor={`main-version-${index}`}
-                      className="cursor-pointer"
-                    >
-                      Main Version
-                    </Label>
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium">Text (Syriac)</Label>
-                  <Textarea
-                    value={version.text}
-                    onChange={(e) =>
-                      updateChurchVersion(index, "text", e.target.value)
-                    }
-                    placeholder="Enter hymn text in this tradition"
-                    rows={8}
-                    className="!text-2xl font-['East_Syriac_Adiabene'] leading-loose"
-                    dir="rtl"
-                    style={{ fontSize: "24px" }}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium">
-                    Notes (optional)
-                  </Label>
-                  <Input
-                    value={version.notes || ""}
-                    onChange={(e) =>
-                      updateChurchVersion(index, "notes", e.target.value)
-                    }
-                    placeholder="Additional notes"
-                  />
-                </div>
-              </div>
-            ))}
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={addChurchVersion}
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Add Church Version
-            </Button>
-          </CardContent>
-        </Card>
+              ))}
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addChurchVersion}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add Church Version
+              </Button>
+            </CardContent>
+          </Card>
 
-        {/* Form Actions */}
-        <div className="flex justify-end gap-4">
-          {onCancel && (
-            <Button type="button" variant="outline" onClick={onCancel}>
-              Cancel
+          {/* Form Actions */}
+          <div className="flex justify-end gap-4">
+            {onCancel && (
+              <Button type="button" variant="outline" onClick={onCancel}>
+                Cancel
+              </Button>
+            )}
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting
+                ? "Saving..."
+                : hymnId
+                ? "Update Hymn"
+                : "Create Hymn"}
             </Button>
-          )}
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting
-              ? "Saving..."
-              : hymnId
-              ? "Update Hymn"
-              : "Create Hymn"}
-          </Button>
-        </div>
-      </form>
-    </Form>
+          </div>
+        </form>
+      </Form>
+    </div>
   );
 }

@@ -1,9 +1,16 @@
 "use client";
 
+import Image from "next/image";
+import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Hymn, HymnRecording, sortByChurchPriority } from "@/lib/types/hymn";
+import {
+  Hymn,
+  HymnRecording,
+  sortByChurchPriority,
+  CHURCH_DISPLAY_ORDER,
+} from "@/lib/types/hymn";
 import {
   Music,
   User,
@@ -19,12 +26,20 @@ interface HymnDetailProps {
   hymn: Hymn;
   showEditButton?: boolean;
   onEdit?: () => void;
+  hideImages?: boolean;
+  hideRecordings?: boolean;
+  currentUserId?: string; // For filtering recordings
+  userRole?: string; // For admin permissions
 }
 
 export default function HymnDetail({
   hymn,
   showEditButton,
   onEdit,
+  hideImages = false,
+  hideRecordings = false,
+  currentUserId,
+  userRole,
 }: HymnDetailProps) {
   // Format date as "10 Jan 2025"
   const formatDate = (date: Date) => {
@@ -34,111 +49,143 @@ export default function HymnDetail({
     return `${day} ${month} ${year}`;
   };
 
+  // Group recordings by church tradition
+  const groupRecordingsByChurch = (recordings: HymnRecording[]) => {
+    const grouped: { [key: string]: HymnRecording[] } = {};
+    const ungrouped: HymnRecording[] = [];
+
+    recordings.forEach((recording) => {
+      const church = recording.church;
+      if (church) {
+        if (!grouped[church]) {
+          grouped[church] = [];
+        }
+        grouped[church].push(recording);
+      } else {
+        ungrouped.push(recording);
+      }
+    });
+
+    // Sort groups by church display order
+    const sortedGroups = Object.entries(grouped).sort(
+      ([churchA], [churchB]) => {
+        const indexA = CHURCH_DISPLAY_ORDER.indexOf(
+          churchA as (typeof CHURCH_DISPLAY_ORDER)[number]
+        );
+        const indexB = CHURCH_DISPLAY_ORDER.indexOf(
+          churchB as (typeof CHURCH_DISPLAY_ORDER)[number]
+        );
+        const priorityA = indexA === -1 ? 999 : indexA;
+        const priorityB = indexB === -1 ? 999 : indexB;
+        return priorityA - priorityB;
+      }
+    );
+
+    return { sortedGroups, ungrouped };
+  };
+
   const renderRecording = (recording: HymnRecording) => {
     const getIcon = () => {
       switch (recording.type) {
         case "audio":
-          return <Music className="h-5 w-5" />;
+          return <Music className="h-4 w-4" />;
         case "video":
-          return <Video className="h-5 w-5" />;
+          return <Video className="h-4 w-4" />;
         case "youtube":
-          return <ExternalLink className="h-5 w-5" />;
+          return <ExternalLink className="h-4 w-4" />;
         case "link":
-          return <ExternalLink className="h-5 w-5" />;
+          return <ExternalLink className="h-4 w-4" />;
         default:
-          return <Music className="h-5 w-5" />;
+          return <Music className="h-4 w-4" />;
       }
     };
 
+    // Build metadata line
+    const metadata = [];
+    if (recording.performers && recording.performers.length > 0) {
+      metadata.push(recording.performers.map((p) => p.name).join(", "));
+    }
+    if (recording.year) {
+      metadata.push(recording.year.toString());
+    }
+    if (recording.duration) {
+      metadata.push(recording.duration);
+    }
+
     return (
-      <div key={recording.id} className="p-4 border rounded-lg">
-        <div className="flex items-start justify-between">
-          <div className="flex items-start gap-3 flex-1">
-            <div className="mt-1">{getIcon()}</div>
-            <div className="flex-1">
-              <h4 className="font-semibold">
-                {recording.title ||
-                  `${
-                    recording.type.charAt(0).toUpperCase() +
-                    recording.type.slice(1)
-                  } Recording`}
-              </h4>
-              {recording.performerName && (
-                <p className="text-sm text-muted-foreground mt-1">
-                  <User className="h-3 w-3 inline mr-1" />
-                  Performer: {recording.performerName}
-                </p>
-              )}
-              {recording.year && (
-                <p className="text-sm text-muted-foreground">
-                  <Calendar className="h-3 w-3 inline mr-1" />
-                  Year: {recording.year}
-                </p>
-              )}
-              {recording.church && (
-                <p className="text-sm text-muted-foreground">
-                  <Book className="h-3 w-3 inline mr-1" />
-                  Tradition: {recording.church}
-                </p>
-              )}
-              {recording.duration && (
-                <p className="text-sm text-muted-foreground">
-                  Duration: {recording.duration}
-                </p>
-              )}
-              {recording.description && (
-                <p className="text-sm text-muted-foreground mt-2">
-                  {recording.description}
-                </p>
-              )}
-              <p className="text-xs text-muted-foreground mt-2">
-                Contributed by: {recording.contributorName}
-              </p>
+      <div
+        key={recording.id}
+        className="flex items-center justify-between gap-3 py-3"
+      >
+        <div className="flex items-center gap-3 flex-1 min-w-0">
+          <div className="text-muted-foreground flex-shrink-0">{getIcon()}</div>
+          <div className="flex-1 min-w-0">
+            <div className="font-medium text-base">
+              {recording.title ||
+                `${
+                  recording.type.charAt(0).toUpperCase() +
+                  recording.type.slice(1)
+                } Recording`}
             </div>
+            {metadata.length > 0 && (
+              <div className="text-sm text-muted-foreground">
+                {metadata.join(" • ")}
+              </div>
+            )}
+            {recording.description && (
+              <div className="text-sm text-muted-foreground mt-1 italic">
+                {recording.description}
+              </div>
+            )}
+            {recording.contributorName && (
+              <div className="text-sm text-muted-foreground mt-1">
+                Added by {recording.contributorName}
+              </div>
+            )}
           </div>
-          <div className="flex gap-2">
-            {recording.type === "youtube" && (
+        </div>
+        <div className="flex gap-2 flex-shrink-0">
+          {recording.type === "youtube" && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => window.open(recording.url, "_blank")}
+            >
+              Watch
+            </Button>
+          )}
+          {(recording.type === "audio" || recording.type === "video") && (
+            <>
               <Button
                 size="sm"
                 variant="outline"
                 onClick={() => window.open(recording.url, "_blank")}
               >
-                Watch
+                Play
               </Button>
-            )}
-            {(recording.type === "audio" || recording.type === "video") && (
-              <>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => window.open(recording.url, "_blank")}
-                >
-                  Play
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => {
-                    const a = document.createElement("a");
-                    a.href = recording.url;
-                    a.download = recording.title || "recording";
-                    a.click();
-                  }}
-                >
-                  <Download className="h-4 w-4" />
-                </Button>
-              </>
-            )}
-            {recording.type === "link" && (
               <Button
                 size="sm"
-                variant="outline"
-                onClick={() => window.open(recording.url, "_blank")}
+                variant="ghost"
+                onClick={() => {
+                  const a = document.createElement("a");
+                  a.href = recording.url;
+                  a.download = recording.title || "recording";
+                  a.click();
+                }}
               >
-                Visit
+                <Download className="h-4 w-4" />
               </Button>
-            )}
-          </div>
+            </>
+          )}
+          {recording.type === "link" && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => window.open(recording.url, "_blank")}
+            >
+              Visit
+            </Button>
+          )}
         </div>
       </div>
     );
@@ -294,55 +341,65 @@ export default function HymnDetail({
             <CardTitle>Text</CardTitle>
           </CardHeader>
           <CardContent className="pt-0 px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Syriac Text */}
+            {hymn.translations && hymn.translations.length > 0 ? (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Syriac Text */}
+                <div className="space-y-2">
+                  <div
+                    className="whitespace-pre-wrap leading-relaxed text-justify prose prose-slate max-w-none"
+                    style={{
+                      fontFamily: "East Syriac Adiabene, serif",
+                      fontSize: "28px",
+                    }}
+                    dir="rtl"
+                    dangerouslySetInnerHTML={{ __html: hymn.text || "" }}
+                  />
+                </div>
+
+                {/* Translations */}
+                <div className="space-y-4">
+                  {hymn.translations.map((translation, tIndex) => (
+                    <div key={tIndex} className="space-y-2">
+                      <div className="flex items-center gap-2 text-sm font-semibold">
+                        <Globe className="h-4 w-4" />
+                        <span className="capitalize">
+                          {translation.language}
+                        </span>
+                        {translation.translatorName && (
+                          <span className="text-xs text-muted-foreground font-normal">
+                            by {translation.translatorName}
+                          </span>
+                        )}
+                      </div>
+                      <pre className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
+                        {translation.text}
+                      </pre>
+                      {translation.notes && (
+                        <p className="text-xs text-muted-foreground italic">
+                          {translation.notes}
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              /* Full width Syriac text when no translations */
               <div className="space-y-2">
                 <h4 className="text-sm font-semibold text-muted-foreground">
                   Syriac Text
                 </h4>
-                <pre
-                  className="whitespace-pre-wrap leading-relaxed text-justify"
+                <div
+                  className="whitespace-pre-wrap leading-relaxed text-justify prose prose-slate max-w-none"
                   style={{
                     fontFamily: "East Syriac Adiabene, serif",
                     fontSize: "28px",
                   }}
                   dir="rtl"
-                >
-                  {hymn.text}
-                </pre>
+                  dangerouslySetInnerHTML={{ __html: hymn.text || "" }}
+                />
               </div>
-
-              {/* Translations */}
-              <div className="space-y-4">
-                {hymn.translations && hymn.translations.length > 0 && (
-                  <>
-                    {hymn.translations.map((translation, tIndex) => (
-                      <div key={tIndex} className="space-y-2">
-                        <div className="flex items-center gap-2 text-sm font-semibold">
-                          <Globe className="h-4 w-4" />
-                          <span className="capitalize">
-                            {translation.language}
-                          </span>
-                          {translation.translatorName && (
-                            <span className="text-xs text-muted-foreground font-normal">
-                              by {translation.translatorName}
-                            </span>
-                          )}
-                        </div>
-                        <pre className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
-                          {translation.text}
-                        </pre>
-                        {translation.notes && (
-                          <p className="text-xs text-muted-foreground italic">
-                            {translation.notes}
-                          </p>
-                        )}
-                      </div>
-                    ))}
-                  </>
-                )}
-              </div>
-            </div>
+            )}
           </CardContent>
         </Card>
       )}
@@ -364,57 +421,69 @@ export default function HymnDetail({
                 </div>
               </CardHeader>
               <CardContent className="space-y-6 pt-0 px-8">
-                {/* Text and Translations side by side */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Syriac Text */}
+                {version.translations && version.translations.length > 0 ? (
+                  /* Text and Translations side by side */
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Syriac Text */}
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-semibold text-muted-foreground">
+                        Syriac Text
+                      </h4>
+                      <div
+                        className="whitespace-pre-wrap leading-relaxed text-justify prose prose-slate max-w-none"
+                        style={{
+                          fontFamily: "East Syriac Adiabene, serif",
+                          fontSize: "28px",
+                        }}
+                        dir="rtl"
+                        dangerouslySetInnerHTML={{ __html: version.text || "" }}
+                      />
+                    </div>
+
+                    {/* Translations */}
+                    <div className="space-y-4">
+                      {version.translations.map((translation, tIndex) => (
+                        <div key={tIndex} className="space-y-2">
+                          <div className="flex items-center gap-2 text-sm font-semibold">
+                            <Globe className="h-4 w-4" />
+                            <span className="capitalize">
+                              {translation.language}
+                            </span>
+                            {translation.translatorName && (
+                              <span className="text-xs text-muted-foreground font-normal">
+                                by {translation.translatorName}
+                              </span>
+                            )}
+                          </div>
+                          <pre className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
+                            {translation.text}
+                          </pre>
+                          {translation.notes && (
+                            <p className="text-xs text-muted-foreground italic">
+                              {translation.notes}
+                            </p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  /* Full width Syriac text when no translations */
                   <div className="space-y-2">
                     <h4 className="text-sm font-semibold text-muted-foreground">
                       Syriac Text
                     </h4>
-                    <pre
-                      className="whitespace-pre-wrap leading-relaxed text-justify"
+                    <div
+                      className="whitespace-pre-wrap leading-relaxed text-justify prose prose-slate max-w-none"
                       style={{
                         fontFamily: "East Syriac Adiabene, serif",
                         fontSize: "28px",
                       }}
                       dir="rtl"
-                    >
-                      {version.text}
-                    </pre>
+                      dangerouslySetInnerHTML={{ __html: version.text || "" }}
+                    />
                   </div>
-
-                  {/* Translations */}
-                  <div className="space-y-4">
-                    {version.translations &&
-                      version.translations.length > 0 && (
-                        <>
-                          {version.translations.map((translation, tIndex) => (
-                            <div key={tIndex} className="space-y-2">
-                              <div className="flex items-center gap-2 text-sm font-semibold">
-                                <Globe className="h-4 w-4" />
-                                <span className="capitalize">
-                                  {translation.language}
-                                </span>
-                                {translation.translatorName && (
-                                  <span className="text-xs text-muted-foreground font-normal">
-                                    by {translation.translatorName}
-                                  </span>
-                                )}
-                              </div>
-                              <pre className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
-                                {translation.text}
-                              </pre>
-                              {translation.notes && (
-                                <p className="text-xs text-muted-foreground italic">
-                                  {translation.notes}
-                                </p>
-                              )}
-                            </div>
-                          ))}
-                        </>
-                      )}
-                  </div>
-                </div>
+                )}
 
                 {version.notes && (
                   <p className="text-sm text-muted-foreground italic border-t pt-4">
@@ -428,58 +497,138 @@ export default function HymnDetail({
       )}
 
       {/* Images */}
-      {hymn.bookPageImageGroups && hymn.bookPageImageGroups.length > 0 && (
-        <Card className="gap-2">
-          <CardHeader className="pb-2 px-8">
-            <CardTitle>Book Page Images</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0 px-8">
-            <div className="space-y-6">
-              {sortByChurchPriority(hymn.bookPageImageGroups).map(
-                (group, groupIndex) => (
-                  <div key={groupIndex} className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <h4 className="font-semibold text-lg">
-                        {group.churchName}
-                      </h4>
+      {!hideImages &&
+        hymn.hymnImageGroups &&
+        hymn.hymnImageGroups.length > 0 && (
+          <Card className="gap-2">
+            <CardHeader className="pb-2 px-8">
+              <CardTitle>Images</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0 px-8">
+              <div className="space-y-6">
+                {sortByChurchPriority(hymn.hymnImageGroups).map(
+                  (group, groupIndex) => (
+                    <div key={groupIndex} className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <h4 className="font-semibold text-lg">
+                          {group.churchName}
+                        </h4>
+                      </div>
+                      {group.source && (
+                        <p className="text-sm text-muted-foreground">
+                          Source: {group.source}
+                        </p>
+                      )}
+                      {group.description && (
+                        <p className="text-sm text-muted-foreground">
+                          {group.description}
+                        </p>
+                      )}
+                      <div className="space-y-4">
+                        {group.images.map((imageUrl, imgIndex) => (
+                          <div key={imgIndex} className="relative w-full">
+                            <Image
+                              src={imageUrl}
+                              alt={`${group.churchName} page ${imgIndex + 1}`}
+                              width={800}
+                              height={600}
+                              className="w-full h-auto rounded border"
+                              style={{ objectFit: "contain" }}
+                              priority={imgIndex === 0} // Prioritize first image
+                            />
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    {group.source && (
-                      <p className="text-sm text-muted-foreground">
-                        Source: {group.source}
-                      </p>
-                    )}
-                    {group.description && (
-                      <p className="text-sm text-muted-foreground">
-                        {group.description}
-                      </p>
-                    )}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {group.images.map((imageUrl, imgIndex) => (
-                        <img
-                          key={imgIndex}
-                          src={imageUrl}
-                          alt={`${group.churchName} page ${imgIndex + 1}`}
-                          className="w-full rounded border"
-                        />
-                      ))}
-                    </div>
-                  </div>
-                )
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      )}
+                  )
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
       {/* Recordings */}
-      {hymn.recordings && hymn.recordings.length > 0 && (
+      {!hideRecordings && (
         <Card>
           <CardHeader className="pb-2 px-8">
             <CardTitle>Recordings</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4 pt-0 px-8">
-            {sortByChurchPriority(hymn.recordings).map((recording) =>
-              renderRecording(recording)
+          <CardContent className="pt-0 px-8">
+            {hymn.recordings && hymn.recordings.length > 0 ? (
+              <div className="space-y-6">
+                {(() => {
+                  // Filter recordings based on user permissions
+                  const visibleRecordings = hymn.recordings.filter(
+                    (recording) => {
+                      if (userRole === "admin") return true; // Admins see all recordings
+                      if ((recording.status || "approved") === "approved")
+                        return true; // Everyone sees approved recordings (default to approved for legacy recordings)
+                      if (
+                        currentUserId &&
+                        recording.contributorId === currentUserId
+                      )
+                        return true; // Users see their own pending recordings
+                      return false; // Hide other users' pending/rejected recordings
+                    }
+                  );
+
+                  const { sortedGroups, ungrouped } =
+                    groupRecordingsByChurch(visibleRecordings);
+                  return (
+                    <>
+                      {sortedGroups.map(([church, recordings]) => (
+                        <div key={church} className="space-y-2">
+                          <h4 className="font-semibold text-lg text-muted-foreground px-1">
+                            {church}
+                          </h4>
+                          <div className="divide-y">
+                            {recordings.map((recording) =>
+                              renderRecording(recording)
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                      {ungrouped.length > 0 && (
+                        <div className="space-y-2">
+                          {sortedGroups.length > 0 && (
+                            <h4 className="font-semibold text-lg text-muted-foreground px-1">
+                              Other
+                            </h4>
+                          )}
+                          <div className="divide-y">
+                            {ungrouped.map((recording) =>
+                              renderRecording(recording)
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  );
+                })()}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <Music className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                <p className="text-muted-foreground">
+                  No recordings yet. Recordings of this hymn from different
+                  traditions will appear here.
+                </p>
+              </div>
+            )}
+
+            {/* Account creation prompt for non-logged-in users */}
+            {!currentUserId && (
+              <div className="text-center py-4 border-t">
+                <p className="text-sm text-muted-foreground">
+                  To submit a recording for this hymn, please{" "}
+                  <Link
+                    href="/signup"
+                    className="text-primary hover:underline font-medium"
+                  >
+                    create an account
+                  </Link>
+                </p>
+              </div>
             )}
           </CardContent>
         </Card>

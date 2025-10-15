@@ -22,6 +22,7 @@ import {
   CreatePersonData,
   HymnRecording,
   CreateRecordingData,
+  RecordingStatus,
 } from "./types/hymn";
 
 // Person Service
@@ -128,7 +129,7 @@ export const hymnService = {
       authors: hymnData.authors || [],
       churchVersions: hymnData.churchVersions || [],
       translations: hymnData.translations || [],
-      bookPageImageGroups: hymnData.bookPageImageGroups || [],
+      hymnImageGroups: hymnData.hymnImageGroups || [],
       recordings: hymnData.recordings || [],
       tags: hymnData.tags || [],
       isPublished: hymnData.isPublished ?? true, // Default to published
@@ -305,7 +306,8 @@ export const hymnService = {
   // Add recording to hymn
   async addRecording(
     hymnId: string,
-    recordingData: CreateRecordingData
+    recordingData: CreateRecordingData,
+    userRole?: string
   ): Promise<void> {
     const hymnDoc = await this.getHymnById(hymnId);
     if (!hymnDoc.exists()) {
@@ -315,9 +317,14 @@ export const hymnService = {
     const hymnData = hymnDoc.data();
     const currentRecordings = hymnData?.recordings || [];
 
+    // Set status based on user role
+    const status: RecordingStatus =
+      userRole === "admin" ? "approved" : "pending";
+
     const newRecording: HymnRecording = {
       id: `rec_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       ...recordingData,
+      status,
       createdAt: new Date(),
     };
 
@@ -369,6 +376,33 @@ export const hymnService = {
     const updatedRecordings = currentRecordings.filter(
       (rec: HymnRecording) => rec.id !== recordingId
     );
+
+    await updateDoc(doc(db, "hymns", hymnId), {
+      recordings: updatedRecordings,
+      updatedAt: new Date(),
+    });
+  },
+
+  // Update recording status (approve/reject)
+  async updateRecordingStatus(
+    hymnId: string,
+    recordingId: string,
+    status: RecordingStatus
+  ): Promise<void> {
+    const hymnDoc = await this.getHymnById(hymnId);
+    if (!hymnDoc.exists()) {
+      throw new Error("Hymn not found");
+    }
+
+    const hymnData = hymnDoc.data();
+    const currentRecordings = hymnData?.recordings || [];
+
+    const updatedRecordings = currentRecordings.map((rec: HymnRecording) => {
+      if (rec.id === recordingId) {
+        return { ...rec, status };
+      }
+      return rec;
+    });
 
     await updateDoc(doc(db, "hymns", hymnId), {
       recordings: updatedRecordings,

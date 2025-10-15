@@ -186,6 +186,8 @@ export default function HymnDetailClient({ hymnId }: HymnDetailClientProps) {
   const canEdit =
     userProfile?.role === "editor" || userProfile?.role === "admin";
 
+  const canAddRecordings = user !== null; // All logged-in users can add recordings
+
   const mainTitle = hymn.titles?.[0]?.title || "Hymn";
 
   return (
@@ -216,24 +218,37 @@ export default function HymnDetailClient({ hymnId }: HymnDetailClientProps) {
         </Breadcrumb>
       </div>
 
-      <HymnDetail hymn={hymn} showEditButton={canEdit} onEdit={handleEdit} />
+      <HymnDetail
+        hymn={hymn}
+        showEditButton={canEdit}
+        onEdit={handleEdit}
+        hideImages={canEdit}
+        hideRecordings={canAddRecordings}
+        currentUserId={user?.uid}
+        userRole={userProfile?.role}
+      />
 
-      {canEdit && user && (
+      {user && (
         <div className="mt-8 space-y-8">
-          <HymnImagesManager
-            hymnId={hymnId}
-            imageGroups={hymn.bookPageImageGroups}
-            onUpdate={handleRefresh}
-          />
-          <RecordingsManager
-            hymnId={hymnId}
-            recordings={hymn.recordings}
-            contributorId={user.uid}
-            contributorName={
-              userProfile?.displayName || user.email || "Anonymous"
-            }
-            onUpdate={handleRefresh}
-          />
+          {canEdit && (
+            <HymnImagesManager
+              hymnId={hymnId}
+              imageGroups={hymn.hymnImageGroups}
+              onUpdate={handleRefresh}
+            />
+          )}
+          {canAddRecordings && (
+            <RecordingsManager
+              hymnId={hymnId}
+              recordings={hymn.recordings}
+              contributorId={user.uid}
+              contributorName={
+                userProfile?.displayName || user.email || "Anonymous"
+              }
+              userRole={userProfile?.role}
+              onUpdate={handleRefresh}
+            />
+          )}
         </div>
       )}
     </div>

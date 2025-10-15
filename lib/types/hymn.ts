@@ -36,8 +36,8 @@ export interface HymnAuthor {
   name: string; // For display
 }
 
-// Book page image group - multiple images from the same source
-export interface BookPageImageGroup {
+// Hymn image group - multiple images from the same source
+export interface HymnImageGroup {
   churchName: string; // e.g., "Syro-Malabar", "Assyrian", "Chaldean", "Ancient Church of the East"
   images: string[]; // Array of image URLs
   description?: string;
@@ -65,19 +65,25 @@ export interface ChurchTextVersion {
 // Recording - audio, video, or link
 export type RecordingType = "audio" | "video" | "youtube" | "link";
 
+export type RecordingStatus = "pending" | "approved" | "rejected";
+
 export interface HymnRecording {
   id: string;
   type: RecordingType;
   url: string; // Firebase Storage URL or external URL
   title?: string;
-  performerId?: string; // Reference to Person
-  performerName?: string; // For display
+  performers?: Array<{
+    id?: string; // Reference to Person (optional)
+    name: string; // Display name (required)
+  }>; // Multiple performers
   contributorId: string; // User who added this recording
   contributorName: string; // For display
+  status: RecordingStatus; // Approval status
   year?: number; // Year of recording/performance
   duration?: string; // e.g., "3:45"
   description?: string;
   church?: string; // Which tradition this recording follows
+  adminAudioUrl?: string; // Admin-only audio file for YouTube videos
   createdAt: Date;
 }
 
@@ -85,14 +91,18 @@ export interface CreateRecordingData {
   type: RecordingType;
   url: string;
   title?: string;
-  performerId?: string;
-  performerName?: string;
+  performers?: Array<{
+    id?: string; // Reference to Person (optional)
+    name: string; // Display name (required)
+  }>; // Multiple performers
   contributorId: string;
   contributorName: string;
+  status?: RecordingStatus; // Optional, will be set based on user role
   year?: number;
   duration?: string;
   description?: string;
   church?: string;
+  adminAudioUrl?: string; // Admin-only audio file for YouTube videos
 }
 
 // Main Hymn entity
@@ -121,8 +131,8 @@ export interface Hymn {
   translations?: TextTranslation[]; // Translations for the text
   churchVersions: ChurchTextVersion[]; // Different versions for different churches
 
-  // Book page image groups from different church traditions
-  bookPageImageGroups: BookPageImageGroup[];
+  // Hymn image groups from different church traditions
+  hymnImageGroups: HymnImageGroup[];
 
   // Recordings
   recordings: HymnRecording[];
@@ -148,7 +158,7 @@ export interface CreateHymnData {
   text?: string;
   translations?: TextTranslation[];
   churchVersions?: ChurchTextVersion[];
-  bookPageImageGroups?: BookPageImageGroup[];
+  hymnImageGroups?: HymnImageGroup[];
   recordings?: HymnRecording[];
   tags?: string[];
   isPublished?: boolean;
@@ -156,15 +166,15 @@ export interface CreateHymnData {
 
 // Common church traditions
 export const CHURCH_TRADITIONS = [
-  "Syro-Malabar",
-  "Syro-Malankara",
+  "Syro-Malabar Church",
   "Assyrian Church of the East",
   "Ancient Church of the East",
-  "Chaldean Catholic",
-  "Syriac Orthodox",
-  "Syriac Catholic",
-  "Maronite",
-  "Malankara Orthodox",
+  "Chaldean Catholic Church",
+  "Syro-Malankara Church",
+  "Syriac Orthodox Church",
+  "Syriac Catholic Church",
+  "Maronite Church",
+  "Malankara Orthodox Church",
   "Other",
 ] as const;
 
@@ -212,15 +222,15 @@ export type HymnOccasion = (typeof HYMN_OCCASIONS)[number];
 
 // Church display priority order
 export const CHURCH_DISPLAY_ORDER = [
-  "Syro-Malabar",
-  "Chaldean Catholic",
+  "Syro-Malabar Church",
+  "Chaldean Catholic Church",
   "Assyrian Church of the East",
   "Ancient Church of the East",
-  "Syro-Malankara",
-  "Syriac Orthodox",
-  "Syriac Catholic",
-  "Maronite",
-  "Malankara Orthodox",
+  "Syro-Malankara Church",
+  "Syriac Orthodox Church",
+  "Syriac Catholic Church",
+  "Maronite Church",
+  "Malankara Orthodox Church",
   "Other",
 ] as const;
 

@@ -196,7 +196,7 @@ export default function HymnEditClient({ hymnId }: HymnEditClientProps) {
     text: hymn.text,
     translations: hymn.translations,
     churchVersions: hymn.churchVersions,
-    bookPageImageGroups: hymn.bookPageImageGroups,
+    hymnImageGroups: hymn.hymnImageGroups,
     recordings: hymn.recordings,
     tags: hymn.tags,
   };

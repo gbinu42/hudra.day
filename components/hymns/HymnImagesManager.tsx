@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -26,11 +26,12 @@ import {
 import { toast } from "sonner";
 import { hymnService } from "@/lib/hymn-services";
 import {
-  BookPageImageGroup,
+  HymnImageGroup,
   CHURCH_TRADITIONS,
   sortByChurchPriority,
 } from "@/lib/types/hymn";
-import { Plus, Trash2, Image as ImageIcon } from "lucide-react";
+import Image from "next/image";
+import { Plus, Trash2, Image as ImageIcon, Edit } from "lucide-react";
 
 const hymnImageSchema = z.object({
   churchName: z.string().min(1, "Church name is required"),
@@ -42,7 +43,7 @@ type HymnImageFormData = z.infer<typeof hymnImageSchema>;
 
 interface HymnImagesManagerProps {
   hymnId: string;
-  imageGroups?: BookPageImageGroup[];
+  imageGroups?: HymnImageGroup[];
   onUpdate: () => void;
 }
 
@@ -55,6 +56,12 @@ export default function HymnImagesManager({
   const [isUploading, setIsUploading] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const [editingGroupIndex, setEditingGroupIndex] = useState<number | null>(
+    null
+  );
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const isEditing = editingGroupIndex !== null;
 
   const {
     register,
@@ -72,41 +79,114 @@ export default function HymnImagesManager({
     },
   });
 
+  const processFiles = useCallback((files: File[]) => {
+    setSelectedFiles(files);
+
+    // Create preview URLs in the correct order
+    const previews: string[] = new Array(files.length);
+    let loadedCount = 0;
+
+    files.forEach((file, index) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        previews[index] = reader.result as string;
+        loadedCount++;
+        if (loadedCount === files.length) {
+          setPreviewUrls(previews);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  }, []);
+
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const files = Array.from(e.target.files);
-      setSelectedFiles(files);
-
-      // Create preview URLs
-      const previews: string[] = [];
-      files.forEach((file) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          previews.push(reader.result as string);
-          if (previews.length === files.length) {
-            setPreviewUrls(previews);
-          }
-        };
-        reader.readAsDataURL(file);
-      });
+      processFiles(files);
     }
   };
 
+  const handlePaste = useCallback(
+    async (e: ClipboardEvent) => {
+      e.preventDefault();
+      const items = e.clipboardData?.items;
+      if (!items) return;
+
+      const imageFiles: File[] = [];
+
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        if (item.type.startsWith("image/")) {
+          const file = item.getAsFile();
+          if (file) {
+            // Create a new file with a proper name including index to maintain order
+            const timestamp = Date.now();
+            const extension = file.type.split("/")[1] || "png";
+            const newFile = new File(
+              [file],
+              `pasted-image-${timestamp}-${i}.${extension}`,
+              {
+                type: file.type,
+              }
+            );
+            imageFiles.push(newFile);
+          }
+        }
+      }
+
+      if (imageFiles.length > 0) {
+        // Combine with existing files, maintaining order
+        const allFiles = [...selectedFiles, ...imageFiles];
+        processFiles(allFiles);
+        toast.success(`${imageFiles.length} image(s) pasted from clipboard`);
+      }
+    },
+    [selectedFiles, processFiles]
+  );
+
+  // Add paste event listener when dialog is open
+  useEffect(() => {
+    if (isOpen) {
+      const handlePasteEvent = (e: ClipboardEvent) => handlePaste(e);
+      document.addEventListener("paste", handlePasteEvent);
+      return () => {
+        document.removeEventListener("paste", handlePasteEvent);
+      };
+    }
+  }, [isOpen, handlePaste]);
+
+  const clearSelectedFiles = () => {
+    setSelectedFiles([]);
+    setPreviewUrls([]);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const handleEdit = (groupIndex: number) => {
+    const group = imageGroups[groupIndex];
+    setEditingGroupIndex(groupIndex);
+    setValue("churchName", group.churchName);
+    setValue("description", group.description || "");
+    setValue("source", group.source || "");
+    setIsOpen(true);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingGroupIndex(null);
+    reset();
+    clearSelectedFiles();
+    setIsOpen(false);
+  };
+
   const onSubmit = async (data: HymnImageFormData) => {
-    if (selectedFiles.length === 0) {
+    if (!isEditing && selectedFiles.length === 0) {
       toast.error("Please select at least one image file");
       return;
     }
 
     setIsUploading(true);
     try {
-      // Upload all images
-      const imageUrls: string[] = [];
-      for (const file of selectedFiles) {
-        const url = await hymnService.uploadFile(hymnId, file, "images");
-        imageUrls.push(url);
-      }
-
       // Get current hymn data
       const hymnDoc = await hymnService.getHymnById(hymnId);
       if (!hymnDoc.exists()) {
@@ -114,32 +194,65 @@ export default function HymnImagesManager({
       }
 
       const hymnData = hymnDoc.data();
-      const currentGroups = hymnData?.bookPageImageGroups || [];
+      const currentGroups = hymnData?.hymnImageGroups || [];
 
-      // Add new image group
-      const newGroup: BookPageImageGroup = {
-        churchName: data.churchName,
-        images: imageUrls,
-        description: data.description,
-        source: data.source,
-      };
+      if (isEditing) {
+        // Edit existing image group metadata
+        const updatedGroups = [...currentGroups];
+        const existingGroup = updatedGroups[editingGroupIndex!];
 
-      const updatedGroups = [...currentGroups, newGroup];
+        // Upload new images if any were selected
+        let imageUrls = existingGroup.images;
+        if (selectedFiles.length > 0) {
+          const newUrls: string[] = [];
+          for (const file of selectedFiles) {
+            const url = await hymnService.uploadFile(hymnId, file, "images");
+            newUrls.push(url);
+          }
+          imageUrls = [...existingGroup.images, ...newUrls];
+        }
 
-      // Update hymn
-      await hymnService.updateHymn(hymnId, {
-        bookPageImageGroups: updatedGroups,
-      });
+        updatedGroups[editingGroupIndex!] = {
+          churchName: data.churchName,
+          images: imageUrls,
+          description: data.description,
+          source: data.source,
+        };
 
-      toast.success("Book page images added successfully!");
-      reset();
-      setSelectedFiles([]);
-      setPreviewUrls([]);
-      setIsOpen(false);
+        await hymnService.updateHymn(hymnId, {
+          hymnImageGroups: updatedGroups,
+        });
+
+        toast.success("Hymn image group updated successfully!");
+      } else {
+        // Add new image group
+        const imageUrls: string[] = [];
+        for (const file of selectedFiles) {
+          const url = await hymnService.uploadFile(hymnId, file, "images");
+          imageUrls.push(url);
+        }
+
+        const newGroup: HymnImageGroup = {
+          churchName: data.churchName,
+          images: imageUrls,
+          description: data.description,
+          source: data.source,
+        };
+
+        const updatedGroups = [...currentGroups, newGroup];
+
+        await hymnService.updateHymn(hymnId, {
+          hymnImageGroups: updatedGroups,
+        });
+
+        toast.success("Hymn images added successfully!");
+      }
+
+      handleCancelEdit();
       onUpdate();
     } catch (error) {
-      console.error("Error adding book page images:", error);
-      toast.error("Failed to add book page images");
+      console.error("Error saving hymn images:", error);
+      toast.error(`Failed to ${isEditing ? "update" : "add"} hymn images`);
     } finally {
       setIsUploading(false);
     }
@@ -153,13 +266,13 @@ export default function HymnImagesManager({
     try {
       const updatedGroups = imageGroups.filter((_, i) => i !== index);
       await hymnService.updateHymn(hymnId, {
-        bookPageImageGroups: updatedGroups,
+        hymnImageGroups: updatedGroups,
       });
-      toast.success("Book page image group deleted successfully!");
+      toast.success("Hymn image group deleted successfully!");
       onUpdate();
     } catch (error) {
-      console.error("Error deleting book page image group:", error);
-      toast.error("Failed to delete book page image group");
+      console.error("Error deleting hymn image group:", error);
+      toast.error("Failed to delete hymn image group");
     }
   };
 
@@ -167,7 +280,7 @@ export default function HymnImagesManager({
     <Card>
       <CardHeader>
         <div className="flex justify-between items-center">
-          <CardTitle>Images</CardTitle>
+          <CardTitle>Hymn Images</CardTitle>
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
               <Button>
@@ -177,10 +290,12 @@ export default function HymnImagesManager({
             </DialogTrigger>
             <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle>Add Book Page Image</DialogTitle>
+                <DialogTitle>
+                  {isEditing ? "Edit Hymn Image Group" : "Add Hymn Image"}
+                </DialogTitle>
               </DialogHeader>
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                <div>
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                <div className="space-y-2">
                   <Label>Church Tradition</Label>
                   <Select
                     value={watch("churchName")}
@@ -204,29 +319,64 @@ export default function HymnImagesManager({
                   )}
                 </div>
 
-                <div>
-                  <Label>Image Files (multiple allowed)</Label>
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    onChange={handleFileSelect}
-                  />
+                <div className="space-y-2">
+                  <Label>
+                    Image Files {isEditing && "(optional - add more images)"}
+                  </Label>
+                  <div className="space-y-2">
+                    <div className="flex gap-2">
+                      <Input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={handleFileSelect}
+                        className="flex-1"
+                      />
+                      {selectedFiles.length > 0 && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={clearSelectedFiles}
+                        >
+                          Clear
+                        </Button>
+                      )}
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      {isEditing
+                        ? "Select files to add more images to this group"
+                        : "Select multiple files or paste images from clipboard (Ctrl+V)"}
+                    </p>
+                    {selectedFiles.length > 0 && (
+                      <p className="text-sm text-green-600">
+                        {selectedFiles.length} file(s) selected
+                      </p>
+                    )}
+                  </div>
                   {previewUrls.length > 0 && (
                     <div className="mt-4 grid grid-cols-2 gap-2">
                       {previewUrls.map((url, idx) => (
-                        <img
-                          key={idx}
-                          src={url}
-                          alt={`Preview ${idx + 1}`}
-                          className="w-full h-auto border rounded"
-                        />
+                        <div key={idx} className="relative">
+                          <Image
+                            src={url}
+                            alt={`Preview ${idx + 1}`}
+                            width={300}
+                            height={200}
+                            className="w-full h-auto border rounded"
+                            style={{ objectFit: "contain" }}
+                          />
+                          <div className="absolute top-1 left-1 bg-black bg-opacity-70 text-white text-xs px-1.5 py-0.5 rounded">
+                            {idx + 1}
+                          </div>
+                        </div>
                       ))}
                     </div>
                   )}
                 </div>
 
-                <div>
+                <div className="space-y-2">
                   <Label>Description (optional)</Label>
                   <Textarea
                     {...register("description")}
@@ -235,7 +385,7 @@ export default function HymnImagesManager({
                   />
                 </div>
 
-                <div>
+                <div className="space-y-2">
                   <Label>Source (optional)</Label>
                   <Input
                     {...register("source")}
@@ -247,20 +397,23 @@ export default function HymnImagesManager({
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={() => {
-                      setIsOpen(false);
-                      reset();
-                      setSelectedFiles([]);
-                      setPreviewUrls([]);
-                    }}
+                    onClick={handleCancelEdit}
                   >
                     Cancel
                   </Button>
                   <Button
                     type="submit"
-                    disabled={isUploading || selectedFiles.length === 0}
+                    disabled={
+                      isUploading || (!isEditing && selectedFiles.length === 0)
+                    }
                   >
-                    {isUploading ? "Uploading..." : "Add Images"}
+                    {isUploading
+                      ? isEditing
+                        ? "Updating..."
+                        : "Uploading..."
+                      : isEditing
+                      ? "Update Group"
+                      : "Add Images"}
                   </Button>
                 </div>
               </form>
@@ -273,8 +426,8 @@ export default function HymnImagesManager({
           <div className="text-center py-8">
             <ImageIcon className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
             <p className="text-muted-foreground">
-              No book page images yet. Add images of pages from books showing
-              how different churches write this hymn!
+              No hymn images yet. Add images of pages from books showing how
+              different churches write this hymn!
             </p>
           </div>
         ) : (
@@ -289,14 +442,22 @@ export default function HymnImagesManager({
                     <h4 className="font-semibold text-lg">
                       {group.churchName}
                     </h4>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      className="opacity-0 group-hover:opacity-100 transition-opacity"
-                      onClick={() => handleDelete(groupIndex)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                    <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleEdit(groupIndex)}
+                      >
+                        <Edit className="h-4 w-4 text-blue-500" />
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleDelete(groupIndex)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                   {group.source && (
                     <p className="text-sm text-muted-foreground">
@@ -308,14 +469,19 @@ export default function HymnImagesManager({
                       {group.description}
                     </p>
                   )}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-4">
                     {group.images.map((imageUrl, imgIndex) => (
-                      <img
-                        key={imgIndex}
-                        src={imageUrl}
-                        alt={`${group.churchName} page ${imgIndex + 1}`}
-                        className="w-full rounded border"
-                      />
+                      <div key={imgIndex} className="relative w-full">
+                        <Image
+                          src={imageUrl}
+                          alt={`${group.churchName} page ${imgIndex + 1}`}
+                          width={800}
+                          height={600}
+                          className="w-full h-auto rounded border"
+                          style={{ objectFit: "contain" }}
+                          priority={imgIndex === 0} // Prioritize first image
+                        />
+                      </div>
                     ))}
                   </div>
                 </div>
