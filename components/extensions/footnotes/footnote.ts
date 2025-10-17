@@ -125,7 +125,7 @@ const Footnote = ListItem.extend<FootnoteOptions>({
           }
 
           return false;
-        } catch (e) {
+        } catch {
           return false;
         }
       },

@@ -5,7 +5,7 @@ import { Fragment, Node } from "@tiptap/pm/model";
 export function updateFootnoteReferences(tr: Transaction) {
   let count = 1;
 
-  const nodes: any[] = [];
+  const nodes: Node[] = [];
 
   tr.doc.descendants((node, pos) => {
     if (node.type.name == "footnoteReference") {
@@ -54,16 +54,16 @@ export function updateFootnotesList(tr: Transaction, state: EditorState) {
       obj[footnote.attrs["data-id"]] = footnote;
       return obj;
     },
-    {} as any
+    {} as { [key: string]: Node }
   );
 
   const newFootnotes: Node[] = [];
 
-  let footnoteRefIds = new Set(
+  const footnoteRefIds = new Set(
     footnoteReferences.map((ref) => ref.attrs["data-id"])
   );
   const deleteFootnoteIds: Set<string> = new Set();
-  for (let footnote of footnotes) {
+  for (const footnote of footnotes) {
     const id = footnote.attrs["data-id"];
     if (!footnoteRefIds.has(id) || deleteFootnoteIds.has(id)) {
       deleteFootnoteIds.add(id);
@@ -77,12 +77,12 @@ export function updateFootnotesList(tr: Transaction, state: EditorState) {
   }
 
   for (let i = 0; i < footnoteReferences.length; i++) {
-    let refId = footnoteReferences[i].attrs["data-id"];
+    const refId = footnoteReferences[i].attrs["data-id"];
 
     if (deleteFootnoteIds.has(refId)) continue;
     // if there is a footnote w/ the same id as this `ref`, we preserve its content and update its id attribute
     if (refId in footnoteIds) {
-      let footnote = footnoteIds[refId];
+      const footnote = footnoteIds[refId];
       newFootnotes.push(
         footnoteType.create(
           { ...footnote.attrs, id: `fn:${i + 1}` },
@@ -90,7 +90,7 @@ export function updateFootnotesList(tr: Transaction, state: EditorState) {
         )
       );
     } else {
-      let newNode = footnoteType.create(
+      const newNode = footnoteType.create(
         {
           "data-id": refId,
           id: `fn:${i + 1}`,

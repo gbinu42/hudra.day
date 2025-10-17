@@ -866,7 +866,6 @@ export default function SyriacEditor({
                 <DropdownMenuItem
                   onClick={() => {
                     if (!editor) return;
-                    // @ts-ignore - FootnoteReference extension adds this command
                     editor.commands.addFootnote();
                   }}
                   disabled={!editor}

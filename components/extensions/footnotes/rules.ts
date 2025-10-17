@@ -37,13 +37,13 @@ const FootnoteRules = Extension.create({
 
         // if there are some to the footnote references (added/deleted/dragged), append a transaction that updates the footnotes list accordingly
         appendTransaction(transactions, _oldState, newState) {
-          let newTr = newState.tr;
+          const newTr = newState.tr;
           let refsChanged = false; // true if the footnote references have been changed, false otherwise
-          for (let tr of transactions) {
+          for (const tr of transactions) {
             if (!tr.docChanged) continue;
             if (refsChanged) break;
 
-            for (let step of tr.steps) {
+            for (const step of tr.steps) {
               if (!(step instanceof ReplaceStep)) continue;
               if (refsChanged) break;
 
