@@ -4,11 +4,14 @@ import { useState, useCallback, useEffect } from "react";
 import { useEditor, EditorContent, JSONContent } from "@tiptap/react";
 import { BubbleMenu } from "@tiptap/react/menus";
 import StarterKit from "@tiptap/starter-kit";
+import Document from "@tiptap/extension-document";
 import TextAlign from "@tiptap/extension-text-align";
 import FontFamily from "@tiptap/extension-font-family";
 import { TextStyle, FontSize } from "@tiptap/extension-text-style";
 import Color from "@tiptap/extension-color";
 import { Extension } from "@tiptap/core";
+import { Plugin, PluginKey } from "@tiptap/pm/state";
+import { Footnotes, FootnoteReference, Footnote } from "./extensions/footnotes";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -20,6 +23,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   AlignLeft,
   AlignCenter,
   AlignRight,
@@ -28,6 +37,8 @@ import {
   Redo,
   Keyboard,
   Minus,
+  Superscript,
+  MoreHorizontal,
 } from "lucide-react";
 import SyriacKeyboard from "./SyriacKeyboard";
 
@@ -142,6 +153,56 @@ const createParagraphExtension = (defaultDirection: "rtl" | "ltr") =>
         },
       ];
     },
+
+    addProseMirrorPlugins() {
+      return [
+        new Plugin({
+          key: new PluginKey("footnoteDirectionOverride"),
+          appendTransaction: (transactions, _oldState, newState) => {
+            // Only process if there were actual document changes
+            const docChanged = transactions.some((tr) => tr.docChanged);
+            if (!docChanged) return null;
+
+            const tr = newState.tr;
+            let modified = false;
+
+            newState.doc.descendants((node, pos) => {
+              // Check if this paragraph is inside a footnote by checking ancestors
+              if (node.type.name === "paragraph") {
+                const $pos = newState.doc.resolve(pos);
+                let isInFootnote = false;
+
+                // Check all ancestors
+                for (let d = $pos.depth; d > 0; d--) {
+                  const ancestor = $pos.node(d);
+                  if (
+                    ancestor.type.name === "footnote" ||
+                    ancestor.type.name === "footnotes"
+                  ) {
+                    isInFootnote = true;
+                    break;
+                  }
+                }
+
+                if (
+                  isInFootnote &&
+                  (node.attrs.dir !== "ltr" || node.attrs.textAlign !== "left")
+                ) {
+                  tr.setNodeMarkup(pos, undefined, {
+                    ...node.attrs,
+                    dir: "ltr",
+                    textAlign: "left",
+                  });
+                  modified = true;
+                }
+              }
+            });
+
+            return modified ? tr : null;
+          },
+        }),
+      ];
+    },
   });
 
 export default function SyriacEditor({
@@ -185,6 +246,7 @@ export default function SyriacEditor({
     extensions: [
       StarterKit.configure({
         // Disable most formatting features but keep history (enabled by default)
+        document: false, // Disable default document to add custom one with footnotes
         bold: false,
         italic: false,
         strike: false,
@@ -196,6 +258,12 @@ export default function SyriacEditor({
         blockquote: false,
         heading: false,
       }),
+      Document.extend({
+        content: "block+ footnotes?",
+      }),
+      Footnotes,
+      Footnote,
+      FootnoteReference,
       TextStyle,
       Color,
       FontFamily.configure({
@@ -738,20 +806,6 @@ export default function SyriacEditor({
 
             <Separator orientation="vertical" className="h-6" />
 
-            {/* Horizontal Rule */}
-            <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => editor.chain().focus().setHorizontalRule().run()}
-                title="Insert Horizontal Rule"
-              >
-                <Minus size={16} />
-              </Button>
-            </div>
-
-            <Separator orientation="vertical" className="h-6" />
-
             {/* Undo/Redo */}
             <div className="flex items-center gap-1">
               <Button
@@ -790,6 +844,38 @@ export default function SyriacEditor({
                 <Keyboard size={16} />
               </Button>
             </div>
+
+            <Separator orientation="vertical" className="h-6" />
+
+            {/* More Options Menu */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" title="More options">
+                  <MoreHorizontal size={16} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem
+                  onClick={() =>
+                    editor.chain().focus().setHorizontalRule().run()
+                  }
+                >
+                  <Minus size={16} className="mr-2" />
+                  Insert Horizontal Rule
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    if (!editor) return;
+                    // @ts-ignore - FootnoteReference extension adds this command
+                    editor.commands.addFootnote();
+                  }}
+                  disabled={!editor}
+                >
+                  <Superscript size={16} className="mr-2" />
+                  Insert Footnote
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
 
@@ -890,6 +976,61 @@ export default function SyriacEditor({
                 "ccmp" 1, "locl" 1, "mark" 1, "mkmk" 1 !important;
               -moz-font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1,
                 "locl" 1, "mark" 1, "mkmk" 1 !important;
+            }
+
+            /* Footnotes styling */
+            .ProseMirror ol.footnotes {
+              margin-top: 20px;
+              padding: 20px 0;
+              list-style-type: decimal;
+              padding-left: 20px;
+              font-size: 1em;
+              direction: ltr !important;
+              text-align: left !important;
+            }
+
+            .ProseMirror ol.footnotes:has(li) {
+              border-top: 1px solid #e5e7eb;
+            }
+
+            .ProseMirror ol.footnotes li {
+              font-size: 0.85em;
+              line-height: 1.5;
+              direction: ltr !important;
+              text-align: left !important;
+            }
+
+            .ProseMirror ol.footnotes li p {
+              direction: ltr !important;
+              text-align: left !important;
+            }
+
+            .ProseMirror ol.footnotes li p[dir] {
+              direction: ltr !important;
+            }
+
+            .ProseMirror ol.footnotes * {
+              direction: ltr !important;
+              text-align: left !important;
+            }
+
+            .ProseMirror .footnote-ref {
+              color: #2563eb;
+              cursor: pointer;
+              text-decoration: none;
+            }
+
+            .ProseMirror .footnote-ref:hover {
+              color: #1d4ed8;
+              text-decoration: underline;
+            }
+
+            .ProseMirror sup {
+              font-size: 0.75em;
+              line-height: 0;
+              position: relative;
+              vertical-align: baseline;
+              top: -0.5em;
             }
           `}</style>
         </div>

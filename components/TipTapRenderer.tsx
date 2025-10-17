@@ -3,11 +3,14 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useEditor, EditorContent, JSONContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import Document from "@tiptap/extension-document";
 import TextAlign from "@tiptap/extension-text-align";
 import FontFamily from "@tiptap/extension-font-family";
 import { TextStyle, FontSize } from "@tiptap/extension-text-style";
 import Color from "@tiptap/extension-color";
 import { Extension } from "@tiptap/core";
+import { Plugin, PluginKey } from "@tiptap/pm/state";
+import { Footnotes, FootnoteReference, Footnote } from "./extensions/footnotes";
 import SedraDialog from "./SedraDialog";
 
 // Custom extension to add line height and direction to paragraphs
@@ -45,6 +48,52 @@ const ParagraphExtension = Extension.create({
           },
         },
       },
+    ];
+  },
+
+  addProseMirrorPlugins() {
+    return [
+      new Plugin({
+        key: new PluginKey("footnoteDirectionOverride"),
+        appendTransaction: (_transactions, _oldState, newState) => {
+          const tr = newState.tr;
+          let modified = false;
+
+          newState.doc.descendants((node, pos) => {
+            // Check if this paragraph is inside a footnote by checking ancestors
+            if (node.type.name === "paragraph") {
+              const $pos = newState.doc.resolve(pos);
+              let isInFootnote = false;
+
+              // Check all ancestors
+              for (let d = $pos.depth; d > 0; d--) {
+                const ancestor = $pos.node(d);
+                if (
+                  ancestor.type.name === "footnote" ||
+                  ancestor.type.name === "footnotes"
+                ) {
+                  isInFootnote = true;
+                  break;
+                }
+              }
+
+              if (
+                isInFootnote &&
+                (node.attrs.dir !== "ltr" || node.attrs.textAlign !== "left")
+              ) {
+                tr.setNodeMarkup(pos, undefined, {
+                  ...node.attrs,
+                  dir: "ltr",
+                  textAlign: "left",
+                });
+                modified = true;
+              }
+            }
+          });
+
+          return modified ? tr : null;
+        },
+      }),
     ];
   },
 });
@@ -105,6 +154,7 @@ export default function TipTapRenderer({
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
+        document: false, // Disable default document to add custom one with footnotes
         bold: false,
         italic: false,
         strike: false,
@@ -116,6 +166,12 @@ export default function TipTapRenderer({
         blockquote: false,
         heading: false,
       }),
+      Document.extend({
+        content: "block+ footnotes?",
+      }),
+      Footnotes,
+      Footnote,
+      FootnoteReference,
       TextStyle,
       Color,
       FontFamily.configure({
@@ -436,6 +492,61 @@ export default function TipTapRenderer({
 
         .ProseMirror [data-word-id]:hover {
           background-color: rgba(229, 231, 235, 0.5) !important;
+        }
+
+        /* Footnotes styling */
+        .ProseMirror ol.footnotes {
+          margin-top: 20px;
+          padding: 20px 0;
+          list-style-type: decimal;
+          padding-left: 20px;
+          font-size: 0.85em;
+          direction: ltr !important;
+          text-align: left !important;
+        }
+
+        .ProseMirror ol.footnotes:has(li) {
+          border-top: 1px solid #e5e7eb;
+        }
+
+        .ProseMirror ol.footnotes li {
+          font-size: 0.85em;
+          line-height: 1.5;
+          direction: ltr !important;
+          text-align: left !important;
+        }
+
+        .ProseMirror ol.footnotes li p {
+          direction: ltr !important;
+          text-align: left !important;
+        }
+
+        .ProseMirror ol.footnotes li p[dir] {
+          direction: ltr !important;
+        }
+
+        .ProseMirror ol.footnotes * {
+          direction: ltr !important;
+          text-align: left !important;
+        }
+
+        .ProseMirror .footnote-ref {
+          color: #2563eb;
+          cursor: pointer;
+          text-decoration: none;
+        }
+
+        .ProseMirror .footnote-ref:hover {
+          color: #1d4ed8;
+          text-decoration: underline;
+        }
+
+        .ProseMirror sup {
+          font-size: 0.75em;
+          line-height: 0;
+          position: relative;
+          vertical-align: baseline;
+          top: -0.5em;
         }
       `}</style>
     </div>
