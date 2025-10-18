@@ -271,10 +271,13 @@ export default function RecordingsManager({
         const folder = data.type === "audio" ? "audio" : "video";
         finalUrl = await hymnService.uploadFile(hymnId, uploadFile, folder);
       } else if (data.type === "audio" || data.type === "video") {
-        // For audio/video types, file upload is required
-        toast.error("Please upload a file for audio/video recordings");
-        setIsUploading(false);
-        return;
+        // For audio/video types, file upload is required only for new recordings
+        if (!isEditing) {
+          toast.error("Please upload a file for audio/video recordings");
+          setIsUploading(false);
+          return;
+        }
+        // For editing, we can keep the existing URL if no new file is uploaded
       } else if (data.type === "youtube" || data.type === "link") {
         // For YouTube and external links, URL is required
         finalUrl = data.url || "";
@@ -306,12 +309,24 @@ export default function RecordingsManager({
         // Update existing recording
         const recordingData: Partial<HymnRecording> = {
           type: data.type,
-          title: data.title,
-          year: data.year,
-          duration: data.duration,
-          description: data.description,
-          church: data.church,
         };
+
+        // Only add fields if they have values (not undefined)
+        if (data.title !== undefined && data.title !== "") {
+          recordingData.title = data.title;
+        }
+        if (data.year !== undefined) {
+          recordingData.year = data.year;
+        }
+        if (data.duration !== undefined && data.duration !== "") {
+          recordingData.duration = data.duration;
+        }
+        if (data.description !== undefined && data.description !== "") {
+          recordingData.description = data.description;
+        }
+        if (data.church !== undefined && data.church !== "") {
+          recordingData.church = data.church;
+        }
 
         // Only add performers if there are any
         if (performerObjects.length > 0) {

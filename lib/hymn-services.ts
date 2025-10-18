@@ -352,7 +352,13 @@ export const hymnService = {
 
     const updatedRecordings = currentRecordings.map((rec: HymnRecording) => {
       if (rec.id === recordingId) {
-        return { ...rec, ...recordingData };
+        // Filter out undefined values from recordingData before spreading
+        const cleanRecordingData = Object.fromEntries(
+          Object.entries(recordingData).filter(
+            ([_, value]) => value !== undefined
+          )
+        );
+        return { ...rec, ...cleanRecordingData };
       }
       return rec;
     });
