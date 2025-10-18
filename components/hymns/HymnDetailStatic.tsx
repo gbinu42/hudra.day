@@ -1,9 +1,7 @@
 import { Timestamp } from "firebase/firestore";
 import { hymnService } from "@/lib/hymn-services";
 import { Hymn, HymnRecording } from "@/lib/types/hymn";
-import HymnDetail from "@/components/hymns/HymnDetail";
-import RecordingsClient from "@/components/hymns/RecordingsClient";
-import ImagesClient from "@/components/hymns/ImagesClient";
+import ConditionalHymnDetail from "@/components/hymns/ConditionalHymnDetail";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Breadcrumb,
@@ -160,20 +158,7 @@ export default async function HymnDetailStatic({
         </Breadcrumb>
       </div>
 
-      <HymnDetail
-        hymn={hymn}
-        showEditButton={false}
-        hideImages={false}
-        hideRecordings={false}
-        currentUserId={undefined}
-        userRole={undefined}
-      />
-
-      {/* Client-side components for interactive features */}
-      <div className="mt-8 space-y-8">
-        <ImagesClient hymnId={hymnId} imageGroups={hymn.hymnImageGroups} />
-        <RecordingsClient hymnId={hymnId} recordings={hymn.recordings} />
-      </div>
+      <ConditionalHymnDetail hymn={hymn} hymnId={hymnId} />
     </div>
   );
 }
