@@ -453,9 +453,184 @@ export default function RecordingsManager({
         <CardTitle>Recordings</CardTitle>
       </CardHeader>
       <CardContent>
+        {visibleRecordings.length === 0 ? (
+          <p className="text-muted-foreground text-center py-8">
+            No recordings yet. Add the first recording!
+          </p>
+        ) : (
+          <div className="space-y-4">
+            {visibleRecordings.map((recording) => (
+              <div
+                key={recording.id}
+                className="flex items-start justify-between p-4 border rounded"
+              >
+                <div className="flex items-start gap-3 flex-1">
+                  {getRecordingIcon(recording.type)}
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-lg">
+                      {recording.title || `${recording.type} recording`}
+                    </h4>
+                    {recording.performers &&
+                      recording.performers.length > 0 && (
+                        <p className="text-base text-muted-foreground">
+                          Performers:{" "}
+                          {recording.performers.map((p) => p.name).join(", ")}
+                        </p>
+                      )}
+                    {recording.year && (
+                      <p className="text-base text-muted-foreground">
+                        Year: {recording.year}
+                      </p>
+                    )}
+                    {recording.church && (
+                      <p className="text-base text-muted-foreground">
+                        Tradition: {recording.church}
+                      </p>
+                    )}
+                    {recording.description && (
+                      <p className="text-base text-muted-foreground italic">
+                        {recording.description}
+                      </p>
+                    )}
+                    {recording.contributorName && (
+                      <p className="text-base text-muted-foreground">
+                        Added by {recording.contributorName}
+                      </p>
+                    )}
+                    <div className="flex items-center gap-2 mt-2">
+                      <span
+                        className={`px-2 py-1 text-xs font-medium rounded-full ${
+                          (recording.status || "approved") === "approved"
+                            ? "bg-green-100 text-green-800"
+                            : (recording.status || "approved") === "pending"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
+                      >
+                        {(recording.status || "approved")
+                          .charAt(0)
+                          .toUpperCase() +
+                          (recording.status || "approved").slice(1)}
+                      </span>
+                      {isAdmin &&
+                        (recording.status || "approved") === "pending" && (
+                          <div className="flex gap-1">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleApprove(recording.id)}
+                              className="h-6 px-2 text-green-600 hover:text-green-700"
+                            >
+                              <Check className="h-3 w-3" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleReject(recording.id)}
+                              className="h-6 px-2 text-red-600 hover:text-red-700"
+                            >
+                              <XCircle className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        )}
+                    </div>
+                    {/* Audio/Video Player */}
+                    {(recording.type === "audio" ||
+                      recording.type === "video") && (
+                      <div className="mt-3">
+                        {recording.type === "audio" ? (
+                          <audio
+                            controls
+                            preload="none"
+                            controlsList="nodownload"
+                            className="w-full h-8"
+                          >
+                            <source src={recording.url} type="audio/mpeg" />
+                            <source src={recording.url} type="audio/wav" />
+                            <source src={recording.url} type="audio/ogg" />
+                            Your browser does not support the audio element.
+                          </audio>
+                        ) : (
+                          <video
+                            controls
+                            preload="none"
+                            controlsList="nodownload"
+                            className="w-full max-w-md rounded border"
+                          >
+                            <source src={recording.url} type="video/mp4" />
+                            <source src={recording.url} type="video/webm" />
+                            <source src={recording.url} type="video/ogg" />
+                            Your browser does not support the video element.
+                          </video>
+                        )}
+                      </div>
+                    )}
+
+                    {isAdmin && recording.adminAudioUrl && (
+                      <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded">
+                        <p className="text-xs text-red-800 font-semibold mb-1">
+                          Admin Audio (Private)
+                        </p>
+                        <audio controls preload="none" className="w-full h-8">
+                          <source
+                            src={recording.adminAudioUrl}
+                            type="audio/mpeg"
+                          />
+                          Your browser does not support the audio element.
+                        </audio>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  {(recording.type === "youtube" ||
+                    recording.type === "link") && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => window.open(recording.url, "_blank")}
+                    >
+                      {recording.type === "youtube" ? "Watch" : "Visit"}
+                    </Button>
+                  )}
+                  {(recording.type === "audio" || recording.type === "video") &&
+                    recording.originalUrl && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() =>
+                          window.open(recording.originalUrl, "_blank")
+                        }
+                      >
+                        Open
+                      </Button>
+                    )}
+                  {isAdmin && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleEdit(recording)}
+                    >
+                      <Edit className="h-4 w-4 text-blue-500" />
+                    </Button>
+                  )}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleDelete(recording.id)}
+                  >
+                    <Trash2 className="h-4 w-4 text-red-500" />
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Add New Recording Form */}
         <Collapsible open={showForm} onOpenChange={setShowForm}>
           <CollapsibleContent>
-            <div className="border rounded-lg p-4 mb-6 bg-muted/50">
+            <div className="border rounded-lg p-4 mt-6 bg-muted/50">
               <h3 className="text-lg font-semibold mb-4">
                 {isEditing ? "Edit Recording" : "Add New Recording"}
               </h3>
@@ -720,179 +895,6 @@ export default function RecordingsManager({
             </div>
           </CollapsibleContent>
         </Collapsible>
-        {visibleRecordings.length === 0 ? (
-          <p className="text-muted-foreground text-center py-8">
-            No recordings yet. Add the first recording!
-          </p>
-        ) : (
-          <div className="space-y-4">
-            {visibleRecordings.map((recording) => (
-              <div
-                key={recording.id}
-                className="flex items-start justify-between p-4 border rounded"
-              >
-                <div className="flex items-start gap-3 flex-1">
-                  {getRecordingIcon(recording.type)}
-                  <div className="flex-1">
-                    <h4 className="font-semibold text-lg">
-                      {recording.title || `${recording.type} recording`}
-                    </h4>
-                    {recording.performers &&
-                      recording.performers.length > 0 && (
-                        <p className="text-base text-muted-foreground">
-                          Performers:{" "}
-                          {recording.performers.map((p) => p.name).join(", ")}
-                        </p>
-                      )}
-                    {recording.year && (
-                      <p className="text-base text-muted-foreground">
-                        Year: {recording.year}
-                      </p>
-                    )}
-                    {recording.church && (
-                      <p className="text-base text-muted-foreground">
-                        Tradition: {recording.church}
-                      </p>
-                    )}
-                    {recording.description && (
-                      <p className="text-base text-muted-foreground italic">
-                        {recording.description}
-                      </p>
-                    )}
-                    {recording.contributorName && (
-                      <p className="text-base text-muted-foreground">
-                        Added by {recording.contributorName}
-                      </p>
-                    )}
-                    <div className="flex items-center gap-2 mt-2">
-                      <span
-                        className={`px-2 py-1 text-xs font-medium rounded-full ${
-                          (recording.status || "approved") === "approved"
-                            ? "bg-green-100 text-green-800"
-                            : (recording.status || "approved") === "pending"
-                            ? "bg-yellow-100 text-yellow-800"
-                            : "bg-red-100 text-red-800"
-                        }`}
-                      >
-                        {(recording.status || "approved")
-                          .charAt(0)
-                          .toUpperCase() +
-                          (recording.status || "approved").slice(1)}
-                      </span>
-                      {isAdmin &&
-                        (recording.status || "approved") === "pending" && (
-                          <div className="flex gap-1">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleApprove(recording.id)}
-                              className="h-6 px-2 text-green-600 hover:text-green-700"
-                            >
-                              <Check className="h-3 w-3" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleReject(recording.id)}
-                              className="h-6 px-2 text-red-600 hover:text-red-700"
-                            >
-                              <XCircle className="h-3 w-3" />
-                            </Button>
-                          </div>
-                        )}
-                    </div>
-                    {/* Audio/Video Player */}
-                    {(recording.type === "audio" ||
-                      recording.type === "video") && (
-                      <div className="mt-3">
-                        {recording.type === "audio" ? (
-                          <audio
-                            controls
-                            preload="none"
-                            controlsList="nodownload"
-                            className="w-full h-8"
-                          >
-                            <source src={recording.url} type="audio/mpeg" />
-                            <source src={recording.url} type="audio/wav" />
-                            <source src={recording.url} type="audio/ogg" />
-                            Your browser does not support the audio element.
-                          </audio>
-                        ) : (
-                          <video
-                            controls
-                            preload="none"
-                            controlsList="nodownload"
-                            className="w-full max-w-md rounded border"
-                          >
-                            <source src={recording.url} type="video/mp4" />
-                            <source src={recording.url} type="video/webm" />
-                            <source src={recording.url} type="video/ogg" />
-                            Your browser does not support the video element.
-                          </video>
-                        )}
-                      </div>
-                    )}
-
-                    {isAdmin && recording.adminAudioUrl && (
-                      <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded">
-                        <p className="text-xs text-red-800 font-semibold mb-1">
-                          Admin Audio (Private)
-                        </p>
-                        <audio controls preload="none" className="w-full h-8">
-                          <source
-                            src={recording.adminAudioUrl}
-                            type="audio/mpeg"
-                          />
-                          Your browser does not support the audio element.
-                        </audio>
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <div className="flex gap-2">
-                  {(recording.type === "youtube" ||
-                    recording.type === "link") && (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => window.open(recording.url, "_blank")}
-                    >
-                      {recording.type === "youtube" ? "Watch" : "Visit"}
-                    </Button>
-                  )}
-                  {(recording.type === "audio" || recording.type === "video") &&
-                    recording.originalUrl && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() =>
-                          window.open(recording.originalUrl, "_blank")
-                        }
-                      >
-                        Open
-                      </Button>
-                    )}
-                  {isAdmin && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleEdit(recording)}
-                    >
-                      <Edit className="h-4 w-4 text-blue-500" />
-                    </Button>
-                  )}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleDelete(recording.id)}
-                  >
-                    <Trash2 className="h-4 w-4 text-red-500" />
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
 
         {/* Prominent Submit Recording Button */}
         <div className="flex justify-center pt-6 border-t mt-6">

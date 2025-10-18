@@ -1,6 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import HymnDetailClient from "@/components/hymns/HymnDetailClient";
+import HymnDetailStatic from "@/components/hymns/HymnDetailStatic";
 import { hymnService } from "@/lib/hymn-services";
 import { Metadata } from "next";
 import { Hymn } from "@/lib/types/hymn";
@@ -117,6 +117,10 @@ export async function generateMetadata({
   }
 }
 
+// Force static generation
+export const dynamic = "force-static";
+export const revalidate = 3600; // Revalidate every hour
+
 // Pre-generate static pages for all hymns at build time
 export async function generateStaticParams() {
   try {
@@ -140,7 +144,7 @@ export default async function HymnDetailPage({
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <HymnDetailClient hymnId={id} />
+      <HymnDetailStatic hymnId={id} />
       <Footer />
     </div>
   );
