@@ -22,6 +22,7 @@ import { hymnService, personService } from "@/lib/hymn-services";
 import {
   HymnRecording,
   RecordingType,
+  CreateRecordingData,
   CHURCH_TRADITIONS,
 } from "@/lib/types/hymn";
 import {
@@ -39,16 +40,48 @@ import {
 import { useEffect, useRef } from "react";
 import { MultiSelect, MultiSelectOption } from "@/components/ui/multi-select";
 
-const recordingSchema = z.object({
-  type: z.enum(["audio", "video", "youtube", "link"]),
-  url: z.string().url("Please enter a valid URL"),
-  title: z.string().optional(),
-  performers: z.array(z.string()).optional(),
-  year: z.number().optional(),
-  duration: z.string().optional(),
-  description: z.string().optional(),
-  church: z.string().optional(),
-});
+const recordingSchema = z
+  .object({
+    type: z.enum(["audio", "video", "youtube", "link"]),
+    url: z.string().optional(),
+    title: z.string().optional(),
+    performers: z.array(z.string()).optional(),
+    year: z.number().optional(),
+    duration: z.string().optional(),
+    description: z.string().optional(),
+    church: z.string().optional(),
+  })
+  .refine(
+    (data) => {
+      // URL is required for youtube and link types
+      if (data.type === "youtube" || data.type === "link") {
+        return data.url && data.url.length > 0;
+      }
+      return true;
+    },
+    {
+      message: "URL is required for YouTube videos and external links",
+      path: ["url"],
+    }
+  )
+  .refine(
+    (data) => {
+      // If URL is provided, it must be a valid URL
+      if (data.url && data.url.length > 0) {
+        try {
+          new URL(data.url);
+          return true;
+        } catch {
+          return false;
+        }
+      }
+      return true;
+    },
+    {
+      message: "Please enter a valid URL",
+      path: ["url"],
+    }
+  );
 
 type RecordingFormData = z.infer<typeof recordingSchema>;
 
@@ -196,7 +229,7 @@ export default function RecordingsManager({
 
     setEditingRecordingId(recording.id);
     setValue("type", recording.type);
-    setValue("url", recording.url || "");
+    setValue("url", recording.originalUrl || recording.url || "");
     setValue("title", recording.title || "");
     setValue("year", recording.year);
     setValue("duration", recording.duration || "");
@@ -230,13 +263,28 @@ export default function RecordingsManager({
   const onSubmit = async (data: RecordingFormData) => {
     setIsUploading(true);
     try {
-      let finalUrl = data.url;
+      let finalUrl = "";
       let adminAudioUrl: string | undefined;
 
-      // If file upload is needed for audio/video
+      // Handle file upload for audio/video (this becomes the main recording URL)
       if ((data.type === "audio" || data.type === "video") && uploadFile) {
         const folder = data.type === "audio" ? "audio" : "video";
         finalUrl = await hymnService.uploadFile(hymnId, uploadFile, folder);
+      } else if (data.type === "audio" || data.type === "video") {
+        // For audio/video types, file upload is required
+        toast.error("Please upload a file for audio/video recordings");
+        setIsUploading(false);
+        return;
+      } else if (data.type === "youtube" || data.type === "link") {
+        // For YouTube and external links, URL is required
+        finalUrl = data.url || "";
+        if (!finalUrl) {
+          toast.error(
+            "Please provide a URL for YouTube videos and external links"
+          );
+          setIsUploading(false);
+          return;
+        }
       }
 
       // Handle admin audio upload for YouTube videos
@@ -259,17 +307,31 @@ export default function RecordingsManager({
         const recordingData: Partial<HymnRecording> = {
           type: data.type,
           title: data.title,
-          performers:
-            performerObjects.length > 0 ? performerObjects : undefined,
           year: data.year,
           duration: data.duration,
           description: data.description,
           church: data.church,
         };
 
-        // Only update URL if new file was uploaded or it's a link/youtube type
-        if (uploadFile || data.type === "youtube" || data.type === "link") {
+        // Only add performers if there are any
+        if (performerObjects.length > 0) {
+          recordingData.performers = performerObjects;
+        }
+
+        // Store original URL if provided (for audio/video)
+        if ((data.type === "audio" || data.type === "video") && data.url) {
+          recordingData.originalUrl = data.url;
+        }
+
+        // Update main URL based on type
+        if (data.type === "youtube" || data.type === "link") {
+          // For YouTube and links, URL is the main recording URL
           recordingData.url = finalUrl;
+        } else if (data.type === "audio" || data.type === "video") {
+          // For audio/video, only update URL if new file was uploaded
+          if (uploadFile) {
+            recordingData.url = finalUrl;
+          }
         }
 
         // Only update admin audio if new file was uploaded
@@ -285,24 +347,36 @@ export default function RecordingsManager({
         toast.success("Recording updated successfully!");
       } else {
         // Add new recording
-        await hymnService.addRecording(
-          hymnId,
-          {
-            type: data.type,
-            url: finalUrl,
-            title: data.title,
-            performers:
-              performerObjects.length > 0 ? performerObjects : undefined,
-            contributorId,
-            contributorName,
-            year: data.year,
-            duration: data.duration,
-            description: data.description,
-            church: data.church,
-            adminAudioUrl,
-          },
-          userRole
-        );
+        const newRecordingData: CreateRecordingData = {
+          type: data.type,
+          url: finalUrl,
+          contributorId,
+          contributorName,
+        };
+
+        // Add optional fields only if they have values
+        if (data.title) newRecordingData.title = data.title;
+        if (data.year) newRecordingData.year = data.year;
+        if (data.duration) newRecordingData.duration = data.duration;
+        if (data.description) newRecordingData.description = data.description;
+        if (data.church) newRecordingData.church = data.church;
+
+        // Store original URL if provided (for audio/video)
+        if ((data.type === "audio" || data.type === "video") && data.url) {
+          newRecordingData.originalUrl = data.url;
+        }
+
+        // Only add performers if there are any
+        if (performerObjects.length > 0) {
+          newRecordingData.performers = performerObjects;
+        }
+
+        // Only add adminAudioUrl if it exists
+        if (adminAudioUrl) {
+          newRecordingData.adminAudioUrl = adminAudioUrl;
+        }
+
+        await hymnService.addRecording(hymnId, newRecordingData, userRole);
         if (userRole === "admin") {
           toast.success("Recording added successfully!");
         } else {
@@ -449,9 +523,28 @@ export default function RecordingsManager({
 
                 {(recordingType === "youtube" || recordingType === "link") && (
                   <div className="space-y-2">
-                    <Label htmlFor="recording-url">URL</Label>
+                    <Label htmlFor="recording-url">URL *</Label>
                     <Input
                       id="recording-url"
+                      {...register("url")}
+                      placeholder="https://..."
+                    />
+                    {errors.url && (
+                      <p className="text-sm text-red-500 mt-1">
+                        {errors.url.message}
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {(recordingType === "audio" || recordingType === "video") && (
+                  <div className="space-y-2">
+                    <Label htmlFor="recording-url-alt">
+                      Source URL (optional - link to where audio/video was taken
+                      from)
+                    </Label>
+                    <Input
+                      id="recording-url-alt"
                       {...register("url")}
                       placeholder="https://..."
                     />
@@ -552,6 +645,11 @@ export default function RecordingsManager({
                       {...register("year", { valueAsNumber: true })}
                       placeholder="2024"
                     />
+                    {errors.year && (
+                      <p className="text-sm text-red-500 mt-1">
+                        {errors.year.message}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -703,6 +801,38 @@ export default function RecordingsManager({
                           </div>
                         )}
                     </div>
+                    {/* Audio/Video Player */}
+                    {(recording.type === "audio" ||
+                      recording.type === "video") && (
+                      <div className="mt-3">
+                        {recording.type === "audio" ? (
+                          <audio
+                            controls
+                            preload="none"
+                            controlsList="nodownload"
+                            className="w-full h-8"
+                          >
+                            <source src={recording.url} type="audio/mpeg" />
+                            <source src={recording.url} type="audio/wav" />
+                            <source src={recording.url} type="audio/ogg" />
+                            Your browser does not support the audio element.
+                          </audio>
+                        ) : (
+                          <video
+                            controls
+                            preload="none"
+                            controlsList="nodownload"
+                            className="w-full max-w-md rounded border"
+                          >
+                            <source src={recording.url} type="video/mp4" />
+                            <source src={recording.url} type="video/webm" />
+                            <source src={recording.url} type="video/ogg" />
+                            Your browser does not support the video element.
+                          </video>
+                        )}
+                      </div>
+                    )}
+
                     {isAdmin && recording.adminAudioUrl && (
                       <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded">
                         <p className="text-xs text-red-800 font-semibold mb-1">
@@ -720,6 +850,28 @@ export default function RecordingsManager({
                   </div>
                 </div>
                 <div className="flex gap-2">
+                  {(recording.type === "youtube" ||
+                    recording.type === "link") && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => window.open(recording.url, "_blank")}
+                    >
+                      {recording.type === "youtube" ? "Watch" : "Visit"}
+                    </Button>
+                  )}
+                  {(recording.type === "audio" || recording.type === "video") &&
+                    recording.originalUrl && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() =>
+                          window.open(recording.originalUrl, "_blank")
+                        }
+                      >
+                        Open
+                      </Button>
+                    )}
                   {isAdmin && (
                     <Button
                       variant="ghost"

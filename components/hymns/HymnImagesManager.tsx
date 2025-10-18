@@ -34,7 +34,7 @@ import Image from "next/image";
 import { Plus, Trash2, Image as ImageIcon, Edit } from "lucide-react";
 
 const hymnImageSchema = z.object({
-  churchName: z.string().min(1, "Church name is required"),
+  churchName: z.string().optional(),
   description: z.string().optional(),
   source: z.string().optional(),
 });
@@ -166,7 +166,7 @@ export default function HymnImagesManager({
   const handleEdit = (groupIndex: number) => {
     const group = imageGroups[groupIndex];
     setEditingGroupIndex(groupIndex);
-    setValue("churchName", group.churchName);
+    setValue("churchName", group.churchName || "");
     setValue("description", group.description || "");
     setValue("source", group.source || "");
     setIsOpen(true);
@@ -296,15 +296,23 @@ export default function HymnImagesManager({
               </DialogHeader>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div className="space-y-2">
-                  <Label>Church Tradition</Label>
+                  <Label>Church Tradition (Optional)</Label>
                   <Select
-                    value={watch("churchName")}
-                    onValueChange={(value) => setValue("churchName", value)}
+                    value={watch("churchName") || "none"}
+                    onValueChange={(value) =>
+                      setValue(
+                        "churchName",
+                        value === "none" ? undefined : value
+                      )
+                    }
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select church tradition" />
+                      <SelectValue placeholder="Select church tradition (optional)" />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="none">
+                        No specific tradition
+                      </SelectItem>
                       {CHURCH_TRADITIONS.map((church) => (
                         <SelectItem key={church} value={church}>
                           {church}
@@ -459,6 +467,23 @@ export default function HymnImagesManager({
                       </Button>
                     </div>
                   </div>
+                  <div className="space-y-4">
+                    {group.images.map((imageUrl, imgIndex) => (
+                      <div key={imgIndex} className="relative w-full">
+                        <Image
+                          src={imageUrl}
+                          alt={`${
+                            !group.churchName ? "General" : group.churchName
+                          } page ${imgIndex + 1}`}
+                          width={800}
+                          height={600}
+                          className="w-full h-auto rounded border"
+                          style={{ objectFit: "contain" }}
+                          priority={imgIndex === 0} // Prioritize first image
+                        />
+                      </div>
+                    ))}
+                  </div>
                   {group.source && (
                     <p className="text-sm text-muted-foreground">
                       Source: {group.source}
@@ -469,21 +494,6 @@ export default function HymnImagesManager({
                       {group.description}
                     </p>
                   )}
-                  <div className="space-y-4">
-                    {group.images.map((imageUrl, imgIndex) => (
-                      <div key={imgIndex} className="relative w-full">
-                        <Image
-                          src={imageUrl}
-                          alt={`${group.churchName} page ${imgIndex + 1}`}
-                          width={800}
-                          height={600}
-                          className="w-full h-auto rounded border"
-                          style={{ objectFit: "contain" }}
-                          priority={imgIndex === 0} // Prioritize first image
-                        />
-                      </div>
-                    ))}
-                  </div>
                 </div>
               </div>
             ))}

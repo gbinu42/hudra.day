@@ -446,4 +446,122 @@
   .ProseMirror h3[style*="text-align: justify"] {
     text-align: justify !important;
   }
+
+  /* Footnotes styling */
+  .ProseMirror ol.footnotes {
+    margin-top: 20px;
+    padding: 20px 0;
+    list-style-type: decimal;
+    padding-left: 20px;
+    font-size: 0.85em;
+    direction: ltr !important;
+    text-align: left !important;
+  }
+
+  .ProseMirror ol.footnotes:has(li) {
+    border-top: 1px solid #e5e7eb;
+  }
+
+  .ProseMirror ol.footnotes li {
+    font-size: 16px;
+    line-height: 1.5;
+    direction: ltr !important;
+    text-align: left !important;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+      Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+
+  .ProseMirror ol.footnotes li p {
+    direction: ltr !important;
+    text-align: left !important;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+      Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+
+  .ProseMirror ol.footnotes li p[dir] {
+    direction: ltr !important;
+  }
+
+  .ProseMirror ol.footnotes * {
+    direction: ltr !important;
+    text-align: left !important;
+  }
+
+  .ProseMirror .footnote-ref {
+    color: #2563eb;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .ProseMirror .footnote-ref:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
+  }
+
+  .ProseMirror sup {
+    font-size: 0.75em;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+    top: -0.5em;
+  }
+}
+
+/* Footnote styling for hymn display areas */
+ol.footnotes {
+  margin-top: 20px;
+  padding: 20px 0;
+  list-style-type: decimal;
+  padding-left: 20px;
+  font-size: 0.85em;
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+ol.footnotes:has(li) {
+  border-top: 1px solid #e5e7eb;
+}
+
+ol.footnotes li {
+  font-size: 16px;
+  line-height: 1.5;
+  direction: ltr !important;
+  text-align: left !important;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+}
+
+ol.footnotes li p {
+  direction: ltr !important;
+  text-align: left !important;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+}
+
+ol.footnotes li p[dir] {
+  direction: ltr !important;
+}
+
+ol.footnotes * {
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+.footnote-ref {
+  color: #2563eb;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.footnote-ref:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+sup {
+  font-size: 0.75em;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+  top: -0.5em;
 }

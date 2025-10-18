@@ -19,7 +19,6 @@ import {
   Globe,
   Video,
   ExternalLink,
-  Download,
 } from "lucide-react";
 
 interface HymnDetailProps {
@@ -113,11 +112,8 @@ export default function HymnDetail({
     }
 
     return (
-      <div
-        key={recording.id}
-        className="flex items-center justify-between gap-3 py-3"
-      >
-        <div className="flex items-center gap-3 flex-1 min-w-0">
+      <div key={recording.id} className="py-3">
+        <div className="flex items-center gap-3 mb-3">
           <div className="text-muted-foreground flex-shrink-0">{getIcon()}</div>
           <div className="flex-1 min-w-0">
             <div className="font-medium text-base">
@@ -143,50 +139,70 @@ export default function HymnDetail({
               </div>
             )}
           </div>
-        </div>
-        <div className="flex gap-2 flex-shrink-0">
-          {recording.type === "youtube" && (
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => window.open(recording.url, "_blank")}
-            >
-              Watch
-            </Button>
-          )}
-          {(recording.type === "audio" || recording.type === "video") && (
-            <>
+          <div className="flex gap-2 flex-shrink-0">
+            {recording.type === "youtube" && (
               <Button
                 size="sm"
                 variant="outline"
                 onClick={() => window.open(recording.url, "_blank")}
               >
-                Play
+                Watch
               </Button>
+            )}
+            {recording.type === "link" && (
               <Button
                 size="sm"
-                variant="ghost"
-                onClick={() => {
-                  const a = document.createElement("a");
-                  a.href = recording.url;
-                  a.download = recording.title || "recording";
-                  a.click();
-                }}
+                variant="outline"
+                onClick={() => window.open(recording.url, "_blank")}
               >
-                <Download className="h-4 w-4" />
+                Visit
               </Button>
-            </>
-          )}
-          {recording.type === "link" && (
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => window.open(recording.url, "_blank")}
-            >
-              Visit
-            </Button>
-          )}
+            )}
+            {(recording.type === "audio" || recording.type === "video") &&
+              recording.originalUrl && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => window.open(recording.originalUrl, "_blank")}
+                  className="flex items-center gap-1"
+                >
+                  <ExternalLink className="h-4 w-4" />
+                  Open
+                </Button>
+              )}
+          </div>
         </div>
+
+        {/* Audio/Video Player - Below the details */}
+        {(recording.type === "audio" || recording.type === "video") && (
+          <div className="ml-8">
+            {recording.type === "audio" ? (
+              <audio
+                controls
+                preload="none"
+                controlsList="nodownload"
+                className="w-full h-8"
+              >
+                <source src={recording.url} type="audio/mpeg" />
+                <source src={recording.url} type="audio/wav" />
+                <source src={recording.url} type="audio/ogg" />
+                Your browser does not support the audio element.
+              </audio>
+            ) : (
+              <video
+                controls
+                preload="none"
+                controlsList="nodownload"
+                className="w-full max-w-md rounded border"
+              >
+                <source src={recording.url} type="video/mp4" />
+                <source src={recording.url} type="video/webm" />
+                <source src={recording.url} type="video/ogg" />
+                Your browser does not support the video element.
+              </video>
+            )}
+          </div>
+        )}
       </div>
     );
   };
@@ -514,6 +530,23 @@ export default function HymnDetail({
                           {group.churchName}
                         </h4>
                       </div>
+                      <div className="space-y-4">
+                        {group.images.map((imageUrl, imgIndex) => (
+                          <div key={imgIndex} className="relative w-full">
+                            <Image
+                              src={imageUrl}
+                              alt={`${
+                                !group.churchName ? "General" : group.churchName
+                              } page ${imgIndex + 1}`}
+                              width={800}
+                              height={600}
+                              className="w-full h-auto rounded border"
+                              style={{ objectFit: "contain" }}
+                              priority={imgIndex === 0} // Prioritize first image
+                            />
+                          </div>
+                        ))}
+                      </div>
                       {group.source && (
                         <p className="text-sm text-muted-foreground">
                           Source: {group.source}
@@ -524,21 +557,6 @@ export default function HymnDetail({
                           {group.description}
                         </p>
                       )}
-                      <div className="space-y-4">
-                        {group.images.map((imageUrl, imgIndex) => (
-                          <div key={imgIndex} className="relative w-full">
-                            <Image
-                              src={imageUrl}
-                              alt={`${group.churchName} page ${imgIndex + 1}`}
-                              width={800}
-                              height={600}
-                              className="w-full h-auto rounded border"
-                              style={{ objectFit: "contain" }}
-                              priority={imgIndex === 0} // Prioritize first image
-                            />
-                          </div>
-                        ))}
-                      </div>
                     </div>
                   )
                 )}

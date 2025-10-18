@@ -38,7 +38,7 @@ export interface HymnAuthor {
 
 // Hymn image group - multiple images from the same source
 export interface HymnImageGroup {
-  churchName: string; // e.g., "Syro-Malabar", "Assyrian", "Chaldean", "Ancient Church of the East"
+  churchName?: string; // e.g., "Syro-Malabar", "Assyrian", "Chaldean", "Ancient Church of the East"
   images: string[]; // Array of image URLs
   description?: string;
   source?: string; // Book or source name
@@ -71,6 +71,7 @@ export interface HymnRecording {
   id: string;
   type: RecordingType;
   url: string; // Firebase Storage URL or external URL
+  originalUrl?: string; // Original URL provided by user (for audio/video with file upload)
   title?: string;
   performers?: Array<{
     id?: string; // Reference to Person (optional)
@@ -90,6 +91,7 @@ export interface HymnRecording {
 export interface CreateRecordingData {
   type: RecordingType;
   url: string;
+  originalUrl?: string; // Original URL provided by user (for audio/video with file upload)
   title?: string;
   performers?: Array<{
     id?: string; // Reference to Person (optional)
@@ -241,6 +243,15 @@ export function sortByChurchPriority<
   return [...items].sort((a, b) => {
     const churchA = a.churchName || a.church || "";
     const churchB = b.churchName || b.church || "";
+
+    // Groups without church tradition (undefined, empty string) come first
+    const isGeneralA = !a.churchName || churchA === "";
+    const isGeneralB = !b.churchName || churchB === "";
+
+    if (isGeneralA && !isGeneralB) return -1;
+    if (!isGeneralA && isGeneralB) return 1;
+    if (isGeneralA && isGeneralB) return 0;
+
     const indexA = CHURCH_DISPLAY_ORDER.indexOf(churchA as ChurchTradition);
     const indexB = CHURCH_DISPLAY_ORDER.indexOf(churchB as ChurchTradition);
 
