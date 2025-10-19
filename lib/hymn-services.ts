@@ -355,7 +355,7 @@ export const hymnService = {
         // Filter out undefined values from recordingData before spreading
         const cleanRecordingData = Object.fromEntries(
           Object.entries(recordingData).filter(
-            ([_, value]) => value !== undefined
+            ([, value]) => value !== undefined
           )
         );
         return { ...rec, ...cleanRecordingData };
