@@ -287,8 +287,8 @@ export default function SyriacEditor({
         const clipboardData = event.clipboardData;
         if (clipboardData && clipboardData.getData) {
           // Try to get HTML data first to preserve styling
-          let pastedHTML = clipboardData.getData("text/html");
-          let pastedText = clipboardData.getData("text/plain");
+          const pastedHTML = clipboardData.getData("text/html");
+          const pastedText = clipboardData.getData("text/plain");
 
           if (pastedHTML || pastedText) {
             event.preventDefault();
@@ -364,7 +364,9 @@ export default function SyriacEditor({
                 tempDiv.innerHTML = processedHTML;
 
                 // Parse HTML nodes and convert to TipTap format
-                const parseHTMLNode = (node: Node): any => {
+                const parseHTMLNode = (
+                  node: Node
+                ): Record<string, unknown> | null => {
                   if (node.nodeType === Node.TEXT_NODE) {
                     return {
                       type: "text",
@@ -464,7 +466,7 @@ export default function SyriacEditor({
                 // Insert the parsed content
                 tr.replaceSelectionWith(fragment);
                 view.dispatch(tr);
-              } catch (error) {
+              } catch {
                 // Fallback to plain text if HTML parsing fails
                 const plainText = processedHTML.replace(/<[^>]*>/g, "");
                 view.dispatch(
