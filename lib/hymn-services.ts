@@ -15,7 +15,12 @@ import {
   type DocumentSnapshot,
   type Unsubscribe,
 } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
 import { db, storage } from "./firebase";
 import {
   CreateHymnData,
@@ -79,8 +84,13 @@ export const personService = {
     personId: string,
     personData: Partial<CreatePersonData>
   ): Promise<void> {
+    // Filter out undefined values to prevent Firebase errors
+    const cleanPersonData = Object.fromEntries(
+      Object.entries(personData).filter(([, value]) => value !== undefined)
+    );
+
     const updateData = {
-      ...personData,
+      ...cleanPersonData,
       updatedAt: new Date(),
     };
     await updateDoc(doc(db, "persons", personId), updateData);
@@ -291,8 +301,13 @@ export const hymnService = {
     hymnId: string,
     hymnData: Partial<CreateHymnData>
   ): Promise<void> {
+    // Filter out undefined values to prevent Firebase errors
+    const cleanHymnData = Object.fromEntries(
+      Object.entries(hymnData).filter(([, value]) => value !== undefined)
+    );
+
     const updateData = {
-      ...hymnData,
+      ...cleanHymnData,
       updatedAt: new Date(),
     };
     await updateDoc(doc(db, "hymns", hymnId), updateData);
@@ -428,6 +443,26 @@ export const hymnService = {
     const storageRef = ref(storage, path);
     const uploadResult = await uploadBytes(storageRef, file);
     return await getDownloadURL(uploadResult.ref);
+  },
+
+  // Delete a file from Firebase Storage
+  async deleteFile(fileUrl: string): Promise<void> {
+    try {
+      // Extract the file path from the Firebase Storage URL
+      const url = new URL(fileUrl);
+      if (url.hostname === "firebasestorage.googleapis.com") {
+        // Extract the path from the URL
+        const pathMatch = url.pathname.match(/\/o\/(.+)\?/);
+        if (pathMatch) {
+          const filePath = decodeURIComponent(pathMatch[1]);
+          const fileRef = ref(storage, filePath);
+          await deleteObject(fileRef);
+        }
+      }
+    } catch (error) {
+      console.error("Error deleting file:", error);
+      throw error;
+    }
   },
 
   // Search hymns by category

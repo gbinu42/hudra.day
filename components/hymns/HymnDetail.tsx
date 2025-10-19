@@ -159,7 +159,10 @@ export default function HymnDetail({
               </Button>
             )}
             {(recording.type === "audio" || recording.type === "video") &&
-              recording.originalUrl && (
+              recording.originalUrl &&
+              !recording.originalUrl.includes(
+                "firebasestorage.googleapis.com"
+              ) && (
                 <Button
                   size="sm"
                   variant="outline"

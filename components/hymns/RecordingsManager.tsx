@@ -46,7 +46,12 @@ const recordingSchema = z
     url: z.string().optional(),
     title: z.string().optional(),
     performers: z.array(z.string()).optional(),
-    year: z.number().optional(),
+    year: z
+      .union([z.number(), z.nan()])
+      .optional()
+      .transform((val) =>
+        val === undefined || isNaN(val as number) ? undefined : val
+      ),
     duration: z.string().optional(),
     description: z.string().optional(),
     church: z.string().optional(),
@@ -269,6 +274,22 @@ export default function RecordingsManager({
       // Handle file upload for audio/video (this becomes the main recording URL)
       if ((data.type === "audio" || data.type === "video") && uploadFile) {
         const folder = data.type === "audio" ? "audio" : "video";
+
+        // If editing, delete the old file before uploading the new one
+        if (isEditing) {
+          const currentRecording = recordings.find(
+            (r) => r.id === editingRecordingId
+          );
+          if (currentRecording && currentRecording.url) {
+            try {
+              await hymnService.deleteFile(currentRecording.url);
+            } catch (error) {
+              console.warn("Failed to delete old file:", error);
+              // Continue with upload even if deletion fails
+            }
+          }
+        }
+
         finalUrl = await hymnService.uploadFile(hymnId, uploadFile, folder);
       } else if (data.type === "audio" || data.type === "video") {
         // For audio/video types, file upload is required only for new recordings
@@ -301,7 +322,7 @@ export default function RecordingsManager({
 
       // Convert selected performers to performer objects
       const performerObjects = selectedPerformers.map((performer) => ({
-        id: performer.id,
+        ...(performer.id && { id: performer.id }), // Only include id if it exists
         name: performer.name,
       }));
 
@@ -609,7 +630,10 @@ export default function RecordingsManager({
                     </Button>
                   )}
                   {(recording.type === "audio" || recording.type === "video") &&
-                    recording.originalUrl && (
+                    recording.originalUrl &&
+                    !recording.originalUrl.includes(
+                      "firebasestorage.googleapis.com"
+                    ) && (
                       <Button
                         size="sm"
                         variant="outline"
