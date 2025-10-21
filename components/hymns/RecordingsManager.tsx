@@ -529,7 +529,7 @@ export default function RecordingsManager({
                       </p>
                     )}
                     {recording.contributorName && (
-                      <p className="text-base text-muted-foreground">
+                      <p className="text-sm text-muted-foreground">
                         Added by {recording.contributorName}
                       </p>
                     )}
