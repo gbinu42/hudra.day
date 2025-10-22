@@ -59,6 +59,9 @@ export default function HymnImagesManager({
   const [editingGroupIndex, setEditingGroupIndex] = useState<number | null>(
     null
   );
+  const [expandedImageGroups, setExpandedImageGroups] = useState<
+    Record<number, boolean>
+  >({});
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const isEditing = editingGroupIndex !== null;
@@ -440,63 +443,108 @@ export default function HymnImagesManager({
           </div>
         ) : (
           <div className="space-y-6">
-            {sortByChurchPriority(imageGroups).map((group, groupIndex) => (
-              <div
-                key={groupIndex}
-                className="relative group border rounded p-4"
-              >
-                <div className="space-y-3">
-                  <div className="flex justify-between items-start">
-                    <h4 className="font-semibold text-lg">
-                      {group.churchName}
-                    </h4>
-                    <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleEdit(groupIndex)}
-                      >
-                        <Edit className="h-4 w-4 text-blue-500" />
-                      </Button>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => handleDelete(groupIndex)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+            {sortByChurchPriority(imageGroups).map((group, groupIndex) => {
+              const isExpanded = expandedImageGroups[groupIndex];
+              const hasMultipleImages = group.images.length > 1;
+
+              return (
+                <div
+                  key={groupIndex}
+                  className="relative group border rounded p-4"
+                >
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-start">
+                      <h4 className="font-semibold text-lg">
+                        {group.churchName}
+                      </h4>
+                      <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleEdit(groupIndex)}
+                        >
+                          <Edit className="h-4 w-4 text-blue-500" />
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleDelete(groupIndex)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                  <div className="space-y-4">
-                    {group.images.map((imageUrl, imgIndex) => (
-                      <div key={imgIndex} className="relative w-full">
+
+                    <div className="space-y-4">
+                      {/* Preview of first image with fade effect */}
+                      <div className="relative w-full">
                         <Image
-                          src={imageUrl}
+                          src={group.images[0]}
                           alt={`${
                             !group.churchName ? "General" : group.churchName
-                          } page ${imgIndex + 1}`}
+                          } page 1`}
                           width={800}
                           height={600}
                           className="w-full h-auto rounded border"
                           style={{ objectFit: "contain" }}
-                          priority={imgIndex === 0} // Prioritize first image
+                          priority={true}
                         />
+
+                        {/* Fade overlay and View More button */}
+                        {hasMultipleImages && !isExpanded && (
+                          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/90 rounded border">
+                            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() =>
+                                  setExpandedImageGroups((prev) => ({
+                                    ...prev,
+                                    [groupIndex]: !isExpanded,
+                                  }))
+                                }
+                                className="bg-white/95 backdrop-blur-sm shadow-lg"
+                              >
+                                View More ({group.images.length - 1} more)
+                              </Button>
+                            </div>
+                          </div>
+                        )}
                       </div>
-                    ))}
+
+                      {/* Show additional images only when expanded */}
+                      {isExpanded &&
+                        group.images.slice(1).map((imageUrl, imgIndex) => (
+                          <div key={imgIndex + 1} className="relative w-full">
+                            <Image
+                              src={imageUrl}
+                              alt={`${
+                                !group.churchName ? "General" : group.churchName
+                              } page ${imgIndex + 2}`}
+                              width={800}
+                              height={600}
+                              className="w-full h-auto rounded border"
+                              style={{ objectFit: "contain" }}
+                              loading="lazy"
+                            />
+                          </div>
+                        ))}
+                    </div>
+
+                    {group.source && (
+                      <p className="text-sm text-muted-foreground">
+                        Source: {group.source}
+                      </p>
+                    )}
+                    {group.description && (
+                      <p className="text-sm text-muted-foreground">
+                        {group.description}
+                      </p>
+                    )}
                   </div>
-                  {group.source && (
-                    <p className="text-sm text-muted-foreground">
-                      Source: {group.source}
-                    </p>
-                  )}
-                  {group.description && (
-                    <p className="text-sm text-muted-foreground">
-                      {group.description}
-                    </p>
-                  )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </CardContent>
