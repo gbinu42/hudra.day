@@ -45,6 +45,14 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
     });
   }, [hymns, getTitleForAlphabet]);
 
+  // Calculate total recordings count
+  const totalRecordings = useMemo(() => {
+    return sortedHymns.reduce(
+      (total, hymn) => total + (hymn.recordings?.length || 0),
+      0
+    );
+  }, [sortedHymns]);
+
   // Helper function to get the first character for grouping
   const getFirstChar = (text: string): string => {
     if (!text || text.length === 0) return "#";
@@ -151,7 +159,9 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
             the East, and Ancient Church of the East
           </p>
           <p className="text-muted-foreground mt-1">
-            {sortedHymns.length} {sortedHymns.length === 1 ? "hymn" : "hymns"}
+            {sortedHymns.length} {sortedHymns.length === 1 ? "hymn" : "hymns"} •{" "}
+            {totalRecordings}{" "}
+            {totalRecordings === 1 ? "recording" : "recordings"}
           </p>
         </div>
       </div>
@@ -257,17 +267,28 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
                             <div className="flex items-center gap-3">
                               {hymn.churchVersions?.length > 0 && (
                                 <span>
-                                  {hymn.churchVersions.length} versions
+                                  {hymn.churchVersions.length}{" "}
+                                  {hymn.churchVersions.length === 1
+                                    ? "version"
+                                    : "versions"}
                                 </span>
                               )}
                               {hymn.translations &&
                                 hymn.translations.length > 0 && (
                                   <span>
-                                    {hymn.translations.length} translations
+                                    {hymn.translations.length}{" "}
+                                    {hymn.translations.length === 1
+                                      ? "translation"
+                                      : "translations"}
                                   </span>
                                 )}
                               {hymn.recordings?.length > 0 && (
-                                <span>{hymn.recordings.length} recordings</span>
+                                <span>
+                                  {hymn.recordings.length}{" "}
+                                  {hymn.recordings.length === 1
+                                    ? "recording"
+                                    : "recordings"}
+                                </span>
                               )}
                             </div>
                           </div>
