@@ -133,31 +133,36 @@ export default function HymnsList({
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div className="flex items-center gap-4">
-          <div>
+        <div className="flex-1">
+          <div className="flex items-center gap-4 flex-wrap">
             <h1 className="text-3xl font-bold">Syriac Hymns & Prayers</h1>
-            <p className="text-muted-foreground">
-              {filteredAndSortedHymns.length}{" "}
-              {filteredAndSortedHymns.length === 1 ? "hymn" : "hymns"}
-            </p>
+            <div className="flex items-center gap-2">
+              <Languages className="h-4 w-4 text-muted-foreground" />
+              <ToggleGroup
+                type="single"
+                value={alphabetOrder}
+                onValueChange={(value: "english" | "syriac") => {
+                  if (value) setAlphabetOrder(value);
+                }}
+              >
+                <ToggleGroupItem value="english" aria-label="English alphabet">
+                  English
+                </ToggleGroupItem>
+                <ToggleGroupItem value="syriac" aria-label="Syriac alphabet">
+                  Syriac
+                </ToggleGroupItem>
+              </ToggleGroup>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Languages className="h-4 w-4 text-muted-foreground" />
-            <ToggleGroup
-              type="single"
-              value={alphabetOrder}
-              onValueChange={(value: "english" | "syriac") => {
-                if (value) setAlphabetOrder(value);
-              }}
-            >
-              <ToggleGroupItem value="english" aria-label="English alphabet">
-                English
-              </ToggleGroupItem>
-              <ToggleGroupItem value="syriac" aria-label="Syriac alphabet">
-                Syriac
-              </ToggleGroupItem>
-            </ToggleGroup>
-          </div>
+          <p className="text-muted-foreground mt-2">
+            Hymns with words and recordings from all four East Syriac Churches —
+            Syro Malabar Church, Chaldean Catholic Church, Assyrian Church of
+            the East, and Ancient Church of the East
+          </p>
+          <p className="text-muted-foreground mt-1">
+            {filteredAndSortedHymns.length}{" "}
+            {filteredAndSortedHymns.length === 1 ? "hymn" : "hymns"}
+          </p>
         </div>
         {showAddButton && onAddClick && (
           <Button onClick={onAddClick}>

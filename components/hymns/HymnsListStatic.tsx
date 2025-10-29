@@ -1,20 +1,49 @@
+"use client";
+
+import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Hymn } from "@/lib/types/hymn";
 import { Music, User, Book, Languages } from "lucide-react";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 interface HymnsListStaticProps {
   hymns: Hymn[];
 }
 
 export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
-  // Sort hymns by English title (default behavior)
-  const sortedHymns = [...hymns].sort((a, b) => {
-    const aTitleText = a.titles?.[0]?.title || "";
-    const bTitleText = b.titles?.[0]?.title || "";
-    return aTitleText.localeCompare(bTitleText);
-  });
+  const [alphabetOrder, setAlphabetOrder] = useState<"english" | "syriac">(
+    "english"
+  );
+
+  // Helper function to get the title for alphabetical sorting
+  const getTitleForAlphabet = useCallback(
+    (hymn: Hymn): string => {
+      if (alphabetOrder === "syriac") {
+        // Try to get Syriac title first
+        const syriacTitle = hymn.titles?.find(
+          (t) => t.language?.toLowerCase() === "syriac"
+        )?.title;
+        if (syriacTitle) return syriacTitle;
+      }
+      // Fallback to English title
+      const englishTitle = hymn.titles?.find(
+        (t) => t.language?.toLowerCase() === "english"
+      )?.title;
+      return englishTitle || hymn.titles?.[0]?.title || "Untitled";
+    },
+    [alphabetOrder]
+  );
+
+  // Sort hymns based on selected alphabet order
+  const sortedHymns = useMemo(() => {
+    return [...hymns].sort((a, b) => {
+      const aTitle = getTitleForAlphabet(a);
+      const bTitle = getTitleForAlphabet(b);
+      return aTitle.localeCompare(bTitle);
+    });
+  }, [hymns, getTitleForAlphabet]);
 
   // Helper function to get the first character for grouping
   const getFirstChar = (text: string): string => {
@@ -26,19 +55,13 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
     return "#"; // For numbers and special characters
   };
 
-  // Group hymns by alphabet (English by default)
-  const groupedHymns = (() => {
+  // Group hymns by alphabet
+  const groupedHymns = useMemo(() => {
     const groups: { [key: string]: Hymn[] } = {};
 
     sortedHymns.forEach((hymn) => {
-      // Get English title for grouping
-      const englishTitle =
-        hymn.titles?.find((t) => t.language?.toLowerCase() === "english")
-          ?.title ||
-        hymn.titles?.[0]?.title ||
-        "Untitled";
-
-      const firstChar = getFirstChar(englishTitle);
+      const title = getTitleForAlphabet(hymn);
+      const firstChar = getFirstChar(title);
 
       if (!groups[firstChar]) {
         groups[firstChar] = [];
@@ -46,19 +69,11 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
       groups[firstChar].push(hymn);
     });
 
-    // Sort hymns within each group
+    // Sort hymns within each group based on the selected alphabet order
     Object.keys(groups).forEach((letter) => {
       groups[letter].sort((a, b) => {
-        const aTitle =
-          a.titles?.find((t) => t.language?.toLowerCase() === "english")
-            ?.title ||
-          a.titles?.[0]?.title ||
-          "Untitled";
-        const bTitle =
-          b.titles?.find((t) => t.language?.toLowerCase() === "english")
-            ?.title ||
-          b.titles?.[0]?.title ||
-          "Untitled";
+        const aTitle = getTitleForAlphabet(a);
+        const bTitle = getTitleForAlphabet(b);
         return aTitle.localeCompare(bTitle);
       });
     });
@@ -75,7 +90,7 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
       letter,
       hymns: groups[letter],
     }));
-  })();
+  }, [sortedHymns, getTitleForAlphabet]);
 
   const formatTitles = (hymn: Hymn) => {
     if (!hymn.titles || hymn.titles.length === 0) {
@@ -109,24 +124,35 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div className="flex items-center gap-4">
-          <div>
+        <div className="flex-1">
+          <div className="flex items-center gap-4 flex-wrap">
             <h1 className="text-3xl font-bold">Syriac Hymns & Prayers</h1>
-            <p className="text-muted-foreground">
-              {sortedHymns.length} {sortedHymns.length === 1 ? "hymn" : "hymns"}
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <Languages className="h-4 w-4 text-muted-foreground" />
-            <div className="flex rounded-md border">
-              <button className="px-3 py-1 text-sm bg-primary text-primary-foreground rounded-l-md">
-                English
-              </button>
-              <button className="px-3 py-1 text-sm text-muted-foreground hover:text-foreground rounded-r-md">
-                Syriac
-              </button>
+            <div className="flex items-center gap-2">
+              <Languages className="h-4 w-4 text-muted-foreground" />
+              <ToggleGroup
+                type="single"
+                value={alphabetOrder}
+                onValueChange={(value: "english" | "syriac") => {
+                  if (value) setAlphabetOrder(value);
+                }}
+              >
+                <ToggleGroupItem value="english" aria-label="English alphabet">
+                  English
+                </ToggleGroupItem>
+                <ToggleGroupItem value="syriac" aria-label="Syriac alphabet">
+                  Syriac
+                </ToggleGroupItem>
+              </ToggleGroup>
             </div>
           </div>
+          <p className="text-muted-foreground mt-2">
+            Hymns with words and recordings from all four East Syriac Churches —
+            Syro Malabar Church, Chaldean Catholic Church, Assyrian Church of
+            the East, and Ancient Church of the East
+          </p>
+          <p className="text-muted-foreground mt-1">
+            {sortedHymns.length} {sortedHymns.length === 1 ? "hymn" : "hymns"}
+          </p>
         </div>
       </div>
 
@@ -147,7 +173,16 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
             <div key={group.letter} className="space-y-4">
               {/* Alphabet Header */}
               <div className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b pb-2">
-                <h2 className="text-3xl font-bold">{group.letter}</h2>
+                <h2
+                  className={`text-3xl font-bold ${
+                    alphabetOrder === "syriac"
+                      ? "font-['East_Syriac_Adiabene']"
+                      : ""
+                  }`}
+                  dir={alphabetOrder === "syriac" ? "rtl" : "ltr"}
+                >
+                  {group.letter}
+                </h2>
                 <p className="text-sm text-muted-foreground">
                   {group.hymns.length}{" "}
                   {group.hymns.length === 1 ? "hymn" : "hymns"}
