@@ -10,7 +10,7 @@ import Footer from "@/components/Footer";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { usePermissions } from "@/lib/rbac";
 import { bookService, pageService } from "@/lib/firebase-services";
-import { Book, BookStatus } from "@/lib/types/book";
+import { Book, BookStatus, Edit as PageEdit } from "@/lib/types/book";
 import {
   syriacToNumber,
   numberToSyriac,
@@ -45,6 +45,7 @@ import {
 import Image from "next/image";
 import SyriacEditor from "@/components/SyriacEditor";
 import TipTapRenderer from "@/components/TipTapRenderer";
+import { PageHistory } from "@/components/PageHistory";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { JSONContent } from "@tiptap/react";
 import {
@@ -158,18 +159,6 @@ function isContentEqual(
   }
 }
 
-interface Edit {
-  editId: string;
-  version: number;
-  textJson: JSONContent;
-  userId: string;
-  createdAt: Date;
-  status: "pending" | "approved" | "rejected";
-  verifiedBy?: string;
-  verifiedAt?: Date;
-  notes?: string;
-}
-
 interface Page {
   id: string;
   bookId: string;
@@ -178,7 +167,7 @@ interface Page {
   imageUrl: string;
   currentTextJson?: JSONContent;
   currentVersion?: number;
-  edits?: Edit[];
+  edits?: PageEdit[];
   status: PageStatus;
   createdAt?: Date;
   updatedAt?: Date;
@@ -668,6 +657,23 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
       alert("Failed to save transcription. Please try again.");
     } finally {
       setSaving(false);
+    }
+  };
+
+  // Handle restore page version
+  const handleRestorePageVersion = async (edit: PageEdit) => {
+    if (!userProfile || !currentPage) return;
+
+    try {
+      await pageService.restorePageVersion(
+        currentPage.id,
+        edit,
+        userProfile.uid
+      );
+      console.log("Version restored successfully");
+    } catch (err) {
+      console.error("Error restoring version", err);
+      throw err; // Re-throw to let PageHistory component handle the error display
     }
   };
 
@@ -2502,23 +2508,46 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
                                     </Button>
                                   </>
                                 ) : (
-                                  <Button
-                                    size="sm"
-                                    onClick={() => {
-                                      if (!isOffline) {
-                                        setEditMode(true);
-                                        // Store original content when entering edit mode
-                                        setOriginalTextContentJson(
-                                          textContentJson
-                                        );
-                                      }
-                                    }}
-                                    variant="outline"
-                                    className="border-slate-300 text-slate-700 hover:bg-slate-50 h-7 sm:h-8 px-2 sm:px-3 text-xs"
-                                    disabled={isOffline}
-                                  >
-                                    Edit
-                                  </Button>
+                                  <>
+                                    <Button
+                                      size="sm"
+                                      onClick={() => {
+                                        if (!isOffline) {
+                                          setEditMode(true);
+                                          // Store original content when entering edit mode
+                                          setOriginalTextContentJson(
+                                            textContentJson
+                                          );
+                                        }
+                                      }}
+                                      variant="outline"
+                                      className="border-slate-300 text-slate-700 hover:bg-slate-50 h-7 sm:h-8 px-2 sm:px-3 text-xs"
+                                      disabled={isOffline}
+                                    >
+                                      Edit
+                                    </Button>
+                                    {currentPage?.edits &&
+                                      currentPage.edits.length > 0 && (
+                                        <div className="ml-2">
+                                          <PageHistory
+                                            edits={currentPage.edits}
+                                            currentVersion={
+                                              currentPage.currentVersion || 0
+                                            }
+                                            isAdmin={
+                                              effectiveUserProfile?.role ===
+                                              "admin"
+                                            }
+                                            onRestore={handleRestorePageVersion}
+                                            getUserDisplayName={(userId) =>
+                                              userId === userProfile?.uid
+                                                ? "You"
+                                                : userId
+                                            }
+                                          />
+                                        </div>
+                                      )}
+                                  </>
                                 )}
                               </div>
                             )}

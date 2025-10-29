@@ -39,7 +39,7 @@ import {
 } from "firebase/storage";
 import { auth, db, storage } from "./firebase";
 import { UserRole, UserProfile, ROLE_PERMISSIONS } from "./types/auth";
-import { CreateBookData, BookPage } from "./types/book";
+import { CreateBookData, BookPage, Edit } from "./types/book";
 import { JSONContent } from "@tiptap/react";
 
 // Page status types
@@ -57,21 +57,8 @@ interface PageUpdateData {
   currentVersion?: number;
   lastEditAt?: Date;
   lastEditBy?: string;
-  edits?: EditData[];
+  edits?: Edit[];
   status?: PageStatus;
-}
-
-// Interface for edit data
-interface EditData {
-  editId: string;
-  version: number;
-  textJson: JSONContent;
-  userId: string;
-  createdAt: Date;
-  status: "pending" | "approved" | "rejected";
-  verifiedBy?: string;
-  verifiedAt?: Date;
-  notes?: string;
 }
 
 // Authentication Services
@@ -965,7 +952,7 @@ export const pageService = {
     const currentEdits = pageData?.edits || [];
 
     // Create new edit with unique ID, filtering out undefined values
-    const newEdit: EditData = {
+    const newEdit: Edit = {
       editId: `edit_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       version: editData.version,
       textJson: editData.textJson,
@@ -1023,5 +1010,33 @@ export const pageService = {
       console.error("Error updating page status in book document:", error);
       // Don't throw error here as the page status was successfully updated
     }
+  },
+
+  // Restore a previous version of a page
+  async restorePageVersion(
+    pageId: string,
+    editToRestore: Edit,
+    userId: string
+  ): Promise<void> {
+    // Get current page data
+    const pageDoc = await this.getPage(pageId);
+    if (!pageDoc.exists()) {
+      throw new Error("Page not found");
+    }
+
+    const pageData = pageDoc.data();
+    const currentVersion = pageData?.currentVersion || 0;
+
+    // Create a new version with the restored content
+    const newVersion = currentVersion + 1;
+
+    // Add the restored content as a new edit
+    await this.addEditToPage(pageId, {
+      version: newVersion,
+      textJson: editToRestore.textJson,
+      userId: userId,
+      status: "approved",
+      notes: `Restored from version ${editToRestore.version}`,
+    });
   },
 };

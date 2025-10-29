@@ -13,6 +13,19 @@ export type PageStatus =
   | "completed"
   | "published";
 
+export interface Edit {
+  editId: string;
+  version: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  textJson: any; // JSONContent from TipTap - using any as it's a complex nested type
+  userId: string;
+  createdAt: Date;
+  status: "pending" | "approved" | "rejected";
+  verifiedBy?: string;
+  verifiedAt?: Date;
+  notes?: string;
+}
+
 export interface BookPage {
   pageId: string;
   pageNumber: number;
