@@ -144,7 +144,7 @@ export default function RecordingsManager({
   } = useForm<RecordingFormData>({
     resolver: zodResolver(recordingSchema),
     defaultValues: {
-      type: "youtube",
+      type: "audio",
       url: "",
       title: "",
       year: undefined,
