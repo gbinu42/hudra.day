@@ -184,18 +184,20 @@ export type ChurchTradition = (typeof CHURCH_TRADITIONS)[number];
 
 // Common categories
 export const HYMN_CATEGORIES = [
-  "Prayer",
-  "Hymn",
   "Psalm",
   "Onitha",
+  "Onitha d'Sahde",
+  "Onitha d'Annide",
+  "Madrasha (ܡܕܪܫܐ)",
   "Theshbohtha",
   "Slotha",
+  "Marmitha",
+  "Huthama",
   "Karozoutha",
   "Qala (ܩܘܠܐ)",
-  "Madrasha (ܡܕܪܫܐ)",
-  "Liturgical",
-  "Devotional",
-  "Seasonal",
+  "Qaltha",
+  "Memra",
+  "Sogitha",
   "Other",
 ] as const;
 
