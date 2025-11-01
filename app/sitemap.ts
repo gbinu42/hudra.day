@@ -1,12 +1,6 @@
 import { MetadataRoute } from "next";
 import { bookService } from "@/lib/firebase-services";
-import { hymnService, personService } from "@/lib/hymn-services";
-import {
-  categoryData,
-  textData,
-  ChurchSlug,
-  CategorySlug,
-} from "@/app/data/texts";
+import { hymnService } from "@/lib/hymn-services";
 import {
   SITE_BASE_URL,
   generateStaticRoutes,
@@ -77,79 +71,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error("Error fetching hymns for sitemap:", error);
   }
 
-  // Persons routes
-  let personsRoutes: MetadataRoute.Sitemap = [
+  // Persons routes - only the new person form
+  const personsRoutes: MetadataRoute.Sitemap = [
     createSitemapEntry(`${baseUrl}/persons/new`, {
       changeFrequency: "monthly",
       priority: 0.5,
     }),
   ];
-  try {
-    // Dynamic person routes
-    const personsSnapshot = await personService.getAllPersons();
-    const personDetailRoutes: MetadataRoute.Sitemap = personsSnapshot.docs.map(
-      (doc) =>
-        createSitemapEntry(`${baseUrl}/persons/${doc.id}/edit`, {
-          lastModified: doc.data().updatedAt?.toDate() || new Date(),
-          changeFrequency: "monthly",
-          priority: 0.6,
-        })
-    );
-    personsRoutes = [...personsRoutes, ...personDetailRoutes];
-  } catch (error) {
-    console.error("Error fetching persons for sitemap:", error);
-  }
 
-  // Texts routes
-  const textsMainRoute: MetadataRoute.Sitemap = [
-    createSitemapEntry(`${baseUrl}/texts`, {
-      changeFrequency: "weekly",
-      priority: 0.9,
-    }),
-  ];
-
-  // Church routes (texts/[church])
-  const churchRoutes: MetadataRoute.Sitemap = Object.keys(categoryData).map(
-    (churchSlug) =>
-      createSitemapEntry(`${baseUrl}/texts/${churchSlug}`, {
-        changeFrequency: "weekly",
-        priority: 0.7,
-      })
-  );
-
-  // Category routes (texts/[church]/[category])
-  const categoryRoutes: MetadataRoute.Sitemap = [];
-  for (const churchSlug in categoryData) {
-    const church = categoryData[churchSlug as ChurchSlug];
-    for (const categorySlug in church.categories) {
-      categoryRoutes.push(
-        createSitemapEntry(`${baseUrl}/texts/${churchSlug}/${categorySlug}`, {
-          changeFrequency: "weekly",
-          priority: 0.6,
-        })
-      );
-    }
-  }
-
-  // Individual text routes (texts/[church]/[category]/[text])
-  const textRoutes: MetadataRoute.Sitemap = [];
-  for (const churchSlug in textData) {
-    const church = textData[churchSlug as ChurchSlug];
-    for (const categorySlug in church) {
-      const category = church[categorySlug as CategorySlug];
-      for (const textSlug in category) {
-        textRoutes.push(
-          createSitemapEntry(
-            `${baseUrl}/texts/${churchSlug}/${categorySlug}/${textSlug}`,
-            {
-              changeFrequency: "monthly",
-              priority: 0.5,
-            }
-          )
-        );
-      }
-    }
-  }
+  // Texts routes - removed from sitemap per user request
 
   // Merge all sitemaps
   const allRoutes = mergeSitemaps(
@@ -158,11 +88,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     bookDetailRoutes,
     hymnsRoutes,
     hymnDetailRoutes,
-    personsRoutes,
-    textsMainRoute,
-    churchRoutes,
-    categoryRoutes,
-    textRoutes
+    personsRoutes
   );
 
   // Deduplicate and log stats

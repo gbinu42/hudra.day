@@ -13,7 +13,7 @@ export default function BooksPage() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h1 className="text-3xl font-bold text-foreground mb-2">
-                Books Library
+                Syriac Library
               </h1>
               <p className="text-muted-foreground">
                 Explore our collection of Syriac texts and manuscripts

@@ -84,14 +84,6 @@ export function generateStaticRoutes(
       changeFrequency: "monthly",
       priority: 0.4,
     }),
-    createSitemapEntry(`${baseUrl}/admin`, {
-      changeFrequency: "weekly",
-      priority: 0.3,
-    }),
-    createSitemapEntry(`${baseUrl}/admin/hymns`, {
-      changeFrequency: "weekly",
-      priority: 0.3,
-    }),
     createSitemapEntry(`${baseUrl}/offline`, {
       changeFrequency: "monthly",
       priority: 0.2,

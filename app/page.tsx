@@ -132,21 +132,75 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Quick Access Section */}
+      <section id="quick-access" className="py-20 px-4 lg:px-8 bg-slate-50">
+        <div className="container mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Explore the Library
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Dive into our growing collection of liturgical texts and hymns
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <Card className="hover:shadow-xl transition-shadow border-2 hover:border-primary/50">
+              <CardHeader className="text-center pb-4">
+                <BookOpen className="h-16 w-16 mx-auto text-primary mb-4" />
+                <CardTitle className="text-2xl">Liturgical Texts</CardTitle>
+              </CardHeader>
+              <CardContent className="text-center space-y-4">
+                <CardDescription className="text-base">
+                  Browse our collection of digitized East Syriac liturgical
+                  books, including the Hudra and other sacred texts
+                </CardDescription>
+                <Button size="lg" className="w-full" asChild>
+                  <Link href="/books">
+                    <BookOpen className="mr-2 h-5 w-5" />
+                    Browse Books
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="hover:shadow-xl transition-shadow border-2 hover:border-primary/50">
+              <CardHeader className="text-center pb-4">
+                <Scroll className="h-16 w-16 mx-auto text-primary mb-4" />
+                <CardTitle className="text-2xl">Hymns & Prayers</CardTitle>
+              </CardHeader>
+              <CardContent className="text-center space-y-4">
+                <CardDescription className="text-base">
+                  Explore individual hymns, prayers, and liturgical texts with
+                  translations and annotations
+                </CardDescription>
+                <Button size="lg" className="w-full" asChild>
+                  <Link href="/hymns">
+                    <Scroll className="mr-2 h-5 w-5" />
+                    Browse Hymns
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* Churches Section */}
-      <section id="churches" className="py-20 px-4 lg:px-8 bg-slate-50">
+      <section id="churches" className="py-20 px-4 lg:px-8 bg-white">
         <div className="container mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               East Syriac Churches
             </h2>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              Our work serves the manuscript traditions of three churches that
+              Our work serves the manuscript traditions of four churches that
               were part of the East Syraic tradition, each with their unique
               heritage and contributions to Christian liturgical life.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <Card className="hover:shadow-lg transition-shadow">
               <CardHeader>
                 <Church className="h-8 w-8 text-primary mb-2" />
@@ -206,12 +260,32 @@ export default function HomePage() {
                 </Badge>
               </CardContent>
             </Card>
+
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <Church className="h-8 w-8 text-primary mb-2" />
+                <CardTitle>Ancient Church of the East</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground mb-4">
+                  Apostolic church that maintains the traditional East Syriac
+                  liturgy and theological heritage, with communities primarily
+                  in Iraq and the diaspora.
+                </p>
+                <Badge
+                  variant="secondary"
+                  className="bg-yellow-100 text-yellow-800 border-yellow-300"
+                >
+                  Coming Soon
+                </Badge>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
 
       {/* Online Syriac Editor Section */}
-      <section id="editor" className="py-20 px-4 lg:px-8 bg-white">
+      <section id="editor" className="py-20 px-4 lg:px-8 bg-slate-50">
         <div className="container mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
