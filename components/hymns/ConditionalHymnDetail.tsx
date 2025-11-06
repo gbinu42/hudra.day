@@ -5,6 +5,7 @@ import { useAuth } from "@/lib/hooks/useAuth";
 import HymnDetail from "@/components/hymns/HymnDetail";
 import RecordingsClient from "@/components/hymns/RecordingsClient";
 import ImagesClient from "@/components/hymns/ImagesClient";
+import CommentsSection from "@/components/CommentsSection";
 import { Hymn } from "@/lib/types/hymn";
 
 interface ConditionalHymnDetailProps {
@@ -26,14 +27,20 @@ export default function ConditionalHymnDetail({
   if (!isClient) {
     // Server-side rendering: show recordings for everyone
     return (
-      <HymnDetail
-        hymn={hymn}
-        showEditButton={false}
-        hideImages={false}
-        hideRecordings={false}
-        currentUserId={undefined}
-        userRole={undefined}
-      />
+      <>
+        <HymnDetail
+          hymn={hymn}
+          showEditButton={false}
+          hideImages={false}
+          hideRecordings={false}
+          currentUserId={undefined}
+          userRole={undefined}
+        />
+        {/* Comments section visible on SSR */}
+        <div className="mt-8">
+          <CommentsSection resourceType="hymn" resourceId={hymnId} />
+        </div>
+      </>
     );
   }
 
@@ -56,6 +63,11 @@ export default function ConditionalHymnDetail({
           <RecordingsClient hymnId={hymnId} recordings={hymn.recordings} />
         </div>
       )}
+
+      {/* Comments section always visible */}
+      <div className="mt-8">
+        <CommentsSection resourceType="hymn" resourceId={hymnId} />
+      </div>
     </>
   );
 }

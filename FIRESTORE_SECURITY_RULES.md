@@ -90,12 +90,40 @@ service cloud.firestore {
       allow delete: if request.auth != null && getUserRole() == 'admin';
     }
 
+    // Comments collection rules
+    match /comments/{commentId} {
+      // Anyone can read approved comments
+      allow read: if resource.data.status == 'approved';
+
+      // Authenticated users can read their own comments (regardless of status)
+      allow read: if request.auth != null &&
+                     resource.data.userId == request.auth.uid;
+
+      // Admins can read all comments
+      allow read: if request.auth != null && getUserRole() == 'admin';
+
+      // Anyone (authenticated or not) can create comments, but they must start as 'pending'
+      // parentId is optional for nested/threaded comments
+      allow create: if request.resource.data.status == 'pending' &&
+                       request.resource.data.comment is string &&
+                       request.resource.data.name is string &&
+                       request.resource.data.email is string &&
+                       request.resource.data.resourceType is string &&
+                       request.resource.data.resourceId is string &&
+                       (!('parentId' in request.resource.data) || request.resource.data.parentId is string);
+
+      // Only admins can update or delete comments
+      allow update, delete: if request.auth != null && getUserRole() == 'admin';
+    }
+
     // Add rules for other collections as needed...
   }
 }
 ```
 
 ## Key Security Features:
+
+### Books & Pages
 
 1. **Public Books**: Books without the `private` and `protected` fields (or with both set to `false`) are accessible to all authenticated users
 2. **Private Books**: Books with `private: true` (but not `protected: true`) are only accessible to editors and admins
@@ -104,6 +132,25 @@ service cloud.firestore {
 5. **Viewers**: Can only access public books
 6. **Pages**: Inherit privacy and protection settings from their parent book
 7. **Creation/Editing**: Only admins can create books, editors and admins can edit (but not change creator)
+
+### Comments
+
+1. **Reading Comments**:
+
+   - Anyone can read approved comments (no authentication required)
+   - Authenticated users can read their own comments regardless of status
+   - Admins can read all comments (pending, approved, rejected)
+
+2. **Creating Comments**:
+
+   - Anyone can create comments (authenticated or not)
+   - All new comments must have status set to 'pending'
+   - Required fields are validated: comment, name, email, resourceType, resourceId
+
+3. **Moderating Comments**:
+   - Only admins can update comment status (approve/reject)
+   - Only admins can delete comments
+   - Regular users cannot edit their comments after submission
 
 ## Important Notes:
 

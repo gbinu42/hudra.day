@@ -142,7 +142,7 @@ export default async function HymnDetailPage({
   const { id } = await params;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-50">
       <Navbar />
       <HymnDetailStatic hymnId={id} />
       <Footer />

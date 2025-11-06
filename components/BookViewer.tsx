@@ -45,6 +45,7 @@ import {
 import Image from "next/image";
 import SyriacEditor from "@/components/SyriacEditor";
 import TipTapRenderer from "@/components/TipTapRenderer";
+import CommentsSection from "@/components/CommentsSection";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { JSONContent } from "@tiptap/react";
 import {
@@ -1627,7 +1628,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       {!isWhitelabel && showHeaders && <Navbar />}
       <div className="container mx-auto flex-1 flex flex-col px-4 py-4 sm:py-8">
         <ProtectedRoute requireAuth={false}>
@@ -2896,7 +2897,19 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
         </DialogContent>
       </Dialog>
 
+      {/* Comments Section */}
+      {!isWhitelabel && showHeaders && book && (
+        <div className="container mx-auto px-4 max-w-7xl mb-8">
+          <CommentsSection resourceType="book" resourceId={bookId} />
+        </div>
+      )}
+
       {!isWhitelabel && showHeaders && <Footer />}
     </div>
   );
+}
+
+// Add light gray background wrapper for book pages
+export function BookPageWrapper({ children }: { children: React.ReactNode }) {
+  return <div className="min-h-screen bg-gray-50">{children}</div>;
 }
