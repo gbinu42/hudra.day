@@ -52,11 +52,13 @@ export default function CommentsSection({
   // Load comments on mount and when user profile changes
   useEffect(() => {
     loadComments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resourceType, resourceId, userProfile?.role]);
 
   // Load form data when user profile changes
   useEffect(() => {
     loadSavedFormData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userProfile?.uid]);
 
   const loadComments = async () => {
@@ -105,7 +107,7 @@ export default function CommentsSection({
       try {
         const { name, email, website } = JSON.parse(saved);
         setFormData((prev) => ({ ...prev, name, email, website }));
-      } catch (e) {
+      } catch {
         // Ignore parsing errors
       }
     }

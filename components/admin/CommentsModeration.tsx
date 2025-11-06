@@ -28,6 +28,7 @@ export default function CommentsModeration() {
 
   useEffect(() => {
     loadComments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter]);
 
   const loadComments = async (isRefresh = false) => {

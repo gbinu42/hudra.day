@@ -21,7 +21,7 @@ import {
   type DocumentSnapshot,
 } from "firebase/firestore";
 import { db } from "./firebase";
-import { Comment, CreateCommentData, UpdateCommentData, ResourceType } from "./types/comment";
+import { CreateCommentData, UpdateCommentData, ResourceType } from "./types/comment";
 
 export const commentService = {
   /**
@@ -38,7 +38,7 @@ export const commentService = {
 
     // Filter out undefined values per repo rules
     const cleanData = Object.fromEntries(
-      Object.entries(newComment).filter(([_, value]) => value !== undefined)
+      Object.entries(newComment).filter(([, value]) => value !== undefined)
     );
 
     const docRef = await addDoc(collection(db, "comments"), cleanData);
@@ -102,7 +102,7 @@ export const commentService = {
 
     // Filter out undefined values per repo rules
     const cleanData = Object.fromEntries(
-      Object.entries(data).filter(([_, value]) => value !== undefined)
+      Object.entries(data).filter(([, value]) => value !== undefined)
     );
 
     await updateDoc(doc(db, "comments", commentId), cleanData);
