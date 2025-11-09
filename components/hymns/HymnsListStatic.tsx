@@ -17,6 +17,14 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
     "english"
   );
 
+  // Complete alphabets
+  const ENGLISH_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  const SYRIAC_ALPHABET = [
+    'ܐ', 'ܒ', 'ܓ', 'ܕ', 'ܗ', 'ܘ', 'ܙ', 'ܚ', 'ܛ', 'ܝ',
+    'ܟ', 'ܠ', 'ܡ', 'ܢ', 'ܣ', 'ܥ', 'ܦ', 'ܨ', 'ܩ', 'ܪ',
+    'ܫ', 'ܬ'
+  ];
+
   // Helper function to get the title for alphabetical sorting
   const getTitleForAlphabet = useCallback(
     (hymn: Hymn): string => {
@@ -166,6 +174,58 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
         </div>
       </div>
 
+      {/* Alphabetical Navigation */}
+      {sortedHymns.length > 0 && (
+        <div className="bg-muted/30 rounded-lg border p-3">
+          <div
+            className="flex flex-wrap gap-1.5 justify-start"
+            dir={alphabetOrder === "syriac" ? "rtl" : "ltr"}
+          >
+            {(alphabetOrder === "english"
+              ? ENGLISH_ALPHABET
+              : SYRIAC_ALPHABET
+            ).map((letter) => {
+              const hasHymns = groupedHymns.some(
+                (group) => group.letter === letter
+              );
+              return (
+                <button
+                  key={letter}
+                  onClick={() => {
+                    if (hasHymns) {
+                      const element = document.getElementById(
+                        `letter-${letter}`
+                      );
+                      if (element) {
+                        element.scrollIntoView({
+                          behavior: "smooth",
+                          block: "start",
+                        });
+                      }
+                    }
+                  }}
+                  disabled={!hasHymns}
+                  className={`rounded transition-all ${
+                    alphabetOrder === "syriac"
+                      ? "font-['East_Syriac_Adiabene'] font-normal text-xl min-w-[2.25rem] h-9 px-2"
+                      : "font-semibold text-sm min-w-[2rem] h-8 px-1.5"
+                  } ${
+                    hasHymns
+                      ? "bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground hover:scale-105 cursor-pointer"
+                      : "bg-transparent text-muted-foreground/30 cursor-not-allowed"
+                  }`}
+                  aria-label={`${
+                    hasHymns ? "Scroll to" : "No hymns for"
+                  } letter ${letter}`}
+                >
+                  {letter}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {/* Hymns Grid - Grouped by Alphabet */}
       {sortedHymns.length === 0 ? (
         <Card>
@@ -180,9 +240,13 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
       ) : (
         <div className="space-y-8">
           {groupedHymns.map((group) => (
-            <div key={group.letter} className="space-y-4">
+            <div
+              key={group.letter}
+              id={`letter-${group.letter}`}
+              className="space-y-4 scroll-mt-32"
+            >
               {/* Alphabet Header */}
-              <div className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b pb-2">
+              <div className="border-b pb-2">
                 <h2
                   className={`text-3xl font-bold ${
                     alphabetOrder === "syriac"
