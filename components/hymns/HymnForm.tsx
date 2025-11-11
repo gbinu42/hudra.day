@@ -427,7 +427,8 @@ export default function HymnForm({
                           <FormControl>
                             <Input
                               placeholder="ܡܰܪܝܳܐ ܪܰܚܶܡ ܥܠܰܝܢ"
-                              className="font-['East_Syriac_Adiabene'] text-4xl font-normal border-2 border-primary/20 focus:border-primary h-16"
+                              className="font-['East_Syriac_Adiabene'] font-normal border-2 border-primary/20 focus:border-primary h-16"
+                              style={{ fontSize: "2rem" }}
                               dir="rtl"
                               {...field}
                             />
@@ -446,7 +447,8 @@ export default function HymnForm({
                           <FormControl>
                             <Input
                               placeholder="ܡܪܝܐ ܪܚܡ ܥܠܝܢ"
-                              className="text-2xl font-normal border-2 border-primary/20 focus:border-primary h-14"
+                              className="font-normal border-2 border-primary/20 focus:border-primary h-14"
+                              style={{ fontSize: "1.5rem" }}
                               dir="rtl"
                               {...field}
                             />
