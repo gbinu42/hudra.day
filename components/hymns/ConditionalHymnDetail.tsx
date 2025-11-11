@@ -1,11 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useAuth } from "@/lib/hooks/useAuth";
 import HymnDetail from "@/components/hymns/HymnDetail";
 import RecordingsClient from "@/components/hymns/RecordingsClient";
 import ImagesClient from "@/components/hymns/ImagesClient";
 import CommentsSection from "@/components/CommentsSection";
+import { Button } from "@/components/ui/button";
+import { Edit } from "lucide-react";
 import { Hymn } from "@/lib/types/hymn";
 
 interface ConditionalHymnDetailProps {
@@ -17,7 +20,8 @@ export default function ConditionalHymnDetail({
   hymn,
   hymnId,
 }: ConditionalHymnDetailProps) {
-  const { user } = useAuth();
+  const { user, userProfile } = useAuth();
+  const isAdmin = userProfile?.role === "admin";
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -47,6 +51,16 @@ export default function ConditionalHymnDetail({
   // Client-side: show recordings for non-logged-in users, manager for logged-in users
   return (
     <>
+      {isAdmin && (
+        <div className="mb-4 flex justify-end">
+          <Button asChild variant="outline">
+            <Link href={`/hymns/${hymnId}/edit`}>
+              <Edit className="h-4 w-4 mr-2" />
+              Edit Hymn
+            </Link>
+          </Button>
+        </div>
+      )}
       <HymnDetail
         hymn={hymn}
         showEditButton={false}

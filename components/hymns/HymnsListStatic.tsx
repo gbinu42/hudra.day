@@ -4,15 +4,19 @@ import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Hymn } from "@/lib/types/hymn";
-import { Music, User, Book, Languages } from "lucide-react";
+import { Music, User, Book, Languages, Plus } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { useAuth } from "@/lib/hooks/useAuth";
 
 interface HymnsListStaticProps {
   hymns: Hymn[];
 }
 
 export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
+  const { userProfile } = useAuth();
+  const isAdmin = userProfile?.role === "admin";
   const [alphabetOrder, setAlphabetOrder] = useState<"english" | "syriac">(
     "english"
   );
@@ -172,6 +176,14 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
             {totalRecordings === 1 ? "recording" : "recordings"}
           </p>
         </div>
+        {isAdmin && (
+          <Button asChild>
+            <Link href="/hymns/new">
+              <Plus className="h-4 w-4 mr-2" />
+              New Hymn
+            </Link>
+          </Button>
+        )}
       </div>
 
       {/* Alphabetical Navigation */}
