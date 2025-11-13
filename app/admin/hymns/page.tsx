@@ -21,7 +21,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { toast } from "sonner";
-import { Trash2, Edit, Eye, Search, Music, Users } from "lucide-react";
+import { Trash2, Edit, Eye, Search, Music, Users, Check, XCircle, Headphones } from "lucide-react";
 
 export default function AdminHymnsPage() {
   const { user, userProfile, loading: authLoading } = useAuth();
@@ -30,7 +30,7 @@ export default function AdminHymnsPage() {
   const [persons, setPersons] = useState<Person[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [activeTab, setActiveTab] = useState<"hymns" | "persons">("hymns");
+  const [activeTab, setActiveTab] = useState<"hymns" | "persons" | "recordings">("hymns");
 
   useEffect(() => {
     if (authLoading) return; // Wait for auth to load
@@ -130,6 +130,54 @@ export default function AdminHymnsPage() {
     }
   };
 
+  const handleApproveRecording = async (hymnId: string, recordingId: string) => {
+    try {
+      await hymnService.updateRecordingStatus(hymnId, recordingId, "approved");
+      toast.success("Recording approved!");
+    } catch (error) {
+      console.error("Error approving recording:", error);
+      toast.error("Failed to approve recording");
+    }
+  };
+
+  const handleRejectRecording = async (hymnId: string, recordingId: string) => {
+    if (!confirm("Are you sure you want to reject this recording?")) {
+      return;
+    }
+
+    try {
+      await hymnService.updateRecordingStatus(hymnId, recordingId, "rejected");
+      toast.success("Recording rejected!");
+    } catch (error) {
+      console.error("Error rejecting recording:", error);
+      toast.error("Failed to reject recording");
+    }
+  };
+
+  // Collect all unapproved recordings from all hymns
+  const unapprovedRecordings = hymns.flatMap((hymn) => {
+    return hymn.recordings
+      .filter((recording) => {
+        const status = recording.status || "approved";
+        return status !== "approved";
+      })
+      .map((recording) => ({
+        ...recording,
+        hymnId: hymn.id,
+        hymnTitle: hymn.titles.find((t) => t.language?.toLowerCase() === "english")?.title || "Untitled",
+      }));
+  });
+
+  const filteredUnapprovedRecordings = unapprovedRecordings.filter((recording) => {
+    const term = searchTerm.toLowerCase();
+    return (
+      recording.hymnTitle.toLowerCase().includes(term) ||
+      recording.title?.toLowerCase().includes(term) ||
+      recording.contributorName?.toLowerCase().includes(term) ||
+      recording.type.toLowerCase().includes(term)
+    );
+  });
+
   const filteredHymns = hymns.filter((hymn) => {
     const term = searchTerm.toLowerCase();
     return (
@@ -193,7 +241,7 @@ export default function AdminHymnsPage() {
           </div>
 
           {/* Statistics Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-medium">
@@ -241,6 +289,18 @@ export default function AdminHymnsPage() {
                 </div>
               </CardContent>
             </Card>
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium">
+                  Unapproved Recordings
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-yellow-600">
+                  {unapprovedRecordings.length}
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Tab Navigation */}
@@ -275,6 +335,20 @@ export default function AdminHymnsPage() {
                     {persons.length}
                   </Badge>
                 </button>
+                <button
+                  className={`flex items-center gap-2 px-6 py-4 transition-colors ${
+                    activeTab === "recordings"
+                      ? "border-b-2 border-primary text-primary font-semibold"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                  onClick={() => setActiveTab("recordings")}
+                >
+                  <Headphones className="h-4 w-4" />
+                  <span>Unapproved Recordings</span>
+                  <Badge variant="secondary" className="ml-1">
+                    {unapprovedRecordings.length}
+                  </Badge>
+                </button>
               </div>
 
               {/* Search Bar */}
@@ -282,7 +356,7 @@ export default function AdminHymnsPage() {
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
-                    placeholder={`Search ${activeTab}...`}
+                    placeholder={`Search ${activeTab === "recordings" ? "unapproved recordings" : activeTab}...`}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-10"
@@ -544,6 +618,129 @@ export default function AdminHymnsPage() {
                                   title="Delete"
                                 >
                                   <Trash2 className="h-4 w-4 text-red-500" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Unapproved Recordings Table */}
+          {activeTab === "recordings" && (
+            <Card>
+              <CardContent className="p-0">
+                {loading ? (
+                  <div className="flex flex-col items-center justify-center py-16">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-4"></div>
+                    <p className="text-muted-foreground">Loading recordings...</p>
+                  </div>
+                ) : filteredUnapprovedRecordings.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-16">
+                    <Headphones className="h-12 w-12 text-muted-foreground/50 mb-4" />
+                    <p className="text-muted-foreground font-medium mb-2">
+                      No unapproved recordings found
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {searchTerm
+                        ? "Try adjusting your search term"
+                        : "All recordings are approved"}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="w-[25%]">Hymn</TableHead>
+                          <TableHead className="w-[20%]">Recording Title</TableHead>
+                          <TableHead className="w-[10%]">Type</TableHead>
+                          <TableHead className="w-[15%]">Contributor</TableHead>
+                          <TableHead className="w-[10%]">Status</TableHead>
+                          <TableHead className="w-[20%]">Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {filteredUnapprovedRecordings.map((recording) => (
+                          <TableRow key={`${recording.hymnId}-${recording.id}`}>
+                            <TableCell className="font-medium text-sm">
+                              <Button
+                                variant="link"
+                                className="p-0 h-auto font-medium text-left"
+                                onClick={() => router.push(`/hymns/${recording.hymnId}`)}
+                              >
+                                {recording.hymnTitle}
+                              </Button>
+                            </TableCell>
+                            <TableCell className="text-sm">
+                              {recording.title || "-"}
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant="outline" className="text-xs">
+                                {recording.type}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-xs text-muted-foreground">
+                              {recording.contributorName || "-"}
+                            </TableCell>
+                            <TableCell>
+                              <Badge
+                                className={`text-xs ${
+                                  recording.status === "pending"
+                                    ? "bg-yellow-100 text-yellow-800"
+                                    : "bg-red-100 text-red-800"
+                                }`}
+                              >
+                                {(recording.status || "pending")
+                                  .charAt(0)
+                                  .toUpperCase() +
+                                  (recording.status || "pending").slice(1)}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex gap-2">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() =>
+                                    router.push(`/hymns/${recording.hymnId}`)
+                                  }
+                                  title="View Hymn"
+                                >
+                                  <Eye className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() =>
+                                    handleApproveRecording(
+                                      recording.hymnId,
+                                      recording.id
+                                    )
+                                  }
+                                  className="text-green-600 hover:text-green-700"
+                                  title="Approve"
+                                >
+                                  <Check className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() =>
+                                    handleRejectRecording(
+                                      recording.hymnId,
+                                      recording.id
+                                    )
+                                  }
+                                  className="text-red-600 hover:text-red-700"
+                                  title="Reject"
+                                >
+                                  <XCircle className="h-4 w-4" />
                                 </Button>
                               </div>
                             </TableCell>

@@ -326,10 +326,10 @@ export default function CommentsSection({
                 setReplyingTo(comment.id);
                 // Scroll to form
                 setTimeout(() => {
-                  document.getElementById(replyingTo === comment.id ? 'main-comment-form' : `reply-form-${comment.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  document.getElementById(`reply-form-${comment.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }, 100);
               }}
-              className="text-primary hover:text-primary/80"
+              className="text-primary hover:text-primary/80 text-xs"
             >
               <Reply className="h-3 w-3 mr-1" />
               Reply
@@ -338,8 +338,8 @@ export default function CommentsSection({
           
           {/* Reply form */}
           {replyingTo === comment.id && (
-            <div className="mt-3 p-4 border rounded-md bg-muted/30" id={`reply-form-${comment.id}`}>
-              <div className="text-sm font-medium mb-3">
+            <div className="mt-3 p-3 border rounded-md bg-muted/20" id={`reply-form-${comment.id}`}>
+              <div className="text-xs text-muted-foreground mb-2">
                 Replying to {comment.name}
               </div>
               {renderCommentForm(comment.id)}
@@ -362,10 +362,10 @@ export default function CommentsSection({
     const isReplyForm = !!parentId;
     
     return (
-      <form onSubmit={handleSubmit} className="space-y-4" id={isReplyForm ? `reply-form-${parentId}` : 'main-comment-form'}>
+      <form onSubmit={handleSubmit} className="space-y-3" id={isReplyForm ? `reply-form-${parentId}` : 'main-comment-form'}>
         {/* Comment textarea */}
-        <div className="space-y-2">
-          <Label htmlFor={`comment-${parentId || 'main'}`} className="uppercase text-xs font-semibold tracking-wide">
+        <div className="space-y-1.5">
+          <Label htmlFor={`comment-${parentId || 'main'}`} className="text-xs text-muted-foreground">
             Comment <span className="text-red-500">*</span>
           </Label>
           <Textarea
@@ -375,11 +375,11 @@ export default function CommentsSection({
               setFormData({ ...formData, comment: e.target.value })
             }
             placeholder="Your comment..."
-            rows={isReplyForm ? 3 : 6}
-            className={errors.comment ? "border-red-500" : ""}
+            rows={isReplyForm ? 3 : 4}
+            className={`text-sm ${errors.comment ? "border-red-500" : ""}`}
           />
           {errors.comment && (
-            <p className="text-sm text-red-500">{errors.comment}</p>
+            <p className="text-xs text-red-500">{errors.comment}</p>
           )}
         </div>
 
@@ -387,8 +387,8 @@ export default function CommentsSection({
         {!userProfile && (
           <>
             {/* Name input */}
-            <div className="space-y-2">
-              <Label htmlFor={`name-${parentId || 'main'}`} className="uppercase text-xs font-semibold tracking-wide">
+            <div className="space-y-1.5">
+              <Label htmlFor={`name-${parentId || 'main'}`} className="text-xs text-muted-foreground">
                 Name <span className="text-red-500">*</span>
               </Label>
               <Input
@@ -399,16 +399,16 @@ export default function CommentsSection({
                   setFormData({ ...formData, name: e.target.value })
                 }
                 placeholder="Your name"
-                className={errors.name ? "border-red-500" : ""}
+                className={`text-sm h-9 ${errors.name ? "border-red-500" : ""}`}
               />
               {errors.name && (
-                <p className="text-sm text-red-500">{errors.name}</p>
+                <p className="text-xs text-red-500">{errors.name}</p>
               )}
             </div>
 
             {/* Email input */}
-            <div className="space-y-2">
-              <Label htmlFor={`email-${parentId || 'main'}`} className="uppercase text-xs font-semibold tracking-wide">
+            <div className="space-y-1.5">
+              <Label htmlFor={`email-${parentId || 'main'}`} className="text-xs text-muted-foreground">
                 E-Mail <span className="text-red-500">*</span>
               </Label>
               <Input
@@ -419,16 +419,16 @@ export default function CommentsSection({
                   setFormData({ ...formData, email: e.target.value })
                 }
                 placeholder="your.email@example.com"
-                className={errors.email ? "border-red-500" : ""}
+                className={`text-sm h-9 ${errors.email ? "border-red-500" : ""}`}
               />
               {errors.email && (
-                <p className="text-sm text-red-500">{errors.email}</p>
+                <p className="text-xs text-red-500">{errors.email}</p>
               )}
             </div>
 
             {/* Website input */}
-            <div className="space-y-2">
-              <Label htmlFor={`website-${parentId || 'main'}`} className="uppercase text-xs font-semibold tracking-wide">
+            <div className="space-y-1.5">
+              <Label htmlFor={`website-${parentId || 'main'}`} className="text-xs text-muted-foreground">
                 Website
               </Label>
               <Input
@@ -439,6 +439,7 @@ export default function CommentsSection({
                   setFormData({ ...formData, website: e.target.value })
                 }
                 placeholder="https://yourwebsite.com (optional)"
+                className="text-sm h-9"
               />
             </div>
 
@@ -454,7 +455,7 @@ export default function CommentsSection({
                 />
                 <Label
                   htmlFor="saveInfo"
-                  className="text-sm font-normal cursor-pointer"
+                  className="text-xs text-muted-foreground cursor-pointer"
                 >
                   Save my name, email, and website in this browser for the next
                   time I comment.
@@ -465,15 +466,17 @@ export default function CommentsSection({
         )}
 
         {/* Submit button */}
-        <div className="flex justify-end gap-2">
+        <div className="flex justify-end gap-2 pt-1">
           {isReplyForm && (
             <Button
               type="button"
-              variant="outline"
+              variant="ghost"
+              size="sm"
               onClick={() => {
                 setReplyingTo(null);
                 setFormData({ ...formData, comment: "" });
               }}
+              className="text-xs"
             >
               Cancel
             </Button>
@@ -481,14 +484,15 @@ export default function CommentsSection({
           <Button
             type="submit"
             disabled={submitting}
-            className="uppercase font-semibold tracking-wide"
+            size="sm"
+            className="text-xs"
           >
             {submitting ? (
               "Submitting..."
             ) : (
               <>
-                <Send className="h-4 w-4 mr-2" />
-                {isReplyForm ? 'Reply' : 'Submit'}
+                <Send className="h-3 w-3 mr-1.5" />
+                {isReplyForm ? 'Reply' : 'Post Comment'}
               </>
             )}
           </Button>
@@ -498,40 +502,40 @@ export default function CommentsSection({
   };
 
   return (
-    <Card className={`gap-2 ${className}`}>
-      <CardHeader className="pb-2 px-8">
-        <CardTitle className="flex items-center gap-2">
-          <MessageSquare className="h-5 w-5" />
+    <div className={`space-y-4 ${className}`}>
+      <div className="flex items-center justify-between border-b pb-2">
+        <h3 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+          <MessageSquare className="h-4 w-4" />
           Comments {displayedComments.length > 0 && `(${displayedComments.length})`}
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="pt-0 px-8 space-y-6">
+        </h3>
+      </div>
+      <div className="space-y-6">
         {/* Display existing comments */}
         {loading ? (
-          <div className="text-center py-8 text-muted-foreground">
+          <div className="text-center py-6 text-sm text-muted-foreground">
             Loading comments...
           </div>
         ) : commentTree.length > 0 ? (
-          <div className="space-y-6 border-b pb-6">
+          <div className="space-y-4">
             {commentTree.map((comment) => renderComment(comment, 0))}
           </div>
         ) : (
-          <div className="text-center py-4 text-muted-foreground uppercase text-sm font-semibold tracking-wide">
-            No Comments Yet
+          <div className="text-center py-4 text-sm text-muted-foreground">
+            No comments yet
           </div>
         )}
 
         {/* Comment form */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold uppercase tracking-wide">
-            Write a Comment
-          </h3>
+        <div className="pt-4 border-t space-y-3">
+          <h4 className="text-sm font-medium text-muted-foreground">
+            Add a comment
+          </h4>
           {userProfile ? (
-            <p className="text-sm text-muted-foreground">
-              Commenting as <span className="font-semibold">{userProfile.displayName || userProfile.email}</span>
+            <p className="text-xs text-muted-foreground">
+              Commenting as <span className="font-medium">{userProfile.displayName || userProfile.email}</span>
             </p>
           ) : (
-            <p className="text-sm text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               Your email address will not be published. Required fields are marked{" "}
               <span className="text-red-500">*</span>
             </p>
@@ -539,7 +543,7 @@ export default function CommentsSection({
           
           {renderCommentForm()}
         </div>
-      </CardContent>
+      </div>
 
       {/* Success Dialog */}
       <Dialog open={successDialogOpen} onOpenChange={setSuccessDialogOpen}>
@@ -569,7 +573,7 @@ export default function CommentsSection({
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </Card>
+    </div>
   );
 }
 
