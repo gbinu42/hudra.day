@@ -67,6 +67,12 @@ export default function HomePage() {
                   Browse Liturgical Texts
                 </Link>
               </Button>
+              <Button size="lg" className="text-lg px-8" asChild>
+                <Link href="/hymns">
+                  <Scroll className="mr-2 h-5 w-5" />
+                  Browse Hymns
+                </Link>
+              </Button>
               <Button
                 variant="outline"
                 size="lg"
