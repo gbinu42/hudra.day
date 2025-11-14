@@ -23,12 +23,14 @@ interface CommentsSectionProps {
   resourceType: ResourceType;
   resourceId: string;
   className?: string;
+  hideCommentList?: boolean; // Hide the comment list but keep the form
 }
 
 export default function CommentsSection({
   resourceType,
   resourceId,
   className = "",
+  hideCommentList = false,
 }: CommentsSectionProps) {
   const { userProfile } = useAuth();
   const [comments, setComments] = useState<Comment[]>([]);
@@ -510,18 +512,22 @@ export default function CommentsSection({
       </div>
       <div className="space-y-6">
         {/* Display existing comments */}
-        {loading ? (
-          <div className="text-center py-6 text-sm text-muted-foreground">
-            Loading comments...
-          </div>
-        ) : commentTree.length > 0 ? (
-          <div className="space-y-4">
-            {commentTree.map((comment) => renderComment(comment, 0))}
-          </div>
-        ) : (
-          <div className="text-center py-4 text-sm text-muted-foreground">
-            No comments yet
-          </div>
+        {!hideCommentList && (
+          <>
+            {loading ? (
+              <div className="text-center py-6 text-sm text-muted-foreground">
+                Loading comments...
+              </div>
+            ) : commentTree.length > 0 ? (
+              <div className="space-y-4">
+                {commentTree.map((comment) => renderComment(comment, 0))}
+              </div>
+            ) : (
+              <div className="text-center py-4 text-sm text-muted-foreground">
+                No comments yet
+              </div>
+            )}
+          </>
         )}
 
         {/* Comment form */}

@@ -185,7 +185,13 @@ interface Page {
   updatedAt?: Date;
 }
 
-export default function BookViewer({ initialBook }: { initialBook?: Book }) {
+export default function BookViewer({ 
+  initialBook,
+  hideComments = false 
+}: { 
+  initialBook?: Book;
+  hideComments?: boolean;
+}) {
   const [book, setBook] = useState<Book | null>(initialBook || null);
   const [loading, setLoading] = useState(!initialBook);
   const [notFound, setNotFound] = useState(false);
@@ -2898,7 +2904,7 @@ export default function BookViewer({ initialBook }: { initialBook?: Book }) {
       </Dialog>
 
       {/* Comments Section */}
-      {!isWhitelabel && showHeaders && book && (
+      {!isWhitelabel && showHeaders && book && !hideComments && (
         <div className="container mx-auto px-4 max-w-7xl mb-8">
           <CommentsSection resourceType="book" resourceId={bookId} />
         </div>

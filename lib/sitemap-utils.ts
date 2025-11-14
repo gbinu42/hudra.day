@@ -56,6 +56,10 @@ export function generateStaticRoutes(
       changeFrequency: "monthly",
       priority: 0.7,
     }),
+    createSitemapEntry(`${baseUrl}/type`, {
+      changeFrequency: "yearly",
+      priority: 0.7,
+    }),
     createSitemapEntry(`${baseUrl}/privacy`, {
       changeFrequency: "yearly",
       priority: 0.3,

@@ -48,88 +48,184 @@ export async function generateMetadata({
 
     const data = hymnDoc.data();
     const hymn = data as Hymn;
+
+    // Get primary title (prefer English, fallback to first available)
+    const primaryEnglishTitle = hymn.titles?.find(
+      (t) => t.language?.toLowerCase() === "english"
+    );
     const hymnTitle =
-      hymn.titles && hymn.titles.length > 0
-        ? hymn.titles.find((t) => t.language === "english")?.title ||
-          hymn.titles[0].title
-        : "Untitled Hymn";
-    const hymnDescription =
-      hymn.description ||
-      "East Syriac hymn from the Church of the East tradition.";
+      primaryEnglishTitle?.title ||
+      (hymn.titles && hymn.titles.length > 0
+        ? hymn.titles[0].title
+        : "Untitled Hymn");
+
+    // Get Syriac title if available
+    const syriacTitle = hymn.titles?.find(
+      (t) => t.language?.toLowerCase() === "syriac"
+    )?.title;
+
+    // Get all other names/titles (excluding the primary English and Syriac titles)
+    const otherNames =
+      hymn.titles
+        ?.filter(
+          (t) =>
+            t !== primaryEnglishTitle &&
+            !(t.language?.toLowerCase() === "syriac" && t.title === syriacTitle)
+        )
+        .map((t) => t.title)
+        .filter(Boolean) || [];
+
+    // Build author names
+    const authorNames = hymn.authors?.map((a) => a.name).filter(Boolean) || [];
+    const authorString =
+      authorNames.length > 0
+        ? authorNames.join(", ")
+        : hymn.authorName || "Unknown";
+
+    // Build rich description
+    const parts: string[] = [];
+    if (hymn.description) {
+      parts.push(hymn.description);
+    } else {
+      parts.push(
+        `${hymnTitle} is an East Syriac liturgical hymn from the Church of the East tradition.`
+      );
+    }
+
+    if (authorNames.length > 0) {
+      parts.push(`Composed by ${authorString}.`);
+    }
+
+    if (hymn.originYear) {
+      parts.push(`Originated in ${hymn.originYear}.`);
+    }
+
+    if (hymn.category) {
+      parts.push(`Category: ${hymn.category}.`);
+    }
+
+    if (hymn.occasion) {
+      parts.push(`For ${hymn.occasion}.`);
+    }
+
+    // Add other names/alternative titles
+    if (otherNames.length > 0) {
+      parts.push(`Also known as: ${otherNames.join(", ")}.`);
+    }
 
     // Get recording info for metadata
     const recordings = hymn.recordings || [];
-    const hasAudio = recordings.some((r) => r.type === "audio");
-    const hasVideo = recordings.some((r) => r.type === "video");
-    const hasYouTube = recordings.some((r) => r.type === "youtube");
+    const approvedRecordings = recordings.filter(
+      (r) => r.status === "approved"
+    );
+    const hasAudio = approvedRecordings.some((r) => r.type === "audio");
+    const hasVideo = approvedRecordings.some((r) => r.type === "video");
+    const hasYouTube = approvedRecordings.some((r) => r.type === "youtube");
 
-    let mediaDescription = "";
-    if (hasAudio && hasVideo) {
-      mediaDescription = "Includes audio and video recordings.";
-    } else if (hasAudio) {
-      mediaDescription = "Includes audio recording.";
-    } else if (hasVideo) {
-      mediaDescription = "Includes video recording.";
-    } else if (hasYouTube) {
-      mediaDescription = "Includes YouTube video.";
+    if (hasAudio || hasVideo || hasYouTube) {
+      const mediaTypes: string[] = [];
+      if (hasAudio) mediaTypes.push("audio");
+      if (hasVideo) mediaTypes.push("video");
+      if (hasYouTube) mediaTypes.push("YouTube");
+      parts.push(
+        `Includes ${mediaTypes.join(" and ")} recording${
+          mediaTypes.length > 1 ? "s" : ""
+        }.`
+      );
     }
 
-    const fullDescription = `${hymnDescription} ${mediaDescription}`.trim();
+    const fullDescription = parts.join(" ");
+
+    // Build comprehensive title
+    const titleParts = [hymnTitle];
+    if (syriacTitle) {
+      titleParts.push(`(${syriacTitle})`);
+    }
+    if (authorNames.length > 0 && authorNames.length <= 2) {
+      titleParts.push(`by ${authorString}`);
+    }
+    const fullTitle = titleParts.join(" ");
+
+    // Build keywords - include all titles/names
+    const keywords = [
+      hymnTitle,
+      ...(syriacTitle ? [syriacTitle] : []),
+      ...otherNames, // Include all other names/alternative titles
+      ...authorNames,
+      "East Syriac",
+      "Syriac hymn",
+      "Church of the East",
+      "liturgical music",
+      "liturgical hymn",
+      "hudra",
+      hymn.category || "liturgy",
+      hymn.occasion || "worship",
+      ...(hymn.tags || []),
+      ...(hymn.meter ? [`${hymn.meter} meter`] : []),
+    ].filter(Boolean);
+
+    // Get best image
+    const hymnImage =
+      hymn.hymnImageGroups?.[0]?.images?.[0] ||
+      "https://hudra.day/images/hymn-default.png";
 
     return {
-      title: hymnTitle,
+      title: fullTitle,
       description: fullDescription,
-      keywords: [
-        hymnTitle,
-        "East Syriac hymn",
-        "Church of the East",
-        "liturgical music",
-        hymn.category || "liturgy",
-        hymn.occasion || "worship",
-        ...(hymn.tags || []),
-      ],
+      keywords: keywords.join(", "),
+      authors:
+        authorNames.length > 0
+          ? authorNames.map((name) => ({ name }))
+          : undefined,
       openGraph: {
-        title: hymnTitle,
+        title: fullTitle,
         description: fullDescription,
         type: "article",
-        images:
-          hymn.hymnImageGroups &&
-          hymn.hymnImageGroups.length > 0 &&
-          hymn.hymnImageGroups[0].images &&
-          hymn.hymnImageGroups[0].images.length > 0
-            ? [
-                {
-                  url: hymn.hymnImageGroups[0].images[0],
-                  width: 1200,
-                  height: 630,
-                  alt: hymnTitle,
-                },
-              ]
-            : [
-                {
-                  url: "https://hudra.day/images/hymn-default.png",
-                  width: 1200,
-                  height: 630,
-                  alt: hymnTitle,
-                },
-              ],
+        siteName: "Hudra Day - East Syriac Liturgical Archive",
+        images: [
+          {
+            url: hymnImage,
+            width: 1200,
+            height: 630,
+            alt: `${hymnTitle}${syriacTitle ? ` (${syriacTitle})` : ""}`,
+          },
+        ],
+        ...(hymn.originYear && {
+          publishedTime: new Date(hymn.originYear, 0, 1).toISOString(),
+        }),
       },
       twitter: {
-        title: hymnTitle,
-        description: fullDescription,
-        images:
-          hymn.hymnImageGroups &&
-          hymn.hymnImageGroups.length > 0 &&
-          hymn.hymnImageGroups[0].images &&
-          hymn.hymnImageGroups[0].images.length > 0
-            ? {
-                url: hymn.hymnImageGroups[0].images[0],
-                alt: hymnTitle,
-              }
-            : {
-                url: "https://hudra.day/images/hymn-default.png",
-                alt: hymnTitle,
-              },
+        card: "summary_large_image",
+        title: fullTitle,
+        description:
+          fullDescription.length > 200
+            ? fullDescription.substring(0, 197) + "..."
+            : fullDescription,
+        images: {
+          url: hymnImage,
+          alt: `${hymnTitle}${syriacTitle ? ` (${syriacTitle})` : ""}`,
+        },
+      },
+      alternates: {
+        canonical: `https://hudra.day/hymns/${id}`,
+      },
+      other: {
+        ...(hymn.originYear && {
+          "article:published_time": new Date(
+            hymn.originYear,
+            0,
+            1
+          ).toISOString(),
+        }),
+        ...(hymn.category && {
+          "article:section": hymn.category,
+        }),
+        ...(hymn.occasion && {
+          "article:tag": hymn.occasion,
+        }),
+        ...(otherNames.length > 0 && {
+          "article:tag": otherNames.join(", "), // Add other names as tags
+        }),
       },
     };
   } catch (error) {

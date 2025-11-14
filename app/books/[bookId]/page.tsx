@@ -4,6 +4,10 @@ import { Metadata } from "next";
 import { Book } from "@/lib/types/book";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
+import { commentService } from "@/lib/comment-services";
+import { Comment } from "@/lib/types/comment";
+import CommentsSectionStatic from "@/components/CommentsSectionStatic";
+import CommentsSection from "@/components/CommentsSection";
 
 // Server-side function to generate static params
 export async function generateStaticParams() {
@@ -44,50 +48,116 @@ export async function generateMetadata({
       id: bookDoc.id,
     };
 
-    // Create SEO-friendly title and description
-    const title = book.syriacTitle
-      ? `${book.title} (${book.syriacTitle}) by ${book.author}`
-      : `${book.title} by ${book.author}`;
-    const description =
-      book.description ||
-      `Read ${book.title}${
-        book.syriacTitle ? ` (${book.syriacTitle})` : ""
-      } by ${book.author}. ${book.category} book in ${book.language}.`;
+    // Build rich title
+    const titleParts = [book.title];
+    if (book.syriacTitle) {
+      titleParts.push(`(${book.syriacTitle})`);
+    }
+    titleParts.push(`by ${book.author}`);
+    const fullTitle = titleParts.join(" ");
+
+    // Build rich description
+    const descParts: string[] = [];
+    if (book.description) {
+      descParts.push(book.description);
+    } else {
+      descParts.push(`${book.title}${book.syriacTitle ? ` (${book.syriacTitle})` : ""} by ${book.author}.`);
+    }
+    
+    if (book.category) {
+      descParts.push(`A ${book.category.toLowerCase()} book`);
+    }
+    
+    if (book.language) {
+      descParts.push(`in ${book.language}`);
+    }
+    
+    if (book.publicationYear) {
+      descParts.push(`published in ${book.publicationYear}`);
+    }
+    
+    if (book.pageCount) {
+      descParts.push(`(${book.pageCount} pages)`);
+    }
+    
+    if (book.publisher) {
+      descParts.push(`by ${book.publisher}`);
+      if (book.placeOfPublication) {
+        descParts.push(`in ${book.placeOfPublication}`);
+      }
+    }
+
+    // Add other names (Syriac title if it exists and is different from main title)
+    if (book.syriacTitle && book.syriacTitle !== book.title) {
+      descParts.push(`Also known as: ${book.syriacTitle}.`);
+    }
+    
+    const fullDescription = descParts.join(". ") + ".";
+
+    // Build comprehensive keywords
+    const keywords = [
+      book.title,
+      ...(book.syriacTitle ? [book.syriacTitle] : []),
+      book.author,
+      book.category,
+      book.language,
+      "East Syriac",
+      "Syriac literature",
+      "Church of the East",
+      "liturgical text",
+      ...(book.tags || []),
+      ...(book.publisher ? [book.publisher] : []),
+      ...(book.placeOfPublication ? [book.placeOfPublication] : []),
+    ].filter(Boolean);
+
+    // Get cover image or default
+    const coverImage = book.coverImage || "https://hudra.day/images/book-default.png";
 
     return {
-      title,
-      description,
+      title: fullTitle,
+      description: fullDescription,
+      keywords: keywords.join(", "),
+      authors: [{ name: book.author }],
       openGraph: {
-        title,
-        description,
-        type: "article",
-        ...(book.coverImage && { images: [book.coverImage] }),
+        title: fullTitle,
+        description: fullDescription,
+        type: "book",
+        siteName: "Hudra Day - East Syriac Liturgical Archive",
+        images: [
+          {
+            url: coverImage,
+            width: 1200,
+            height: 630,
+            alt: `${book.title}${book.syriacTitle ? ` (${book.syriacTitle})` : ""} cover`,
+          },
+        ],
+        ...(book.publicationYear && {
+          publishedTime: new Date(book.publicationYear, 0, 1).toISOString(),
+        }),
       },
       twitter: {
         card: "summary_large_image",
-        title,
-        description,
-        ...(book.coverImage && { images: [book.coverImage] }),
+        title: fullTitle,
+        description: fullDescription.length > 200 
+          ? fullDescription.substring(0, 197) + "..." 
+          : fullDescription,
+        images: {
+          url: coverImage,
+          alt: `${book.title}${book.syriacTitle ? ` (${book.syriacTitle})` : ""} cover`,
+        },
       },
-      keywords: [
-        book.title,
-        book.author,
-        book.category,
-        book.language,
-        ...(book.tags || []),
-        ...(book.publisher ? [book.publisher] : []),
-      ].join(", "),
-      authors: [{ name: book.author }],
       alternates: {
         canonical: `https://hudra.day/books/${bookId}`,
       },
-      ...(book.publicationYear && {
-        other: {
-          "book:publication_date": book.publicationYear.toString(),
-          ...(book.isbn && { "book:isbn": book.isbn }),
-          ...(book.publisher && { "book:publisher": book.publisher }),
-        },
-      }),
+      other: {
+        ...(book.publicationYear && {
+          "book:release_date": book.publicationYear.toString(),
+          "article:published_time": new Date(book.publicationYear, 0, 1).toISOString(),
+        }),
+        ...(book.isbn && { "book:isbn": book.isbn }),
+        ...(book.publisher && { "book:publisher": book.publisher }),
+        ...(book.category && { "article:section": book.category }),
+      },
     };
   } catch (error) {
     console.error("Error generating metadata for book:", error);
@@ -125,12 +195,46 @@ export default async function BookDetailPage({
       protected: bookData.protected ?? false, // Default to not protected if not set
     };
 
+    // Fetch comments for server-side rendering
+    let comments: Comment[] = [];
+    try {
+      const commentsSnapshot = await commentService.getCommentsByResource(
+        "book",
+        bookId,
+        false // Only get approved comments for static rendering
+      );
+      comments = commentsSnapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          createdAt: data.createdAt?.toDate?.() || new Date(),
+          updatedAt: data.updatedAt?.toDate?.() || new Date(),
+        } as Comment;
+      });
+    } catch (error) {
+      console.error("Error fetching comments for book:", error);
+      // Continue without comments if fetch fails
+    }
+
     // Note: Server-side access control is handled by the BookViewer component
     // since we need access to the user's authentication state
     return (
-      <Suspense>
-        <BookViewer initialBook={book} />
-      </Suspense>
+      <>
+        <Suspense>
+          <BookViewer initialBook={book} hideComments={true} />
+        </Suspense>
+        {/* Server-rendered comments section for static HTML generation */}
+        {comments.length > 0 && (
+          <div className="container mx-auto px-4 max-w-7xl mb-8">
+            <CommentsSectionStatic comments={comments} />
+          </div>
+        )}
+        {/* Client-side comments section for interactivity (form submission and dynamic updates) */}
+        <div className="container mx-auto px-4 max-w-7xl mb-8">
+          <CommentsSection resourceType="book" resourceId={bookId} hideCommentList={comments.length > 0} />
+        </div>
+      </>
     );
   } catch (error) {
     console.error("Error fetching book data:", error);
