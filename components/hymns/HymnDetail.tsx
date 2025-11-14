@@ -12,6 +12,7 @@ import {
   sortByChurchPriority,
   CHURCH_DISPLAY_ORDER,
 } from "@/lib/types/hymn";
+import { containsSyriac } from "@/lib/utils/syriacNumerals";
 import {
   Music,
   User,
@@ -41,8 +42,13 @@ export default function HymnDetail({
   currentUserId,
   userRole,
 }: HymnDetailProps) {
-  // Tab state for main text section
-  const [activeMainTab, setActiveMainTab] = useState("syriac");
+  // Check if hymn text contains Syriac characters (and is not empty/whitespace)
+  const hasSyriacText = hymn.text && hymn.text.trim() && containsSyriac(hymn.text);
+  
+  // Tab state for main text section - default to first translation if no Syriac text
+  const [activeMainTab, setActiveMainTab] = useState(
+    hasSyriacText ? "syriac" : hymn.translations && hymn.translations.length > 0 ? "translation-0" : "syriac"
+  );
 
   // Tab state for church versions (indexed by version index)
   const [activeVersionTabs, setActiveVersionTabs] = useState<
@@ -368,93 +374,137 @@ export default function HymnDetail({
       )}
 
       {/* Text */}
-      {hymn.text && (
+      {(hymn.text || (hymn.translations && hymn.translations.length > 0)) && (
         <Card className="gap-2">
           <CardHeader className="pb-2 px-8">
             <CardTitle>Text</CardTitle>
           </CardHeader>
           <CardContent className="pt-0 px-8">
-            {hymn.translations && hymn.translations.length > 0 ? (
+            {hymn.translations && hymn.translations.length > 0 && (
               <div className="space-y-4">
-                {/* Tab Navigation */}
-                <div className="flex border-b">
-                  <button
-                    onClick={() => setActiveMainTab("syriac")}
-                    className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-                      activeMainTab === "syriac"
-                        ? "border-primary text-primary"
-                        : "border-transparent text-muted-foreground hover:text-foreground"
-                    }`}
-                  >
-                    Syriac Text
-                  </button>
-                  {hymn.translations.map((translation, tIndex) => (
+                {/* Tab Navigation - only show Syriac tab if text contains Syriac */}
+                {hasSyriacText && (
+                  <div className="flex border-b">
                     <button
-                      key={tIndex}
-                      onClick={() => setActiveMainTab(`translation-${tIndex}`)}
-                      className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors capitalize ${
-                        activeMainTab === `translation-${tIndex}`
+                      onClick={() => setActiveMainTab("syriac")}
+                      className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+                        activeMainTab === "syriac"
                           ? "border-primary text-primary"
                           : "border-transparent text-muted-foreground hover:text-foreground"
                       }`}
                     >
-                      {translation.language}
+                      Syriac Text
                     </button>
-                  ))}
-                </div>
-
-                {/* Tab Content */}
-                <div className="min-h-[200px]">
-                  {activeMainTab === "syriac" && (
-                    <div
-                      className="whitespace-pre-wrap leading-relaxed text-justify prose prose-slate max-w-none"
-                      style={{
-                        fontFamily: "East Syriac Adiabene, serif",
-                        fontSize: "28px",
-                      }}
-                      dir="rtl"
-                      dangerouslySetInnerHTML={{ __html: hymn.text || "" }}
-                    />
-                  )}
-                  {hymn.translations.map(
-                    (translation, tIndex) =>
-                      activeMainTab === `translation-${tIndex}` && (
-                        <div key={tIndex} className="space-y-2">
-                          <div className="flex items-center gap-2 text-sm font-semibold">
-                            <Globe className="h-4 w-4" />
-                            <span className="capitalize">
-                              {translation.language}
+                    {hymn.translations.map((translation, tIndex) => (
+                      <button
+                        key={tIndex}
+                        onClick={() => setActiveMainTab(`translation-${tIndex}`)}
+                        className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors capitalize ${
+                          activeMainTab === `translation-${tIndex}`
+                            ? "border-primary text-primary"
+                            : "border-transparent text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        {translation.language}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                
+                {/* Show translations directly if no Syriac text, otherwise show tabs */}
+                {!hasSyriacText ? (
+                  /* Show all translations directly when no Syriac text */
+                  <div className="space-y-6">
+                    {hymn.translations.map((translation, tIndex) => (
+                      <div key={tIndex} className="space-y-2">
+                        <div className="flex items-center gap-2 text-sm font-semibold">
+                          <Globe className="h-4 w-4" />
+                          <span className="capitalize">
+                            {translation.language}
+                          </span>
+                          {translation.translatorName && (
+                            <span className="text-xs text-muted-foreground font-normal">
+                              by {translation.translatorName}
                             </span>
-                            {translation.translatorName && (
-                              <span className="text-xs text-muted-foreground font-normal">
-                                by {translation.translatorName}
-                              </span>
-                            )}
-                          </div>
-                          <pre
-                            className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground"
-                            style={{
-                              fontFamily:
-                                translation.language?.toLowerCase() ===
-                                "malayalam"
-                                  ? "Noto Sans Malayalam, sans-serif"
-                                  : "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-                            }}
-                          >
-                            {translation.text}
-                          </pre>
-                          {translation.notes && (
-                            <p className="text-xs text-muted-foreground italic">
-                              {translation.notes}
-                            </p>
                           )}
                         </div>
-                      )
-                  )}
-                </div>
+                        <pre
+                          className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground"
+                          dir={translation.language?.toLowerCase() === "arabic" ? "rtl" : "ltr"}
+                          style={{
+                            fontFamily:
+                              translation.language?.toLowerCase() ===
+                              "malayalam"
+                                ? "Noto Sans Malayalam, sans-serif"
+                                : "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+                          }}
+                        >
+                          {translation.text}
+                        </pre>
+                        {translation.notes && (
+                          <p className="text-xs text-muted-foreground italic">
+                            {translation.notes}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  /* Tab Content - show Syriac and translations in tabs */
+                  <div className="min-h-[200px]">
+                    {activeMainTab === "syriac" && (
+                      <div
+                        className="whitespace-pre-wrap leading-relaxed text-justify prose prose-slate max-w-none"
+                        style={{
+                          fontFamily: "East Syriac Adiabene, serif",
+                          fontSize: "28px",
+                        }}
+                        dir="rtl"
+                        dangerouslySetInnerHTML={{ __html: hymn.text || "" }}
+                      />
+                    )}
+                    {hymn.translations.map(
+                      (translation, tIndex) =>
+                        activeMainTab === `translation-${tIndex}` && (
+                          <div key={tIndex} className="space-y-2">
+                            <div className="flex items-center gap-2 text-sm font-semibold">
+                              <Globe className="h-4 w-4" />
+                              <span className="capitalize">
+                                {translation.language}
+                              </span>
+                              {translation.translatorName && (
+                                <span className="text-xs text-muted-foreground font-normal">
+                                  by {translation.translatorName}
+                                </span>
+                              )}
+                            </div>
+                            <pre
+                              className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground"
+                              dir={translation.language?.toLowerCase() === "arabic" ? "rtl" : "ltr"}
+                              style={{
+                                fontFamily:
+                                  translation.language?.toLowerCase() ===
+                                  "malayalam"
+                                    ? "Noto Sans Malayalam, sans-serif"
+                                    : "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+                              }}
+                            >
+                              {translation.text}
+                            </pre>
+                            {translation.notes && (
+                              <p className="text-xs text-muted-foreground italic">
+                                {translation.notes}
+                              </p>
+                            )}
+                          </div>
+                        )
+                    )}
+                  </div>
+                )}
               </div>
-            ) : (
-              /* Full width Syriac text when no translations */
+            )}
+            {/* Show text only if no translations but text exists */}
+            {(!hymn.translations || hymn.translations.length === 0) && hymn.text && (
               <div className="space-y-2">
                 <h4 className="text-sm font-semibold text-muted-foreground">
                   Syriac Text
@@ -491,9 +541,14 @@ export default function HymnDetail({
                 </div>
               </CardHeader>
               <CardContent className="space-y-6 pt-0 px-8">
-                {version.translations && version.translations.length > 0 ? (
+                {(() => {
+                  // Check if this church version text contains Syriac
+                  const versionHasSyriacText = version.text && version.text.trim() && containsSyriac(version.text);
+                  
+                  return version.translations && version.translations.length > 0 ? (
                   <div className="space-y-4">
-                    {/* Tab Navigation */}
+                    {/* Tab Navigation - only show Syriac tab if text contains Syriac */}
+                    {versionHasSyriacText && (
                     <div className="flex border-b">
                       <button
                         onClick={() =>
@@ -530,8 +585,48 @@ export default function HymnDetail({
                         </button>
                       ))}
                     </div>
+                    )}
 
-                    {/* Tab Content */}
+                    {/* Show translations directly if no Syriac text, otherwise show tabs */}
+                    {!versionHasSyriacText ? (
+                      /* Show all translations directly when no Syriac text */
+                      <div className="space-y-6">
+                        {version.translations.map((translation, tIndex) => (
+                          <div key={tIndex} className="space-y-2">
+                            <div className="flex items-center gap-2 text-sm font-semibold">
+                              <Globe className="h-4 w-4" />
+                              <span className="capitalize">
+                                {translation.language}
+                              </span>
+                              {translation.translatorName && (
+                                <span className="text-xs text-muted-foreground font-normal">
+                                  by {translation.translatorName}
+                                </span>
+                              )}
+                            </div>
+                            <pre
+                              className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground"
+                              dir={translation.language?.toLowerCase() === "arabic" ? "rtl" : "ltr"}
+                              style={{
+                                fontFamily:
+                                  translation.language?.toLowerCase() ===
+                                  "malayalam"
+                                    ? "Noto Sans Malayalam, sans-serif"
+                                    : "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+                              }}
+                            >
+                              {translation.text}
+                            </pre>
+                            {translation.notes && (
+                              <p className="text-xs text-muted-foreground italic">
+                                {translation.notes}
+                              </p>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                    /* Tab Content - show Syriac and translations in tabs */
                     <div className="min-h-[200px]">
                       {(activeVersionTabs[index] || "syriac") === "syriac" && (
                         <div
@@ -583,8 +678,9 @@ export default function HymnDetail({
                           )
                       )}
                     </div>
+                    )}
                   </div>
-                ) : (
+                  ) : (
                   /* Full width Syriac text when no translations */
                   <div className="space-y-2">
                     <h4 className="text-sm font-semibold text-muted-foreground">
@@ -600,7 +696,8 @@ export default function HymnDetail({
                       dangerouslySetInnerHTML={{ __html: version.text || "" }}
                     />
                   </div>
-                )}
+                  );
+                })()}
 
                 {version.notes && (
                   <p className="text-sm text-muted-foreground italic border-t pt-4">
