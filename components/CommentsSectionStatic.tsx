@@ -1,9 +1,13 @@
+"use client";
+
 import { Comment } from "@/lib/types/comment";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, Reply } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface CommentsSectionStaticProps {
   comments: Comment[];
   className?: string;
+  onReplyClick?: (commentId: string) => void;
 }
 
 // Build comment tree structure
@@ -46,9 +50,11 @@ function formatDate(date: Date) {
 function CommentItem({
   comment,
   depth = 0,
+  onReplyClick,
 }: {
   comment: Comment & { replies?: Comment[] };
   depth?: number;
+  onReplyClick?: (commentId: string) => void;
 }) {
   const maxDepth = 3;
   const indent = Math.min(depth, maxDepth) * 40;
@@ -81,13 +87,39 @@ function CommentItem({
         <p className="text-muted-foreground whitespace-pre-wrap">
           {comment.comment}
         </p>
+        
+        {/* Reply button */}
+        {depth < maxDepth && onReplyClick && (
+          <div className="mt-2">
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => {
+                onReplyClick(comment.id);
+                // Scroll to form
+                setTimeout(() => {
+                  document.getElementById('main-comment-form')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
+              }}
+              className="text-primary hover:text-primary/80 text-xs"
+            >
+              <Reply className="h-3 w-3 mr-1" />
+              Reply
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Render replies */}
       {comment.replies && comment.replies.length > 0 && (
         <div className="space-y-3">
           {comment.replies.map((reply) => (
-            <CommentItem key={reply.id} comment={reply} depth={depth + 1} />
+            <CommentItem 
+              key={reply.id} 
+              comment={reply} 
+              depth={depth + 1}
+              onReplyClick={onReplyClick}
+            />
           ))}
         </div>
       )}
@@ -98,6 +130,7 @@ function CommentItem({
 export default function CommentsSectionStatic({
   comments,
   className = "",
+  onReplyClick,
 }: CommentsSectionStaticProps) {
   // Filter to only approved comments for static rendering
   const approvedComments = comments.filter((c) => c.status === "approved");
@@ -115,7 +148,11 @@ export default function CommentsSectionStatic({
         {commentTree.length > 0 ? (
           <div className="space-y-4">
             {commentTree.map((comment) => (
-              <CommentItem key={comment.id} comment={comment} />
+              <CommentItem 
+                key={comment.id} 
+                comment={comment}
+                onReplyClick={onReplyClick}
+              />
             ))}
           </div>
         ) : (

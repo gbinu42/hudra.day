@@ -6,8 +6,8 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { commentService } from "@/lib/comment-services";
 import { Comment } from "@/lib/types/comment";
-import CommentsSectionStatic from "@/components/CommentsSectionStatic";
-import CommentsSection from "@/components/CommentsSection";
+import CommentsSectionWithStatic from "@/components/CommentsSectionWithStatic";
+import Footer from "@/components/Footer";
 
 // Server-side function to generate static params
 export async function generateStaticParams() {
@@ -224,16 +224,15 @@ export default async function BookDetailPage({
         <Suspense>
           <BookViewer initialBook={book} hideComments={true} />
         </Suspense>
-        {/* Server-rendered comments section for static HTML generation */}
-        {comments.length > 0 && (
-          <div className="container mx-auto px-4 max-w-7xl mb-8">
-            <CommentsSectionStatic comments={comments} />
-          </div>
-        )}
-        {/* Client-side comments section for interactivity (form submission and dynamic updates) */}
+        {/* Static comments section with interactive form */}
         <div className="container mx-auto px-4 max-w-7xl mb-8">
-          <CommentsSection resourceType="book" resourceId={bookId} hideCommentList={comments.length > 0} />
+          <CommentsSectionWithStatic 
+            resourceType="book" 
+            resourceId={bookId} 
+            initialComments={comments}
+          />
         </div>
+        <Footer />
       </>
     );
   } catch (error) {

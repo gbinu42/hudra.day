@@ -24,6 +24,7 @@ interface CommentsSectionProps {
   resourceId: string;
   className?: string;
   hideCommentList?: boolean; // Hide the comment list but keep the form
+  initialReplyingTo?: string | null; // Initial comment ID to reply to
 }
 
 export default function CommentsSection({
@@ -31,13 +32,29 @@ export default function CommentsSection({
   resourceId,
   className = "",
   hideCommentList = false,
+  initialReplyingTo = null,
 }: CommentsSectionProps) {
   const { userProfile } = useAuth();
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [successDialogOpen, setSuccessDialogOpen] = useState(false);
-  const [replyingTo, setReplyingTo] = useState<string | null>(null); // ID of comment being replied to
+  const [replyingTo, setReplyingTo] = useState<string | null>(initialReplyingTo); // ID of comment being replied to
+  
+  // Update replyingTo when initialReplyingTo changes
+  useEffect(() => {
+    if (initialReplyingTo) {
+      setReplyingTo(initialReplyingTo);
+      // Check sessionStorage as well
+      if (typeof window !== 'undefined') {
+        const stored = sessionStorage.getItem(`replyTo_${resourceId}`);
+        if (stored) {
+          setReplyingTo(stored);
+          sessionStorage.removeItem(`replyTo_${resourceId}`);
+        }
+      }
+    }
+  }, [initialReplyingTo, resourceId]);
   
   // Form state
   const [formData, setFormData] = useState({
@@ -202,6 +219,11 @@ export default function CommentsSection({
       // Reload comments (in background - won't show new comment until approved)
       loadComments();
       
+      // Dispatch event to notify static comments section to reload
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('commentSubmitted'));
+      }
+      
       // Show success dialog
       setSuccessDialogOpen(true);
     } catch (error) {
@@ -318,23 +340,25 @@ export default function CommentsSection({
             </div>
           )}
           
-          {/* Reply button */}
+          {/* Reply button - show for all displayed comments (already filtered by approval status) */}
           {depth < maxDepth && (
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => {
-                setReplyingTo(comment.id);
-                // Scroll to form
-                setTimeout(() => {
-                  document.getElementById(`reply-form-${comment.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 100);
-              }}
-              className="text-primary hover:text-primary/80 text-xs"
-            >
-              <Reply className="h-3 w-3 mr-1" />
-              Reply
-            </Button>
+            <div className="mt-2">
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => {
+                  setReplyingTo(comment.id);
+                  // Scroll to form
+                  setTimeout(() => {
+                    document.getElementById(`reply-form-${comment.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  }, 100);
+                }}
+                className="text-primary hover:text-primary/80 text-xs"
+              >
+                <Reply className="h-3 w-3 mr-1" />
+                Reply
+              </Button>
+            </div>
           )}
           
           {/* Reply form */}
@@ -504,12 +528,14 @@ export default function CommentsSection({
 
   return (
     <div className={`space-y-4 ${className}`}>
-      <div className="flex items-center justify-between border-b pb-2">
-        <h3 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-          <MessageSquare className="h-4 w-4" />
-          Comments {displayedComments.length > 0 && `(${displayedComments.length})`}
-        </h3>
-      </div>
+      {!hideCommentList && (
+        <div className="flex items-center justify-between border-b pb-2">
+          <h3 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+            <MessageSquare className="h-4 w-4" />
+            Comments {displayedComments.length > 0 && `(${displayedComments.length})`}
+          </h3>
+        </div>
+      )}
       <div className="space-y-6">
         {/* Display existing comments */}
         {!hideCommentList && (
@@ -532,21 +558,44 @@ export default function CommentsSection({
 
         {/* Comment form */}
         <div className="pt-4 border-t space-y-3">
-          <h4 className="text-sm font-medium text-muted-foreground">
-            Add a comment
-          </h4>
-          {userProfile ? (
-            <p className="text-xs text-muted-foreground">
-              Commenting as <span className="font-medium">{userProfile.displayName || userProfile.email}</span>
-            </p>
+          {hideCommentList && replyingTo ? (
+            <>
+              {/* Show reply form when replying and comment list is hidden */}
+              <div className="p-3 border rounded-md bg-muted/20" id="main-comment-form">
+                <div className="text-xs text-muted-foreground mb-2">
+                  Replying to {(() => {
+                    // Try to get name from loaded comments first
+                    const comment = comments.find(c => c.id === replyingTo);
+                    if (comment) return comment.name;
+                    // Fall back to sessionStorage
+                    if (typeof window !== 'undefined') {
+                      return sessionStorage.getItem(`replyToName_${resourceId}`) || 'comment';
+                    }
+                    return 'comment';
+                  })()}
+                </div>
+                {renderCommentForm(replyingTo)}
+              </div>
+            </>
           ) : (
-            <p className="text-xs text-muted-foreground">
-              Your email address will not be published. Required fields are marked{" "}
-              <span className="text-red-500">*</span>
-            </p>
+            <>
+              <h4 className="text-sm font-medium text-muted-foreground">
+                {replyingTo ? 'Reply to comment' : 'Add a comment'}
+              </h4>
+              {userProfile ? (
+                <p className="text-xs text-muted-foreground">
+                  Commenting as <span className="font-medium">{userProfile.displayName || userProfile.email}</span>
+                </p>
+              ) : (
+                <p className="text-xs text-muted-foreground">
+                  Your email address will not be published. Required fields are marked{" "}
+                  <span className="text-red-500">*</span>
+                </p>
+              )}
+              
+              {renderCommentForm(replyingTo || undefined)}
+            </>
           )}
-          
-          {renderCommentForm()}
         </div>
       </div>
 

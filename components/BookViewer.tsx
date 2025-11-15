@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { usePermissions } from "@/lib/rbac";
 import { bookService, pageService } from "@/lib/firebase-services";
@@ -187,7 +186,7 @@ interface Page {
 
 export default function BookViewer({ 
   initialBook,
-  hideComments = false 
+  hideComments = false
 }: { 
   initialBook?: Book;
   hideComments?: boolean;
@@ -1039,7 +1038,6 @@ export default function BookViewer({
             </div>
           </div>
         </div>
-        {!isWhitelabel && <Footer />}
       </div>
     );
   }
@@ -1153,8 +1151,6 @@ export default function BookViewer({
             </DialogFooter>
           </DialogContent>
         </Dialog>
-
-        {!isWhitelabel && <Footer />}
       </div>
     );
   }
@@ -1182,7 +1178,6 @@ export default function BookViewer({
             </Button>
           </div>
         </div>
-        {!isWhitelabel && <Footer />}
       </div>
     );
   }
@@ -2909,8 +2904,6 @@ export default function BookViewer({
           <CommentsSection resourceType="book" resourceId={bookId} />
         </div>
       )}
-
-      {!isWhitelabel && showHeaders && <Footer />}
     </div>
   );
 }
