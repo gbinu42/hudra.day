@@ -190,6 +190,7 @@ export const HYMN_CATEGORIES = [
   "Onitha d'Annide",
   "Madrasha (ܡܕܪܫܐ)",
   "Theshbohtha",
+  "Turgama",
   "Slotha",
   "Marmitha",
   "Huthama",

@@ -1,14 +1,15 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Hymn } from "@/lib/types/hymn";
-import { Music, User, Book, Languages, Plus } from "lucide-react";
+import { Music, User, Book, Languages, Plus, ChevronUp } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useAuth } from "@/lib/hooks/useAuth";
+import { cn } from "@/lib/utils";
 
 interface HymnsListStaticProps {
   hymns: Hymn[];
@@ -20,6 +21,24 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
   const [alphabetOrder, setAlphabetOrder] = useState<"english" | "syriac">(
     "english"
   );
+  const [showScrollToTop, setShowScrollToTop] = useState(false);
+
+  // Handle scroll to top button visibility
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollToTop(window.scrollY > 300);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
 
   // Complete alphabets
   const ENGLISH_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
@@ -396,6 +415,21 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
           ))}
         </div>
       )}
+
+      {/* Scroll to Top Button */}
+      <Button
+        onClick={scrollToTop}
+        size="icon"
+        className={cn(
+          "fixed bottom-10 right-4 z-50 rounded-full shadow-lg transition-all duration-300",
+          showScrollToTop
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 translate-y-2 pointer-events-none"
+        )}
+        aria-label="Scroll to top"
+      >
+        <ChevronUp className="h-5 w-5" />
+      </Button>
     </div>
   );
 }
