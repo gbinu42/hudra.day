@@ -3,7 +3,6 @@ import BookViewer from "@/components/BookViewer";
 import { Metadata } from "next";
 import { Book } from "@/lib/types/book";
 import { Suspense } from "react";
-import { notFound } from "next/navigation";
 import { commentService } from "@/lib/comment-services";
 import { Comment } from "@/lib/types/comment";
 import CommentsSectionWithStatic from "@/components/CommentsSectionWithStatic";
@@ -168,93 +167,52 @@ export async function generateMetadata({
   }
 }
 
-// Server component that fetches book data at build time
+// Server component that fetches comments for server-side rendering
 export default async function BookDetailPage({
   params,
 }: {
   params: Promise<{ bookId: string }>;
 }) {
+  const { bookId } = await params;
+
+  // Fetch comments for server-side rendering
+  let comments: Comment[] = [];
   try {
-    const { bookId } = await params;
-    const bookDoc = await bookService.getBookById(bookId);
-
-    if (!bookDoc.exists()) {
-      notFound();
-    }
-
-    const bookData = bookDoc.data() as Book & {
-      createdAt: { toDate: () => Date };
-      updatedAt: { toDate: () => Date };
-    };
-    const book: Book = {
-      ...bookData,
-      id: bookDoc.id,
-      createdAt: bookData.createdAt?.toDate?.() || new Date(),
-      updatedAt: bookData.updatedAt?.toDate?.() || new Date(),
-      private: bookData.private ?? false, // Default to public if not set
-      protected: bookData.protected ?? false, // Default to not protected if not set
-    };
-
-    // Fetch comments for server-side rendering
-    let comments: Comment[] = [];
-    try {
-      const commentsSnapshot = await commentService.getCommentsByResource(
-        "book",
-        bookId,
-        false // Only get approved comments for static rendering
-      );
-      comments = commentsSnapshot.docs.map((doc) => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          ...data,
-          createdAt: data.createdAt?.toDate?.() || new Date(),
-          updatedAt: data.updatedAt?.toDate?.() || new Date(),
-        } as Comment;
-      });
-    } catch (error) {
-      console.error("Error fetching comments for book:", error);
-      // Continue without comments if fetch fails
-    }
-
-    // Note: Server-side access control is handled by the BookViewer component
-    // since we need access to the user's authentication state
-    return (
-      <>
-        <Suspense>
-          <BookViewer initialBook={book} hideComments={true} />
-        </Suspense>
-        {/* Static comments section with interactive form */}
-        <div className="container mx-auto px-4 max-w-7xl mb-8">
-          <CommentsSectionWithStatic 
-            resourceType="book" 
-            resourceId={bookId} 
-            initialComments={comments}
-          />
-        </div>
-        <Footer />
-      </>
+    const commentsSnapshot = await commentService.getCommentsByResource(
+      "book",
+      bookId,
+      false // Only get approved comments for static rendering
     );
+    comments = commentsSnapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        ...data,
+        createdAt: data.createdAt?.toDate?.() || new Date(),
+        updatedAt: data.updatedAt?.toDate?.() || new Date(),
+      } as Comment;
+    });
   } catch (error) {
-    console.error("Error fetching book data:", error);
-
-    // Check if this is likely an offline/authentication error
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    const isOfflineError =
-      errorMessage.includes("permission") ||
-      errorMessage.includes("unauthenticated") ||
-      errorMessage.includes("auth") ||
-      errorMessage.includes("network");
-
-    if (isOfflineError) {
-      // Return a component that will handle offline viewing
-      return (
-        <Suspense>
-          <BookViewer initialBook={undefined} />
-        </Suspense>
-      );
-    }
-
-    notFound();
+    console.error("Error fetching comments for book:", error);
+    // Continue without comments if fetch fails
   }
+
+  // BookViewer will fetch book data client-side from Firebase
+  // This allows real-time updates and edits
+  return (
+    <>
+      <Suspense>
+        <BookViewer hideComments={true} />
+      </Suspense>
+      {/* Static comments section with interactive form */}
+      <div className="container mx-auto px-4 max-w-7xl mb-8">
+        <CommentsSectionWithStatic 
+          resourceType="book" 
+          resourceId={bookId} 
+          initialComments={comments}
+        />
+      </div>
+      <Footer />
+    </>
+  );
 }

@@ -31,11 +31,6 @@ export default function HomePage() {
         />
         <div className="container mx-auto text-center relative z-10">
           <div className="space-y-6 max-w-4xl mx-auto">
-            {/* Work in Progress Banner */}
-            <div className="inline-block bg-yellow-100 border border-yellow-300 text-yellow-800 px-4 py-2 rounded-lg font-semibold mb-6">
-              🚧 Work in Progress - Coming Soon
-            </div>
-
             <h1 className="text-4xl md:text-6xl tracking-tight mb-4">
               <span className="font-syriac text-primary">ܚܘܼܕܪܵܐ</span>
               <span className="mx-4 bg-gradient-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent font-bold">

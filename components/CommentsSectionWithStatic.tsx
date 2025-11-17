@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Comment } from "@/lib/types/comment";
 import CommentsSectionStatic from "@/components/CommentsSectionStatic";
 import CommentsSection from "@/components/CommentsSection";
@@ -25,7 +25,7 @@ export default function CommentsSectionWithStatic({
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
 
   // Reload comments after submission
-  const reloadComments = async () => {
+  const reloadComments = useCallback(async () => {
     try {
       const snapshot = await commentService.getCommentsByResource(
         resourceType,
@@ -48,7 +48,7 @@ export default function CommentsSectionWithStatic({
     } catch (error) {
       console.error("Error reloading comments:", error);
     }
-  };
+  }, [resourceType, resourceId]);
 
   // Listen for comment submissions and reload
   useEffect(() => {
@@ -63,7 +63,7 @@ export default function CommentsSectionWithStatic({
     return () => {
       window.removeEventListener("commentSubmitted", handleCommentSubmitted);
     };
-  }, [resourceType, resourceId]);
+  }, [resourceType, resourceId, reloadComments]);
 
   const handleReplyClick = (commentId: string) => {
     setReplyingTo(commentId);
