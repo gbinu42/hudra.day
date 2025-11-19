@@ -185,9 +185,11 @@ export type ChurchTradition = (typeof CHURCH_TRADITIONS)[number];
 // Common categories
 export const HYMN_CATEGORIES = [
   "Psalm",
-  "Onitha",
-  "Onitha d'Sahde",
-  "Onitha d'Annide",
+  "Onyatha",
+  "Onyatha d'Qanke",
+  "Onyatha d'Raze",
+  "Onyatha d'Sahde",
+  "Onyatha d'Annide",
   "Madrasha (ܡܕܪܫܐ)",
   "Theshbohtha",
   "Turgama",

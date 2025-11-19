@@ -57,6 +57,7 @@ const fonts = [
 ];
 
 const fontSizes = [
+  { label: "10pt", value: "10pt" },
   { label: "12pt", value: "12pt" },
   { label: "14pt", value: "14pt" },
   { label: "16pt", value: "16pt" },
@@ -663,6 +664,8 @@ export default function SyriacEditor({
         // Update input field with numeric value
         const numericValue = size.replace(/[^\d.]/g, "");
         setFontSizeInput(numericValue);
+      } else if (sizes.size !== 1) {
+        setFontSizeInput("");
       }
       if (colors.size === 1) setCurrentColor(Array.from(colors)[0] as string);
       if (aligns.size === 1) setCurrentAlign(Array.from(aligns)[0] as string);
@@ -858,7 +861,15 @@ export default function SyriacEditor({
                     </SelectItem>
                   )}
                   {fonts.map((font) => (
-                    <SelectItem key={font.value} value={font.value}>
+                    <SelectItem
+                      key={font.value}
+                      value={font.value}
+                      onSelect={() => {
+                        if (font.value === currentFont) {
+                          handleFontChange(font.value);
+                        }
+                      }}
+                    >
                       {font.name}
                     </SelectItem>
                   ))}
@@ -873,7 +884,7 @@ export default function SyriacEditor({
               <div className="relative">
                 <Input
                   type="text"
-                  value={isSizeMixed ? "Mixed" : fontSizeInput + "pt"}
+                  value={fontSizeInput ? `${fontSizeInput}pt` : ""}
                   onChange={(e) => {
                     const value = e.target.value.replace(/[^\d.]/g, "");
                     setFontSizeInput(value);
@@ -887,7 +898,6 @@ export default function SyriacEditor({
                   onBlur={handleFontSizeInputSubmit}
                   placeholder={isSizeMixed ? "Mixed" : "Size"}
                   className="w-18 h-9 text-center text-sm pr-6"
-                  disabled={isSizeMixed}
                 />
                 <Select
                   value={isSizeMixed ? "mixed" : currentFontSize}
@@ -901,7 +911,15 @@ export default function SyriacEditor({
                       </SelectItem>
                     )}
                     {fontSizes.map((size) => (
-                      <SelectItem key={size.value} value={size.value}>
+                      <SelectItem
+                        key={size.value}
+                        value={size.value}
+                        onSelect={() => {
+                          if (size.value === currentFontSize) {
+                            handleFontSizeChange(size.value);
+                          }
+                        }}
+                      >
                         {size.label}
                       </SelectItem>
                     ))}
