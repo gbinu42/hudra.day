@@ -186,6 +186,7 @@ export type ChurchTradition = (typeof CHURCH_TRADITIONS)[number];
 export const HYMN_CATEGORIES = [
   "Psalm",
   "Onyatha",
+  "Onyatha d'Wasalike",
   "Onyatha d'Qanke",
   "Onyatha d'Raze",
   "Onyatha d'Sahde",
@@ -197,6 +198,7 @@ export const HYMN_CATEGORIES = [
   "Marmitha",
   "Huthama",
   "Karozoutha",
+  "Pasoqa",
   "Qala (ܩܘܠܐ)",
   "Qaltha",
   "Memra",

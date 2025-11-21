@@ -858,7 +858,7 @@ export default function HymnDetail({
                     <>
                       {sortedGroups.map(([church, recordings]) => (
                         <div key={church} className="space-y-2">
-                          <h4 className="font-semibold text-lg text-muted-foreground px-1">
+                          <h4 className="font-semibold text-lg text-black px-1">
                             {church}
                           </h4>
                           <div className="divide-y">
@@ -871,7 +871,7 @@ export default function HymnDetail({
                       {ungrouped.length > 0 && (
                         <div className="space-y-2">
                           {sortedGroups.length > 0 && (
-                            <h4 className="font-semibold text-lg text-muted-foreground px-1">
+                            <h4 className="font-semibold text-lg text-black px-1">
                               Other
                             </h4>
                           )}
