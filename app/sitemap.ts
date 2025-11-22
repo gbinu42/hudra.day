@@ -64,7 +64,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       updatedAt: doc.data().updatedAt?.toDate(),
     }));
     hymnDetailRoutes = generateDynamicRoutes(baseUrl, "hymns", hymns, {
-      changeFrequency: "weekly",
+      changeFrequency: "daily",
       priority: 0.8,
     });
   } catch (error) {

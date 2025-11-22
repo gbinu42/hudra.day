@@ -59,18 +59,34 @@ export async function generateMetadata({
         ? hymn.titles[0].title
         : "Untitled Hymn");
 
-    // Get Syriac title if available
-    const syriacTitle = hymn.titles?.find(
-      (t) => t.language?.toLowerCase() === "syriac"
+    // Get non-vocalized Syriac title (vowel-less) for main title
+    const nonVocalizedSyriacTitle = hymn.titles?.find(
+      (t) => t.language?.toLowerCase() === "syriac" && t.transliteration === "non-vocalized"
     )?.title;
 
-    // Get all other names/titles (excluding the primary English and Syriac titles)
-    const otherNames =
+    // Get vocalized Syriac title to mention in description
+    const vocalizedSyriacTitle = hymn.titles?.find(
+      (t) => t.language?.toLowerCase() === "syriac" && t.transliteration === "vocalized"
+    )?.title;
+
+    // Get only alternate English titles as variant names (for "also known as")
+    const alternateEnglishTitles =
+      hymn.titles
+        ?.filter(
+          (t) =>
+            t.language?.toLowerCase() === "english" &&
+            t !== primaryEnglishTitle
+        )
+        .map((t) => t.title)
+        .filter(Boolean) || [];
+
+    // Get all titles for keywords (excluding primary English and both Syriac versions)
+    const otherTitlesForKeywords =
       hymn.titles
         ?.filter(
           (t) =>
             t !== primaryEnglishTitle &&
-            !(t.language?.toLowerCase() === "syriac" && t.title === syriacTitle)
+            t.language?.toLowerCase() !== "syriac"
         )
         .map((t) => t.title)
         .filter(Boolean) || [];
@@ -87,9 +103,13 @@ export async function generateMetadata({
     if (hymn.description) {
       parts.push(hymn.description);
     } else {
-      parts.push(
-        `${hymnTitle} is an East Syriac liturgical hymn from the Church of the East tradition.`
-      );
+      // Build default description with vocalized Syriac if available
+      let defaultDesc = `${hymnTitle}`;
+      if (vocalizedSyriacTitle) {
+        defaultDesc += ` (${vocalizedSyriacTitle})`;
+      }
+      defaultDesc += ` is an East Syriac liturgical hymn from the Church of the East tradition.`;
+      parts.push(defaultDesc);
     }
 
     if (authorNames.length > 0) {
@@ -108,9 +128,9 @@ export async function generateMetadata({
       parts.push(`For ${hymn.occasion}.`);
     }
 
-    // Add other names/alternative titles
-    if (otherNames.length > 0) {
-      parts.push(`Also known as: ${otherNames.join(", ")}.`);
+    // Add only alternate English titles as variant names
+    if (alternateEnglishTitles.length > 0) {
+      parts.push(`Also known as: ${alternateEnglishTitles.join(", ")}.`);
     }
 
     // Get recording info for metadata
@@ -136,10 +156,10 @@ export async function generateMetadata({
 
     const fullDescription = parts.join(" ");
 
-    // Build comprehensive title
+    // Build comprehensive title with English name (vowel-less Syriac name)
     const titleParts = [hymnTitle];
-    if (syriacTitle) {
-      titleParts.push(`(${syriacTitle})`);
+    if (nonVocalizedSyriacTitle) {
+      titleParts.push(`(${nonVocalizedSyriacTitle})`);
     }
     if (authorNames.length > 0 && authorNames.length <= 2) {
       titleParts.push(`by ${authorString}`);
@@ -149,8 +169,10 @@ export async function generateMetadata({
     // Build keywords - include all titles/names
     const keywords = [
       hymnTitle,
-      ...(syriacTitle ? [syriacTitle] : []),
-      ...otherNames, // Include all other names/alternative titles
+      ...(nonVocalizedSyriacTitle ? [nonVocalizedSyriacTitle] : []),
+      ...(vocalizedSyriacTitle ? [vocalizedSyriacTitle] : []),
+      ...alternateEnglishTitles,
+      ...otherTitlesForKeywords, // Include titles in other languages
       ...authorNames,
       "East Syriac",
       "Syriac hymn",
@@ -187,7 +209,7 @@ export async function generateMetadata({
             url: hymnImage,
             width: 1200,
             height: 630,
-            alt: `${hymnTitle}${syriacTitle ? ` (${syriacTitle})` : ""}`,
+            alt: `${hymnTitle}${nonVocalizedSyriacTitle ? ` (${nonVocalizedSyriacTitle})` : ""}`,
           },
         ],
         ...(hymn.originYear && {
@@ -203,7 +225,7 @@ export async function generateMetadata({
             : fullDescription,
         images: {
           url: hymnImage,
-          alt: `${hymnTitle}${syriacTitle ? ` (${syriacTitle})` : ""}`,
+          alt: `${hymnTitle}${nonVocalizedSyriacTitle ? ` (${nonVocalizedSyriacTitle})` : ""}`,
         },
       },
       alternates: {
@@ -223,8 +245,8 @@ export async function generateMetadata({
         ...(hymn.occasion && {
           "article:tag": hymn.occasion,
         }),
-        ...(otherNames.length > 0 && {
-          "article:tag": otherNames.join(", "), // Add other names as tags
+        ...(alternateEnglishTitles.length > 0 && {
+          "article:tag": alternateEnglishTitles.join(", "), // Add alternate names as tags
         }),
       },
     };
