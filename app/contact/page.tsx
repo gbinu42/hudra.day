@@ -100,7 +100,9 @@ export default function ContactPage() {
                       technical support, or collaboration opportunities.
                     </p>
                     <Button asChild>
-                      <a href="mailto:info@hudra.day">Contact Us via Email</a>
+                      <a href="mailto:gbinu44@gmail.com">
+                        Contact Us via Email
+                      </a>
                     </Button>
                   </div>
 

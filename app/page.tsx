@@ -8,7 +8,6 @@ import {
   CardTitle,
   CardContent,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { BookOpen, Globe, Users, Edit3, Church, Scroll } from "lucide-react";
 import Link from "next/link";
 import Footer from "@/components/Footer";
@@ -102,7 +101,7 @@ export default function HomePage() {
                 <Scroll className="h-12 w-12 mx-auto text-primary mb-4" />
                 <CardTitle>Digitize</CardTitle>
                 <CardDescription>
-                  Converting ancient liturgical manuscripts and texts into
+                  Converting ancient liturgical texts and hymns into
                   high-quality digital formats for preservation and access
                 </CardDescription>
               </CardHeader>
@@ -196,7 +195,7 @@ export default function HomePage() {
             </h2>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
               Our work serves the manuscript traditions of four churches that
-              were part of the East Syraic tradition, each with their unique
+              are part of the East Syraic tradition, each with their unique
               heritage and contributions to Christian liturgical life.
             </p>
           </div>
@@ -213,12 +212,6 @@ export default function HomePage() {
                   its origins to St. Thomas the Apostle in India. Rich tradition
                   of liturgical manuscripts and theological works.
                 </p>
-                <Badge
-                  variant="secondary"
-                  className="bg-yellow-100 text-yellow-800 border-yellow-300"
-                >
-                  Coming Soon
-                </Badge>
               </CardContent>
             </Card>
 
@@ -233,12 +226,6 @@ export default function HomePage() {
                   Preserves the original East Syriac liturgical tradition and
                   extensive manuscript collections.
                 </p>
-                <Badge
-                  variant="secondary"
-                  className="bg-yellow-100 text-yellow-800 border-yellow-300"
-                >
-                  Coming Soon
-                </Badge>
               </CardContent>
             </Card>
 
@@ -253,12 +240,6 @@ export default function HomePage() {
                   maintaining East Syriac traditions. Significant manuscript
                   heritage from Mesopotamia and beyond.
                 </p>
-                <Badge
-                  variant="secondary"
-                  className="bg-yellow-100 text-yellow-800 border-yellow-300"
-                >
-                  Coming Soon
-                </Badge>
               </CardContent>
             </Card>
 
@@ -273,12 +254,6 @@ export default function HomePage() {
                   liturgy and theological heritage, with communities primarily
                   in Iraq and the diaspora.
                 </p>
-                <Badge
-                  variant="secondary"
-                  className="bg-yellow-100 text-yellow-800 border-yellow-300"
-                >
-                  Coming Soon
-                </Badge>
               </CardContent>
             </Card>
           </div>
