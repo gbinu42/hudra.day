@@ -291,6 +291,9 @@ export default function BookViewer({
   // Headers visibility state
   const [showHeaders, setShowHeaders] = useState<boolean>(true);
 
+  // Sedra meanings toggle state
+  const [showSedraMeanings, setShowSedraMeanings] = useState<boolean>(true);
+
   // Scroll lock state for vertical view
   const [isScrollLocked, setIsScrollLocked] = useState<boolean>(false);
   const transcriptContainerRef = useRef<HTMLDivElement>(null);
@@ -1240,6 +1243,23 @@ export default function BookViewer({
                 {showHeaders ? "Reading Mode" : "Exit Reading Mode"}
               </span>
             </Button>
+            {/* Sedra Meanings Toggle */}
+            <div className="flex items-center gap-2 h-8 px-3 border border-gray-300 rounded-md bg-white">
+              <input
+                type="checkbox"
+                id="sedra-meanings"
+                checked={showSedraMeanings}
+                onChange={(e) => setShowSedraMeanings(e.target.checked)}
+                className="w-3 h-3"
+              />
+              <label
+                htmlFor="sedra-meanings"
+                className="text-xs cursor-pointer select-none"
+                title="Toggle Sedra word meanings"
+              >
+                📖 Sedra
+              </label>
+            </div>
             {/* Scroll Lock Toggle - only show in vertical view */}
             {viewMode === "vertical" && (
               <div className="flex items-center gap-2 h-8 px-3 border border-gray-300 rounded-md bg-white">
@@ -2576,6 +2596,7 @@ export default function BookViewer({
                                 className="flex-1 w-full h-full"
                                 textDirection={book.textDirection || "rtl"}
                                 bookLanguage={book.language}
+                                showLineNumbers={showLineNumbers}
                               />
                             </div>
                           )}
@@ -2585,7 +2606,7 @@ export default function BookViewer({
                           {textContentJson ? (
                             <div className="flex-1 p-2 sm:p-4 overflow-y-auto">
                               <div
-                                className="prose prose-sm sm:prose-lg max-w-none leading-relaxed"
+                                className="max-w-none"
                                 dir={book.textDirection || "rtl"}
                               >
                                 <TipTapRenderer
@@ -2595,6 +2616,7 @@ export default function BookViewer({
                                   selectedFontSize={selectedFontSize}
                                   textDirection={book.textDirection || "rtl"}
                                   language={book.language}
+                                  showSedraMeanings={showSedraMeanings}
                                 />
                               </div>
                             </div>

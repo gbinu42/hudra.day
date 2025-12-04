@@ -105,6 +105,7 @@ interface TipTapRendererProps {
   selectedFontSize?: string;
   textDirection?: "rtl" | "ltr";
   language?: string; // Add language prop
+  showSedraMeanings?: boolean; // Toggle for Sedra meanings
 }
 
 export default function TipTapRenderer({
@@ -114,6 +115,7 @@ export default function TipTapRenderer({
   selectedFontSize = "default",
   textDirection = "rtl",
   language = "",
+  showSedraMeanings = true,
 }: TipTapRendererProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [linePositions, setLinePositions] = useState<number[]>([]);
@@ -192,6 +194,36 @@ export default function TipTapRenderer({
     immediatelyRender: false,
   });
 
+  // Function to mark trailing empty paragraphs
+  const markTrailingEmptyParagraphs = useCallback(() => {
+    if (!containerRef.current || !editor) return;
+
+    const proseMirrorElement =
+      containerRef.current.querySelector(".ProseMirror");
+    if (!proseMirrorElement) return;
+
+    const paragraphs = Array.from(proseMirrorElement.querySelectorAll("p"));
+    
+    // Find the last non-empty paragraph
+    let lastNonEmptyIndex = -1;
+    for (let i = paragraphs.length - 1; i >= 0; i--) {
+      const text = paragraphs[i].textContent?.trim() || "";
+      if (text.length > 0) {
+        lastNonEmptyIndex = i;
+        break;
+      }
+    }
+
+    // Mark all paragraphs after the last non-empty one as trailing-empty
+    paragraphs.forEach((paragraph, index) => {
+      if (index > lastNonEmptyIndex) {
+        (paragraph as HTMLElement).classList.add('trailing-empty');
+      } else {
+        (paragraph as HTMLElement).classList.remove('trailing-empty');
+      }
+    });
+  }, [editor]);
+
   // Function to measure paragraph positions
   const measureParagraphPositions = useCallback(() => {
     if (!containerRef.current || !editor) return;
@@ -205,13 +237,20 @@ export default function TipTapRenderer({
     const positions: number[] = [];
 
     paragraphs.forEach((paragraph) => {
+      // Skip empty paragraphs (those with no text content or only whitespace)
+      const text = paragraph.textContent?.trim() || "";
+      if (text.length === 0) return;
+      
       const rect = paragraph.getBoundingClientRect();
       const relativeCenter = rect.top + rect.height / 2 - containerRect.top;
       positions.push(relativeCenter);
     });
 
     setLinePositions(positions);
-  }, [editor]);
+    
+    // Mark trailing empty paragraphs
+    markTrailingEmptyParagraphs();
+  }, [editor, markTrailingEmptyParagraphs]);
 
   // Measure positions when editor content changes or loads
   useEffect(() => {
@@ -256,9 +295,9 @@ export default function TipTapRenderer({
     }
   }, [editor, measureParagraphPositions]);
 
-  // Add word IDs to rendered content after TipTap renders
+  // Add word IDs to rendered content after TipTap renders - only when Sedra is enabled
   useEffect(() => {
-    if (editor && containerRef.current) {
+    if (editor && containerRef.current && showSedraMeanings) {
       const addWordIds = () => {
         const proseMirrorElement =
           containerRef.current?.querySelector(".ProseMirror");
@@ -309,8 +348,24 @@ export default function TipTapRenderer({
       const timer = setTimeout(addWordIds, 100);
 
       return () => clearTimeout(timer);
+    } else if (editor && containerRef.current && !showSedraMeanings) {
+      // Remove word wrapping when Sedra is disabled
+      const removeWordIds = () => {
+        const proseMirrorElement =
+          containerRef.current?.querySelector(".ProseMirror");
+        if (!proseMirrorElement) return;
+
+        const wordSpans = proseMirrorElement.querySelectorAll("[data-word-id]");
+        wordSpans.forEach((span) => {
+          const textNode = document.createTextNode(span.textContent || "");
+          span.parentNode?.replaceChild(textNode, span);
+        });
+      };
+
+      const timer = setTimeout(removeWordIds, 100);
+      return () => clearTimeout(timer);
     }
-  }, [editor, content]);
+  }, [editor, content, showSedraMeanings]);
 
   // Update font family and size dynamically
   useEffect(() => {
@@ -425,7 +480,7 @@ export default function TipTapRenderer({
       </div>
 
       {/* Sedra Dialog */}
-      <SedraDialog language={language} containerRef={containerRef} />
+      <SedraDialog language={language} containerRef={containerRef} enabled={showSedraMeanings} />
 
       <style jsx global>{`
         .ProseMirror {
@@ -454,23 +509,19 @@ export default function TipTapRenderer({
             "locl" 1, "mark" 1, "mkmk" 1;
         }
 
-        /* Add cursor pointer for clickable words in Syriac */
-        ${isSyriacLanguage(language)
+        /* Hide trailing empty paragraphs at the end of the document */
+        .ProseMirror p.trailing-empty {
+          display: none !important;
+        }
+
+        /* Add cursor pointer for clickable words in Syriac - only when Sedra is enabled */
+        ${isSyriacLanguage(language) && showSedraMeanings
           ? `
         .ProseMirror {
-          cursor: pointer !important;
+          cursor: text !important;
         }
         .ProseMirror p {
-          cursor: pointer !important;
-        }
-        .ProseMirror span {
-          cursor: pointer !important;
-        }
-        .ProseMirror div {
-          cursor: pointer !important;
-        }
-        .ProseMirror * {
-          cursor: pointer !important;
+          cursor: text !important;
         }
         `
           : ""}
@@ -483,16 +534,18 @@ export default function TipTapRenderer({
           background-color: #e5e7eb !important; /* Light gray for Firefox */
         }
 
-        /* Ensure word spans are visible and clickable */
+        /* Ensure word spans are visible and clickable - only when Sedra is enabled */
+        ${showSedraMeanings
+          ? `
         .ProseMirror [data-word-id] {
-          display: inline !important;
           cursor: pointer !important;
-          position: relative !important;
         }
 
         .ProseMirror [data-word-id]:hover {
           background-color: rgba(229, 231, 235, 0.5) !important;
         }
+        `
+          : ""}
 
         /* Footnotes styling */
         .ProseMirror ol.footnotes {

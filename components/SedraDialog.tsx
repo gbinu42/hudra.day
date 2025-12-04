@@ -18,11 +18,13 @@ interface DragState {
 interface SedraDialogProps {
   language: string;
   containerRef: React.RefObject<HTMLDivElement | null>;
+  enabled?: boolean;
 }
 
 export default function SedraDialog({
   language,
   containerRef,
+  enabled = true,
 }: SedraDialogProps) {
   const [tooltip, setTooltip] = useState<TooltipState>({
     isVisible: false,
@@ -318,7 +320,7 @@ export default function SedraDialog({
 
   // Add click event listener for word lookup
   useEffect(() => {
-    if (!containerRef.current || !isSyriacLanguage(language)) {
+    if (!containerRef.current || !isSyriacLanguage(language) || !enabled) {
       return;
     }
 
@@ -340,7 +342,7 @@ export default function SedraDialog({
       }
       containerElement.removeEventListener("click", handleWordClick);
     };
-  }, [language, handleWordClick, containerRef]);
+  }, [language, handleWordClick, containerRef, enabled]);
 
   // Calculate dialog position with fallback to center
   const getDialogPosition = () => {

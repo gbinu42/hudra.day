@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { useEditor, EditorContent, JSONContent } from "@tiptap/react";
 import { BubbleMenu } from "@tiptap/react/menus";
 import StarterKit from "@tiptap/starter-kit";
@@ -111,6 +111,7 @@ interface SyriacEditorProps {
   className?: string;
   textDirection?: "rtl" | "ltr";
   bookLanguage?: string;
+  showLineNumbers?: boolean;
 }
 
 // This will be set from props in the component
@@ -213,6 +214,7 @@ export default function SyriacEditor({
   className = "",
   textDirection = "rtl",
   bookLanguage = "",
+  showLineNumbers = false,
 }: SyriacEditorProps) {
   const isRTL = textDirection === "rtl";
   const [selectedFont, setSelectedFont] = useState("Karshon");
@@ -221,6 +223,10 @@ export default function SyriacEditor({
   const [fontColor, setFontColor] = useState("#000000");
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [keyboardCollapsed, setKeyboardCollapsed] = useState(false);
+
+  // Line numbers state
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [linePositions, setLinePositions] = useState<number[]>([]);
 
   // Set default keyboard state based on language and mobile
   useEffect(() => {
@@ -284,273 +290,125 @@ export default function SyriacEditor({
     editable,
     immediatelyRender: false,
     editorProps: {
-      handlePaste: (view, event) => {
-        const clipboardData = event.clipboardData;
-        if (clipboardData && clipboardData.getData) {
-          // Try to get HTML data first to preserve styling
-          const pastedHTML = clipboardData.getData("text/html");
-          const pastedText = clipboardData.getData("text/plain");
+      transformPastedText: (text) => {
+        // Apply character transformations to pasted text
+        let processedText = text;
 
-          if (pastedHTML || pastedText) {
-            event.preventDefault();
-
-            // If we have HTML data, use it to preserve styling
-            if (pastedHTML) {
-              // Process HTML content while preserving styling
-              let processedHTML = pastedHTML;
-
-              // Apply text transformations to HTML content
-              if (bookLanguage === "Malayalam") {
-                processedHTML = processedHTML
-                  .replace(/\n|\r\n|\r/g, "") // Remove all newlines
-                  .replace(/ൻറെ/g, "ന്റെ") // Replace ൻറെ with ന്റെ
-                  .replace(/ണ്ടു(?=[\s.,;:!?]|$)/g, "ണ്ട്") // Replace ണ്ടു with ണ്ട് at end of word
-                  .replace(/(?<!ന്)നു(?=[\s.,;:!?]|$)/g, "ന്") // Replace നു with ന് at end of word, but not if ന് is already in front
-                  .replace(/ത്തു(?=[\s.,;:!?]|$)/g, "ത്ത്") // Replace ത്തു with ത്ത് at end of word
-                  .replace(/ക്കു(?=[\s.,;:!?]|$)/g, "ക്ക്")
-                  .replace(/ട്ടു(?=[\s.,;:!?]|$)/g, "ട്ട്")
-                  .replace(/തു(?=[\s.,;:!?]|$)/g, "ത്")
-                  .replace(/തു്(?=[\s.,;:!?]|$)/g, "ത്")
-                  .replace(/ടു(?=[\s.,;:!?]|$)/g, "ട്");
-              }
-
-              // Apply Syriac transformations to HTML content
-              processedHTML = processedHTML
-                .replace(/ܬܼܵ/g, "ܬ݂ܵ") // Replace ܬܼܵ with ܬ݂ܵ
-                .replace(/ܡܼܢ/g, "ܡ̣ܢ") // Replace ܡܼܢ with ܡ̣ܢ
-                .replace(/ܕܿ/g, "ܕ݁") // Replace ܕܿ with ܕ݁
-                .replace(/ܡ݂ܢ/g, "ܡ̣ܢ") // Replace ܡ݂ܢ with ܡ̣ܢ
-                .replace(/ܕܼ/g, "ܕ݂") // Replace ܕܼ with ܕ݂
-                .replace(/ܒܹܿ/g, "ܒܹ݁") // Replace ܒܹܿ with ܒܹ݁
-                .replace(/ܐ݇ܡܹܝܢ/g, "ܐܵܡܹܝܢ")
-                .replace(/ܡܳܪܶ/g, "ܡܵܪܵ")
-                .replace(/ܐܿ/g, "ܐܵ")
-                .replace(/\*/g, "܀")
-                .replace(/ܟܷ/g, "ܟ݂")
-                .replace(/ܥܵܢܲܝܢ/g, "ܥܵܢܹܝܢ")
-                .replace(/ܐܲܡܹܝܢ/g, "ܐܵܡܹܝܢ")
-                .replace(/ܙܲܒ݂ܢܲܐ/g, "ܙܲܒ݂ܢܹ̈ܐ")
-                .replace(/ܙܲܒ݂ܪܹܐ/g, "ܙܲܒ݂ܢܹ̈ܐ")
-                .replace(/ܥܸܕܵܪܹܐ/g, "ܥܸܕܵܢܹܐ")
-                .replace(/ܕܒܲܬܲܪ/g, "ܕܒ݂ܵܬܲܪ")
-                .replace(/ܡܸܢ/g, "ܡ̣ܢ")
-                .replace(/ܒ̇/g, "ܒ݁") // Replace ܒ̇ with ܒ݁
-                .replace(/ܒ̣/g, "ܒ݂") // Replace ܒ̣ with ܒ݂
-                .replace(/ܬ̇/g, "ܬ݁") // Replace ܬ̇ with ܬ݁
-                .replace(/ܬ̣/g, "ܬ݂") // Replace ܬ̣ with ܬ݂
-                .replace(/ܟ̇/g, "ܟ݁") // Replace ܟ̇ with ܟ݁
-                .replace(/ܟ̣/g, "ܟ݂") // Replace ܟ̣ with ܟ݂
-                .replace(/ܓ̣/g, "ܓ݁") // Replace ܓ̣ with ܓ݁
-                .replace(/ܓ̇/g, "ܓ݁") // Replace ܓ̇ with ܓ݁
-                .replace(/ܟܼ/g, "ܟ݂") // Replace ܟܼ with ܟ݂
-                .replace(/ܬܿ/g, "ܬ݁") // Replace ܬܿ with ܬ݁
-                .replace(/ܬܼ/g, "ܬ݂") // Replace ܬܼ with ܬ݂
-                .replace(/ܒܿ/g, "ܒ݁") // Replace ܒܿ with ܒ݁
-                .replace(/ܒܼ/g, "ܒ݂") // Replace ܒܼ with ܒ݂
-                .replace(/ܓܼ/g, "ܓ݂") // Replace ܓܼ with ܓ݂
-                .replace(/ܓܿ/g, "ܓ݁") // Replace ܓܿ with ܓ݁
-                .replace(/ܐ̄/g, "ܐ݇")
-                .replace(/ܗ̄/g, "ܗ݇")
-                .replace(/ܠ̄/g, "ܠ݇")
-                .replace(/ܢ̄/g, "ܢ݇");
-
-              // Parse HTML and insert with preserved styling
-              try {
-                // Use TipTap's HTML parsing to preserve styling
-                const { state } = view;
-                const { tr } = state;
-
-                // Create a temporary DOM element to parse HTML
-                const tempDiv = document.createElement("div");
-                tempDiv.innerHTML = processedHTML;
-
-                // Parse HTML nodes and convert to TipTap format
-                const parseHTMLNode = (
-                  node: Node
-                ): Record<string, unknown> | null => {
-                  if (node.nodeType === Node.TEXT_NODE) {
-                    return {
-                      type: "text",
-                      text: node.textContent || "",
-                      marks: [],
-                    };
-                  } else if (node.nodeType === Node.ELEMENT_NODE) {
-                    const element = node as Element;
-                    const tagName = element.tagName.toLowerCase();
-
-                    // Handle different HTML tags and convert to TipTap format
-                    if (tagName === "p") {
-                      return {
-                        type: "paragraph",
-                        content: Array.from(element.childNodes).map(
-                          parseHTMLNode
-                        ),
-                        attrs: {
-                          dir: element.getAttribute("dir") || textDirection,
-                          textAlign:
-                            (element as HTMLElement).style.textAlign ||
-                            (isRTL ? "right" : "left"),
-                        },
-                      };
-                    } else if (tagName === "span") {
-                      const marks = [];
-                      const style = (element as HTMLElement).style;
-
-                      // Parse styling attributes
-                      if (style.fontFamily) {
-                        marks.push({
-                          type: "textStyle",
-                          attrs: { fontFamily: style.fontFamily },
-                        });
-                      }
-                      if (style.fontSize) {
-                        marks.push({
-                          type: "textStyle",
-                          attrs: { fontSize: style.fontSize },
-                        });
-                      }
-                      if (style.color) {
-                        marks.push({
-                          type: "textStyle",
-                          attrs: { color: style.color },
-                        });
-                      }
-
-                      return {
-                        type: "text",
-                        text: element.textContent || "",
-                        marks: marks,
-                      };
-                    } else {
-                      // For other elements, extract text content
-                      return {
-                        type: "text",
-                        text: element.textContent || "",
-                        marks: [],
-                      };
-                    }
-                  }
-                  return null;
-                };
-
-                // Parse the HTML content
-                const parsedContent = Array.from(tempDiv.childNodes)
-                  .map(parseHTMLNode)
-                  .filter(Boolean);
-
-                // Create document structure
-                const docContent =
-                  parsedContent.length > 0
-                    ? parsedContent
-                    : [
-                        {
-                          type: "paragraph",
-                          content: [
-                            {
-                              type: "text",
-                              text: processedHTML.replace(/<[^>]*>/g, ""),
-                              marks: [],
-                            },
-                          ],
-                          attrs: {
-                            dir: textDirection,
-                            textAlign: isRTL ? "right" : "left",
-                          },
-                        },
-                      ];
-
-                const fragment = state.schema.nodeFromJSON({
-                  type: "doc",
-                  content: docContent,
-                });
-
-                // Insert the parsed content
-                tr.replaceSelectionWith(fragment);
-                view.dispatch(tr);
-              } catch {
-                // Fallback to plain text if HTML parsing fails
-                const plainText = processedHTML.replace(/<[^>]*>/g, "");
-                view.dispatch(
-                  view.state.tr.insertText(
-                    plainText,
-                    view.state.selection.from,
-                    view.state.selection.to
-                  )
-                );
-              }
-            } else if (pastedText) {
-              // Fallback to plain text processing
-              let processedText = pastedText;
-
-              // Process Malayalam text if applicable
-              if (bookLanguage === "Malayalam") {
-                processedText = processedText
-                  .replace(/\n|\r\n|\r/g, "") // Remove all newlines
-                  .replace(/ൻറെ/g, "ന്റെ") // Replace ൻറെ with ന്റെ
-                  .replace(/ണ്ടു(?=[\s.,;:!?]|$)/g, "ണ്ട്") // Replace ണ്ടു with ണ്ട് at end of word
-                  .replace(/(?<!ന്)നു(?=[\s.,;:!?]|$)/g, "ന്") // Replace നു with ന് at end of word, but not if ന് is already in front
-                  .replace(/ത്തു(?=[\s.,;:!?]|$)/g, "ത്ത്") // Replace ത്തു with ത്ത് at end of word
-                  .replace(/ക്കു(?=[\s.,;:!?]|$)/g, "ക്ക്")
-                  .replace(/ട്ടു(?=[\s.,;:!?]|$)/g, "ട്ട്")
-                  .replace(/തു(?=[\s.,;:!?]|$)/g, "ത്")
-                  .replace(/തു്(?=[\s.,;:!?]|$)/g, "ത്")
-                  .replace(/ടു(?=[\s.,;:!?]|$)/g, "ട്");
-              }
-
-              // Apply Syriac transformations to all languages
-              processedText = processedText
-                .replace(/ܬܼܵ/g, "ܬ݂ܵ") // Replace ܬܼܵ with ܬ݂ܵ
-                .replace(/ܡܼܢ/g, "ܡ̣ܢ") // Replace ܡܼܢ with ܡ̣ܢ
-                .replace(/ܕܿ/g, "ܕ݁") // Replace ܕܿ with ܕ݁
-                .replace(/ܡ݂ܢ/g, "ܡ̣ܢ") // Replace ܡ݂ܢ with ܡ̣ܢ
-                .replace(/ܕܼ/g, "ܕ݂") // Replace ܕܼ with ܕ݂
-                .replace(/ܒܹܿ/g, "ܒܹ݁") // Replace ܒܹܿ with ܒܹ݁
-                .replace(/ܐ݇ܡܹܝܢ/g, "ܐܵܡܹܝܢ")
-                .replace(/ܡܳܪܶ/g, "ܡܵܪܵ")
-                .replace(/ܐܿ/g, "ܐܵ")
-                .replace(/\*/g, "܀")
-                .replace(/ܟܷ/g, "ܟ݂")
-                .replace(/ܥܵܢܲܝܢ/g, "ܥܵܢܹܝܢ")
-                .replace(/ܐܲܡܹܝܢ/g, "ܐܵܡܹܝܢ")
-                .replace(/ܙܲܒ݂ܢܲܐ/g, "ܙܲܒ݂ܢܹ̈ܐ")
-                .replace(/ܙܲܒ݂ܪܹܐ/g, "ܙܲܒ݂ܢܹ̈ܐ")
-                .replace(/ܥܸܕܵܪܹܐ/g, "ܥܸܕܵܢܹܐ")
-                .replace(/ܕܒܲܬܲܪ/g, "ܕܒ݂ܵܬܲܪ")
-                .replace(/ܡܸܢ/g, "ܡ̣ܢ")
-                .replace(/ܒ̇/g, "ܒ݁") // Replace ܒ̇ with ܒ݁
-                .replace(/ܒ̣/g, "ܒ݂") // Replace ܒ̣ with ܒ݂
-                .replace(/ܬ̇/g, "ܬ݁") // Replace ܬ̇ with ܬ݁
-                .replace(/ܬ̣/g, "ܬ݂") // Replace ܬ̣ with ܬ݂
-                .replace(/ܟ̇/g, "ܟ݁") // Replace ܟ̇ with ܟ݁
-                .replace(/ܟ̣/g, "ܟ݂") // Replace ܟ̣ with ܟ݂
-                .replace(/ܓ̣/g, "ܓ݁") // Replace ܓ̣ with ܓ݁
-                .replace(/ܓ̇/g, "ܓ݁") // Replace ܓ̇ with ܓ݁
-                .replace(/ܟܼ/g, "ܟ݂") // Replace ܟܼ with ܟ݂
-                .replace(/ܬܿ/g, "ܬ݁") // Replace ܬܿ with ܬ݁
-                .replace(/ܬܼ/g, "ܬ݂") // Replace ܬܼ with ܬ݂
-                .replace(/ܒܿ/g, "ܒ݁") // Replace ܒܿ with ܒ݁
-                .replace(/ܒܼ/g, "ܒ݂") // Replace ܒܼ with ܒ݂
-                .replace(/ܓܼ/g, "ܓ݂") // Replace ܓܼ with ܓ݂
-                .replace(/ܓܿ/g, "ܓ݁") // Replace ܓܿ with ܓ݁
-                .replace(/ܐ̄/g, "ܐ݇")
-                .replace(/ܗ̄/g, "ܗ݇")
-                .replace(/ܠ̄/g, "ܠ݇")
-                .replace(/ܢ̄/g, "ܢ݇");
-
-              // Insert the processed text
-              view.dispatch(
-                view.state.tr.insertText(
-                  processedText,
-                  view.state.selection.from,
-                  view.state.selection.to
-                )
-              );
-            }
-
-            return true; // Prevent default paste behavior
-          }
+        // Process Malayalam text if applicable
+        if (bookLanguage === "Malayalam") {
+          processedText = processedText
+            .replace(/ൻറെ/g, "ന്റെ")
+            .replace(/ണ്ടു(?=[\s.,;:!?]|$)/g, "ണ്ട്")
+            .replace(/(?<!ന്)നു(?=[\s.,;:!?]|$)/g, "ന്")
+            .replace(/ത്തു(?=[\s.,;:!?]|$)/g, "ത്ത്")
+            .replace(/ക്കു(?=[\s.,;:!?]|$)/g, "ക്ക്")
+            .replace(/ട്ടു(?=[\s.,;:!?]|$)/g, "ട്ട്")
+            .replace(/തു(?=[\s.,;:!?]|$)/g, "ത്")
+            .replace(/തു്(?=[\s.,;:!?]|$)/g, "ത്")
+            .replace(/ടു(?=[\s.,;:!?]|$)/g, "ട്");
         }
-        return false; // Allow default paste behavior if no text data
+
+        // Apply Syriac character transformations
+        processedText = processedText
+          .replace(/ܬܼܵ/g, "ܬ݂ܵ")
+          .replace(/ܡܼܢ/g, "ܡ̣ܢ")
+          .replace(/ܕܿ/g, "ܕ݁")
+          .replace(/ܡ݂ܢ/g, "ܡ̣ܢ")
+          .replace(/ܕܼ/g, "ܕ݂")
+          .replace(/ܒܹܿ/g, "ܒܹ݁")
+          .replace(/ܐ݇ܡܹܝܢ/g, "ܐܵܡܹܝܢ")
+          .replace(/ܡܳܪܶ/g, "ܡܵܪܵ")
+          .replace(/ܐܿ/g, "ܐܵ")
+          .replace(/\*/g, "܀")
+          .replace(/ܟܷ/g, "ܟ݂")
+          .replace(/ܥܵܢܲܝܢ/g, "ܥܵܢܹܝܢ")
+          .replace(/ܐܲܡܹܝܢ/g, "ܐܵܡܹܝܢ")
+          .replace(/ܙܲܒ݂ܢܲܐ/g, "ܙܲܒ݂ܢܹ̈ܐ")
+          .replace(/ܙܲܒ݂ܪܹܐ/g, "ܙܲܒ݂ܢܹ̈ܐ")
+          .replace(/ܥܸܕܵܪܹܐ/g, "ܥܸܕܵܢܹܐ")
+          .replace(/ܕܒܲܬܲܪ/g, "ܕܒ݂ܵܬܲܪ")
+          .replace(/ܡܸܢ/g, "ܡ̣ܢ")
+          .replace(/ܒ̇/g, "ܒ݁")
+          .replace(/ܒ̣/g, "ܒ݂")
+          .replace(/ܬ̇/g, "ܬ݁")
+          .replace(/ܬ̣/g, "ܬ݂")
+          .replace(/ܟ̇/g, "ܟ݁")
+          .replace(/ܟ̣/g, "ܟ݂")
+          .replace(/ܓ̣/g, "ܓ݁")
+          .replace(/ܓ̇/g, "ܓ݁")
+          .replace(/ܟܼ/g, "ܟ݂")
+          .replace(/ܬܿ/g, "ܬ݁")
+          .replace(/ܬܼ/g, "ܬ݂")
+          .replace(/ܒܿ/g, "ܒ݁")
+          .replace(/ܒܼ/g, "ܒ݂")
+          .replace(/ܓܼ/g, "ܓ݂")
+          .replace(/ܓܿ/g, "ܓ݁")
+          .replace(/ܐ̄/g, "ܐ݇")
+          .replace(/ܗ̄/g, "ܗ݇")
+          .replace(/ܠ̄/g, "ܠ݇")
+          .replace(/ܢ̄/g, "ܢ݇");
+
+        return processedText;
+      },
+      transformPastedHTML: (html) => {
+        // Apply character transformations to HTML
+        let processedHTML = html;
+
+        // Process Malayalam text if applicable
+        if (bookLanguage === "Malayalam") {
+          processedHTML = processedHTML
+            .replace(/ൻറെ/g, "ന്റെ")
+            .replace(/ണ്ടു(?=[\s.,;:!?]|$)/g, "ണ്ട്")
+            .replace(/(?<!ന്)നു(?=[\s.,;:!?]|$)/g, "ന്")
+            .replace(/ത്തു(?=[\s.,;:!?]|$)/g, "ത്ത്")
+            .replace(/ക്കു(?=[\s.,;:!?]|$)/g, "ക്ക്")
+            .replace(/ട്ടു(?=[\s.,;:!?]|$)/g, "ട്ട്")
+            .replace(/തു(?=[\s.,;:!?]|$)/g, "ത്")
+            .replace(/തു്(?=[\s.,;:!?]|$)/g, "ത്")
+            .replace(/ടു(?=[\s.,;:!?]|$)/g, "ട്");
+        }
+
+        // Apply Syriac character transformations
+        processedHTML = processedHTML
+          .replace(/ܬܼܵ/g, "ܬ݂ܵ")
+          .replace(/ܡܼܢ/g, "ܡ̣ܢ")
+          .replace(/ܕܿ/g, "ܕ݁")
+          .replace(/ܡ݂ܢ/g, "ܡ̣ܢ")
+          .replace(/ܕܼ/g, "ܕ݂")
+          .replace(/ܒܹܿ/g, "ܒܹ݁")
+          .replace(/ܐ݇ܡܹܝܢ/g, "ܐܵܡܹܝܢ")
+          .replace(/ܡܳܪܶ/g, "ܡܵܪܵ")
+          .replace(/ܐܿ/g, "ܐܵ")
+          .replace(/\*/g, "܀")
+          .replace(/ܟܷ/g, "ܟ݂")
+          .replace(/ܥܵܢܲܝܢ/g, "ܥܵܢܹܝܢ")
+          .replace(/ܐܲܡܹܝܢ/g, "ܐܵܡܹܝܢ")
+          .replace(/ܙܲܒ݂ܢܲܐ/g, "ܙܲܒ݂ܢܹ̈ܐ")
+          .replace(/ܙܲܒ݂ܪܹܐ/g, "ܙܲܒ݂ܢܹ̈ܐ")
+          .replace(/ܥܸܕܵܪܹܐ/g, "ܥܸܕܵܢܹܐ")
+          .replace(/ܕܒܲܬܲܪ/g, "ܕܒ݂ܵܬܲܪ")
+          .replace(/ܡܸܢ/g, "ܡ̣ܢ")
+          .replace(/ܒ̇/g, "ܒ݁")
+          .replace(/ܒ̣/g, "ܒ݂")
+          .replace(/ܬ̇/g, "ܬ݁")
+          .replace(/ܬ̣/g, "ܬ݂")
+          .replace(/ܟ̇/g, "ܟ݁")
+          .replace(/ܟ̣/g, "ܟ݂")
+          .replace(/ܓ̣/g, "ܓ݁")
+          .replace(/ܓ̇/g, "ܓ݁")
+          .replace(/ܟܼ/g, "ܟ݂")
+          .replace(/ܬܿ/g, "ܬ݁")
+          .replace(/ܬܼ/g, "ܬ݂")
+          .replace(/ܒܿ/g, "ܒ݁")
+          .replace(/ܒܼ/g, "ܒ݂")
+          .replace(/ܓܼ/g, "ܓ݂")
+          .replace(/ܓܿ/g, "ܓ݁")
+          .replace(/ܐ̄/g, "ܐ݇")
+          .replace(/ܗ̄/g, "ܗ݇")
+          .replace(/ܠ̄/g, "ܠ݇")
+          .replace(/ܢ̄/g, "ܢ݇");
+
+        return processedHTML;
       },
     },
     onUpdate: ({ editor }) => {
@@ -600,6 +458,59 @@ export default function SyriacEditor({
       }
     };
   }, [editor]);
+
+  // Calculate line positions for line numbers
+  const calculateLinePositions = useCallback(() => {
+    if (!showLineNumbers || !containerRef.current || !editor) return;
+
+    const container = containerRef.current;
+    const paragraphs = container.querySelectorAll(".ProseMirror p");
+    const positions: number[] = [];
+    const containerTop = container.getBoundingClientRect().top;
+
+    paragraphs.forEach((p) => {
+      // Skip empty paragraphs (those with no text content or only whitespace)
+      const text = p.textContent?.trim() || "";
+      if (text.length === 0) return;
+
+      const rect = p.getBoundingClientRect();
+      const relativeTop = rect.top - containerTop + rect.height / 2;
+      positions.push(relativeTop);
+    });
+
+    setLinePositions(positions);
+  }, [showLineNumbers, editor]);
+
+  // Update line positions on content change or window resize
+  useEffect(() => {
+    if (!showLineNumbers) return;
+
+    calculateLinePositions();
+
+    // Recalculate on window resize
+    const handleResize = () => calculateLinePositions();
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, [showLineNumbers, calculateLinePositions, editor?.state.doc]);
+
+  // Recalculate line positions when editor updates
+  useEffect(() => {
+    if (!editor || !showLineNumbers) return;
+
+    const handleUpdate = () => {
+      // Use setTimeout to ensure DOM has updated
+      setTimeout(calculateLinePositions, 0);
+    };
+
+    editor.on("update", handleUpdate);
+    editor.on("transaction", handleUpdate);
+
+    return () => {
+      editor.off("update", handleUpdate);
+      editor.off("transaction", handleUpdate);
+    };
+  }, [editor, showLineNumbers, calculateLinePositions]);
 
   const updateCurrentAttributes = useCallback(() => {
     if (!editor) return;
@@ -1090,7 +1001,7 @@ export default function SyriacEditor({
 
         {/* Editor Content */}
         <div
-          className="flex-1 p-6 lg:px-8 xl:px-12 focus-within:outline-none cursor-text overflow-y-auto"
+          className="flex-1 p-6 lg:px-8 xl:px-8 focus-within:outline-none cursor-text overflow-y-auto"
           dir={isRTL ? "rtl" : "ltr"}
           onClick={() => {
             editor?.chain().focus().run();
@@ -1100,7 +1011,63 @@ export default function SyriacEditor({
             }
           }}
         >
-          <EditorContent editor={editor} className="focus:outline-none" />
+          {showLineNumbers ? (
+            <div
+              className="flex"
+              style={{
+                overflow: "visible",
+                flexDirection: textDirection === "ltr" ? "row" : "row-reverse",
+              }}
+            >
+              {/* Line numbers container */}
+              <div
+                className="select-none pointer-events-none"
+                style={{
+                  width: "16px",
+                  color: "gray",
+                  fontSize: "14px",
+                  fontFamily: "monospace",
+                  position: "relative",
+                  visibility: showLineNumbers ? "visible" : "hidden",
+                  order: textDirection === "ltr" ? 1 : 2,
+                }}
+              >
+                {linePositions.map((position, index) => (
+                  <div
+                    key={index + 1}
+                    style={{
+                      position: "absolute",
+                      top: `${position}px`,
+                      left: textDirection === "ltr" ? "0px" : "8px",
+                      right: textDirection === "ltr" ? "8px" : "auto",
+                      transform: "translateY(-50%)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent:
+                        textDirection === "ltr" ? "flex-end" : "flex-start",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {index + 1}
+                  </div>
+                ))}
+              </div>
+
+              {/* Text content */}
+              <div
+                ref={containerRef}
+                className="flex-1"
+                style={{
+                  overflow: "visible",
+                  order: textDirection === "ltr" ? 2 : 1,
+                }}
+              >
+                <EditorContent editor={editor} className="focus:outline-none" />
+              </div>
+            </div>
+          ) : (
+            <EditorContent editor={editor} className="focus:outline-none" />
+          )}
 
           {/* Bubble Menu */}
           {editor && (
