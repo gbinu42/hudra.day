@@ -217,7 +217,9 @@ export default function SyriacEditor({
   showLineNumbers = false,
 }: SyriacEditorProps) {
   const isRTL = textDirection === "rtl";
-  const [selectedFont, setSelectedFont] = useState("Karshon");
+  const [selectedFont, setSelectedFont] = useState(
+    "East Syriac Malankara Classical"
+  );
   const [fontSize, setFontSize] = useState("");
   const [fontSizeInput, setFontSizeInput] = useState("");
   const [fontColor, setFontColor] = useState("#000000");
@@ -249,7 +251,9 @@ export default function SyriacEditor({
   }, [bookLanguage, isTouchDevice]);
 
   // Current selection attributes
-  const [currentFont, setCurrentFont] = useState("Karshon");
+  const [currentFont, setCurrentFont] = useState(
+    "East Syriac Malankara Classical"
+  );
   const [currentFontSize, setCurrentFontSize] = useState("24pt");
   const [currentColor, setCurrentColor] = useState("#000000");
   const [currentAlign, setCurrentAlign] = useState(isRTL ? "right" : "left");
