@@ -301,9 +301,9 @@ export default function SyriacKeyboard({
         </div>
       </div>
 
-      {/* Mobile Collapse Button - Positioned above keyboard */}
+      {/* Mobile Collapse Button - Positioned above keyboard on the left */}
       <button
-        className="md:hidden absolute -top-6 left-1/2 transform -translate-x-1/2 w-12 h-6 text-lg font-bold bg-gradient-to-b from-white to-gray-100 border border-gray-300 rounded-t-full shadow-md z-10 flex items-center justify-center"
+        className="md:hidden absolute -top-6 left-4 w-12 h-6 text-lg font-bold bg-gradient-to-b from-white to-gray-100 border border-gray-300 rounded-t-full shadow-md z-10 flex items-center justify-center"
         onMouseDown={(e) => {
           e.preventDefault();
           const newCollapsed = !isCollapsed;

@@ -221,7 +221,14 @@ export default function SyriacEditor({
   const [fontSize, setFontSize] = useState("");
   const [fontSizeInput, setFontSizeInput] = useState("");
   const [fontColor, setFontColor] = useState("#000000");
-  const [keyboardVisible, setKeyboardVisible] = useState(false);
+
+  // Detect if touch device
+  const isTouchDevice =
+    typeof window !== "undefined" &&
+    ("ontouchstart" in window || navigator.maxTouchPoints > 0);
+
+  // On touch devices, keyboard is always visible; on desktop it starts hidden
+  const [keyboardVisible, setKeyboardVisible] = useState(isTouchDevice);
   const [keyboardCollapsed, setKeyboardCollapsed] = useState(false);
 
   // Line numbers state
@@ -230,12 +237,16 @@ export default function SyriacEditor({
 
   // Set default keyboard state based on language and mobile
   useEffect(() => {
-    if (typeof window !== "undefined" && window.innerWidth < 768) {
+    if (isTouchDevice) {
+      // On touch devices, show keyboard by default
+      setKeyboardVisible(true);
+
+      // Collapse for Malayalam/English to allow native keyboard
       if (bookLanguage === "Malayalam" || bookLanguage === "English") {
         setKeyboardCollapsed(true);
       }
     }
-  }, [bookLanguage]);
+  }, [bookLanguage, isTouchDevice]);
 
   // Current selection attributes
   const [currentFont, setCurrentFont] = useState("Karshon");
@@ -290,6 +301,15 @@ export default function SyriacEditor({
     editable,
     immediatelyRender: false,
     editorProps: {
+      attributes: {
+        spellcheck: "false",
+        ...(isTouchDevice && {
+          inputmode: "none",
+          autocorrect: "off",
+          autocapitalize: "off",
+          autocomplete: "off",
+        }),
+      },
       transformPastedText: (text) => {
         // Apply character transformations to pasted text
         let processedText = text;
@@ -434,18 +454,48 @@ export default function SyriacEditor({
       });
       editor.commands.setTextSelection(0);
 
+      // Set inputmode for touch devices on creation
+      if (isTouchDevice) {
+        const proseMirrorElement = document.querySelector(
+          ".ProseMirror"
+        ) as HTMLElement;
+        if (proseMirrorElement) {
+          proseMirrorElement.setAttribute("inputmode", "none");
+          proseMirrorElement.setAttribute("autocorrect", "off");
+          proseMirrorElement.setAttribute("autocapitalize", "off");
+          proseMirrorElement.setAttribute("autocomplete", "off");
+          proseMirrorElement.setAttribute("spellcheck", "false");
+        }
+      }
+
       updateCurrentAttributes();
     },
     onFocus: () => {
-      // Show keyboard on mobile when editor is focused
-      if (typeof window !== "undefined" && window.innerWidth < 768) {
-        setKeyboardVisible(true);
+      // On touch devices, ensure inputmode is correct when focused
+      if (isTouchDevice) {
+        const proseMirrorElement = document.querySelector(
+          ".ProseMirror"
+        ) as HTMLElement;
+        if (proseMirrorElement) {
+          if (keyboardCollapsed) {
+            // Collapsed: allow native keyboard
+            proseMirrorElement.setAttribute("inputmode", "text");
+          } else {
+            // Expanded: prevent native keyboard
+            proseMirrorElement.setAttribute("inputmode", "none");
+          }
+        }
       }
     },
     onBlur: () => {
-      // Hide keyboard on mobile when editor loses focus
-      if (typeof window !== "undefined" && window.innerWidth < 768) {
-        setKeyboardVisible(false);
+      // On touch devices, reset inputmode when blurred if keyboard is expanded
+      if (isTouchDevice) {
+        const proseMirrorElement = document.querySelector(
+          ".ProseMirror"
+        ) as HTMLElement;
+        if (proseMirrorElement && !keyboardCollapsed) {
+          proseMirrorElement.setAttribute("inputmode", "none");
+        }
       }
     },
   });
@@ -607,22 +657,27 @@ export default function SyriacEditor({
     };
   }, [keyboardVisible]);
 
-  // Control hardware keyboard on mobile based on Syriac keyboard state
+  // Control hardware keyboard on touch devices based on Syriac keyboard state
   useEffect(() => {
-    if (typeof window !== "undefined" && window.innerWidth < 768) {
+    if (isTouchDevice) {
       const proseMirrorElement = document.querySelector(
         ".ProseMirror"
       ) as HTMLElement;
       if (proseMirrorElement) {
-        // Prevent hardware keyboard when Syriac keyboard is visible and not collapsed
-        if (keyboardVisible && !keyboardCollapsed) {
-          proseMirrorElement.setAttribute("inputmode", "none");
-        } else {
+        // Set inputmode based on keyboard state
+        // When keyboard is expanded (not collapsed), prevent native keyboard
+        // When keyboard is collapsed, allow native keyboard
+        if (keyboardCollapsed) {
           proseMirrorElement.setAttribute("inputmode", "text");
+          proseMirrorElement.setAttribute("autocorrect", "off");
+          proseMirrorElement.setAttribute("autocapitalize", "off");
+          proseMirrorElement.setAttribute("autocomplete", "off");
+        } else {
+          proseMirrorElement.setAttribute("inputmode", "none");
         }
       }
     }
-  }, [keyboardVisible, keyboardCollapsed]);
+  }, [keyboardCollapsed, isTouchDevice]);
 
   const handleFontChange = useCallback(
     (value: string) => {
@@ -686,9 +741,26 @@ export default function SyriacEditor({
     setKeyboardVisible(!keyboardVisible);
   }, [keyboardVisible]);
 
-  const handleKeyboardCollapseChange = useCallback((isCollapsed: boolean) => {
-    setKeyboardCollapsed(isCollapsed);
-  }, []);
+  const handleKeyboardCollapseChange = useCallback(
+    (isCollapsed: boolean) => {
+      setKeyboardCollapsed(isCollapsed);
+
+      // Update inputmode immediately when collapse state changes
+      if (isTouchDevice) {
+        const proseMirrorElement = document.querySelector(
+          ".ProseMirror"
+        ) as HTMLElement;
+        if (proseMirrorElement) {
+          if (isCollapsed) {
+            proseMirrorElement.setAttribute("inputmode", "text");
+          } else {
+            proseMirrorElement.setAttribute("inputmode", "none");
+          }
+        }
+      }
+    },
+    [isTouchDevice]
+  );
 
   const handleKeyPress = useCallback(
     (key: string) => {
@@ -1005,8 +1077,13 @@ export default function SyriacEditor({
           dir={isRTL ? "rtl" : "ltr"}
           onClick={() => {
             editor?.chain().focus().run();
-            // Show keyboard on mobile when clicking editor area
-            if (typeof window !== "undefined" && window.innerWidth < 768) {
+            // On non-touch mobile devices, show keyboard when clicking editor area
+            // On touch devices, keyboard is always visible by default
+            if (
+              !isTouchDevice &&
+              typeof window !== "undefined" &&
+              window.innerWidth < 768
+            ) {
               setKeyboardVisible(true);
             }
           }}
