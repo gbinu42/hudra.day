@@ -37,7 +37,7 @@ export const quizService = {
 
       // Filter out undefined values to comply with Firebase requirements
       const cleanData = Object.fromEntries(
-        Object.entries(answerData).filter(([_, value]) => value !== undefined)
+        Object.entries(answerData).filter(([, value]) => value !== undefined)
       );
 
       await setDoc(doc(db, "quizAnswers", questionId), cleanData);

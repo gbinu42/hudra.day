@@ -230,9 +230,13 @@ export default function QuizPage() {
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft") {
-        goToPrevious();
+        if (currentQuestionIndex > 0) {
+          setCurrentQuestionIndex(currentQuestionIndex - 1);
+        }
       } else if (e.key === "ArrowRight") {
-        goToNext();
+        if (currentQuestionIndex < totalQuestions - 1) {
+          setCurrentQuestionIndex(currentQuestionIndex + 1);
+        }
       }
     };
 
@@ -304,14 +308,16 @@ export default function QuizPage() {
       <div className="container mx-auto px-4 py-8 flex-1">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
-          <div className="mb-8 text-center">
+          <div className="mb-6 md:mb-8 text-center">
             <div className="flex items-center justify-center gap-2 mb-2">
-              <BookOpen className="h-8 w-8 text-primary" />
-              <h1 className="text-3xl font-bold text-foreground">
+              <BookOpen className="h-6 w-6 md:h-8 md:w-8 text-primary" />
+              <h1 className="text-lg md:text-3xl font-bold text-foreground">
                 Basic Course in Biomedical Research
               </h1>
             </div>
-            <p className="text-muted-foreground">Quiz Questions</p>
+            <p className="text-sm md:text-base text-muted-foreground">
+              Quiz Questions
+            </p>
 
             <div className="flex items-center justify-center gap-2 mt-2 flex-wrap">
               {isAdmin ? (
@@ -352,6 +358,61 @@ export default function QuizPage() {
             </div>
           </div>
 
+          {/* Top Navigation */}
+          <div className="flex justify-between items-center gap-2 md:gap-4 mb-4">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={goToPrevious}
+              disabled={currentQuestionIndex === 0}
+              className="text-xs md:text-sm"
+            >
+              <ChevronLeft className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
+              Prev
+            </Button>
+            <span className="text-xs md:text-sm font-medium text-muted-foreground">
+              {currentQuestionIndex + 1} / {totalQuestions}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={goToNext}
+              disabled={currentQuestionIndex === totalQuestions - 1}
+              className="text-xs md:text-sm"
+            >
+              Next
+              <ChevronRight className="h-3 w-3 md:h-4 md:w-4 ml-1 md:ml-2" />
+            </Button>
+          </div>
+
+          {/* Status Badge - Above Question Card */}
+          {(isAdmin && currentCorrectAnswers.length > 0) ||
+          (!isAdmin && isCurrentSubmitted) ? (
+            <div className="flex justify-center mb-3">
+              {isAdmin && currentCorrectAnswers.length > 0 && (
+                <Badge variant="secondary">
+                  <CheckCircle className="h-3 w-3 mr-1" />
+                  {currentCorrectAnswers.length} correct
+                </Badge>
+              )}
+              {!isAdmin && isCurrentSubmitted && (
+                <Badge variant={isUserCorrect ? "default" : "destructive"}>
+                  {isUserCorrect ? (
+                    <>
+                      <CheckCircle className="h-3 w-3 mr-1" />
+                      Correct!
+                    </>
+                  ) : (
+                    <>
+                      <XCircle className="h-3 w-3 mr-1" />
+                      Incorrect
+                    </>
+                  )}
+                </Badge>
+              )}
+            </div>
+          ) : null}
+
           {/* Question Card with Side Navigation */}
           <div className="relative">
             {/* Previous Button - Left Side */}
@@ -379,38 +440,12 @@ export default function QuizPage() {
             </Button>
 
             <Card className="mb-6">
-              <CardHeader>
-                <div className="flex items-start justify-between gap-4">
-                  <CardTitle className="text-xl flex-1">
-                    {currentQuestion.question}
-                  </CardTitle>
-                  {isAdmin && currentCorrectAnswers.length > 0 && (
-                    <Badge variant="secondary" className="shrink-0">
-                      <CheckCircle className="h-3 w-3 mr-1" />
-                      {currentCorrectAnswers.length} correct
-                    </Badge>
-                  )}
-                  {!isAdmin && isCurrentSubmitted && (
-                    <Badge
-                      variant={isUserCorrect ? "default" : "destructive"}
-                      className="shrink-0"
-                    >
-                      {isUserCorrect ? (
-                        <>
-                          <CheckCircle className="h-3 w-3 mr-1" />
-                          Correct!
-                        </>
-                      ) : (
-                        <>
-                          <XCircle className="h-3 w-3 mr-1" />
-                          Incorrect
-                        </>
-                      )}
-                    </Badge>
-                  )}
-                </div>
+              <CardHeader className="pb-3 md:pb-6">
+                <CardTitle className="text-base md:text-xl">
+                  {currentQuestion.question}
+                </CardTitle>
                 {!isAdmin && !isCurrentSubmitted && (
-                  <CardDescription>
+                  <CardDescription className="text-xs md:text-sm">
                     Select your answer
                     {hasCorrectAnswerSet && currentCorrectAnswers.length > 1
                       ? "s"
@@ -419,8 +454,8 @@ export default function QuizPage() {
                   </CardDescription>
                 )}
               </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
+              <CardContent className="pt-0 md:pt-6">
+                <div className="space-y-2 md:space-y-3">
                   {currentQuestion.options.map((option, index) => {
                     const optionLetter = String.fromCharCode(65 + index);
                     const isCorrectOption = currentCorrectAnswers.includes(
@@ -438,18 +473,18 @@ export default function QuizPage() {
                           onClick={() => handleAdminOptionClick(option.id)}
                           disabled={savingAnswer}
                           variant={isCorrectOption ? "default" : "outline"}
-                          className={`w-full justify-start text-left h-auto py-4 px-4 ${
+                          className={`w-full justify-start text-left h-auto py-2.5 px-3 md:py-4 md:px-4 text-sm md:text-base ${
                             isCorrectOption
                               ? "ring-2 ring-primary bg-green-600 hover:bg-green-700"
                               : ""
                           }`}
                         >
-                          <div className="flex items-start gap-3 w-full">
-                            <div className="flex items-center justify-center w-6 h-6 rounded-full border-2 border-current shrink-0 mt-0.5">
+                          <div className="flex items-start gap-2 md:gap-3 w-full">
+                            <div className="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-full border-2 border-current shrink-0 mt-0.5">
                               {isCorrectOption ? (
-                                <CheckCircle className="h-4 w-4" />
+                                <CheckCircle className="h-3 w-3 md:h-4 md:w-4" />
                               ) : (
-                                <span className="text-sm font-semibold">
+                                <span className="text-xs md:text-sm font-semibold">
                                   {optionLetter}
                                 </span>
                               )}
@@ -465,8 +500,8 @@ export default function QuizPage() {
                     // User view - submitted
                     if (isCurrentSubmitted) {
                       let className =
-                        "w-full justify-start text-left h-auto py-4 px-4 ";
-                      let variant: "default" | "outline" | "destructive" =
+                        "w-full justify-start text-left h-auto py-2.5 px-3 md:py-4 md:px-4 text-sm md:text-base ";
+                      const variant: "default" | "outline" | "destructive" =
                         "outline";
 
                       if (isCorrectOption) {
@@ -486,9 +521,9 @@ export default function QuizPage() {
                           variant={variant}
                           className={className}
                         >
-                          <div className="flex items-start gap-3 w-full">
+                          <div className="flex items-start gap-2 md:gap-3 w-full">
                             <div
-                              className={`flex items-center justify-center w-6 h-6 rounded-full border-2 shrink-0 mt-0.5 ${
+                              className={`flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-full border-2 shrink-0 mt-0.5 ${
                                 isCorrectOption
                                   ? "border-green-600 text-green-600"
                                   : isUserSelected
@@ -497,11 +532,11 @@ export default function QuizPage() {
                               }`}
                             >
                               {isCorrectOption ? (
-                                <CheckCircle className="h-4 w-4 text-green-600" />
+                                <CheckCircle className="h-3 w-3 md:h-4 md:w-4 text-green-600" />
                               ) : isUserSelected ? (
-                                <XCircle className="h-4 w-4 text-red-600" />
+                                <XCircle className="h-3 w-3 md:h-4 md:w-4 text-red-600" />
                               ) : (
-                                <span className="text-sm font-semibold">
+                                <span className="text-xs md:text-sm font-semibold">
                                   {optionLetter}
                                 </span>
                               )}
@@ -512,7 +547,7 @@ export default function QuizPage() {
                             {isCorrectOption && (
                               <Badge
                                 variant="outline"
-                                className="shrink-0 bg-green-100 text-green-800 border-green-500 dark:bg-green-900/50 dark:text-green-200"
+                                className="shrink-0 bg-green-100 text-green-800 border-green-500 dark:bg-green-900/50 dark:text-green-200 text-xs"
                               >
                                 Correct
                               </Badge>
@@ -528,16 +563,16 @@ export default function QuizPage() {
                         key={index}
                         onClick={() => handleUserOptionClick(option.id)}
                         variant={isUserSelected ? "default" : "outline"}
-                        className={`w-full justify-start text-left h-auto py-4 px-4 ${
+                        className={`w-full justify-start text-left h-auto py-2.5 px-3 md:py-4 md:px-4 text-sm md:text-base ${
                           isUserSelected ? "ring-2 ring-primary" : ""
                         }`}
                       >
-                        <div className="flex items-start gap-3 w-full">
-                          <div className="flex items-center justify-center w-6 h-6 rounded-full border-2 border-current shrink-0 mt-0.5">
+                        <div className="flex items-start gap-2 md:gap-3 w-full">
+                          <div className="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-full border-2 border-current shrink-0 mt-0.5">
                             {isUserSelected ? (
-                              <CheckCircle className="h-4 w-4" />
+                              <CheckCircle className="h-3 w-3 md:h-4 md:w-4" />
                             ) : (
-                              <span className="text-sm font-semibold">
+                              <span className="text-xs md:text-sm font-semibold">
                                 {optionLetter}
                               </span>
                             )}
@@ -555,11 +590,11 @@ export default function QuizPage() {
                 {!isAdmin &&
                   !isCurrentSubmitted &&
                   currentUserAnswer.length > 0 && (
-                    <div className="mt-6">
+                    <div className="mt-4 md:mt-6">
                       <Button
                         onClick={handleSubmitAnswer}
                         className="w-full"
-                        size="lg"
+                        size="default"
                       >
                         Submit Answer
                       </Button>
@@ -569,7 +604,7 @@ export default function QuizPage() {
                 {/* Result display for users */}
                 {!isAdmin && isCurrentSubmitted && (
                   <Alert
-                    className={`mt-6 ${
+                    className={`mt-4 md:mt-6 text-sm md:text-base ${
                       isUserCorrect
                         ? "border-green-500 bg-green-50 dark:bg-green-900/20"
                         : "border-red-500 bg-red-50 dark:bg-red-900/20"
@@ -611,9 +646,9 @@ export default function QuizPage() {
 
                 {/* Admin correct answers display */}
                 {isAdmin && currentCorrectAnswers.length > 0 && (
-                  <Alert className="mt-6 border-green-500 bg-green-50 dark:bg-green-900/20">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
-                    <AlertDescription className="text-green-800 dark:text-green-200">
+                  <Alert className="mt-4 md:mt-6 border-green-500 bg-green-50 dark:bg-green-900/20">
+                    <CheckCircle className="h-3 w-3 md:h-4 md:w-4 text-green-600" />
+                    <AlertDescription className="text-green-800 dark:text-green-200 text-sm md:text-base">
                       <strong>
                         Correct Answer
                         {currentCorrectAnswers.length > 1 ? "s" : ""}:
