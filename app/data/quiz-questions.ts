@@ -16916,7 +16916,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
-    correctAnswers: ["a"],
+    correctAnswers: ["b"],
   },
   {
     id: "q684",
@@ -16994,7 +16994,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
-    correctAnswers: ["c"],
+    correctAnswers: ["a"],
   },
   {
     id: "q687",
