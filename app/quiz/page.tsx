@@ -1,12 +1,10 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { quizQuestions } from "@/app/data/quiz-questions";
-import { quizService } from "@/lib/quiz-services";
 import QuizClient from "@/components/quiz/QuizClient";
 
 // Force static generation at build time
 export const dynamic = "force-static";
-export const revalidate = 3600; // Revalidate every hour
 
 // Generate metadata
 export const metadata = {
@@ -21,38 +19,21 @@ export const metadata = {
   },
 };
 
-// Pre-fetch correct answers at build time
-async function getCorrectAnswers(): Promise<Record<string, string[]>> {
-  try {
-    const correctAnswers: Record<string, string[]> = {};
+// Get correct answers from the static data
+function getCorrectAnswers(): Record<string, string[]> {
+  const correctAnswers: Record<string, string[]> = {};
 
-    for (const question of quizQuestions) {
-      try {
-        const answer = await quizService.getAnswer(question.id);
-        if (answer) {
-          const answerValue = answer.answer;
-          if (Array.isArray(answerValue)) {
-            correctAnswers[question.id] = answerValue;
-          } else if (typeof answerValue === "string") {
-            correctAnswers[question.id] = [answerValue];
-          }
-        }
-      } catch (error) {
-        // Skip individual errors, continue with other questions
-        console.error(`Error loading answer for ${question.id}:`, error);
-      }
+  for (const question of quizQuestions) {
+    if (question.correctAnswers && question.correctAnswers.length > 0) {
+      correctAnswers[question.id] = question.correctAnswers;
     }
-
-    return correctAnswers;
-  } catch (error) {
-    console.error("Error loading correct answers:", error);
-    return {};
   }
+
+  return correctAnswers;
 }
 
-export default async function QuizPage() {
-  // Pre-fetch all correct answers at build time
-  const correctAnswers = await getCorrectAnswers();
+export default function QuizPage() {
+  const correctAnswers = getCorrectAnswers();
 
   return (
     <div className="min-h-screen bg-background flex flex-col">

@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useAuth } from "@/lib/hooks/useAuth";
-import { quizService } from "@/lib/quiz-services";
 import { QuizQuestion } from "@/app/data/quiz-questions";
 import {
   Card,
@@ -22,7 +20,6 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import { toast } from "sonner";
 
 const LOCAL_STORAGE_KEY = "quiz-user-answers";
 
@@ -35,15 +32,11 @@ export default function QuizClient({
   questions,
   initialCorrectAnswers,
 }: QuizClientProps) {
-  const { user, userProfile } = useAuth();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  // Correct answers from Firebase (set by admin)
-  const [correctAnswers, setCorrectAnswers] = useState<
-    Record<string, string[]>
-  >(initialCorrectAnswers);
+  // Correct answers from static data
+  const correctAnswers = initialCorrectAnswers;
   // User's own answers (stored in localStorage)
   const [userAnswers, setUserAnswers] = useState<Record<string, string[]>>({});
-  const [savingAnswer, setSavingAnswer] = useState(false);
   const [currentRange, setCurrentRange] = useState(0);
   // Track if user has submitted their answer for current question
   const [submittedQuestions, setSubmittedQuestions] = useState<Set<string>>(
@@ -51,7 +44,6 @@ export default function QuizClient({
   );
 
   const currentQuestion = questions[currentQuestionIndex];
-  const isAdmin = userProfile?.role === "admin";
   const totalQuestions = questions.length;
 
   // Question range configuration
@@ -99,50 +91,6 @@ export default function QuizClient({
       );
     } catch (error) {
       console.error("Error saving to localStorage:", error);
-    }
-  };
-
-  // Admin: Toggle correct answer in Firebase
-  const handleAdminOptionClick = async (optionId: string) => {
-    if (!user) {
-      toast.error("You must be signed in");
-      return;
-    }
-
-    const currentCorrect = correctAnswers[currentQuestion.id] || [];
-    const isRemoving = currentCorrect.includes(optionId);
-    let newAnswers: string[];
-
-    if (isRemoving) {
-      newAnswers = currentCorrect.filter((id) => id !== optionId);
-    } else {
-      newAnswers = [...currentCorrect, optionId].sort();
-    }
-
-    try {
-      setSavingAnswer(true);
-      await quizService.saveAnswer(currentQuestion.id, newAnswers, user.uid);
-
-      setCorrectAnswers((prev) => ({
-        ...prev,
-        [currentQuestion.id]: newAnswers,
-      }));
-
-      toast.success(
-        isRemoving ? "Option removed" : "Option added as correct answer"
-      );
-
-      // Auto-advance when adding
-      if (!isRemoving && currentQuestionIndex < totalQuestions - 1) {
-        setTimeout(() => {
-          setCurrentQuestionIndex((prev) => prev + 1);
-        }, 500);
-      }
-    } catch (error) {
-      console.error("Error saving answer:", error);
-      toast.error("Failed to save answer");
-    } finally {
-      setSavingAnswer(false);
     }
   };
 
@@ -224,10 +172,7 @@ export default function QuizClient({
   const hasCorrectAnswerSet = currentCorrectAnswers.length > 0;
 
   // Calculate stats
-  const answeredCount = isAdmin
-    ? Object.keys(correctAnswers).filter((k) => correctAnswers[k]?.length > 0)
-        .length
-    : submittedQuestions.size;
+  const answeredCount = submittedQuestions.size;
 
   if (!currentQuestion) {
     return (
@@ -236,9 +181,7 @@ export default function QuizClient({
           <CardContent className="pt-6">
             <Alert>
               <AlertCircle className="h-4 w-4" />
-              <AlertDescription>
-                No quiz questions available.
-              </AlertDescription>
+              <AlertDescription>No quiz questions available.</AlertDescription>
             </Alert>
           </CardContent>
         </Card>
@@ -269,15 +212,9 @@ export default function QuizClient({
           </p>
 
           <div className="flex items-center justify-center gap-2 mt-2 flex-wrap">
-            {isAdmin ? (
-              <Badge variant="default">
-                Admin Mode - Click to toggle correct answers
-              </Badge>
-            ) : (
-              <Badge variant="outline">
-                Select your answer and click Submit to check
-              </Badge>
-            )}
+            <Badge variant="outline">
+              Select your answer and click Submit to check
+            </Badge>
             <Badge variant="outline" className="hidden lg:inline-flex">
               Use ← → arrow keys to navigate
             </Badge>
@@ -291,8 +228,7 @@ export default function QuizClient({
               Question {currentQuestionIndex + 1} of {totalQuestions}
             </span>
             <span className="text-sm text-muted-foreground">
-              {answeredCount} / {totalQuestions}{" "}
-              {isAdmin ? "set" : "attempted"}
+              {answeredCount} / {totalQuestions} attempted
             </span>
           </div>
           <div className="w-full bg-secondary rounded-full h-2">
@@ -335,32 +271,23 @@ export default function QuizClient({
         </div>
 
         {/* Status Badge - Above Question Card */}
-        {(isAdmin && currentCorrectAnswers.length > 0) ||
-        (!isAdmin && isCurrentSubmitted) ? (
+        {isCurrentSubmitted && (
           <div className="flex justify-center mb-3">
-            {isAdmin && currentCorrectAnswers.length > 0 && (
-              <Badge variant="secondary">
-                <CheckCircle className="h-3 w-3 mr-1" />
-                {currentCorrectAnswers.length} correct
-              </Badge>
-            )}
-            {!isAdmin && isCurrentSubmitted && (
-              <Badge variant={isUserCorrect ? "default" : "destructive"}>
-                {isUserCorrect ? (
-                  <>
-                    <CheckCircle className="h-3 w-3 mr-1" />
-                    Correct!
-                  </>
-                ) : (
-                  <>
-                    <XCircle className="h-3 w-3 mr-1" />
-                    Incorrect
-                  </>
-                )}
-              </Badge>
-            )}
+            <Badge variant={isUserCorrect ? "default" : "destructive"}>
+              {isUserCorrect ? (
+                <>
+                  <CheckCircle className="h-3 w-3 mr-1" />
+                  Correct!
+                </>
+              ) : (
+                <>
+                  <XCircle className="h-3 w-3 mr-1" />
+                  Incorrect
+                </>
+              )}
+            </Badge>
           </div>
-        ) : null}
+        )}
 
         {/* Question Card with Side Navigation */}
         <div className="relative">
@@ -393,7 +320,7 @@ export default function QuizClient({
               <CardTitle className="text-base md:text-xl">
                 {currentQuestion.question}
               </CardTitle>
-              {!isAdmin && !isCurrentSubmitted && (
+              {!isCurrentSubmitted && (
                 <CardDescription className="text-xs md:text-sm">
                   Select your answer
                   {hasCorrectAnswerSet && currentCorrectAnswers.length > 1
@@ -411,38 +338,6 @@ export default function QuizClient({
                     option.id
                   );
                   const isUserSelected = currentUserAnswer.includes(option.id);
-
-                  // Admin view
-                  if (isAdmin) {
-                    return (
-                      <Button
-                        key={index}
-                        onClick={() => handleAdminOptionClick(option.id)}
-                        disabled={savingAnswer}
-                        variant={isCorrectOption ? "default" : "outline"}
-                        className={`w-full justify-start text-left h-auto py-2.5 px-3 md:py-4 md:px-4 text-sm md:text-base ${
-                          isCorrectOption
-                            ? "ring-2 ring-primary bg-green-600 hover:bg-green-700"
-                            : ""
-                        }`}
-                      >
-                        <div className="flex items-start gap-2 md:gap-3 w-full">
-                          <div className="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-full border-2 border-current shrink-0 mt-0.5">
-                            {isCorrectOption ? (
-                              <CheckCircle className="h-3 w-3 md:h-4 md:w-4" />
-                            ) : (
-                              <span className="text-xs md:text-sm font-semibold">
-                                {optionLetter}
-                              </span>
-                            )}
-                          </div>
-                          <span className="flex-1 whitespace-normal break-words">
-                            {option.text}
-                          </span>
-                        </div>
-                      </Button>
-                    );
-                  }
 
                   // User view - submitted
                   if (isCurrentSubmitted) {
@@ -533,23 +428,21 @@ export default function QuizClient({
                 })}
               </div>
 
-              {/* Submit button for users */}
-              {!isAdmin &&
-                !isCurrentSubmitted &&
-                currentUserAnswer.length > 0 && (
-                  <div className="mt-4 md:mt-6">
-                    <Button
-                      onClick={handleSubmitAnswer}
-                      className="w-full"
-                      size="default"
-                    >
-                      Submit Answer
-                    </Button>
-                  </div>
-                )}
+              {/* Submit button */}
+              {!isCurrentSubmitted && currentUserAnswer.length > 0 && (
+                <div className="mt-4 md:mt-6">
+                  <Button
+                    onClick={handleSubmitAnswer}
+                    className="w-full"
+                    size="default"
+                  >
+                    Submit Answer
+                  </Button>
+                </div>
+              )}
 
-              {/* Result display for users */}
-              {!isAdmin && isCurrentSubmitted && (
+              {/* Result display */}
+              {isCurrentSubmitted && (
                 <Alert
                   className={`mt-4 md:mt-6 text-sm md:text-base ${
                     isUserCorrect
@@ -574,7 +467,9 @@ export default function QuizClient({
                     ) : (
                       <>
                         <strong>Incorrect.</strong> The correct answer
-                        {currentCorrectAnswers.length > 1 ? "s are" : " is"}:{" "}
+                        {currentCorrectAnswers.length > 1
+                          ? "s are"
+                          : " is"}:{" "}
                         {currentCorrectAnswers
                           .map(
                             (answerId) =>
@@ -585,27 +480,6 @@ export default function QuizClient({
                           .join(", ")}
                       </>
                     )}
-                  </AlertDescription>
-                </Alert>
-              )}
-
-              {/* Admin correct answers display */}
-              {isAdmin && currentCorrectAnswers.length > 0 && (
-                <Alert className="mt-4 md:mt-6 border-green-500 bg-green-50 dark:bg-green-900/20">
-                  <CheckCircle className="h-3 w-3 md:h-4 md:w-4 text-green-600" />
-                  <AlertDescription className="text-green-800 dark:text-green-200 text-sm md:text-base">
-                    <strong>
-                      Correct Answer
-                      {currentCorrectAnswers.length > 1 ? "s" : ""}:
-                    </strong>{" "}
-                    {currentCorrectAnswers
-                      .map(
-                        (answerId) =>
-                          currentQuestion.options.find(
-                            (opt) => opt.id === answerId
-                          )?.text || answerId
-                      )
-                      .join(", ")}
                   </AlertDescription>
                 </Alert>
               )}
@@ -623,11 +497,7 @@ export default function QuizClient({
               const isCurrentRange = currentRange === rangeIndex;
               const rangeAnsweredCount = questions
                 .slice(start, end)
-                .filter((q) =>
-                  isAdmin
-                    ? correctAnswers[q.id]?.length > 0
-                    : submittedQuestions.has(q.id)
-                ).length;
+                .filter((q) => submittedQuestions.has(q.id)).length;
               const rangeTotal = end - start;
 
               return (
@@ -694,11 +564,7 @@ export default function QuizClient({
               const isCurrentRange = currentRange === rangeIndex;
               const rangeAnsweredCount = questions
                 .slice(start, end)
-                .filter((q) =>
-                  isAdmin
-                    ? correctAnswers[q.id]?.length > 0
-                    : submittedQuestions.has(q.id)
-                ).length;
+                .filter((q) => submittedQuestions.has(q.id)).length;
               const rangeTotal = end - start;
 
               return (
@@ -746,13 +612,11 @@ export default function QuizClient({
                   const index = getRangeStart(currentRange) + rangeIdx;
                   const isCurrentQuestion = index === currentQuestionIndex;
                   const questionId = questions[index].id;
-                  const isAnswered = isAdmin
-                    ? correctAnswers[questionId]?.length > 0
-                    : submittedQuestions.has(questionId);
+                  const isAnswered = submittedQuestions.has(questionId);
 
-                  // For users, show green/red based on correctness
+                  // Show green/red based on correctness
                   let buttonClass = "w-10 h-10 p-0";
-                  if (!isAdmin && submittedQuestions.has(questionId)) {
+                  if (submittedQuestions.has(questionId)) {
                     const userAns = userAnswers[questionId] || [];
                     const correctAns = correctAnswers[questionId] || [];
                     const isCorrect =
@@ -798,7 +662,7 @@ export default function QuizClient({
         </div>
 
         {/* Completion Message */}
-        {!isAdmin && submittedQuestions.size === totalQuestions && (
+        {submittedQuestions.size === totalQuestions && (
           <Alert className="mt-6">
             <CheckCircle className="h-4 w-4" />
             <AlertDescription>
@@ -810,4 +674,3 @@ export default function QuizClient({
     </div>
   );
 }
-

@@ -9,6 +9,7 @@ export interface QuizQuestion {
   options: QuizOption[];
   courseId: string;
   courseName: string;
+  correctAnswers?: string[];
 }
 
 export const quizQuestions: QuizQuestion[] = [
@@ -36,6 +37,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q2",
@@ -60,6 +62,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q3",
@@ -85,6 +88,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q4",
@@ -110,6 +114,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q5",
@@ -135,6 +140,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q6",
@@ -160,6 +166,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q7",
@@ -185,6 +192,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q8",
@@ -210,6 +218,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q9",
@@ -234,6 +243,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q10",
@@ -258,6 +268,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q11",
@@ -283,6 +294,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q12",
@@ -308,6 +320,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q13",
@@ -333,6 +346,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q14",
@@ -358,6 +372,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q15",
@@ -383,6 +398,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q16",
@@ -408,6 +424,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q17",
@@ -433,6 +450,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q18",
@@ -458,6 +476,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q19",
@@ -483,6 +502,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q20",
@@ -508,6 +528,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q21",
@@ -533,6 +554,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q22",
@@ -558,6 +580,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q23",
@@ -582,6 +605,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q24",
@@ -607,6 +631,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q25",
@@ -624,6 +649,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q26",
@@ -649,6 +675,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q27",
@@ -673,6 +700,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q28",
@@ -698,6 +726,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q29",
@@ -723,6 +752,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q30",
@@ -748,6 +778,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q31",
@@ -772,6 +803,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q32",
@@ -797,6 +829,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q33",
@@ -821,6 +854,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q34",
@@ -846,6 +880,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q35",
@@ -871,6 +906,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q36",
@@ -895,6 +931,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q37",
@@ -919,6 +956,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q38",
@@ -943,6 +981,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q39",
@@ -960,6 +999,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q40",
@@ -977,6 +1017,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q41",
@@ -1002,6 +1043,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q42",
@@ -1027,6 +1069,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q43",
@@ -1052,6 +1095,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q44",
@@ -1069,6 +1113,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q45",
@@ -1086,6 +1131,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q46",
@@ -1111,6 +1157,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q47",
@@ -1136,6 +1183,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q48",
@@ -1161,6 +1209,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q49",
@@ -1185,6 +1234,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q50",
@@ -1210,6 +1260,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q51",
@@ -1235,6 +1286,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q52",
@@ -1259,6 +1311,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q53",
@@ -1284,6 +1337,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q54",
@@ -1309,6 +1363,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q55",
@@ -1334,6 +1389,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q56",
@@ -1350,6 +1406,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q57",
@@ -1375,6 +1432,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q58",
@@ -1400,6 +1458,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q59",
@@ -1425,6 +1484,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q60",
@@ -1450,6 +1510,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q61",
@@ -1475,6 +1536,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q62",
@@ -1500,6 +1562,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q63",
@@ -1524,6 +1587,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q64",
@@ -1549,6 +1613,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q65",
@@ -1566,6 +1631,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q66",
@@ -1591,6 +1657,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q67",
@@ -1608,6 +1675,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q68",
@@ -1633,6 +1701,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q69",
@@ -1658,6 +1727,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q70",
@@ -1682,6 +1752,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q71",
@@ -1699,6 +1770,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q72",
@@ -1724,6 +1796,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q73",
@@ -1748,6 +1821,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q74",
@@ -1773,6 +1847,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q75",
@@ -1797,6 +1872,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q76",
@@ -1821,6 +1897,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a", "b", "c", "d"],
   },
   {
     id: "q77",
@@ -1838,6 +1915,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q78",
@@ -1863,6 +1941,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q79",
@@ -1888,6 +1967,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q80",
@@ -1912,6 +1992,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q81",
@@ -1937,6 +2018,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q82",
@@ -1962,6 +2044,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q83",
@@ -1979,6 +2062,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q84",
@@ -2004,6 +2088,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q85",
@@ -2029,6 +2114,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q86",
@@ -2054,6 +2140,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q87",
@@ -2079,6 +2166,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q88",
@@ -2104,6 +2192,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q89",
@@ -2129,6 +2218,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q90",
@@ -2154,6 +2244,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q91",
@@ -2179,6 +2270,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q92",
@@ -2204,6 +2296,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q93",
@@ -2228,6 +2321,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q94",
@@ -2252,6 +2346,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q95",
@@ -2276,6 +2371,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q96",
@@ -2293,6 +2389,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q97",
@@ -2318,6 +2415,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q98",
@@ -2343,6 +2441,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q99",
@@ -2368,6 +2467,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q100",
@@ -2392,6 +2492,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q101",
@@ -2417,6 +2518,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q102",
@@ -2442,6 +2544,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q103",
@@ -2466,6 +2569,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q104",
@@ -2491,6 +2595,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q105",
@@ -2515,6 +2620,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q106",
@@ -2540,6 +2646,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q107",
@@ -2565,6 +2672,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q108",
@@ -2590,6 +2698,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q109",
@@ -2615,6 +2724,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q110",
@@ -2639,6 +2749,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q111",
@@ -2664,6 +2775,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q112",
@@ -2689,6 +2801,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q113",
@@ -2714,6 +2827,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q114",
@@ -2739,6 +2853,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q115",
@@ -2764,6 +2879,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q116",
@@ -2789,6 +2905,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q117",
@@ -2814,6 +2931,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q118",
@@ -2839,6 +2957,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q119",
@@ -2864,6 +2983,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q120",
@@ -2888,6 +3008,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q121",
@@ -2913,6 +3034,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q122",
@@ -2937,6 +3059,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q123",
@@ -2953,6 +3076,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q124",
@@ -2978,6 +3102,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q125",
@@ -3003,6 +3128,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q126",
@@ -3028,6 +3154,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q127",
@@ -3053,6 +3180,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q128",
@@ -3077,6 +3205,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q129",
@@ -3101,6 +3230,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q130",
@@ -3125,6 +3255,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q131",
@@ -3150,6 +3281,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q132",
@@ -3175,6 +3307,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q133",
@@ -3200,6 +3333,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q134",
@@ -3225,6 +3359,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q135",
@@ -3249,6 +3384,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q136",
@@ -3274,6 +3410,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q137",
@@ -3298,6 +3435,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q138",
@@ -3322,6 +3460,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q139",
@@ -3346,6 +3485,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q140",
@@ -3371,6 +3511,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q141",
@@ -3395,6 +3536,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q142",
@@ -3419,6 +3561,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q143",
@@ -3444,6 +3587,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q144",
@@ -3468,6 +3612,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q145",
@@ -3492,6 +3637,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q146",
@@ -3517,6 +3663,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q147",
@@ -3542,6 +3689,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q148",
@@ -3566,6 +3714,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q149",
@@ -3583,6 +3732,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q150",
@@ -3608,6 +3758,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q151",
@@ -3633,6 +3784,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q152",
@@ -3658,6 +3810,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q153",
@@ -3683,6 +3836,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q154",
@@ -3707,6 +3861,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q155",
@@ -3732,6 +3887,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q156",
@@ -3748,6 +3904,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q157",
@@ -3764,6 +3921,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q158",
@@ -3789,6 +3947,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q159",
@@ -3814,6 +3973,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q160",
@@ -3839,6 +3999,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q161",
@@ -3864,6 +4025,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q162",
@@ -3889,6 +4051,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q163",
@@ -3913,6 +4076,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q164",
@@ -3937,6 +4101,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q165",
@@ -3962,6 +4127,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q166",
@@ -3987,6 +4153,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q167",
@@ -4012,6 +4179,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q168",
@@ -4036,6 +4204,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q169",
@@ -4061,6 +4230,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q170",
@@ -4086,6 +4256,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q171",
@@ -4111,6 +4282,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q172",
@@ -4136,6 +4308,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q173",
@@ -4161,6 +4334,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q174",
@@ -4186,6 +4360,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q175",
@@ -4210,6 +4385,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q176",
@@ -4235,6 +4411,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q177",
@@ -4260,6 +4437,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q178",
@@ -4285,6 +4463,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q179",
@@ -4310,6 +4489,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q180",
@@ -4335,6 +4515,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q181",
@@ -4359,6 +4540,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q182",
@@ -4383,6 +4565,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q183",
@@ -4407,6 +4590,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q184",
@@ -4432,6 +4616,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q185",
@@ -4457,6 +4642,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q186",
@@ -4481,6 +4667,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q187",
@@ -4505,6 +4692,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q188",
@@ -4529,6 +4717,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q189",
@@ -4554,6 +4743,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q190",
@@ -4579,6 +4769,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q191",
@@ -4604,6 +4795,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q192",
@@ -4629,6 +4821,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q193",
@@ -4653,6 +4846,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q194",
@@ -4678,6 +4872,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q195",
@@ -4702,6 +4897,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q196",
@@ -4726,6 +4922,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q197",
@@ -4751,6 +4948,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q198",
@@ -4775,6 +4973,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q199",
@@ -4800,6 +4999,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q200",
@@ -4825,6 +5025,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q201",
@@ -4842,6 +5043,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q202",
@@ -4867,6 +5069,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q203",
@@ -4892,6 +5095,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q204",
@@ -4917,6 +5121,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q205",
@@ -4934,6 +5139,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q206",
@@ -4959,6 +5165,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q207",
@@ -4984,6 +5191,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q208",
@@ -5001,6 +5209,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q209",
@@ -5026,6 +5235,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q210",
@@ -5051,6 +5261,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q211",
@@ -5076,6 +5287,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q212",
@@ -5101,6 +5313,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q213",
@@ -5126,6 +5339,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q214",
@@ -5151,6 +5365,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q215",
@@ -5175,6 +5390,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q216",
@@ -5200,6 +5416,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q217",
@@ -5224,6 +5441,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q218",
@@ -5249,6 +5467,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q219",
@@ -5274,6 +5493,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q220",
@@ -5299,6 +5519,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q221",
@@ -5324,6 +5545,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q222",
@@ -5348,6 +5570,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b", "c"],
   },
   {
     id: "q223",
@@ -5373,6 +5596,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q224",
@@ -5398,6 +5622,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q225",
@@ -5415,6 +5640,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q226",
@@ -5440,6 +5666,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q227",
@@ -5465,6 +5692,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q228",
@@ -5490,6 +5718,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q229",
@@ -5515,6 +5744,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q230",
@@ -5532,6 +5762,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q231",
@@ -5557,6 +5788,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q232",
@@ -5582,6 +5814,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q233",
@@ -5607,6 +5840,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q234",
@@ -5632,6 +5866,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q235",
@@ -5657,6 +5892,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q236",
@@ -5682,6 +5918,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q237",
@@ -5707,6 +5944,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q238",
@@ -5732,6 +5970,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q239",
@@ -5757,6 +5996,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q240",
@@ -5782,6 +6022,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q241",
@@ -5807,6 +6048,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q242",
@@ -5832,6 +6074,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q243",
@@ -5857,6 +6100,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q244",
@@ -5882,6 +6126,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q245",
@@ -5906,6 +6151,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q246",
@@ -5931,6 +6177,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q247",
@@ -5956,6 +6203,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q248",
@@ -5981,6 +6229,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q249",
@@ -6006,6 +6255,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q250",
@@ -6031,6 +6281,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q251",
@@ -6056,6 +6307,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q252",
@@ -6081,6 +6333,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q253",
@@ -6106,6 +6359,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q254",
@@ -6131,6 +6385,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q255",
@@ -6156,6 +6411,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q256",
@@ -6181,6 +6437,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q257",
@@ -6198,6 +6455,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q258",
@@ -6223,6 +6481,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q259",
@@ -6248,6 +6507,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q260",
@@ -6265,6 +6525,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q261",
@@ -6290,6 +6551,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q262",
@@ -6315,6 +6577,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q263",
@@ -6340,6 +6603,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q264",
@@ -6365,6 +6629,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q265",
@@ -6390,6 +6655,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q266",
@@ -6415,6 +6681,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q267",
@@ -6432,6 +6699,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q268",
@@ -6457,6 +6725,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q269",
@@ -6474,6 +6743,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q270",
@@ -6499,6 +6769,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q271",
@@ -6524,6 +6795,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q272",
@@ -6548,6 +6820,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q273",
@@ -6572,6 +6845,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q274",
@@ -6597,6 +6871,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q275",
@@ -6622,6 +6897,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q276",
@@ -6647,6 +6923,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q277",
@@ -6664,6 +6941,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q278",
@@ -6689,6 +6967,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q279",
@@ -6713,6 +6992,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q280",
@@ -6738,6 +7018,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q281",
@@ -6762,6 +7043,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q282",
@@ -6786,6 +7068,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q283",
@@ -6810,6 +7093,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q284",
@@ -6835,6 +7119,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q285",
@@ -6860,6 +7145,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q286",
@@ -6885,6 +7171,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q287",
@@ -6910,6 +7197,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q288",
@@ -6935,6 +7223,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q289",
@@ -6959,6 +7248,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q290",
@@ -6983,6 +7273,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q291",
@@ -7008,6 +7299,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q292",
@@ -7033,6 +7325,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q293",
@@ -7058,6 +7351,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q294",
@@ -7083,6 +7377,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q295",
@@ -7100,6 +7395,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q296",
@@ -7125,6 +7421,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q297",
@@ -7150,6 +7447,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q298",
@@ -7174,6 +7472,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q299",
@@ -7199,6 +7498,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q300",
@@ -7224,6 +7524,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q301",
@@ -7249,6 +7550,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q302",
@@ -7273,6 +7575,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q303",
@@ -7298,6 +7601,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q304",
@@ -7322,6 +7626,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q305",
@@ -7347,6 +7652,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q306",
@@ -7371,6 +7677,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q307",
@@ -7395,6 +7702,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q308",
@@ -7420,6 +7728,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q309",
@@ -7445,6 +7754,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q310",
@@ -7470,6 +7780,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q311",
@@ -7494,6 +7805,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
   },
   {
     id: "q312",
@@ -7519,6 +7831,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q313",
@@ -7536,6 +7849,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q314",
@@ -7561,6 +7875,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q315",
@@ -7585,6 +7900,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q316",
@@ -7602,6 +7918,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q317",
@@ -7627,6 +7944,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q318",
@@ -7652,6 +7970,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q319",
@@ -7677,6 +7996,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q320",
@@ -7701,6 +8021,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q321",
@@ -7726,6 +8047,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q322",
@@ -7751,6 +8073,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q323",
@@ -7775,6 +8098,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q324",
@@ -7800,6 +8124,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q325",
@@ -7825,6 +8150,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q326",
@@ -7850,6 +8176,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
   {
     id: "q327",
@@ -7875,6 +8202,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q328",
@@ -7900,6 +8228,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
   },
   {
     id: "q329",
@@ -7925,6 +8254,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
   },
   {
     id: "q330",
@@ -7942,5 +8272,8772 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q331",
+    question: "Statistical power is defined as the probability of",
+    options: [
+      {
+        id: "a",
+        text: "Accepting a null hypothesis when it is false",
+      },
+      {
+        id: "b",
+        text: "Rejecting a null hypothesis when it is true",
+      },
+      {
+        id: "c",
+        text: "Rejecting a null hypothesis when it is false",
+      },
+      {
+        id: "d",
+        text: "Failing to reject a null hypothesis when it is false",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q332",
+    question:
+      "Steps in the estimation of sample size included all of the following EXCEPT",
+    options: [
+      {
+        id: "a",
+        text: "Identify major study variable",
+      },
+      {
+        id: "b",
+        text: "Decide on the desired precision of the estimate",
+      },
+      {
+        id: "c",
+        text: "Adjust for population size",
+      },
+      {
+        id: "d",
+        text: "Adjust for selection bias",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q333",
+    question: "A type-II error occurs when",
+    options: [
+      {
+        id: "a",
+        text: "The null hypothesis is rejected when it is false",
+      },
+      {
+        id: "b",
+        text: "The null hypothesis is not rejected when it is false",
+      },
+      {
+        id: "c",
+        text: "The null hypothesis is not rejected when it is true",
+      },
+      {
+        id: "d",
+        text: "The null hypothesis is rejected when it is true",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q334",
+    question:
+      "Exact calculation of design effect for a study parameter can take place you after study completion",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q335",
+    question: "Population variance can be estimated from",
+    options: [
+      {
+        id: "a",
+        text: "A pilot study",
+      },
+      {
+        id: "b",
+        text: "Reports of previous studies",
+      },
+      {
+        id: "c",
+        text: "Guessing",
+      },
+      {
+        id: "d",
+        text: "'a' and 'b'",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q336",
+    question: "The recommended minimum level of power for an analytical study",
+    options: [
+      {
+        id: "a",
+        text: "5%",
+      },
+      {
+        id: "b",
+        text: "95%",
+      },
+      {
+        id: "c",
+        text: "80%",
+      },
+      {
+        id: "d",
+        text: "0.05%",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q337",
+    question:
+      "In general, sample size formula takes into account the crude association between exposure and outcome as well as the confounders",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q338",
+    question:
+      "Design effect of 'more than 1' needs to be considered in studies involving",
+    options: [
+      {
+        id: "a",
+        text: "Cluster sampling",
+      },
+      {
+        id: "b",
+        text: "Simple random sampling",
+      },
+      {
+        id: "c",
+        text: "Stratified random sampling",
+      },
+      {
+        id: "d",
+        text: "Non-probability sampling",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q339",
+    question:
+      "Which of the following is necessary in sample size determination?",
+    options: [
+      {
+        id: "a",
+        text: "Desired confidence level",
+      },
+      {
+        id: "b",
+        text: "Desired precision",
+      },
+      {
+        id: "c",
+        text: "Magnitude of the population variance",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q340",
+    question: "Which one of the following statements is false?",
+    options: [
+      {
+        id: "a",
+        text: "Design effect is a relative change in the variance due to use of clusters",
+      },
+      {
+        id: "b",
+        text: "As the magnitude of the expected effect increases, the required sample size increases",
+      },
+      {
+        id: "c",
+        text: "The population variance is unknown in general and has to be estimated",
+      },
+      {
+        id: "d",
+        text: "Larger the sample size, smaller the sampling error",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q341",
+    question: "A type-I error occurs when",
+    options: [
+      {
+        id: "a",
+        text: "The null hypothesis is rejected when it is false",
+      },
+      {
+        id: "b",
+        text: "The null hypothesis is not rejected when it is false",
+      },
+      {
+        id: "c",
+        text: "The null hypothesis is not rejected when it is true",
+      },
+      {
+        id: "d",
+        text: "The null hypothesis is rejected when it is true",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q342",
+    question: "Which of the following is true about β error?",
+    options: [
+      {
+        id: "a",
+        text: "It is the probability of correctly rejecting the null hypothesis when",
+      },
+      {
+        id: "b",
+        text: "It is the probability of accepting the null hypothesis when it is false",
+      },
+      {
+        id: "c",
+        text: "It is the probability of rejecting the null hypothesis when it is true",
+      },
+      {
+        id: "d",
+        text: "It is the probability of making a Type I error",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q343",
+    question:
+      "All the following are essential statistical considerations for sample size calculation EXCEPT",
+    options: [
+      {
+        id: "a",
+        text: "Desired precision",
+      },
+      {
+        id: "b",
+        text: "Anticipated proportion of factor of interest",
+      },
+      {
+        id: "c",
+        text: "Sampling method",
+      },
+      {
+        id: "d",
+        text: "Allocated budget",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q344",
+    question:
+      "For each confounder/variable added in the study empirically 10% increase in the sample size should be made.",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q345",
+    question:
+      "The design effect should be calculated after completion of the study and it, need not be counted at the design stage.",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q346",
+    question:
+      "When estimating sample size for a crosssectional study, we need to account for",
+    options: [
+      {
+        id: "a",
+        text: "Expected proportion of characteristic of interest",
+      },
+      {
+        id: "b",
+        text: "Estimated design effect, in case of cluster sampling",
+      },
+      {
+        id: "c",
+        text: "Population size",
+      },
+      {
+        id: "d",
+        text: "All the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q347",
+    question: "The power of a study",
+    options: [
+      {
+        id: "a",
+        text: "Does not influence the sample size",
+      },
+      {
+        id: "b",
+        text: "Represented as ‘α’",
+      },
+      {
+        id: "c",
+        text: "Can be defined as the probability of correctly rejecting null hypothesis when it is false",
+      },
+      {
+        id: "d",
+        text: "Represented as the probability of making a Type I error",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q348",
+    question:
+      "The following are needed to calculate sample size for analytical studies using simple random sampling method EXCEPT",
+    options: [
+      {
+        id: "a",
+        text: "Desired value for the probability of α",
+      },
+      {
+        id: "b",
+        text: "Magnitude of the expected effect based on previous studies",
+      },
+      {
+        id: "c",
+        text: "Desired value for the probability of β",
+      },
+      {
+        id: "d",
+        text: "Estimated design effect",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q349",
+    question:
+      "A researcher wants to estimate the prevalence of surgical site infection following cesarean section at a tertiary care hospital. What would be the minimum number of sample size to estimate the magnitude of surgical site infection following cesarean section if it is estimated that the proportion of surgical site infection will be 10% in the hospital considering 5% absolute precision and 95% confidence level (Z α/2 = 1.96).",
+    options: [
+      {
+        id: "a",
+        text: "100",
+      },
+      {
+        id: "b",
+        text: "138",
+      },
+      {
+        id: "c",
+        text: "148",
+      },
+      {
+        id: "d",
+        text: "158",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q350",
+    question:
+      "Precision is described as a measure of how close an estimate is to the true value of a population parameter.",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q351",
+    question:
+      "In a cross-sectional study, a group of researchers wanted to estimate the prevalence of cephalosporin-resistant E.coli among adult males with urinary tract infections. From previous literature, the prevalence was found to be 6.5%. If the researchers want to estimate the prevalence with a 20% relative precision and 95% significance level, what is the minimum sample size required?",
+    options: [
+      {
+        id: "a",
+        text: "1042",
+      },
+      {
+        id: "b",
+        text: "1381",
+      },
+      {
+        id: "c",
+        text: "6",
+      },
+      {
+        id: "d",
+        text: "60",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q352",
+    question:
+      "Which of the following factors is NOT essential for calculating sample size for a single mean estimation?",
+    options: [
+      {
+        id: "a",
+        text: "Need for statistical significance",
+      },
+      {
+        id: "b",
+        text: "Assumptions about population standard deviation",
+      },
+      {
+        id: "c",
+        text: "Precision",
+      },
+      {
+        id: "d",
+        text: "Significance level",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q353",
+    question:
+      "Adjustments to a calculated sample size need NOT be done for which of the following reasons?",
+    options: [
+      {
+        id: "a",
+        text: "Non-response rate",
+      },
+      {
+        id: "b",
+        text: "Finite population size",
+      },
+      {
+        id: "c",
+        text: "Cluster design",
+      },
+      {
+        id: "d",
+        text: "Hospital-based study",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q354",
+    question:
+      "State whether true or false. A pilot study can be conducted to get an estimate of the expected prevalence of the disease being studied to calculate the minimum required sample size.",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q355",
+    question:
+      "A cross-sectional study aims to estimate the prevalence of Hydatid liver disease among patients undergoing Ultrasonography in a tertiary care hospital. Which of the following is NOT required for calculating the minimum required sample size for this objective?",
+    options: [
+      {
+        id: "a",
+        text: "Significance level",
+      },
+      {
+        id: "b",
+        text: "Assumed prevalence",
+      },
+      {
+        id: "c",
+        text: "Precision",
+      },
+      {
+        id: "d",
+        text: "Population variance",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q356",
+    question: "What is Type I error?",
+    options: [
+      {
+        id: "a",
+        text: "The probability of accepting the null hypothesis when it is false",
+      },
+      {
+        id: "b",
+        text: "The probability of rejecting the null hypothesis when it is true",
+      },
+      {
+        id: "c",
+        text: "The probability of rejecting the null hypothesis when it is false",
+      },
+      {
+        id: "d",
+        text: "The probability of accepting the null hypothesis when it is true",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q357",
+    question:
+      "Ability of a study to detect correctly the presence of an association is known as",
+    options: [
+      {
+        id: "a",
+        text: "Precision",
+      },
+      {
+        id: "b",
+        text: "Power",
+      },
+      {
+        id: "c",
+        text: "Confidence",
+      },
+      {
+        id: "d",
+        text: "Significance",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q358",
+    question:
+      "Standard deviation of a sampling distribution is called systematic error",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q359",
+    question:
+      "Design effect is considered for which of the following sampling strategy?",
+    options: [
+      {
+        id: "a",
+        text: "Cluster sampling",
+      },
+      {
+        id: "b",
+        text: "Simple random sampling",
+      },
+      {
+        id: "c",
+        text: "Stratified random sampling",
+      },
+      {
+        id: "d",
+        text: "Non-probability sampling",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q360",
+    question:
+      "In a hospital based cross-sectional study, it is planned to estimate the mean D-dimer level among COVID-19 patients. From previous literature, the standard deviation was found to be 200 ng/mL. If the researchers want to estimate the mean with a 50 ng/mL precision and 95% significance level, what is the minimum sample size required?",
+    options: [
+      {
+        id: "a",
+        text: "62",
+      },
+      {
+        id: "b",
+        text: "16",
+      },
+      {
+        id: "c",
+        text: "31",
+      },
+      {
+        id: "d",
+        text: "248",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q361",
+    question: "Selection of study participants depends on",
+    options: [
+      {
+        id: "a",
+        text: "Representativeness",
+      },
+      {
+        id: "b",
+        text: "Acceptable cost",
+      },
+      {
+        id: "c",
+        text: "Adequate size",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q362",
+    question: "Target population is determined by",
+    options: [
+      {
+        id: "a",
+        text: "Demographic characteristics",
+      },
+      {
+        id: "b",
+        text: "Temporal characteristics",
+      },
+      {
+        id: "c",
+        text: "Clinical characteristics",
+      },
+      {
+        id: "d",
+        text: "'a' and 'c'",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q363",
+    question: "Study sample is a subset of accessible population",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q364",
+    question: "Representativeness of a study sample refers to",
+    options: [
+      {
+        id: "a",
+        text: "The extent to which the characteristics of the sample accurately reflect the characteristics of the population",
+      },
+      {
+        id: "b",
+        text: "The size of the sample which is large enough",
+      },
+      {
+        id: "c",
+        text: "Volunteering nature of the subjects from the population",
+      },
+      {
+        id: "d",
+        text: "The extent to which the characteristics of exposed population accurately reflect the characteristics of unexposed sample",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q365",
+    question: "Non-response in a study can be minimized by",
+    options: [
+      {
+        id: "a",
+        text: "Repeat contact of the study participants",
+      },
+      {
+        id: "b",
+        text: "Providing compensation for participants time",
+      },
+      {
+        id: "c",
+        text: "Less invasive and less sensitive questionnaires",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q366",
+    question: "External validity means",
+    options: [
+      {
+        id: "a",
+        text: "The degree to which the inferences drawn from a study can be generalized to a broader population beyond the study population",
+      },
+      {
+        id: "b",
+        text: "The degree to which the observed findings lead to correct inferences about phenomena taking place in the study sample",
+      },
+      {
+        id: "c",
+        text: "The degree to which a test actually measures what it is designed to measure",
+      },
+      {
+        id: "d",
+        text: "The degree to which the findings are reliable",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q367",
+    question: "Participants may be excluded from the study because of",
+    options: [
+      {
+        id: "a",
+        text: "Interference with the success of study follow-up",
+      },
+      {
+        id: "b",
+        text: "Ethical concerns",
+      },
+      {
+        id: "c",
+        text: "Interference with the quality of data collection or non-acceptance to participate in the study",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q368",
+    question:
+      "While choosing the accessible population and the sampling approach for selection of study population, an important factor that we need to consider is",
+    options: [
+      {
+        id: "a",
+        text: "Simplicity",
+      },
+      {
+        id: "b",
+        text: "Technology",
+      },
+      {
+        id: "c",
+        text: "Feasibility",
+      },
+      {
+        id: "d",
+        text: "Reliability",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q369",
+    question:
+      "If your research question is related to diagnosis, treatment or prognosis of a severe medical condition, then it is an easy and costeffective way to recruit the study population from the community",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q370",
+    question:
+      "Reasons for interference with the success of follow-up in a study may include",
+    options: [
+      {
+        id: "a",
+        text: "Migration of some study participants from the study area",
+      },
+      {
+        id: "b",
+        text: "Marriage of some of the female study participants because of which they might move out of the study area",
+      },
+      {
+        id: "c",
+        text: "Refusals for follow-up",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q371",
+    question:
+      "The population defined by clinical and demographic characteristics is called",
+    options: [
+      {
+        id: "a",
+        text: "Target population",
+      },
+      {
+        id: "b",
+        text: "Accessible populat",
+      },
+      {
+        id: "c",
+        text: "Subset",
+      },
+      {
+        id: "d",
+        text: "Study sample",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q372",
+    question:
+      "The population defined by geographical and temporal characteristics is called as",
+    options: [
+      {
+        id: "a",
+        text: "Target population",
+      },
+      {
+        id: "b",
+        text: "Accessible population",
+      },
+      {
+        id: "c",
+        text: "Subset",
+      },
+      {
+        id: "d",
+        text: "Sample size",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q373",
+    question: "Random errors can be effectively handled by",
+    options: [
+      {
+        id: "a",
+        text: "Randomisation",
+      },
+      {
+        id: "b",
+        text: "Representativeness",
+      },
+      {
+        id: "c",
+        text: "Adequate sample size",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q374",
+    question:
+      "A researcher found an inference about a particular disease of interest. If he/she wants to generalize the results, it is important to have",
+    options: [
+      {
+        id: "a",
+        text: "Internal validity",
+      },
+      {
+        id: "b",
+        text: "External validity",
+      },
+      {
+        id: "c",
+        text: "Feasibility",
+      },
+      {
+        id: "d",
+        text: "Accuracy",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q375",
+    question:
+      "Reasons for interference with the success of follow-up in a study may include",
+    options: [
+      {
+        id: "a",
+        text: "Out-migration of some study participants from the study area",
+      },
+      {
+        id: "b",
+        text: "Marriage of some of the female study participants because of which they might move out of the study area",
+      },
+      {
+        id: "c",
+        text: "Refusals for follow-up",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q376",
+    question: "Less invasive and less sensitive questionnaires will",
+    options: [
+      {
+        id: "a",
+        text: "Increase the power",
+      },
+      {
+        id: "b",
+        text: "Decrease the power",
+      },
+      {
+        id: "c",
+        text: "Improve the significance",
+      },
+      {
+        id: "d",
+        text: "Reduce the non-response",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q377",
+    question: "The external validity in a research study means",
+    options: [
+      {
+        id: "a",
+        text: "The degree to which the observed findings lead to correct inferences about phenomena taking place in the study sample",
+      },
+      {
+        id: "b",
+        text: "The degree to which a test actually measures what it is designed to measure",
+      },
+      {
+        id: "c",
+        text: "The degree to which the inferences drawn from a study can be generalized to a broader population beyond the study population",
+      },
+      {
+        id: "d",
+        text: "The degree to which the findings are reliable",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q378",
+    question:
+      "The degree to which the observed findings lead to correct inferences about phenomena of interest in the study sample is",
+    options: [
+      {
+        id: "a",
+        text: "Reliability",
+      },
+      {
+        id: "b",
+        text: "Feasibility",
+      },
+      {
+        id: "c",
+        text: "Internal validity",
+      },
+      {
+        id: "d",
+        text: "External validity",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q379",
+    question:
+      "Which factor is important to consider while choosing the accessible population and the sampling approach?",
+    options: [
+      {
+        id: "a",
+        text: "Feasibility",
+      },
+      {
+        id: "b",
+        text: "Sensitivity",
+      },
+      {
+        id: "c",
+        text: "Specificity",
+      },
+      {
+        id: "d",
+        text: "Reliability",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q380",
+    question: "The participants may be excluded from the study because of",
+    options: [
+      {
+        id: "a",
+        text: "Interference with the success of study follow-up",
+      },
+      {
+        id: "b",
+        text: "Ethical concerns",
+      },
+      {
+        id: "c",
+        text: "Interference with the quality of data collection",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q381",
+    question:
+      "Which of the following helps to minimize the random error in a research study?",
+    options: [
+      {
+        id: "a",
+        text: "Limited study duration",
+      },
+      {
+        id: "b",
+        text: "Adequate sample size",
+      },
+      {
+        id: "c",
+        text: "Adequate budget",
+      },
+      {
+        id: "d",
+        text: "More than six investigators",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q382",
+    question:
+      "Representativeness of the study participants similar to the population of interest can help in which of the following aspects of a research study?",
+    options: [
+      {
+        id: "a",
+        text: "Generalizability of the findings",
+      },
+      {
+        id: "b",
+        text: "Internal validity",
+      },
+      {
+        id: "c",
+        text: "Reduce information bias",
+      },
+      {
+        id: "d",
+        text: "Minimize recall bias",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q383",
+    question:
+      "An investigator intends to estimate the prevalence of Urinary Tract Infection (UTI) among circumcised children (<5 years old) in Jaipur city. However, the researcher selects the study participants from one government hospital. Which of the following is the target population in this study?",
+    options: [
+      {
+        id: "a",
+        text: "All children aged <5 years in the city",
+      },
+      {
+        id: "b",
+        text: "All circumcised children aged <5 years in the city",
+      },
+      {
+        id: "c",
+        text: "All circumcised children aged <5 years attending the government hospital",
+      },
+      {
+        id: "d",
+        text: "All children having UTI in the city",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q384",
+    question:
+      "Which of the following is the accessible population in the above study?",
+    options: [
+      {
+        id: "a",
+        text: "All children aged <5 years in the city",
+      },
+      {
+        id: "b",
+        text: "All circumcised children aged <5 years in the city",
+      },
+      {
+        id: "c",
+        text: "All circumcised children aged <5 years attending the government hospital",
+      },
+      {
+        id: "d",
+        text: "All children having UTI in the city",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q385",
+    question:
+      "State whether true or false. High non-response rate in a study may affect the internal validity.",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q386",
+    question: "Which of the following is TRUE about study validity?",
+    options: [
+      {
+        id: "a",
+        text: "An internally valid study result is always generalizable to the target population",
+      },
+      {
+        id: "b",
+        text: "An internally valid study result may or may not be generalizable to the target population",
+      },
+      {
+        id: "c",
+        text: "An externally valid study result is not generalizable to the target population",
+      },
+      {
+        id: "d",
+        text: "A study without internal validity can be generalized to the target population",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q387",
+    question: "Which of the following statements on study populations is TRUE?",
+    options: [
+      {
+        id: "a",
+        text: "Study sample is a subset of the accessible population",
+      },
+      {
+        id: "b",
+        text: "Target population is a subset of the accessible population",
+      },
+      {
+        id: "c",
+        text: "Accessible population is a subset of the study sample",
+      },
+      {
+        id: "d",
+        text: "Target population is a subset of the study sample",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q388",
+    question:
+      "State whether true or false. Biases can affect both internal and external validity.",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q389",
+    question:
+      "In a community based vaccine trial, which aims to compare the 1 year incidence of intussusception in children receiving/not receiving rotavirus vaccine, which of the following can be a likely exclusion criterion?",
+    options: [
+      {
+        id: "a",
+        text: "Children who may leave the study area within a month",
+      },
+      {
+        id: "b",
+        text: "Children aged 0 months to 24 months",
+      },
+      {
+        id: "c",
+        text: "Children without pre-existing intestinal anomalies",
+      },
+      {
+        id: "d",
+        text: "Children who have not received rotavirus vaccine previously",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q390",
+    question:
+      "In a cohort study planned to estimate the incidence of birth defects among Zika virus infected pregnant women in Chennai city, which of the following CANNOT be an inclusion criterion?",
+    options: [
+      {
+        id: "a",
+        text: "First trimester pregnant women with labconfirmed Zika virus infection",
+      },
+      {
+        id: "b",
+        text: "Pregnant women who are permanent residents of Chennai city",
+      },
+      {
+        id: "c",
+        text: "Pregnant women aged above 18 years",
+      },
+      {
+        id: "d",
+        text: "Pregnant women taking drugs known to cause",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q391",
+    question:
+      "Which of the following statements regarding study objectives is correct?",
+    options: [
+      {
+        id: "a",
+        text: "Objectives should be defined at the planning stage of study",
+      },
+      {
+        id: "b",
+        text: "Objectives can be defined at any time of the study",
+      },
+      {
+        id: "c",
+        text: "Objectives can be changed even at the end of the study",
+      },
+      {
+        id: "d",
+        text: "Objectives should be defined before identifying the research question",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q392",
+    question:
+      "Which of the following is (are) required to determine the key indicators for planned research study?",
+    options: [
+      {
+        id: "a",
+        text: "Frame study objectives",
+      },
+      {
+        id: "b",
+        text: "Identify parameters needed for the key indicators",
+      },
+      {
+        id: "c",
+        text: "Choose the right study design",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q393",
+    question:
+      "Which of the following can improve efficiency of a research study?",
+    options: [
+      {
+        id: "a",
+        text: "Time management",
+      },
+      {
+        id: "b",
+        text: "Planning and scheduling activities",
+      },
+      {
+        id: "c",
+        text: "Budgeting",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q394",
+    question:
+      "Which of the following represents the correct sequence in a life cycle of a study?",
+    options: [
+      {
+        id: "a",
+        text: "Identifying data needs, formulating study objectives, planning analysis, spelling out research question",
+      },
+      {
+        id: "b",
+        text: "Formulating study objectives, planning analysis, spelling out research question, identifying data needs",
+      },
+      {
+        id: "c",
+        text: "Identifying data needs, spelling out research question, formulating study objectives, planning analysis",
+      },
+      {
+        id: "d",
+        text: "Formulating study objects, spelling out research question, identifying data needs, planning analysis",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q395",
+    question:
+      "It should be ensured that products/deliverables of health research projects are delivered within the",
+    options: [
+      {
+        id: "a",
+        text: "Defined timeframe",
+      },
+      {
+        id: "b",
+        text: "Defined budget",
+      },
+      {
+        id: "c",
+        text: "Expected quality standards",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q396",
+    question:
+      "Which of the following statements best describes the study objectives?",
+    options: [
+      {
+        id: "a",
+        text: "They should be minimum, achievable and clear",
+      },
+      {
+        id: "b",
+        text: "They can be primary and / or secondary",
+      },
+      {
+        id: "c",
+        text: "Adding objectives during study implementation is a good practice",
+      },
+      {
+        id: "d",
+        text: "'a' and 'b'",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q397",
+    question:
+      "Principles to be followed while collecting the information elements are",
+    options: [
+      {
+        id: "a",
+        text: "Use the variables that will best reflect the information element",
+      },
+      {
+        id: "b",
+        text: "Adopt standardize case definitions and laboratory criteria/normal ranges",
+      },
+      {
+        id: "c",
+        text: "Choose the most accurate ways of collecting information on various elements",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q398",
+    question:
+      "Study conducted following an ad hoc approach may lead to the following consequences",
+    options: [
+      {
+        id: "a",
+        text: "Generation of useful data in programs or for policy making",
+      },
+      {
+        id: "b",
+        text: "Efficient utilization of resources",
+      },
+      {
+        id: "c",
+        text: "Serious difficulties in analysis and interpretation",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q399",
+    question: "Common reasons for research study failures",
+    options: [
+      {
+        id: "a",
+        text: "Poorly defined research question",
+      },
+      {
+        id: "b",
+        text: "Vague timelines",
+      },
+      {
+        id: "c",
+        text: "Lack of supervision",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q400",
+    question:
+      "Sample size for a cross-sectional study is decided based on the following",
+    options: [
+      {
+        id: "a",
+        text: "Assumed/reported prevalence",
+      },
+      {
+        id: "b",
+        text: "Confidence interval",
+      },
+      {
+        id: "c",
+        text: "Acceptable Precision",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q401",
+    question:
+      "Which of the following is a criterion for a good research question?",
+    options: [
+      {
+        id: "a",
+        text: "Long and self-explanatory question using complex terms",
+      },
+      {
+        id: "b",
+        text: "A question based on ill-defined hypothesis",
+      },
+      {
+        id: "c",
+        text: "A question based on strong hunch on part of the investigator",
+      },
+      {
+        id: "d",
+        text: "A question based on established theory and some research evidence",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q402",
+    question:
+      "Which of the following can be considered true in case of ad hoc approach to conduct a research study?",
+    options: [
+      {
+        id: "a",
+        text: "Its advantages are the low development effort and possibility of getting results in a short time span",
+      },
+      {
+        id: "b",
+        text: "Its advantage is that the accuracy of the results is usually high",
+      },
+      {
+        id: "c",
+        text: "Only 'a'",
+      },
+      {
+        id: "d",
+        text: "Both 'a' and 'b'",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a", "c"],
+  },
+  {
+    id: "q403",
+    question:
+      "A cross sectional study is carried out to examine whether naval medical personnel of a higher rank have more positive copying skills than those of a lower rank. Which of the following statement is true of this study?",
+    options: [
+      {
+        id: "a",
+        text: "Neither variable is dependent as the researcher cannot manipulate them",
+      },
+      {
+        id: "b",
+        text: "The independent variable is rank and the dependent variable is copying skills",
+      },
+      {
+        id: "c",
+        text: "The independent variable is copying skills and the dependent variable is rank",
+      },
+      {
+        id: "d",
+        text: "None of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q404",
+    question:
+      "Indicators are considered positive when they have a direct relationship (association, correlation) with the state of health. Which of the following are the examples of positive indicators?",
+    options: [
+      {
+        id: "a",
+        text: "The proportion of cured tuberculosis cases",
+      },
+      {
+        id: "b",
+        text: "Incidence of AIDS",
+      },
+      {
+        id: "c",
+        text: "Life expectancy at birth",
+      },
+      {
+        id: "d",
+        text: "'a' and 'c' e) 'b' and 'd' f) 'a', 'b', 'c' and 'd'",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q405",
+    question:
+      "Which of the following techniques is preferentially used when the population is finite?",
+    options: [
+      {
+        id: "a",
+        text: "Purposive sampling technique",
+      },
+      {
+        id: "b",
+        text: "Area sampling technique",
+      },
+      {
+        id: "c",
+        text: "Systematic sampling technique",
+      },
+      {
+        id: "d",
+        text: "None of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q406",
+    question:
+      "A study began in 1980 with enrollment of a group of 7000 adults in Pondicherry who were asked about their alcohol consumption, smoking, diet, environmental risk factors etc. All the participants were periodically examined and evaluated for evidence of various types of cancers between 1990-1995. Which of the following study designs was used by the investigators?",
+    options: [
+      {
+        id: "a",
+        text: "Case-control study",
+      },
+      {
+        id: "b",
+        text: "Prospective cohort study",
+      },
+      {
+        id: "c",
+        text: "Ecological study",
+      },
+      {
+        id: "d",
+        text: "Retrospective cohort study",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q407",
+    question:
+      "An increased number of postoperative wound infections were recorded in patients who underwent incision appendectomy compared with those who had a laparoscopic procedure. Which of the following statement/s is/are true in such a scenario?",
+    options: [
+      {
+        id: "a",
+        text: "This association may simply be owing to the presence of a confounding factor",
+      },
+      {
+        id: "b",
+        text: "Association between the two can be better studied in randomized controlled clinical trials",
+      },
+      {
+        id: "c",
+        text: "Both 'a' and 'b'",
+      },
+      {
+        id: "d",
+        text: "None",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q408",
+    question:
+      "In a study to evaluate the effectiveness of a new medication, which of the following will generate a stronger evidence",
+    options: [
+      {
+        id: "a",
+        text: "Comparing outcomes among those receiving medication with those not receiving the same.",
+      },
+      {
+        id: "b",
+        text: "Comparing outcomes among those receiving higher doses of medication with those receiving lower doses",
+      },
+      {
+        id: "c",
+        text: "Comparing adverse events and drug reactions among those receiving medication and those not receiving medication",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q409",
+    question:
+      "Smart objectives are goals that are designed to be be specific, measurable, achievable, relevant and time-bound. Which of the following is an illustration of nonmeasurable objective?",
+    options: [
+      {
+        id: "a",
+        text: "Incidence of colorectal cancers in Indian adult men",
+      },
+      {
+        id: "b",
+        text: "Experiences shared by victims of domestic violence",
+      },
+      {
+        id: "c",
+        text: "To determine if regular skin emollients applied from 2 weeks of age reduced development of atopic dermatitis by age 12 months in the general infant population",
+      },
+      {
+        id: "d",
+        text: "None of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q410",
+    question: "Validity of a research can be improved by:",
+    options: [
+      {
+        id: "a",
+        text: "Taking the true representative sample of the population",
+      },
+      {
+        id: "b",
+        text: "Eliminating extraneous factors and collecting detailed information on confounding factors",
+      },
+      {
+        id: "c",
+        text: "'a' and 'b'",
+      },
+      {
+        id: "d",
+        text: "None of these",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q411",
+    question:
+      "Which of the following is ideally the first step in developing a study?",
+    options: [
+      {
+        id: "a",
+        text: "Fixing the title",
+      },
+      {
+        id: "b",
+        text: "Formulating the research question",
+      },
+      {
+        id: "c",
+        text: "Writing the background",
+      },
+      {
+        id: "d",
+        text: "Planning for analysis",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q412",
+    question: "Which of the following is a reason for the failure of a study?",
+    options: [
+      {
+        id: "a",
+        text: "Poorly stated research question",
+      },
+      {
+        id: "b",
+        text: "Unrealistic timeline",
+      },
+      {
+        id: "c",
+        text: "Inadequate supervision",
+      },
+      {
+        id: "d",
+        text: "All the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q413",
+    question:
+      "Which of the following represents the correct sequence in the life cycle of a study? i. Developing research question ii. Planning the data analysis iii. Data collection iv. Data analysis",
+    options: [
+      {
+        id: "a",
+        text: "i, iii, iv, ii",
+      },
+      {
+        id: "b",
+        text: "i, ii, iii, iv",
+      },
+      {
+        id: "c",
+        text: "i, iii, ii, iv",
+      },
+      {
+        id: "d",
+        text: "ii, iii, iv, i",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q414",
+    question:
+      "Which of the following factor is NOT essential for effective planning and management of a study?",
+    options: [
+      {
+        id: "a",
+        text: "Time management",
+      },
+      {
+        id: "b",
+        text: "Financial management",
+      },
+      {
+        id: "c",
+        text: "Reduction of sample size",
+      },
+      {
+        id: "d",
+        text: "Team work",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q415",
+    question:
+      "Which of the following is to be followed while collecting the information elements?",
+    options: [
+      {
+        id: "a",
+        text: "Use of variables that best reflect the information element",
+      },
+      {
+        id: "b",
+        text: "Standardized case definitions",
+      },
+      {
+        id: "c",
+        text: "Use of validated and standardized methods",
+      },
+      {
+        id: "d",
+        text: "All the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q416",
+    question:
+      "State whether true or false. Framing several study objectives improves the study planning and management",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q417",
+    question:
+      "State whether true or false. Selection of study design should be related to the objectives.",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q418",
+    question:
+      "A postgraduate wants to do a community based thesis. Which of the following is a part of the planning and program management of the study?",
+    options: [
+      {
+        id: "a",
+        text: "Calculating sample size",
+      },
+      {
+        id: "b",
+        text: "Arranging transport to community",
+      },
+      {
+        id: "c",
+        text: "Writing thesis",
+      },
+      {
+        id: "d",
+        text: "All the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q419",
+    question:
+      "Which of the following can be used to represent the duration, timeline and sequence of activities and milestones of a research project?",
+    options: [
+      {
+        id: "a",
+        text: "Bar chart",
+      },
+      {
+        id: "b",
+        text: "Histogram",
+      },
+      {
+        id: "c",
+        text: "Gantt chart",
+      },
+      {
+        id: "d",
+        text: "Pie chart",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q420",
+    question:
+      "Who is primarily responsible for resource allocation and time management in a study?",
+    options: [
+      {
+        id: "a",
+        text: "Institute where the research is conducted",
+      },
+      {
+        id: "b",
+        text: "Principal investigator",
+      },
+      {
+        id: "c",
+        text: "Funding agency",
+      },
+      {
+        id: "d",
+        text: "Scientific committee",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q421",
+    question:
+      "Which component of the data collection instrument is constituted by open, closed and semi-open items?",
+    options: [
+      {
+        id: "a",
+        text: "Introduction",
+      },
+      {
+        id: "b",
+        text: "Identifier",
+      },
+      {
+        id: "c",
+        text: "Questions",
+      },
+      {
+        id: "d",
+        text: "Concluding statement",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q422",
+    question: "Self-administered questionnaire can be",
+    options: [
+      {
+        id: "a",
+        text: "Paper-based or computer-assisted",
+      },
+      {
+        id: "b",
+        text: "Used in face-to-face interviews",
+      },
+      {
+        id: "c",
+        text: "Used in telephonic interviews",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q423",
+    question:
+      "While formulating the questions, all the following need to be followed, EXCEPT",
+    options: [
+      {
+        id: "a",
+        text: "Short and clear questions",
+      },
+      {
+        id: "b",
+        text: "Avoid ambiguities",
+      },
+      {
+        id: "c",
+        text: "Avoid words of every-day language",
+      },
+      {
+        id: "d",
+        text: "Avoid negatives and double negatives",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q424",
+    question: "Structured observation guide",
+    options: [
+      {
+        id: "a",
+        text: "Is useful to document certain processes",
+      },
+      {
+        id: "b",
+        text: "Use checklist of items",
+      },
+      {
+        id: "c",
+        text: "Can be used for in-depth interviews",
+      },
+      {
+        id: "d",
+        text: "'a' and 'b'",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q425",
+    question: "The interviewer does not provide options for responses in",
+    options: [
+      {
+        id: "a",
+        text: "Open-ended questions",
+      },
+      {
+        id: "b",
+        text: "Close-ended questions",
+      },
+      {
+        id: "c",
+        text: "Semi-open questions",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q426",
+    question:
+      "What is the disadvantage of closed questions with dichotomous options in a study questionnaire?",
+    options: [
+      {
+        id: "a",
+        text: "Detailed information available",
+      },
+      {
+        id: "b",
+        text: "Oversimplifies the issues",
+      },
+      {
+        id: "c",
+        text: "Forces an unclear position",
+      },
+      {
+        id: "d",
+        text: "May not be useful for key well framed issues",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q427",
+    question:
+      "The information about participant's attitudes for behaviors such as wearing helmets, washing hands before eating, constitute",
+    options: [
+      {
+        id: "a",
+        text: "Facts",
+      },
+      {
+        id: "b",
+        text: "Knowledge",
+      },
+      {
+        id: "c",
+        text: "Judgments",
+      },
+      {
+        id: "d",
+        text: "Texts",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q428",
+    question:
+      "The type of questions in which there is a possibility to add other answer in addition to the options suggested",
+    options: [
+      {
+        id: "a",
+        text: "Open questions",
+      },
+      {
+        id: "b",
+        text: "Semi-open questions",
+      },
+      {
+        id: "c",
+        text: "Closed questions",
+      },
+      {
+        id: "d",
+        text: "Close questions with multiple options",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q429",
+    question:
+      "The type of questions in a questionnaire which allow creation of continuous variables as responses",
+    options: [
+      {
+        id: "a",
+        text: "Closed questions with quantitative answers",
+      },
+      {
+        id: "b",
+        text: "Open questions with quantitative answers",
+      },
+      {
+        id: "c",
+        text: "Both of the above",
+      },
+      {
+        id: "d",
+        text: "None of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q430",
+    question:
+      "All are true regarding the order of questions in a data collection tool EXCEPT",
+    options: [
+      {
+        id: "a",
+        text: "From intimate to casual",
+      },
+      {
+        id: "b",
+        text: "From general to specific",
+      },
+      {
+        id: "c",
+        text: "From simple to complicate",
+      },
+      {
+        id: "d",
+        text: "In chronological order, if questions related to sequence of events",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q431",
+    question:
+      "A question was framed by an ophthalmologist as a part of data collection tool for her research- “Which of the following symptoms you had in the last one week?” The options were 1. Eye pain 2. Redness of eye 3. Watering of eye 4. Low vision Given that a study participant may have multiple complaints, which of the following best describes the type of question?",
+    options: [
+      {
+        id: "a",
+        text: "Open question",
+      },
+      {
+        id: "b",
+        text: "Closed questions with dichotomous options",
+      },
+      {
+        id: "c",
+        text: "Closed question with multiple options",
+      },
+      {
+        id: "d",
+        text: "Closed question with quantitative answers",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q432",
+    question:
+      'A researcher has framed a question in the research tool as- "What is the monthly income of the family?" This information constitutes',
+    options: [
+      {
+        id: "a",
+        text: "Facts",
+      },
+      {
+        id: "b",
+        text: "Knowledge",
+      },
+      {
+        id: "c",
+        text: "Judgments",
+      },
+      {
+        id: "d",
+        text: "Healthy Life styles",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+
+  {
+    id: "q433",
+    question:
+      "Which of the following is correct in relation to an open question?",
+    options: [
+      {
+        id: "a",
+        text: "Answers are suggested",
+      },
+      {
+        id: "b",
+        text: "Stimulate memory",
+      },
+      {
+        id: "c",
+        text: "Easy to code and analysis",
+      },
+      {
+        id: "d",
+        text: "Freedom to respond is compromised",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q434",
+    question:
+      "Glasgow coma Scale (GCS) is a scoring system to understand the consciousness level of a person. The score varies between 3 and 15. A researcher has included a question in research tool- “What is the GCS score during admission?” This question is an example of:",
+    options: [
+      {
+        id: "a",
+        text: "Open question",
+      },
+      {
+        id: "b",
+        text: "Closed question with dichotomous option",
+      },
+      {
+        id: "c",
+        text: "Closed question with multiple option",
+      },
+      {
+        id: "d",
+        text: "Closed question with quantitative answers",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q435",
+    question:
+      "An investigator wanted to study the clinical profile of patients presented with foreign body in nose, attended in the emergency department in the last 2 years in a hospital. Which of the following is the most suitable way to collect data?",
+    options: [
+      {
+        id: "a",
+        text: "Review of records",
+      },
+      {
+        id: "b",
+        text: "Cohort study",
+      },
+      {
+        id: "c",
+        text: "Randomized trial",
+      },
+      {
+        id: "d",
+        text: "Focus group discussion",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q436",
+    question: "Order of a question should be all, except",
+    options: [
+      {
+        id: "a",
+        text: "From simple to complicated",
+      },
+      {
+        id: "b",
+        text: "From general to specific",
+      },
+      {
+        id: "c",
+        text: "From intimate to casual",
+      },
+      {
+        id: "d",
+        text: "In chronological order",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q437",
+    question: "Structured observation guide",
+    options: [
+      {
+        id: "a",
+        text: "Is useful to document certain process",
+      },
+      {
+        id: "b",
+        text: "Uses checklist of items",
+      },
+      {
+        id: "c",
+        text: "Both 'a' and 'b'",
+      },
+      {
+        id: "d",
+        text: "None of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q438",
+    question:
+      "Which of the following factors related to data collection may lead to study failures?",
+    options: [
+      {
+        id: "a",
+        text: "Poorly defined research question",
+      },
+      {
+        id: "b",
+        text: "Vague timelines",
+      },
+      {
+        id: "c",
+        text: "Lack of supervision",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q439",
+    question:
+      "In which of the following type of question the interviewer does not provide options for responses?",
+    options: [
+      {
+        id: "a",
+        text: "Open-ended questions",
+      },
+      {
+        id: "b",
+        text: "Close-ended questions",
+      },
+      {
+        id: "c",
+        text: "Semi-open questions",
+      },
+      {
+        id: "d",
+        text: "Closed question with multiple options",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q440",
+    question:
+      "'Age in years' is commonly a continuous variable. However, a resident doctor decided to ask age as a closed question with dichotomous options (If age>65 years or <65 years). What is the disadvantage of such type of ques in a study questionnaire?",
+    options: [
+      {
+        id: "a",
+        text: "Detailed information available",
+      },
+      {
+        id: "b",
+        text: "Oversimplifies the issues",
+      },
+      {
+        id: "c",
+        text: "Forces an unclear position",
+      },
+      {
+        id: "d",
+        text: "It is easy to convert a dichotomous variable to a continuous variable",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q441",
+    question:
+      "Which one of the following is NOT a component of a data collection tool?",
+    options: [
+      {
+        id: "a",
+        text: "Informed consent",
+      },
+      {
+        id: "b",
+        text: "Concluding statements",
+      },
+      {
+        id: "c",
+        text: "Identifiers",
+      },
+      {
+        id: "d",
+        text: "Tabulated results",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q442",
+    question: "Which of the following is TRUE about a data abstraction form?",
+    options: [
+      {
+        id: "a",
+        text: "It is used to collect data by going through records",
+      },
+      {
+        id: "b",
+        text: "It is more valid than a questionnaire",
+      },
+      {
+        id: "c",
+        text: "It can be self-administered by the participants",
+      },
+      {
+        id: "d",
+        text: "It is also called an observational checklist",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q443",
+    question: "Which of the following is FALSE about a questionnaire?",
+    options: [
+      {
+        id: "a",
+        text: "It can contain instructions or prompts for data collectors",
+      },
+      {
+        id: "b",
+        text: "It should contain unique participant identifiers",
+      },
+      {
+        id: "c",
+        text: "It should avoid skip patterns",
+      },
+      {
+        id: "d",
+        text: "It can contain a mix of open and closed questions",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q444",
+    question:
+      "Identify the type of the question given below. “How do you spend your leisure time?_____________",
+    options: [
+      {
+        id: "a",
+        text: "Open ended",
+      },
+      {
+        id: "b",
+        text: "Closed",
+      },
+      {
+        id: "c",
+        text: "Semi-open",
+      },
+      {
+        id: "d",
+        text: "Open question with closed answers",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q445",
+    question:
+      "Which of the following is TRUE about ‘Open question with closed answers’?",
+    options: [
+      {
+        id: "a",
+        text: "Its answers are not suggested to the participants",
+      },
+      {
+        id: "b",
+        text: "It can be used in a self-administered questionnaire",
+      },
+      {
+        id: "c",
+        text: "It is analyzed like an open ended question",
+      },
+      {
+        id: "d",
+        text: "It is expressed as a closed question to the participants",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q446",
+    question:
+      "What is the type of the question given below? From where do you usually get healthrelated information? i. Television ii. Radio iii. Newspaper iv. Magazine v. Others (specify)________________",
+    options: [
+      {
+        id: "a",
+        text: "Open ended",
+      },
+      {
+        id: "b",
+        text: "Closed",
+      },
+      {
+        id: "c",
+        text: "Semi-open",
+      },
+      {
+        id: "d",
+        text: "Open question with closed answers",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q447",
+    question:
+      "Which of the following is FALSE about formulating questions in a study tool?",
+    options: [
+      {
+        id: "a",
+        text: "They must be concise and precise",
+      },
+      {
+        id: "b",
+        text: "They must use scientific terms",
+      },
+      {
+        id: "c",
+        text: "They must use a neutral tone",
+      },
+      {
+        id: "d",
+        text: "They must avoid double negatives",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q448",
+    question:
+      'Which rule is NOT followed in the framing of the question given below? "When and where did you get tested for COVID-19 infection?"',
+    options: [
+      {
+        id: "a",
+        text: "Using a neutral tone",
+      },
+      {
+        id: "b",
+        text: "Avoiding use of double negatives",
+      },
+      {
+        id: "c",
+        text: "Asking a single question at a time",
+      },
+      {
+        id: "d",
+        text: "Using simple words of everyday language",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q449",
+    question:
+      "State whether true or false. Before using a data collection tool in the study, it will be useful to get it reviewed by a statistician.",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q450",
+    question: "What is FALSE about pilot testing of a study questionnaire?",
+    options: [
+      {
+        id: "a",
+        text: "It checks the tool for clarity and acceptability",
+      },
+      {
+        id: "b",
+        text: "It is conducted among persons who will be included in the study",
+      },
+      {
+        id: "c",
+        text: "It provides an estimate of the duration of interview",
+      },
+      {
+        id: "d",
+        text: "Changes are made to the questionnaire based on its findings",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q451",
+    question: "Reliability denotes",
+    options: [
+      {
+        id: "a",
+        text: "Precision",
+      },
+      {
+        id: "b",
+        text: "Repeatability",
+      },
+      {
+        id: "c",
+        text: "Reproducibility",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q452",
+    question: "This should not be done in data collection",
+    options: [
+      {
+        id: "a",
+        text: "Training of staff members",
+      },
+      {
+        id: "b",
+        text: "Review of collected data for quality and completeness",
+      },
+      {
+        id: "c",
+        text: "Manipulation of data",
+      },
+      {
+        id: "d",
+        text: "Validation",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q453",
+    question:
+      "Supportive supervision is essential for a good data collection process",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q454",
+    question: "The collected data should be",
+    options: [
+      {
+        id: "a",
+        text: "Complete",
+      },
+      {
+        id: "b",
+        text: "Readable",
+      },
+      {
+        id: "c",
+        text: "Consistent",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q455",
+    question:
+      "Which of the following is (are) true about the training of data collection staff?",
+    options: [
+      {
+        id: "a",
+        text: "Conduct on-site training",
+      },
+      {
+        id: "b",
+        text: "Conduct mock training sessions",
+      },
+      {
+        id: "c",
+        text: "Training is always optional",
+      },
+      {
+        id: "d",
+        text: "'a' and 'b'",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q456",
+    question:
+      "Which one of the following is the proper way of validating the data?",
+    options: [
+      {
+        id: "a",
+        text: "Repetition of full data collection in the same population",
+      },
+      {
+        id: "b",
+        text: "Data collection in new population",
+      },
+      {
+        id: "c",
+        text: "Repetition of data collection in a randomly selected subset in the same population",
+      },
+      {
+        id: "d",
+        text: "Repeat data collection is not required",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q457",
+    question:
+      "Appropriate means to troubleshoot the difficulties in data collection process",
+    options: [
+      {
+        id: "a",
+        text: "Regular review meetings",
+      },
+      {
+        id: "b",
+        text: "Facilitate the discussion to identify issues during the review",
+      },
+      {
+        id: "c",
+        text: "Clarify the issues experienced by staff during data collection",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q458",
+    question:
+      "There is no need to present the study and its objectives to the field investigators",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q459",
+    question:
+      "Which of the following statement is (are) true regarding data collection for an epidemiological study?",
+    options: [
+      {
+        id: "a",
+        text: "Reliability refers to consistency of information",
+      },
+      {
+        id: "b",
+        text: "Accuracy is the ability of a measurement to be correct on an average",
+      },
+      {
+        id: "c",
+        text: "Feasibility is the ability of investigator to understand the data",
+      },
+      {
+        id: "d",
+        text: "'a' and 'b'",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q460",
+    question:
+      "Time pressure during data collection may result in dilution of data quality",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q461",
+    question: "A data collection tool should be _____________",
+    options: [
+      {
+        id: "a",
+        text: "Valid",
+      },
+      {
+        id: "b",
+        text: "Reliable",
+      },
+      {
+        id: "c",
+        text: "Both 'a' and 'b'",
+      },
+      {
+        id: "d",
+        text: "None",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q462",
+    question:
+      "A neurosurgeon is planning for a hospitalbased study on the patients coming to the emergency department with head injury. The collected data should be",
+    options: [
+      {
+        id: "a",
+        text: "Complete",
+      },
+      {
+        id: "b",
+        text: "Readable",
+      },
+      {
+        id: "c",
+        text: "Consistent",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q463",
+    question:
+      "Which of the following should not be done in relation to data collection?",
+    options: [
+      {
+        id: "a",
+        text: "Training of staff members",
+      },
+      {
+        id: "b",
+        text: "Review of collected data for quality and completeness",
+      },
+      {
+        id: "c",
+        text: "Validation",
+      },
+      {
+        id: "d",
+        text: "None of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q464",
+    question:
+      "State whether true or false: Piloting a data collection tool should be done under supervision",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q465",
+    question:
+      "All of the following are true about a ‘question by question guide’, except",
+    options: [
+      {
+        id: "a",
+        text: "It is a document for the data collectors",
+      },
+      {
+        id: "b",
+        text: "It helps in maintaining uniformity of the data collection",
+      },
+      {
+        id: "c",
+        text: "It helps participants on how to respond",
+      },
+      {
+        id: "d",
+        text: "It clarifies doubts on data collection",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q466",
+    question:
+      "Time pressure during data collection may result in dilution of the data quality",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q467",
+    question:
+      "Which one of the following is the proper way of validating the data?",
+    options: [
+      {
+        id: "a",
+        text: "Repetition of full data collection in the same population",
+      },
+      {
+        id: "b",
+        text: "Data collection in a new population",
+      },
+      {
+        id: "c",
+        text: "Repetition of data collection in a randomly selected subset in the same population",
+      },
+      {
+        id: "d",
+        text: "Repeat data collection not required",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q468",
+    question:
+      "Which of the following statement is true regarding data collection for an epidemiological study?",
+    options: [
+      {
+        id: "a",
+        text: "Reliability refers to consistency of information",
+      },
+      {
+        id: "b",
+        text: "Accuracy is the ability of a measurement to be correct on an average",
+      },
+      {
+        id: "c",
+        text: "Both ‘a’ and ‘b’",
+      },
+      {
+        id: "d",
+        text: "None of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q469",
+    question:
+      "Who is mainly responsible to check the accuracy of data collection instruments before leaving the location?",
+    options: [
+      {
+        id: "a",
+        text: "Field investigator",
+      },
+      {
+        id: "b",
+        text: "Field supervisor",
+      },
+      {
+        id: "c",
+        text: "Principle investigator",
+      },
+      {
+        id: "d",
+        text: "Study participant",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q470",
+    question:
+      "All the following statements are true about training of the data collectors, except",
+    options: [
+      {
+        id: "a",
+        text: "Essential to ensure good quality data",
+      },
+      {
+        id: "b",
+        text: "The investigators should choose the right people",
+      },
+      {
+        id: "c",
+        text: "Communication skill is important for the data collectors",
+      },
+      {
+        id: "d",
+        text: "Onsite training is not essential for data collectors",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q471",
+    question:
+      "The ability of an instrument to produce similar results on repeated measurement is called",
+    options: [
+      {
+        id: "a",
+        text: "Validity",
+      },
+      {
+        id: "b",
+        text: "Reliability",
+      },
+      {
+        id: "c",
+        text: "Accuracy",
+      },
+      {
+        id: "d",
+        text: "Sensitivity",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q472",
+    question:
+      "The mean value of fasting blood sugar among 50 healthy volunteers in a community was found to be 90 g/dL with a standard deviation of 5 mg/dL using a new diagnostic test. In the same volunteers, the gold standard test found a mean of 88 g/dL with standard deviation of 4.7 g/dL. What can be said about the new diagnostic test?",
+    options: [
+      {
+        id: "a",
+        text: "The new diagnostic test is valid",
+      },
+      {
+        id: "b",
+        text: "The new diagnostic test is reliable",
+      },
+      {
+        id: "c",
+        text: "The new diagnostic test is valid and reliable",
+      },
+      {
+        id: "d",
+        text: "The new diagnostic test is invalid and unreliable",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q473",
+    question:
+      "Which of the following is NOT used as a criterion to judge the quality of data collected in a study?",
+    options: [
+      {
+        id: "a",
+        text: "Accuracy",
+      },
+      {
+        id: "b",
+        text: "Repeatability",
+      },
+      {
+        id: "c",
+        text: "Precision",
+      },
+      {
+        id: "d",
+        text: "External validity",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q474",
+    question:
+      "Which of the following should NOT be done during data collection in a study?",
+    options: [
+      {
+        id: "a",
+        text: "Referring to the data collection guide",
+      },
+      {
+        id: "b",
+        text: "Checking the quality of data",
+      },
+      {
+        id: "c",
+        text: "Modifying the study objectives",
+      },
+      {
+        id: "d",
+        text: "Validating the data collection process",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q475",
+    question:
+      "State whether true or false. Accuracy of an instrument is the ability to measure what it intends to measure.",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q476",
+    question:
+      "Which of the following is the correct sequence of steps of data collection? i. Preparation of data collection guide ii. Checking the collected data for completeness iii. Training of the data collector iv. Validating the collected data",
+    options: [
+      {
+        id: "a",
+        text: "i, iv, iii, ii",
+      },
+      {
+        id: "b",
+        text: "ii, iii, iv, i",
+      },
+      {
+        id: "c",
+        text: "i, iii, ii, iv",
+      },
+      {
+        id: "d",
+        text: "iii, i, iv, iii",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q477",
+    question:
+      "State whether true and false. A data collection guidebook can be revised time to time as issues in the data collection process are identified.",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q478",
+    question:
+      "Which of the following should NOT be done during training of data collectors?",
+    options: [
+      {
+        id: "a",
+        text: "Simulating the data collection procedure",
+      },
+      {
+        id: "b",
+        text: "Discussing the study objectives with them",
+      },
+      {
+        id: "c",
+        text: "Using an early version of the questionnaire for training",
+      },
+      {
+        id: "d",
+        text: "Revising the question guide according to queries",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q479",
+    question:
+      "Which of the following does NOT apply in checking the quality of filled forms during data collection?",
+    options: [
+      {
+        id: "a",
+        text: "Completeness",
+      },
+      {
+        id: "b",
+        text: "Consistency",
+      },
+      {
+        id: "c",
+        text: "Readability",
+      },
+      {
+        id: "d",
+        text: "Statistical significance",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q480",
+    question:
+      "During data collection in a study, a data collector is faced with a situation where the participant refuses to answer a particular question in the middle of the interview. What is the appropriate action in this situation?",
+    options: [
+      {
+        id: "a",
+        text: "End the interview and report to the investigator",
+      },
+      {
+        id: "b",
+        text: "Continue the interview with the remaining questions",
+      },
+      {
+        id: "c",
+        text: "Seek the answer to that question from family members",
+      },
+      {
+        id: "d",
+        text: "Try to persuade the participant to answer the question somehow",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q481",
+    question: "Steps in data management include",
+    options: [
+      {
+        id: "a",
+        text: "Defining a variable, creating a study database and dictionary",
+      },
+      {
+        id: "b",
+        text: "Enter data, correct errors and create data set for analysis",
+      },
+      {
+        id: "c",
+        text: "Backup and archive data set",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q482",
+    question: "When we are creating variable name, it should be",
+    options: [
+      {
+        id: "a",
+        text: "Clearly understandable and should refer to the questionnaire",
+      },
+      {
+        id: "b",
+        text: "Long and can have spaces",
+      },
+      {
+        id: "c",
+        text: "Consistent and without duplicates",
+      },
+      {
+        id: "d",
+        text: "'a' and 'c'",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q483",
+    question: "In a data management system, each row represents a",
+    options: [
+      {
+        id: "a",
+        text: "Variable",
+      },
+      {
+        id: "b",
+        text: "Record",
+      },
+      {
+        id: "c",
+        text: "Heading",
+      },
+      {
+        id: "d",
+        text: "Appendix",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q484",
+    question:
+      "What is (are) the specifications that we need to check before doing data entry?",
+    options: [
+      {
+        id: "a",
+        text: "Minimum and maximum values, legal codes, skip patterns",
+      },
+      {
+        id: "b",
+        text: "Record name and description of record",
+      },
+      {
+        id: "c",
+        text: "Automatic coding, coping data from preceding record and calculations",
+      },
+      {
+        id: "d",
+        text: "'a' and 'c'",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q485",
+    question: "Identifier in the database is (are)",
+    options: [
+      {
+        id: "a",
+        text: "Unique",
+      },
+      {
+        id: "b",
+        text: "Maintained by a computerized index",
+      },
+      {
+        id: "c",
+        text: "Secured by quality assurance procedures",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q486",
+    question: "Key elements of data management",
+    options: [
+      {
+        id: "a",
+        text: "Data structure and data entry",
+      },
+      {
+        id: "b",
+        text: "Individual and aggregated databases",
+      },
+      {
+        id: "c",
+        text: "Mother and daughter databases",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q487",
+    question: "The design of data collection instrument",
+    options: [
+      {
+        id: "a",
+        text: "Data entry friendly",
+      },
+      {
+        id: "b",
+        text: "Outline of major data collection topics/items",
+      },
+      {
+        id: "c",
+        text: "Auto coding function",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q488",
+    question: "When we are coding for data entry, we should",
+    options: [
+      {
+        id: "a",
+        text: "Prefer numerical coding",
+      },
+      {
+        id: "b",
+        text: "Use highly complex codes",
+      },
+      {
+        id: "c",
+        text: "Decide on the codes for 'missing values' and 'not applicable' items",
+      },
+      {
+        id: "d",
+        text: "'a' and 'c'",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q489",
+    question:
+      "When information is available at various levels (e.g. at Village, Household, Individual and Illness episode), we can store information at each level in separate databases and link when necessary",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q490",
+    question:
+      "Which of the following is (are) not true about normalized database?",
+    options: [
+      {
+        id: "a",
+        text: "Normalized database facilitates further aggregation",
+      },
+      {
+        id: "b",
+        text: "It has only one count by record",
+      },
+      {
+        id: "c",
+        text: "Normalized database does not facilitate further data aggregation",
+      },
+      {
+        id: "d",
+        text: "'a' and 'b'",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q491",
+    question:
+      "A post-graduate researcher has completed the data collection for her thesis. During data management, she should do all the following, except",
+    options: [
+      {
+        id: "a",
+        text: "Applying for the ethics committee clearance",
+      },
+      {
+        id: "b",
+        text: "Create study database",
+      },
+      {
+        id: "c",
+        text: "Create dataset for analysis",
+      },
+      {
+        id: "d",
+        text: "Back-up dataset",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q492",
+    question:
+      "Data documentation includes information about the following items",
+    options: [
+      {
+        id: "a",
+        text: "Structure (Name, number of records etc) alone",
+      },
+      {
+        id: "b",
+        text: "Storage information (Media, location, backup information)",
+      },
+      {
+        id: "c",
+        text: "Structure (Name, number of records etc), Variables (Name, values, coding), History (Creation, modification), and Storage information (Media, location, backup information)",
+      },
+      {
+        id: "d",
+        text: "Structure (Name, number of records etc), Storage information (Media, location, backup information), and Variables (Name, values, coding)",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q493",
+    question: "A variable name should be",
+    options: [
+      {
+        id: "a",
+        text: "Clearly understandable and should refer to the questionnaire",
+      },
+      {
+        id: "b",
+        text: "Short, no space",
+      },
+      {
+        id: "c",
+        text: "Consistent and without duplicates",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q494",
+    question: "Design of data entry can be broadly outlined as",
+    options: [
+      {
+        id: "a",
+        text: "Identifier, Demographics, Outcome, and Exposure",
+      },
+      {
+        id: "b",
+        text: "Informed consent, Identifier, and Demographics",
+      },
+      {
+        id: "c",
+        text: "Identifier, Demographics, Outcome and data analysis plan",
+      },
+      {
+        id: "d",
+        text: "Informed consent, Identifier, Demographics, Outcome and data analysis plan",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q495",
+    question:
+      "All of the following are true about ‘Coding’ a new variable, except",
+    options: [
+      {
+        id: "a",
+        text: "Prefer numerical coding",
+      },
+      {
+        id: "b",
+        text: "Decide on missing values while coding",
+      },
+      {
+        id: "c",
+        text: "Avoid cumbersome codes",
+      },
+      {
+        id: "d",
+        text: "Coding with ‘0’ and ‘1’ should be avoided for dichotomous variables",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q496",
+    question:
+      "Data entry can be considered as an opportunity to partially clean the data",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q497",
+    question:
+      "A researcher in diabetes expected that that the fasting blood sugar levels may take any value between 50 and 150 gm/dL. In this research any coding of missing value as 99 may lead to an erroneous result.",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q498",
+    question:
+      "While documenting the storage information of the database, we need to document",
+    options: [
+      {
+        id: "a",
+        text: "Investigators information",
+      },
+      {
+        id: "b",
+        text: "Time, place, person information",
+      },
+      {
+        id: "c",
+        text: "Media, location and backup information",
+      },
+      {
+        id: "d",
+        text: "Hardware configuration",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q499",
+    question:
+      "Which of the following is incorrect in relation to the data catalogue?",
+    options: [
+      {
+        id: "a",
+        text: "It describes all the variable for any future reference",
+      },
+      {
+        id: "b",
+        text: "It is useful if we share the data with others",
+      },
+      {
+        id: "c",
+        text: "It is useful to know how a variable has been coded",
+      },
+      {
+        id: "d",
+        text: "It is advisable to exclude the missing values from data catalogue",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q500",
+    question: "Which of the following is incorrect about normalized database?",
+    options: [
+      {
+        id: "a",
+        text: "Normalized database facilitates further aggregation",
+      },
+      {
+        id: "b",
+        text: "It has only one count by record",
+      },
+      {
+        id: "c",
+        text: "Normalized database does not facilitate further data aggregation",
+      },
+      {
+        id: "d",
+        text: "Both ‘b’ and ‘c’",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q501",
+    question: "Which of the following is FALSE about Unique Identifier (ID)?",
+    options: [
+      {
+        id: "a",
+        text: "It can be same for more than one participant in a study",
+      },
+      {
+        id: "b",
+        text: "It can be alphanumeric",
+      },
+      {
+        id: "c",
+        text: "It can be a composite number",
+      },
+      {
+        id: "d",
+        text: "It can be used to maintain the anonymity of participants",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q502",
+    question:
+      "Which of the following is NOT a quality assurance measure in designing a data entry form?",
+    options: [
+      {
+        id: "a",
+        text: "Using legal values",
+      },
+      {
+        id: "b",
+        text: "Using minimum and maximum values",
+      },
+      {
+        id: "c",
+        text: "Avoiding skip patterns",
+      },
+      {
+        id: "d",
+        text: "Use of automatic coding",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q503",
+    question: "In a data management system each column represents a(n)-",
+    options: [
+      {
+        id: "a",
+        text: "Variable",
+      },
+      {
+        id: "b",
+        text: "Record",
+      },
+      {
+        id: "c",
+        text: "Heading",
+      },
+      {
+        id: "d",
+        text: "Appendix",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q504",
+    question:
+      "Which of the following is FALSE about Mother-Daughter databases?",
+    options: [
+      {
+        id: "a",
+        text: "Information is collected at various levels",
+      },
+      {
+        id: "b",
+        text: "Information of each level is stored in a different database",
+      },
+      {
+        id: "c",
+        text: "They can be linked by a common index identifier",
+      },
+      {
+        id: "d",
+        text: "Each database cannot have its own unique identifier system",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q505",
+    question:
+      "State whether true or false. Coding with ‘0’ and ‘1’ should be avoided for dichotomous variables.",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q506",
+    question: "Which of the following is FALSE about data dictionary?",
+    options: [
+      {
+        id: "a",
+        text: "It is created after the data entry is started",
+      },
+      {
+        id: "b",
+        text: "It contains the values assigned to the variables",
+      },
+      {
+        id: "c",
+        text: "It gives a brief description of the variables",
+      },
+      {
+        id: "d",
+        text: "It links the variables in the database to the questionnaire",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q507",
+    question:
+      "Identify the type of variable in this question. “Have you ever smoked cigarettes? i. Yes ii. No",
+    options: [
+      {
+        id: "a",
+        text: "Categorical",
+      },
+      {
+        id: "b",
+        text: "Ordinal",
+      },
+      {
+        id: "c",
+        text: "Continuous",
+      },
+      {
+        id: "d",
+        text: "Discrete",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q508",
+    question:
+      "In a study on cancer, the ‘stage of cancer’ was recorded as Stage I, Stage II, Stage III and Stage IV. Which of the following variable types best describes the ‘stage of cancer’?",
+    options: [
+      {
+        id: "a",
+        text: "Nominal",
+      },
+      {
+        id: "b",
+        text: "Ordinal",
+      },
+      {
+        id: "c",
+        text: "Categorical",
+      },
+      {
+        id: "d",
+        text: "Continuous",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q509",
+    question:
+      "In a study with 100 participants, age was recorded as a continuous variable. During data entry, it was seen that age was missing in the forms for 13 people. Which of the following is TRUE in this situation?",
+    options: [
+      {
+        id: "a",
+        text: "Missing values can be coded as ‘999’",
+      },
+      {
+        id: "b",
+        text: "Age variable should be removed from the study",
+      },
+      {
+        id: "c",
+        text: "An arbitrary value can be assigned by the data entry operator",
+      },
+      {
+        id: "d",
+        text: "Participants with missing age should be removed from the study",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q510",
+    question:
+      "State whether true or false. While entering the systolic blood pressure (expected value 60 to 200) value in a database, coding the missing value as 99 may lead to an erroneous result.",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q511",
+    question: "The three stages of data analysis are in the following order",
+    options: [
+      {
+        id: "a",
+        text: "Descriptive stage, analytical stage and recoding stage",
+      },
+      {
+        id: "b",
+        text: "Recoding stage, descriptive stage and analytical stage",
+      },
+      {
+        id: "c",
+        text: "Analytical stage, descriptive stage and recoding stage",
+      },
+      {
+        id: "d",
+        text: "Descriptive stage, coding stage, recoding stage",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q512",
+    question: "We need to avoid the following while performing data analysis",
+    options: [
+      {
+        id: "a",
+        text: "Post hoc analysis",
+      },
+      {
+        id: "b",
+        text: "Data drenching",
+      },
+      {
+        id: "c",
+        text: "Stratified data analysis",
+      },
+      {
+        id: "d",
+        text: "'a' and 'b'",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q513",
+    question:
+      "In the descriptive stage of analysis, we use logistic regression models",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q514",
+    question: '"Epi-Info" is a software used for data entry and data analysis',
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q515",
+    question:
+      "In analytical stage of data analysis, we perform the following in order",
+    options: [
+      {
+        id: "a",
+        text: "Stratified analysis, univariate analysis and multivariate analysis",
+      },
+      {
+        id: "b",
+        text: "Univariate analysis, stratified analysis and multivariate analysis",
+      },
+      {
+        id: "c",
+        text: "Multivariate analysis, univariate analysis and stratified analysis",
+      },
+      {
+        id: "d",
+        text: "Frequency analysis and univariate analysis",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q516",
+    question:
+      "Among the seven steps of data analysis strategy, the sequence of data analysis is as follows A. Conduct advanced analysis B. Identify main variables C. Become familiar with the data D. Identify study type E. Examine outcome/exposure association F. Characterize study population G. Create additional two-way tables",
+    options: [
+      {
+        id: "a",
+        text: "A, B, C, D, E, F, G",
+      },
+      {
+        id: "b",
+        text: "G, E, F, D, A, B, C",
+      },
+      {
+        id: "c",
+        text: "D, B, C, F, E, G, A",
+      },
+      {
+        id: "d",
+        text: "E, F, G, C, A, B, D",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q517",
+    question:
+      "In case of descriptive studies, which of the following is wrong?",
+    options: [
+      {
+        id: "a",
+        text: "We describe the study outcome for 1 group",
+      },
+      {
+        id: "b",
+        text: "We compare the study outcome for 2 groups",
+      },
+      {
+        id: "c",
+        text: "We calculate the incidence for cohort or surveillance data",
+      },
+      {
+        id: "d",
+        text: "We calculate prevalence for cross sectional survey",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q518",
+    question:
+      "If we are doing an analytical study and the study outcome is of acute nature and rare condition what is the appropriate (i) study design and (ii) measure of association?",
+    options: [
+      {
+        id: "a",
+        text: "Cohort study - Relative risk",
+      },
+      {
+        id: "b",
+        text: "Case-control study - Odds ratio",
+      },
+      {
+        id: "c",
+        text: "Cross-sectional study - Prevalence ratio",
+      },
+      {
+        id: "d",
+        text: "Surveillance - Incidence",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q519",
+    question: "Analysis plan depends on",
+    options: [
+      {
+        id: "a",
+        text: "Objectives of the study",
+      },
+      {
+        id: "b",
+        text: "Budget",
+      },
+      {
+        id: "c",
+        text: "Study type (Descriptive or analytical)",
+      },
+      {
+        id: "d",
+        text: "'a' and 'c'",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q520",
+    question:
+      "Use of spreadsheets, such as Excel, should be avoided for data management and analysis",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q521",
+    question:
+      "Multivariate regression models are used during the descriptive stage of analysis",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q522",
+    question:
+      "“Epi-Info” is a software that can be used to create data collection instrument format",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q523",
+    question: "In a research study the analysis plan depends on",
+    options: [
+      {
+        id: "a",
+        text: "Objectives and study type",
+      },
+      {
+        id: "b",
+        text: "Allocated budget",
+      },
+      {
+        id: "c",
+        text: "Availability of the statistician",
+      },
+      {
+        id: "d",
+        text: "Existing time for analysis",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q524",
+    question:
+      "At the time of data cleaning, which of the following is not done?",
+    options: [
+      {
+        id: "a",
+        text: "Checking and removing duplicates",
+      },
+      {
+        id: "b",
+        text: "Dealing with missing observations",
+      },
+      {
+        id: "c",
+        text: "Calculating strength of association",
+      },
+      {
+        id: "d",
+        text: "Checking range and legal values",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q525",
+    question: "To describe the study population characteristics we need to",
+    options: [
+      {
+        id: "a",
+        text: "Calculate the frequency distribution",
+      },
+      {
+        id: "b",
+        text: "Calculate measures of association",
+      },
+      {
+        id: "c",
+        text: "Look for correlation between variables",
+      },
+      {
+        id: "d",
+        text: "perform multivariable regression",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q526",
+    question:
+      "While examining the association between exposure and outcome based on a priori hypotheses, we compare frequency of exposures between cases and controls using appropriate measure of association",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q527",
+    question:
+      "If we are doing an analytical study and the study outcome is of acute nature and a frequent condition what is the appropriate (i) study design and (ii) measure of association?",
+    options: [
+      {
+        id: "a",
+        text: "Cohort study - relative risk",
+      },
+      {
+        id: "b",
+        text: "Case-control study – odds ratio",
+      },
+      {
+        id: "c",
+        text: "Cross sectional study - Prevalence",
+      },
+      {
+        id: "d",
+        text: "Surveillance - Incidence",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q528",
+    question: "Which of the following statements are CORRECT",
+    options: [
+      {
+        id: "a",
+        text: "Plan for data analysis is made at the end of the study",
+      },
+      {
+        id: "b",
+        text: "Recoding can be done for key variables",
+      },
+      {
+        id: "c",
+        text: "Multivariate analysis is done before doing a univariate analysis",
+      },
+      {
+        id: "d",
+        text: "Data drenching is acceptable",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q529",
+    question:
+      "Which of the following is the correct sequence for data analysis i. Multivariate analysis ii. Recoding iii. Measures of association iv. Frequency distribution",
+    options: [
+      {
+        id: "a",
+        text: "ii, iii, iv, i",
+      },
+      {
+        id: "b",
+        text: "i, iii, iv ii",
+      },
+      {
+        id: "c",
+        text: "ii, iv, iii, i",
+      },
+      {
+        id: "d",
+        text: "iii, iv, i, ii",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q530",
+    question: "Spreadsheets are ideal tools for data entry and analysis",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q531",
+    question:
+      "All the following are done to characterize the study population EXCEPT",
+    options: [
+      {
+        id: "a",
+        text: "Provide frequency distribution of age",
+      },
+      {
+        id: "b",
+        text: "Provide percentages of gender",
+      },
+      {
+        id: "c",
+        text: "Compare baseline characteristics of study groups",
+      },
+      {
+        id: "d",
+        text: "Conduct logistic regression analysis",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q532",
+    question:
+      "Which of the following is the appropriate measure of association in a case-control study?",
+    options: [
+      {
+        id: "a",
+        text: "Odds ratio",
+      },
+      {
+        id: "b",
+        text: "Prevalence ratio",
+      },
+      {
+        id: "c",
+        text: "Relative risk",
+      },
+      {
+        id: "d",
+        text: "Incidence",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q533",
+    question:
+      "State whether true or false. Prevalence ratio is one of the measures of association calculated in an analytical cross-sectional study.",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q534",
+    question:
+      "State whether true or false. Hypothesis testing is conducted in an analytical epidemiological study.",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q535",
+    question:
+      "Identify the correct sequence in the steps of data analysis. i. Identify exposure, outcome and other variables ii. Check data for consistency, duplicates and missing values iii. Examine association between outcome and exposure iv. Examine baseline characteristics of the study population",
+    options: [
+      {
+        id: "a",
+        text: "i, ii, iii, iv",
+      },
+      {
+        id: "b",
+        text: "i, ii, iv, iii",
+      },
+      {
+        id: "c",
+        text: "ii, iv, i, iii",
+      },
+      {
+        id: "d",
+        text: "iii, i, ii, iv",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q536",
+    question:
+      "Which of the following is NOT done during the analytic stage of data analysis?",
+    options: [
+      {
+        id: "a",
+        text: "Calculating frequency of the outcome in one group",
+      },
+      {
+        id: "b",
+        text: "Calculating frequency of the outcome by age and gender",
+      },
+      {
+        id: "c",
+        text: "Calculating odds ratio between exposure and outcome",
+      },
+      {
+        id: "d",
+        text: "Applying logistic regression",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q537",
+    question:
+      "Relative risk is calculated in which of the following study designs?",
+    options: [
+      {
+        id: "a",
+        text: "Cross-sectional study",
+      },
+      {
+        id: "b",
+        text: "Cohort study",
+      },
+      {
+        id: "c",
+        text: "Case study",
+      },
+      {
+        id: "d",
+        text: "Case control study",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q538",
+    question:
+      "State whether true or false. Risk ratio can be calculated in a descriptive crosssectional study.",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q539",
+    question:
+      "In a case-control study to examine the association between mobile phone use and acoustic neuroma, 24 cases of acoustic neuroma and 72 hospital controls were recruited from the ENT department of a medical college in Gilgit. History of mobile phone use (>6 hours/day) was ascertained using a standard questionnaire. Exposure was present among 16 cases and 18 controls. Calculate the measure of association.",
+    options: [
+      {
+        id: "a",
+        text: "Odds ratio 1.5",
+      },
+      {
+        id: "b",
+        text: "Relative risk 1.5",
+      },
+      {
+        id: "c",
+        text: "Odds ratio 6",
+      },
+      {
+        id: "d",
+        text: "Relative risk 6",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q540",
+    question:
+      "In a case control conducted taking 100 autism children and 200 normal children in Bhopal city, it was found that 90 autism children and 60 normal children had a history of instrumental delivery. Calculate the measure of association between instrumental delivery and autism.",
+    options: [
+      {
+        id: "a",
+        text: "12",
+      },
+      {
+        id: "b",
+        text: "21",
+      },
+      {
+        id: "c",
+        text: "6",
+      },
+      {
+        id: "d",
+        text: "9",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q541",
+    question:
+      "In which of the following guidelines, discussion on rationale and justification of risk benefit analysis of research and voluntary consent in research was initiated?",
+    options: [
+      {
+        id: "a",
+        text: "Belmont report",
+      },
+      {
+        id: "b",
+        text: "Helsinki declaration",
+      },
+      {
+        id: "c",
+        text: "Nuremberg code",
+      },
+      {
+        id: "d",
+        text: "CIOMS guidelines",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q542",
+    question:
+      "In which type of the following study/studies is (are) informed consent not necessary?",
+    options: [
+      {
+        id: "a",
+        text: "Investigation of an outbreak",
+      },
+      {
+        id: "b",
+        text: "Analysis of mortality data of 2001-2010",
+      },
+      {
+        id: "c",
+        text: "Using verbal autopsy to determine the cause of death",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q543",
+    question:
+      "In which of the following type of research, ethical review is (are) mandatory?",
+    options: [
+      {
+        id: "a",
+        text: "Prevalence of HIV infection using blood investigation",
+      },
+      {
+        id: "b",
+        text: "Awareness about diabetes using questionnaire only",
+      },
+      {
+        id: "c",
+        text: "Calculate out of pocket expenditure using secondary data",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q544",
+    question:
+      "Which of the following is not important in the context of an informed consent document?",
+    options: [
+      {
+        id: "a",
+        text: "Detailed description of study procedures",
+      },
+      {
+        id: "b",
+        text: "Budget of the study",
+      },
+      {
+        id: "c",
+        text: "Details regarding compensation and post-trial access to care",
+      },
+      {
+        id: "d",
+        text: "Contact details of the Principal Investigator",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q545",
+    question:
+      "In the middle of a clinical trial, one participant decides to withdraw from the trial. But, the investigator pressurizes the participant to continue in the study till it completes. Which of the following ethical principles does the investigator violate?",
+    options: [
+      {
+        id: "a",
+        text: "Justice",
+      },
+      {
+        id: "b",
+        text: "Autonomy",
+      },
+      {
+        id: "c",
+        text: "Beneficence",
+      },
+      {
+        id: "d",
+        text: "Non-Maleficence",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q546",
+    question:
+      "Which of the following are not ethical practices in health research?",
+    options: [
+      {
+        id: "a",
+        text: "Taking informed consent from participants prior to study participation",
+      },
+      {
+        id: "b",
+        text: "Giving lot of money to increase study participation",
+      },
+      {
+        id: "c",
+        text: "Lack of adherence to study protocol",
+      },
+      {
+        id: "d",
+        text: "'b' and 'c'",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q547",
+    question:
+      '"Do no harm" concept was emphasized in which of the following ethical principles?',
+    options: [
+      {
+        id: "a",
+        text: "Justice",
+      },
+      {
+        id: "b",
+        text: "Autonomy",
+      },
+      {
+        id: "c",
+        text: "Beneficence",
+      },
+      {
+        id: "d",
+        text: "Non-Maleficence",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q548",
+    question:
+      "Genetic research that involves human participants and conducted by a private research institute should follow",
+    options: [
+      {
+        id: "a",
+        text: "ICMR Guidelines",
+      },
+      {
+        id: "b",
+        text: "Genome Policy and Genetic Research [2000]",
+      },
+      {
+        id: "c",
+        text: "Both 'a' and 'b'",
+      },
+      {
+        id: "d",
+        text: "Neither 'a' nor 'b'",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q549",
+    question:
+      "While conducting research among tribal populations, which of the following is recommended?",
+    options: [
+      {
+        id: "a",
+        text: "Consent from the tribal head (Group consent) is desirable",
+      },
+      {
+        id: "b",
+        text: "Group consent can replace individual consent",
+      },
+      {
+        id: "c",
+        text: "Women can be excluded from informed consent process",
+      },
+      {
+        id: "d",
+        text: "Confidentiality not required",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q550",
+    question:
+      "In a clinical research, the researcher knowingly excludes recruitment of female participants without any compelling indications. Which of the following ethical principle does the investigator violate?",
+    options: [
+      {
+        id: "a",
+        text: "Justice",
+      },
+      {
+        id: "b",
+        text: "Autonomy",
+      },
+      {
+        id: "c",
+        text: "Beneficence",
+      },
+      {
+        id: "d",
+        text: "Non-Maleficence",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q551",
+    question:
+      "In which of the following situations is ethics review essential?",
+    options: [
+      {
+        id: "a",
+        text: "When already available or archived data are used for research",
+      },
+      {
+        id: "b",
+        text: "Involving some risk when some questions are asked, some samples are collected or some drugs are given",
+      },
+      {
+        id: "c",
+        text: "‘a’ and ‘b’",
+      },
+      {
+        id: "d",
+        text: "Only ‘b’",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q552",
+    question:
+      "A study participant can be forced by the investigator to continue in a trial against his will. This is in conflict with which of the following ethical principles?",
+    options: [
+      {
+        id: "a",
+        text: "Autonomy",
+      },
+      {
+        id: "b",
+        text: "Justice",
+      },
+      {
+        id: "c",
+        text: "Beneficence",
+      },
+      {
+        id: "d",
+        text: "None of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q553",
+    question:
+      "The physician should do what is medically indicated, do good than possible harm. This principle is encompassed in the ethical dimension of:",
+    options: [
+      {
+        id: "a",
+        text: "Beneficence",
+      },
+      {
+        id: "b",
+        text: "Justice",
+      },
+      {
+        id: "c",
+        text: "Nonmaleficence",
+      },
+      {
+        id: "d",
+        text: "Autonomy",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q554",
+    question:
+      "Study monitors, regulators and ethics committee members have an authority to verify the consent documentation of research participants.",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q555",
+    question: "Which of the following is not true about an Informed Consent?",
+    options: [
+      {
+        id: "a",
+        text: "IC helps participants take an informed decision about participation in the research study",
+      },
+      {
+        id: "b",
+        text: "IC has information on potential risks and benefits of the study",
+      },
+      {
+        id: "c",
+        text: "IC process intends to protect the study participants",
+      },
+      {
+        id: "d",
+        text: "IC taken by coercion is considered valid",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q556",
+    question: "Which of the following have the guidance in the Belmont report?",
+    options: [
+      {
+        id: "a",
+        text: "The procedure of ‘informed consent’",
+      },
+      {
+        id: "b",
+        text: "The basic ethics principles of autonomy, justice and beneficence",
+      },
+      {
+        id: "c",
+        text: "Review by ethics committee",
+      },
+      {
+        id: "d",
+        text: "All of the above e) None of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q557",
+    question:
+      "Which of the following is typically not within the domain of ethical review of the proposed research?",
+    options: [
+      {
+        id: "a",
+        text: "Novelty of research",
+      },
+      {
+        id: "b",
+        text: "Competence of researchers",
+      },
+      {
+        id: "c",
+        text: "Relevance of research",
+      },
+      {
+        id: "d",
+        text: "To advocate for the study in the community",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q558",
+    question:
+      "The process of Informed consent can be repeated several times during the research study if necessary.",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q559",
+    question:
+      "As part of evaluation of a new vaccine which requires taking a daily oral dose of a refrigerated vaccine, the research team offers to provide a refrigerator to families of participants who don’t have one. Which of the following ethical issues the Institutional Ethics Committee will have to deal with while reviewing the research study?",
+    options: [
+      {
+        id: "a",
+        text: "Undue inducement",
+      },
+      {
+        id: "b",
+        text: "Coercion",
+      },
+      {
+        id: "c",
+        text: "Compromising principle of justice",
+      },
+      {
+        id: "d",
+        text: "None of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q560",
+    question:
+      "In an observational study on menstrual hygiene among school going girls aged 14 to 16 years, informed assent will be required to be taken from the adolescent girls. In addition, informed consent will be required from:",
+    options: [
+      {
+        id: "a",
+        text: "Parent of adolescent girls",
+      },
+      {
+        id: "b",
+        text: "Institutional Head",
+      },
+      {
+        id: "c",
+        text: "Both",
+      },
+      {
+        id: "d",
+        text: "None of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q561",
+    question:
+      "State whether true or false. Review of health records for research does NOT require approval of institute ethics committee",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q562",
+    question:
+      "A participant wants to withdraw from a study before its completion. Which of the following principles of ethics entitles him/her to do so?",
+    options: [
+      {
+        id: "a",
+        text: "Autonomy",
+      },
+      {
+        id: "b",
+        text: "Justice",
+      },
+      {
+        id: "c",
+        text: "Beneficence",
+      },
+      {
+        id: "d",
+        text: "Non-maleficence",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q563",
+    question:
+      "Which of the following does NOT describe ethical principles in research?",
+    options: [
+      {
+        id: "a",
+        text: "Nuremberg code",
+      },
+      {
+        id: "b",
+        text: "Helsinki declaration",
+      },
+      {
+        id: "c",
+        text: "Council for International Organization and Medical Sciences",
+      },
+      {
+        id: "d",
+        text: "Bhore report",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q564",
+    question:
+      "When a research study is planned among adolescents (12-15 years), the following is NOT required?",
+    options: [
+      {
+        id: "a",
+        text: "Assent from participant",
+      },
+      {
+        id: "b",
+        text: "Consent from participant",
+      },
+      {
+        id: "c",
+        text: "Consent from parent",
+      },
+      {
+        id: "d",
+        text: "Consent from legally accepted representative",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q565",
+    question: "Non-Maleficence means",
+    options: [
+      {
+        id: "a",
+        text: "Self-respect",
+      },
+      {
+        id: "b",
+        text: "Do no harm",
+      },
+      {
+        id: "c",
+        text: "Fair and correct",
+      },
+      {
+        id: "d",
+        text: "Doing good",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q566",
+    question:
+      "State whether true or false. Once a participant has provided informed consent, it cannot be withdrawn.",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q567",
+    question: "Which of these is NOT a part of informed consent process?",
+    options: [
+      {
+        id: "a",
+        text: "Confidentiality",
+      },
+      {
+        id: "b",
+        text: "Disclosure of risks and benefits",
+      },
+      {
+        id: "c",
+        text: "Compensation for lost wages",
+      },
+      {
+        id: "d",
+        text: "Encouraging the person to consent",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q568",
+    question: "Which of the following statement is NOT correct?",
+    options: [
+      {
+        id: "a",
+        text: "Compensation for participants is offered for trial related injury",
+      },
+      {
+        id: "b",
+        text: "Research participants can be paid for travel expenses",
+      },
+      {
+        id: "c",
+        text: "Payment can be offered to encourage participation",
+      },
+      {
+        id: "d",
+        text: "Wage loss of the participants can be compensated",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q569",
+    question:
+      "Which of the following is NOT a responsibility of the Institutional Ethics Committee?",
+    options: [
+      {
+        id: "a",
+        text: "Evaluate the potential benefit from the study to the community",
+      },
+      {
+        id: "b",
+        text: "Protect the rights of the study participants",
+      },
+      {
+        id: "c",
+        text: "Sanction funding for the study",
+      },
+      {
+        id: "d",
+        text: "Re-evaluate the study if and when modified",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q570",
+    question:
+      "When a particular ethnic group is excluded from a research study without any valid, scientific reason(s), this is breach of -",
+    options: [
+      {
+        id: "a",
+        text: "Autonomy",
+      },
+      {
+        id: "b",
+        text: "Justice",
+      },
+      {
+        id: "c",
+        text: "Beneficence",
+      },
+      {
+        id: "d",
+        text: "Non maleficence --------------------------------",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q571",
+    question:
+      "A study design that randomly assigns participants into an experimental group or a control group is call as",
+    options: [
+      {
+        id: "a",
+        text: "Cohort study",
+      },
+      {
+        id: "b",
+        text: "Case-control study",
+      },
+      {
+        id: "c",
+        text: "Randomized controlled trials",
+      },
+      {
+        id: "d",
+        text: "Cross-sectional study",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q572",
+    question:
+      "Which of the following statements is (are) true in case of adverse events in a clinical trial?",
+    options: [
+      {
+        id: "a",
+        text: "An unexpected clinical/familial/social problem that occurs during treatment with a drug or other therapy is termed as adverse event",
+      },
+      {
+        id: "b",
+        text: "Adverse events do not have to be caused by the drug or therapy under trial",
+      },
+      {
+        id: "c",
+        text: "Temporal relationship between study product administration and adverse events is critically important",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q573",
+    question:
+      "To ensure that safety and welfare of the research participants is adequately protected, it is important that the clinical trial protocol is critically reviewed for the following",
+    options: [
+      {
+        id: "a",
+        text: "Scientific content",
+      },
+      {
+        id: "b",
+        text: "Ethical issues",
+      },
+      {
+        id: "c",
+        text: "Regulatory norms",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q574",
+    question: "Informed consent is provided after explanation of",
+    options: [
+      {
+        id: "a",
+        text: "All study procedures",
+      },
+      {
+        id: "b",
+        text: "Risks",
+      },
+      {
+        id: "c",
+        text: "Benefits",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q575",
+    question:
+      "Bodies like Drug Controller General of India (DCGI) and Health Ministry Screening Committee (HMSC) are concerned with the following",
+    options: [
+      {
+        id: "a",
+        text: "Regulatory review",
+      },
+      {
+        id: "b",
+        text: "Scientific review",
+      },
+      {
+        id: "c",
+        text: "Ethics review",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q576",
+    question: "Which of the following is (are) monitored in a clinical trial?",
+    options: [
+      {
+        id: "a",
+        text: "Adherence to Good Clinical Practice (GCP)",
+      },
+      {
+        id: "b",
+        text: "Documentation of informed consent, randomization and study product administration",
+      },
+      {
+        id: "c",
+        text: "Adverse events reporting",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q577",
+    question:
+      "The primary responsibilities of the Data Safety Monitoring Body (DSMB) are to",
+    options: [
+      {
+        id: "a",
+        text: "Periodically review and evaluate the accumulated study data for participant safety, study conduct and progress of trial",
+      },
+      {
+        id: "b",
+        text: "Periodically review and evaluate the accumulated study data for participant safety, study conduct and progress and make recommendation concerning the continuation, modification, or termination of the trial",
+      },
+      {
+        id: "c",
+        text: "Periodically make recommendations concerning the continuation, modification, or termination of the trial",
+      },
+      {
+        id: "d",
+        text: "Decide the randomization sequence",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q578",
+    question:
+      "Which of the following best describes the advantages of conducting a Randomized controlled trial?",
+    options: [
+      {
+        id: "a",
+        text: "It is only effective design for overcoming selection bias of participants",
+      },
+      {
+        id: "b",
+        text: "The result can be readily generalized",
+      },
+      {
+        id: "c",
+        text: "It is a simple, uncomplicated and nonregulated study design",
+      },
+      {
+        id: "d",
+        text: "It requires small sample size",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q579",
+    question:
+      "Investigators are required to report adverse events occurring during a clinical trial to which of the following agencies?",
+    options: [
+      {
+        id: "a",
+        text: "Regulatory authority",
+      },
+      {
+        id: "b",
+        text: "Sponsor",
+      },
+      {
+        id: "c",
+        text: "Institutional Ethics Committee",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q580",
+    question:
+      "A method of allocating treatment such that each subject has an equal chance of receiving any of the possible treatments in a clinical trial is known as:",
+    options: [
+      {
+        id: "a",
+        text: "Blinding",
+      },
+      {
+        id: "b",
+        text: "Randomization",
+      },
+      {
+        id: "c",
+        text: "Allocation concealment",
+      },
+      {
+        id: "d",
+        text: "None of the above.",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q581",
+    question:
+      "Which of the following statements regarding document storage and archival after the conclusion of a trial; is correct?",
+    options: [
+      {
+        id: "a",
+        text: "If the data is computerized, there is no need to archive paper based records.",
+      },
+      {
+        id: "b",
+        text: "The investigator has a right to refuse to show the data even to regulatory authorities",
+      },
+      {
+        id: "c",
+        text: "Archival for a period of 5 - 15 years as per the requirement of the sponsor may be necessary",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q582",
+    question: "Which of the following is not true?",
+    options: [
+      {
+        id: "a",
+        text: "Data Safety Monitoring Body (DSMB) is an independent entity.",
+      },
+      {
+        id: "b",
+        text: "DSMB is appointed by the Investigators",
+      },
+      {
+        id: "c",
+        text: "DSMB periodically reviews and evaluates the accumulated study data for participants’ safety",
+      },
+      {
+        id: "d",
+        text: "DSMB assures that the scientific integrity of the trial is maintained during the period of interim analysis",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q583",
+    question:
+      "An unexpected clinical/ familial/ social problem that occurs while on treatment with a drug or other therapy during participation in a clinical trial without any judgment about causality or relationship to the drug is known as:",
+    options: [
+      {
+        id: "a",
+        text: "Serious adverse event",
+      },
+      {
+        id: "b",
+        text: "Adverse event",
+      },
+      {
+        id: "c",
+        text: "Reportable event",
+      },
+      {
+        id: "d",
+        text: "None of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q584",
+    question:
+      "Clinical trials require review at various levels as per the in-country guidelines. State whether true or false.",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q585",
+    question:
+      "The most common method of preventing potential harm to study participants is by adhering to ‘trial stoppage rules’ based on evidence on unacceptable toxicity or adverse effects rates seen during monitoring. State whether true or false.",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q586",
+    question:
+      "Which of the following is true about screening protocol of a clinical trial?",
+    options: [
+      {
+        id: "a",
+        text: "Those who are interested in participating in the trial participate in an interview may have to undergo medical examination",
+      },
+      {
+        id: "b",
+        text: "Eligibility of the potential participant is determined in screening",
+      },
+      {
+        id: "c",
+        text: "Information on study related procedures and inclusion and exclusion criteria are provided by the study investigators to the potential participants",
+      },
+      {
+        id: "d",
+        text: "All the above three statements are true e) None of the above is true f) Only ‘a’ is true",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q587",
+    question:
+      "Reimbursements for which of the following raise no ethical questions?",
+    options: [
+      {
+        id: "a",
+        text: "Compensating for the time spent in coming over and the loss of daily wages due to participation",
+      },
+      {
+        id: "b",
+        text: "For the travel cost involved",
+      },
+      {
+        id: "c",
+        text: "For food expenses",
+      },
+      {
+        id: "d",
+        text: "Only ‘a’ and ‘b’ e) ‘a’, ‘b’ and ‘c’",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q588",
+    question: "Which of the following statements is wrong?",
+    options: [
+      {
+        id: "a",
+        text: "Drug Controller General of India is a Regulatory Authority in India",
+      },
+      {
+        id: "b",
+        text: "Institutional Governing Board is responsible for scientific review of projects",
+      },
+      {
+        id: "c",
+        text: "Institutional Ethics Committee is responsible for ethics review of a proposal",
+      },
+      {
+        id: "d",
+        text: "None of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q589",
+    question:
+      "Which of the following are NOT methods for identifying and preventing potential harm to study participants?",
+    options: [
+      {
+        id: "a",
+        text: "Adverse and serious adverse events reporting",
+      },
+      {
+        id: "b",
+        text: "Periodic review of the project by Data Safety Monitoring Board",
+      },
+      {
+        id: "c",
+        text: "Close watch on enrolment targets",
+      },
+      {
+        id: "d",
+        text: "Regular monitoring of the trial by a preidentified monitoring agency",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q590",
+    question:
+      "State whether true or false. The scientific advisory committee examines the safety and welfare of the research participants in a trial.",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q591",
+    question:
+      "If the project is getting funded internationally, which of the following committees looks at the regulatory affairs?",
+    options: [
+      {
+        id: "a",
+        text: "Health ministry screening committee",
+      },
+      {
+        id: "b",
+        text: "Genetic engineering approval committee",
+      },
+      {
+        id: "c",
+        text: "Ethics committee",
+      },
+      {
+        id: "d",
+        text: "All the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q592",
+    question:
+      "State whether true or false. In order for a clinical trial to be ethically appropriate, participants must give their informed voluntary consent.",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q593",
+    question:
+      "Which of the following is FALSE with regard to data analysis in clinical trials?",
+    options: [
+      {
+        id: "a",
+        text: "Baseline characteristics of participants should be compared across study arms",
+      },
+      {
+        id: "b",
+        text: "Interim analysis can be performed if prestated in the protocol",
+      },
+      {
+        id: "c",
+        text: "Analyses in clinical trials are only descriptive in nature",
+      },
+      {
+        id: "d",
+        text: "People who are lost to follow up can be included in the analysis",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q594",
+    question:
+      "Which of the following is FALSE when dealing with serious adverse events in a clinical trial?",
+    options: [
+      {
+        id: "a",
+        text: "Making provision for free treatment",
+      },
+      {
+        id: "b",
+        text: "Informing the regulatory authorities",
+      },
+      {
+        id: "c",
+        text: "Taking action only if 1% are affected by the adverse events",
+      },
+      {
+        id: "d",
+        text: "Withdrawing the implicated intervention for the affected",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q595",
+    question: "A trial can be pre-maturely stopped if",
+    options: [
+      {
+        id: "a",
+        text: "A significant unanticipated risk is demonstrated",
+      },
+      {
+        id: "b",
+        text: "The investigators lose interest",
+      },
+      {
+        id: "c",
+        text: "The principal investigator retires",
+      },
+      {
+        id: "d",
+        text: "Minor adverse events are reported",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q596",
+    question:
+      "Data Safety Monitoring Body (DSMB) is primarily responsible for which of the following?",
+    options: [
+      {
+        id: "a",
+        text: "Periodically review and evaluate the accumulated study data for participant safety",
+      },
+      {
+        id: "b",
+        text: "Periodically review and evaluate the study conduct and progress",
+      },
+      {
+        id: "c",
+        text: "Make recommendations concerning the continuation, modification, or termination of a clinical trial",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q597",
+    question:
+      "Which of the following is NOT an advantage of a Randomized Controlled Trial?",
+    options: [
+      {
+        id: "a",
+        text: "Controls for confounding bias effectively",
+      },
+      {
+        id: "b",
+        text: "Provides high level of evidence",
+      },
+      {
+        id: "c",
+        text: "Can be conducted in the community or hospital",
+      },
+      {
+        id: "d",
+        text: "Blinding in trial eliminates selection bias",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q598",
+    question:
+      "Which of the following statement is FALSE with regards to a Randomized Controlled Trial?",
+    options: [
+      {
+        id: "a",
+        text: "Adverse events should be reported to the Data Safety Monitoring Board",
+      },
+      {
+        id: "b",
+        text: "Trial related documents must be archived after the trial is over",
+      },
+      {
+        id: "c",
+        text: "Drug trials ideally should have a predefined stoppage rule",
+      },
+      {
+        id: "d",
+        text: "Ethics committee clearance cannot be withdrawn after initial approval",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q599",
+    question:
+      "State whether true or false. It is unethical to use a placebo for the control arm instead of the current standard of care in a clinical trial.",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q600",
+    question:
+      "If there are many study objectives, it may be necessary to differentiate the objectives into primary and secondary or general and specific objectives",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q601",
+    question: "Which among the following is not a component of concept paper?",
+    options: [
+      {
+        id: "a",
+        text: "Background and Justification",
+      },
+      {
+        id: "b",
+        text: "Objectives and Methods",
+      },
+      {
+        id: "c",
+        text: "Expected benefits, Key references and Budget",
+      },
+      {
+        id: "d",
+        text: "Conclusion",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q602",
+    question:
+      "Which of the following is NOT true about references in the concept paper?",
+    options: [
+      {
+        id: "a",
+        text: "We can cite references in Introduction and Methods section",
+      },
+      {
+        id: "b",
+        text: "It is important to write references following standard guidelines",
+      },
+      {
+        id: "c",
+        text: "Statements should be linked to references",
+      },
+      {
+        id: "d",
+        text: "We can have as many references as possible",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q603",
+    question:
+      'The "Background and Justification" section in the concept paper should be written in the following sequence',
+    options: [
+      {
+        id: "a",
+        text: "Known and unknown aspects of the problem, information that needs to be generated to address the problem in an effective manner and statement of objectives",
+      },
+      {
+        id: "b",
+        text: "Known and unknown aspects of the problem, Importance of the study problem and information that needs to be generated to address the problem in an effective manner",
+      },
+      {
+        id: "c",
+        text: "Importance of the study problem, known and unknown aspects of the problem and information that needs to be generated to address the problem in an effective manner",
+      },
+      {
+        id: "d",
+        text: "Information that needs to be generated to address the problem in an effective manner, known and unknown aspects of the problem and statement of objectives",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q604",
+    question: "Advantages of writing a concept paper include",
+    options: [
+      {
+        id: "a",
+        text: "You may be able to organize your ideas",
+      },
+      {
+        id: "b",
+        text: "It gives an opportunity to stand out and receive a positive response from reviewers",
+      },
+      {
+        id: "c",
+        text: "You are sure to get funding",
+      },
+      {
+        id: "d",
+        text: "'a' and 'b'",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q605",
+    question:
+      "The elements of the methods section in the concept proposal needs to be adopted according to the study design chosen",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q606",
+    question:
+      "The ethics section of the concept proposal should include information about",
+    options: [
+      {
+        id: "a",
+        text: "Key measures taken to protect the study participants",
+      },
+      {
+        id: "b",
+        text: "The ethics committee to which the study will be submitted for approval",
+      },
+      {
+        id: "c",
+        text: "Scientific committee that will review the study",
+      },
+      {
+        id: "d",
+        text: "'a' and 'b'",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q607",
+    question:
+      'Which of the following needs to be spelt out in "Expected benefits" section of the concept proposal?',
+    options: [
+      {
+        id: "a",
+        text: "Expected outputs that the study will generate with timeline",
+      },
+      {
+        id: "b",
+        text: "Proposed immediate action based on research findings",
+      },
+      {
+        id: "c",
+        text: "How this research may set agenda for further research",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q608",
+    question:
+      "Budget estimate is not mandatory in the concept proposals. However, it would be very useful to prepare the indicative budget for key items",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q609",
+    question:
+      "While writing the concept papers for intervention studies, the methods section must have the following details",
+    options: [
+      {
+        id: "a",
+        text: "Primary and secondary outcome definitions",
+      },
+      {
+        id: "b",
+        text: "Randomization, sequence allocation and allocation concealment",
+      },
+      {
+        id: "c",
+        text: "Dose, frequency, nature of Intervention",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q610",
+    question:
+      "Immediately after identification of research topic and statement of objectives, it may be preferable to",
+    options: [
+      {
+        id: "a",
+        text: "Write protocol",
+      },
+      {
+        id: "b",
+        text: "Outline one-page concept paper",
+      },
+      {
+        id: "c",
+        text: "Prepare dummy tables as per the analysis plan",
+      },
+      {
+        id: "d",
+        text: "Seek review by an institutional ethics committee",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q611",
+    question:
+      "References need to be written following standard guidelines such as International Committee of Medical Journal Editors (ICMJE)",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q612",
+    question:
+      "Which of the following is the guideline that can be used for drafting protocols for a clinical trial?",
+    options: [
+      {
+        id: "a",
+        text: "SPIRIT",
+      },
+      {
+        id: "b",
+        text: "PRISMA",
+      },
+      {
+        id: "c",
+        text: "CARE",
+      },
+      {
+        id: "d",
+        text: "STROBE",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q613",
+    question: "Why is concept paper necessary for a research project?",
+    options: [
+      {
+        id: "a",
+        text: "It helps to finish the data collection rapidly",
+      },
+      {
+        id: "b",
+        text: "It helps to organize the ideas",
+      },
+      {
+        id: "c",
+        text: "It helps to get instant approval of ethics committee",
+      },
+      {
+        id: "d",
+        text: "It helps to publish the research quickly",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q614",
+    question:
+      "Which of the following components are included in the background and justification section of the concept paper",
+    options: [
+      {
+        id: "a",
+        text: "Context of the study problem",
+      },
+      {
+        id: "b",
+        text: "Operational definitions",
+      },
+      {
+        id: "c",
+        text: "Sampling technique",
+      },
+      {
+        id: "d",
+        text: "Study procedure",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q615",
+    question:
+      "Which of the following information is not addressed in the ethics section of the concept paper?",
+    options: [
+      {
+        id: "a",
+        text: "Information about sample and data storage",
+      },
+      {
+        id: "b",
+        text: "Key measures taken to protect the study participants",
+      },
+      {
+        id: "c",
+        text: "The ethics committee to which the study will be submitted for approval",
+      },
+      {
+        id: "d",
+        text: "Budget for salary of the projects staff",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q616",
+    question: "Which of the following is a component of concept paper?",
+    options: [
+      {
+        id: "a",
+        text: "Abstract",
+      },
+      {
+        id: "b",
+        text: "Objectives and Methods",
+      },
+      {
+        id: "c",
+        text: "Conclusion",
+      },
+      {
+        id: "d",
+        text: "Discussion",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q617",
+    question: "What is the basis for writing a one page concept paper?",
+    options: [
+      {
+        id: "a",
+        text: "Lack of time to draft a complete protocol",
+      },
+      {
+        id: "b",
+        text: "Overcomes inhibitions in drafting a complete protocol",
+      },
+      {
+        id: "c",
+        text: "It is mandatory for scientific committee protocol",
+      },
+      {
+        id: "d",
+        text: "For ethics committee approval",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q618",
+    question:
+      "The indicative budget in a concept paper includes salaries, per diem, travel, equipment and supplies",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q619",
+    question: "The concept paper helps agencies for",
+    options: [
+      {
+        id: "a",
+        text: "Screening the proposal for funding",
+      },
+      {
+        id: "b",
+        text: "Scientific committee approval",
+      },
+      {
+        id: "c",
+        text: "Ethics committee approval",
+      },
+      {
+        id: "d",
+        text: "Publishing the manuscript",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q620",
+    question:
+      "Which of the following is NOT included in the background section of a concept paper?",
+    options: [
+      {
+        id: "a",
+        text: "Importance of a health problem",
+      },
+      {
+        id: "b",
+        text: "Known fact about the health problem",
+      },
+      {
+        id: "c",
+        text: "Prior contribution of the researcher in the topic",
+      },
+      {
+        id: "d",
+        text: "Knowledge gap in that topic",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q621",
+    question:
+      "The methods section of the concept paper contains the following:",
+    options: [
+      {
+        id: "a",
+        text: "Key operational definitions",
+      },
+      {
+        id: "b",
+        text: "Conclusions",
+      },
+      {
+        id: "c",
+        text: "Context of study",
+      },
+      {
+        id: "d",
+        text: "Novelty of the study",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q622",
+    question:
+      "Which of the following best describes the ‘Expected Benefits’ section of a concept paper?",
+    options: [
+      {
+        id: "a",
+        text: "Financial benefit to the funding agency",
+      },
+      {
+        id: "b",
+        text: "Policy changes based on the study findings",
+      },
+      {
+        id: "c",
+        text: "Financial benefit to the researcher",
+      },
+      {
+        id: "d",
+        text: "Academic improvement of the researchers",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q623",
+    question: "Which of the following are components of a concept paper?",
+    options: [
+      {
+        id: "a",
+        text: "Study title and references",
+      },
+      {
+        id: "b",
+        text: "Study title, abstract and references",
+      },
+      {
+        id: "c",
+        text: "Abstract and references",
+      },
+      {
+        id: "d",
+        text: "Study title, results and references",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q624",
+    question:
+      "Sampling strategy is discussed in which of the following section of a concept paper?",
+    options: [
+      {
+        id: "a",
+        text: "Background",
+      },
+      {
+        id: "b",
+        text: "Objectives",
+      },
+      {
+        id: "c",
+        text: "Methodology",
+      },
+      {
+        id: "d",
+        text: "Results",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q625",
+    question:
+      "Which of the following statement is true about the ‘Reference’ section of a concept paper?",
+    options: [
+      {
+        id: "a",
+        text: "References must be written following standard guidelines",
+      },
+      {
+        id: "b",
+        text: "Unlimited references are preferred in a concept paper",
+      },
+      {
+        id: "c",
+        text: "Reference section is usually an optional component",
+      },
+      {
+        id: "d",
+        text: "References are usually required for the results section",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q626",
+    question:
+      "A post graduate has mentioned the estimated budget for her thesis to be 50,000 INR in the concept paper. Which of the following components of the budget may not be justified?",
+    options: [
+      {
+        id: "a",
+        text: "Salary for data collectors",
+      },
+      {
+        id: "b",
+        text: "Travel cost for data collection",
+      },
+      {
+        id: "c",
+        text: "Equipment cost",
+      },
+      {
+        id: "d",
+        text: "Remuneration for the thesis guide",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q627",
+    question: "Identify the INCORRECT statement about protocol writing?",
+    options: [
+      {
+        id: "a",
+        text: "A protocol is a must for obtaining the ethics committee approval",
+      },
+      {
+        id: "b",
+        text: "A well-written protocol is often helpful to draft a one-page concept proposal",
+      },
+      {
+        id: "c",
+        text: "All known facts in a protocol must be supported by appropriate reference",
+      },
+      {
+        id: "d",
+        text: "Peer review helps in improving the quality of a protocol",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q628",
+    question:
+      "All the followings are recommended while writing a concept paper, EXCEPT",
+    options: [
+      {
+        id: "a",
+        text: "Preparing a concise document",
+      },
+      {
+        id: "b",
+        text: "Presenting mostly in bullet forms",
+      },
+      {
+        id: "c",
+        text: "Describing the methods section in detail",
+      },
+      {
+        id: "d",
+        text: "Restricting the number of objectives",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q629",
+    question:
+      "Which of the following is a consideration in framing the objectives of a concept paper?",
+    options: [
+      {
+        id: "a",
+        text: "Choosing appropriate action verbs",
+      },
+      {
+        id: "b",
+        text: "Calculating sample size based on the secondary objectives",
+      },
+      {
+        id: "c",
+        text: "Stating broad objectives",
+      },
+      {
+        id: "d",
+        text: "All the above ------------------",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q630",
+    question:
+      "Description of the intervention is essential in a research protocol for",
+    options: [
+      {
+        id: "a",
+        text: "Experimental study",
+      },
+      {
+        id: "b",
+        text: "Case-control study",
+      },
+      {
+        id: "c",
+        text: "Cohort study",
+      },
+      {
+        id: "d",
+        text: "Cross-sectional study",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q631",
+    question:
+      "Inclusion and exclusion criteria should be included under the following section in the protocol",
+    options: [
+      {
+        id: "a",
+        text: "Sampling",
+      },
+      {
+        id: "b",
+        text: "Study population",
+      },
+      {
+        id: "c",
+        text: "Study design",
+      },
+      {
+        id: "d",
+        text: "Sample size",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q632",
+    question:
+      "The details regarding data quality assurance should be written in the following section in the protocol",
+    options: [
+      {
+        id: "a",
+        text: "Data collection",
+      },
+      {
+        id: "b",
+        text: "Data analysis",
+      },
+      {
+        id: "c",
+        text: "Project implementation",
+      },
+      {
+        id: "d",
+        text: "Data entry",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q633",
+    question:
+      "The following annexure in the study protocol deals with toxicity management",
+    options: [
+      {
+        id: "a",
+        text: "Study management forms",
+      },
+      {
+        id: "b",
+        text: "Standard operating procedures",
+      },
+      {
+        id: "c",
+        text: "Consent forms",
+      },
+      {
+        id: "d",
+        text: "Adverse event management form",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q634",
+    question:
+      "Study population, sample size and sampling are included in the following section of the protocol",
+    options: [
+      {
+        id: "a",
+        text: "Introduction",
+      },
+      {
+        id: "b",
+        text: "Methods",
+      },
+      {
+        id: "c",
+        text: "Objectives",
+      },
+      {
+        id: "d",
+        text: "Expected Benefits",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q635",
+    question: "First step for writing a successful protocol",
+    options: [
+      {
+        id: "a",
+        text: "Write a one page concept paper",
+      },
+      {
+        id: "b",
+        text: "Identify topic, research question and objectives",
+      },
+      {
+        id: "c",
+        text: "Write a draft protocol",
+      },
+      {
+        id: "d",
+        text: "Seek ethics approval",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q636",
+    question: "Key outcomes and exposures should be explained under",
+    options: [
+      {
+        id: "a",
+        text: "Data analysis",
+      },
+      {
+        id: "b",
+        text: "Data collection tools",
+      },
+      {
+        id: "c",
+        text: "Sampling",
+      },
+      {
+        id: "d",
+        text: "Operational definitions",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q637",
+    question: "Human participant protection paragraph addresses all except",
+    options: [
+      {
+        id: "a",
+        text: "Confidentiality",
+      },
+      {
+        id: "b",
+        text: "Risks",
+      },
+      {
+        id: "c",
+        text: "Compensation",
+      },
+      {
+        id: "d",
+        text: "Sample size calculation",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q638",
+    question:
+      "Willingness of 'study participants' to participate in the study is obtained by",
+    options: [
+      {
+        id: "a",
+        text: "Informed consent",
+      },
+      {
+        id: "b",
+        text: "Oral commitment",
+      },
+      {
+        id: "c",
+        text: "Willingness not necessary",
+      },
+      {
+        id: "d",
+        text: "None of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q639",
+    question: "The section that guides how the objectives lead to indicators",
+    options: [
+      {
+        id: "a",
+        text: "Introduction",
+      },
+      {
+        id: "b",
+        text: "Study design",
+      },
+      {
+        id: "c",
+        text: "Budget",
+      },
+      {
+        id: "d",
+        text: "Objectives",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q640",
+    question:
+      "Which of the following statements is True regarding the first draft of the protocol",
+    options: [
+      {
+        id: "a",
+        text: "The draft is the final document and has to be adhered to as it is.",
+      },
+      {
+        id: "b",
+        text: "The concept paper can be used as an outline for drafting the first draft of the protocol.",
+      },
+      {
+        id: "c",
+        text: "Background with justification, method of conducting the study and expected benefits are stated briefly as in the concept paper.",
+      },
+      {
+        id: "d",
+        text: "Additional references must not be added.",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q641",
+    question: "It is ideal that the first draft of the protocol",
+    options: [
+      {
+        id: "a",
+        text: "Exceeds >2000 words",
+      },
+      {
+        id: "b",
+        text: "Does not exceed >2000 words",
+      },
+      {
+        id: "c",
+        text: "Exceeds >3000 words",
+      },
+      {
+        id: "d",
+        text: "Does not exceed >3000 words",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q642",
+    question:
+      "Data collection paragraph in the protocol should specify all, EXCEPT",
+    options: [
+      {
+        id: "a",
+        text: "The kind of data that will be collected",
+      },
+      {
+        id: "b",
+        text: "Information about the data collector involved in data collection",
+      },
+      {
+        id: "c",
+        text: "The detailed manner in which the data collector is going to collect the data",
+      },
+      {
+        id: "d",
+        text: "The details of how the collected data will be used for policy recommendations",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q643",
+    question:
+      "Mode of data entry, software for data analysis and plan for data analysis are included in the following section of the protocol",
+    options: [
+      {
+        id: "a",
+        text: "Introduction",
+      },
+      {
+        id: "b",
+        text: "Methods",
+      },
+      {
+        id: "c",
+        text: "Objectives",
+      },
+      {
+        id: "d",
+        text: "Expected Benefits",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q644",
+    question:
+      "Which of the following is a step for drafting a successful protocol?",
+    options: [
+      {
+        id: "a",
+        text: "Writing an abstract",
+      },
+      {
+        id: "b",
+        text: "Submitting for peer review",
+      },
+      {
+        id: "c",
+        text: "Seeking consent from participants",
+      },
+      {
+        id: "d",
+        text: "Data analysis",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q645",
+    question: "Which of the following statements is true?",
+    options: [
+      {
+        id: "a",
+        text: "It is sufficient to mention whether the study is quantitative or qualitative in study design section",
+      },
+      {
+        id: "b",
+        text: "The concept paper can contain more than 20 references relating to the study",
+      },
+      {
+        id: "c",
+        text: "Sample size calculation is not necessary for conducting research",
+      },
+      {
+        id: "d",
+        text: "Human subject protection statement should be included in the methods section",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q646",
+    question: "The introduction can be 40% of the content of the protocol",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q647",
+    question:
+      "Which of the following sections mentions about the detailed plan for conducting the study",
+    options: [
+      {
+        id: "a",
+        text: "Introduction",
+      },
+      {
+        id: "b",
+        text: "Results",
+      },
+      {
+        id: "c",
+        text: "Methods",
+      },
+      {
+        id: "d",
+        text: "Discussion",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q648",
+    question:
+      "Which of the following is a part of introduction section of the protocol?",
+    options: [
+      {
+        id: "a",
+        text: "Inclusion and Exclusion criteria",
+      },
+      {
+        id: "b",
+        text: "Detailed budget",
+      },
+      {
+        id: "c",
+        text: "Participant safety and protection",
+      },
+      {
+        id: "d",
+        text: "Background with justification",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q649",
+    question:
+      "Informed consent, procedures for minimizing participant risk and compensations are included in which of the following sections",
+    options: [
+      {
+        id: "a",
+        text: "Introduction",
+      },
+      {
+        id: "b",
+        text: "Abstract",
+      },
+      {
+        id: "c",
+        text: "Human subject protection",
+      },
+      {
+        id: "d",
+        text: "Study procedure",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q650",
+    question:
+      "Which of the following is NOT an appropriate step of protocol development?",
+    options: [
+      {
+        id: "a",
+        text: "Development of research question",
+      },
+      {
+        id: "b",
+        text: "Preparation of the analysis plan",
+      },
+      {
+        id: "c",
+        text: "Development of study tool",
+      },
+      {
+        id: "d",
+        text: "Initiation of data collection",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q651",
+    question:
+      "In which of the following section of a protocol, is the analysis plan written?",
+    options: [
+      {
+        id: "a",
+        text: "Objective",
+      },
+      {
+        id: "b",
+        text: "Results",
+      },
+      {
+        id: "c",
+        text: "Budget",
+      },
+      {
+        id: "d",
+        text: "Methods",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q652",
+    question:
+      "State whether true or false. Study population and the study sample are same.",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q653",
+    question:
+      "Which of the following is CORRECT about operational definitions in a study protocol?",
+    options: [
+      {
+        id: "a",
+        text: "It is part of the background section",
+      },
+      {
+        id: "b",
+        text: "It spells out the key research gaps",
+      },
+      {
+        id: "c",
+        text: "It should be broad and non-specific",
+      },
+      {
+        id: "d",
+        text: "It may be supported by appropriate references",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q654",
+    question:
+      "Which of the following component is LEAST appropriate for a project implementation plan?",
+    options: [
+      {
+        id: "a",
+        text: "Calculating sample size",
+      },
+      {
+        id: "b",
+        text: "Coordinating project activities",
+      },
+      {
+        id: "c",
+        text: "Assigning job responsibilities",
+      },
+      {
+        id: "d",
+        text: "Preparing project timeline",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q655",
+    question:
+      "Human subjects are protected by all the following mechanisms, EXCEPT",
+    options: [
+      {
+        id: "a",
+        text: "Obtaining informed consent from the participants",
+      },
+      {
+        id: "b",
+        text: "Reviewing proposal by the ethics committee",
+      },
+      {
+        id: "c",
+        text: "Incentivizing target population for participation",
+      },
+      {
+        id: "d",
+        text: "Compensating participants for loss of wages",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q656",
+    question:
+      "Which section of a protocol describes the need to maintain anonymity of study participants while sharing data to others?",
+    options: [
+      {
+        id: "a",
+        text: "Human subject protection",
+      },
+      {
+        id: "b",
+        text: "Data collection methods",
+      },
+      {
+        id: "c",
+        text: "Data analysis plan",
+      },
+      {
+        id: "d",
+        text: "Expected benefits",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q657",
+    question:
+      "In the methods section of a protocol, a researcher can include all the following, EXCEPT",
+    options: [
+      {
+        id: "a",
+        text: "Analysis plan",
+      },
+      {
+        id: "b",
+        text: "Supportive reference",
+      },
+      {
+        id: "c",
+        text: "Expected benefits",
+      },
+      {
+        id: "d",
+        text: "Quality assurance",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q658",
+    question:
+      "The number of study participants required for a research study can be decided by",
+    options: [
+      {
+        id: "a",
+        text: "Pilot study",
+      },
+      {
+        id: "b",
+        text: "Sample size calculation",
+      },
+      {
+        id: "c",
+        text: "Sampling procedure",
+      },
+      {
+        id: "d",
+        text: "All the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q659",
+    question:
+      "State whether true or false. Researchers can amend a research protocol after reobtaining the ethics committee clearance for the amendments made.",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False All of the following statements regarding research publications are correct, Except",
+      },
+      {
+        id: "c",
+        text: "Negative findings in a research should not be published",
+      },
+      {
+        id: "d",
+        text: "Publishing research findings improves the credibility of a researcher",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q660",
+    question:
+      "A senior resident of Psychiatry department of a medical college wrote a manuscript based on his thesis work. He has put his wife's name as a co-author who is working in the Physiology department of the same college. Which of the following statements supports the act of the senior resident in providing authorship to his wife?",
+    options: [
+      {
+        id: "a",
+        text: "He can give authorship to anyone since it is his research work",
+      },
+      {
+        id: "b",
+        text: "The guide should decide on who should be the authors",
+      },
+      {
+        id: "c",
+        text: "His wife has contributed in designing the residents’ thesis work",
+      },
+      {
+        id: "d",
+        text: "It is not a good practice to include researcher from different department as authors",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q661",
+    question: "Which of the following is incorrect about authorship?",
+    options: [
+      {
+        id: "a",
+        text: "Authorship confers credit, implies responsibility and accountability of the published work",
+      },
+      {
+        id: "b",
+        text: "International Committee of Medical Journal Editors recommends criteria on authorship",
+      },
+      {
+        id: "c",
+        text: "It is mandatory to declare the contribution of each author",
+      },
+      {
+        id: "d",
+        text: "It is not mandatory that all authors should approve the final version of the manuscript",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q662",
+    question: "Which of the following is false about plagiarism?",
+    options: [
+      {
+        id: "a",
+        text: "It can be copying and pasting of contents from a published manuscript",
+      },
+      {
+        id: "b",
+        text: "It can be copying someone's idea",
+      },
+      {
+        id: "c",
+        text: "It is not considered as a serious publication misconduct",
+      },
+      {
+        id: "d",
+        text: "'Urkund' is one of the software used to check plagiarism",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q663",
+    question:
+      "Which of the following is (are) the consequence(s) of plagiarism of manuscript?",
+    options: [
+      {
+        id: "a",
+        text: "The journal can retract the manuscript",
+      },
+      {
+        id: "b",
+        text: "Institute can take action on the author/researcher",
+      },
+      {
+        id: "c",
+        text: "The researcher loses professional reputation",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q664",
+    question:
+      "You have finished writing a manuscript and plan to publish it. Which of the following is the best practice?",
+    options: [
+      {
+        id: "a",
+        text: "Submit to multiple journals at the same time",
+      },
+      {
+        id: "b",
+        text: "Submit to a journal and wait for the journal's response",
+      },
+      {
+        id: "c",
+        text: "Submit to many journals; once it gets published in one journal, withdraw it from the other journals",
+      },
+      {
+        id: "d",
+        text: "Submit the same manuscript in different languages to different journals",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q665",
+    question:
+      "A researcher conducted a study to identify risk factors for exacerbation of bronchial asthma. The researcher was due for job promotion. However, the researcher was lacking enough publications to ensure promotion. Hence, in order to have maximum number of publications from the work, the researcher decided to produce three different manuscripts instead of one manuscript comprehensively covering all aspects of the study. What is this act called?",
+    options: [
+      {
+        id: "a",
+        text: "Plagiarism",
+      },
+      {
+        id: "b",
+        text: "Falsification",
+      },
+      {
+        id: "c",
+        text: "Salami slicing",
+      },
+      {
+        id: "d",
+        text: "Fabrication",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q666",
+    question:
+      "Which of the following organizations directly deals with publication ethics?",
+    options: [
+      {
+        id: "a",
+        text: "Indian Medical Association (IMA)",
+      },
+      {
+        id: "b",
+        text: "Committee on Publication Ethics (COPE)",
+      },
+      {
+        id: "c",
+        text: "World Health Organization (WHO)",
+      },
+      {
+        id: "d",
+        text: "Joint National Committee (JNC)",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q667",
+    question:
+      "A group of researchers submitted a manuscript for publication based on a drug trial. Because they did not register under the clinical trial registry of India (CTRI), one reputed journal rejected the paper. The researcher resubmitted the paper in a different journal and this journal published it without asking any queries. Which of the following is the correct statement?",
+    options: [
+      {
+        id: "a",
+        text: "It is necessary to register all drug trials under CTRI",
+      },
+      {
+        id: "b",
+        text: "The journal which published the paper is likely to be a predatory journal",
+      },
+      {
+        id: "c",
+        text: "Both 'a' and 'b' are correct",
+      },
+      {
+        id: "d",
+        text: "None of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q668",
+    question:
+      "Among the following which is the best practice for determining the authorship?",
+    options: [
+      {
+        id: "a",
+        text: "Authorship can be based on the criteria given by ICMJE",
+      },
+      {
+        id: "b",
+        text: "Authorship should be decided after submission to a journal",
+      },
+      {
+        id: "c",
+        text: "It is necessary to include head of the department/institution as a co-author",
+      },
+      {
+        id: "d",
+        text: "Authorship can be gifted to friends even if they have not contributed to that study",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q669",
+    question:
+      "Which of the following is incorrect about publishing a research work?",
+    options: [
+      {
+        id: "a",
+        text: "Publishing paper is important for getting promotion in academic institutions",
+      },
+      {
+        id: "b",
+        text: "Publishing research findings helps to identify the research gaps",
+      },
+      {
+        id: "c",
+        text: "Common people should not read such research findings",
+      },
+      {
+        id: "d",
+        text: "None of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q670",
+    question:
+      "All clinical trials in India should be registered with Clinical Trial Registry of India.",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q671",
+    question:
+      "A neonatologist planned to conduct a clinical trial to explore the effect of intervention X on hypothermia of the newborn children (Age <7 days) over intervention A (The current practice). All the following are true about the trial, except",
+    options: [
+      {
+        id: "a",
+        text: "Ethics Committee approval is a must to conduct the trial",
+      },
+      {
+        id: "b",
+        text: "The trial should be registered under the Clinical Trial Registry of India",
+      },
+      {
+        id: "c",
+        text: "Informed consent should be taken from either of the parents",
+      },
+      {
+        id: "d",
+        text: "Age appropriate assent is a must in this trial",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q672",
+    question: "Manipulating data is known as fabrication",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q673",
+    question:
+      "Which of the following is correct about determining the authorship?",
+    options: [
+      {
+        id: "a",
+        text: "The investigators can follow ICMJE guideline to determine authorship",
+      },
+      {
+        id: "b",
+        text: "The sequence should always be based on alphabetical orders",
+      },
+      {
+        id: "c",
+        text: "The investigators should include the head of the institution’s name irrespective of his/ her contribution",
+      },
+      {
+        id: "d",
+        text: "None of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q674",
+    question:
+      "A group of researchers submitted a manuscript in a reputed journal. Even after 5 months of submission, they did not receive the peer review comments from the journal. The authors decided to submit the manuscript to a different journal without informing the editor of the previous journal. Which of the following term describes the situation best?",
+    options: [
+      {
+        id: "a",
+        text: "Duplicate publication",
+      },
+      {
+        id: "b",
+        text: "Simultaneous submission",
+      },
+      {
+        id: "c",
+        text: "Self-citation",
+      },
+      {
+        id: "d",
+        text: "Breach of confidentiality",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q675",
+    question:
+      "Dr. D has copied the idea of Dr. A for his thesis. Copying an idea shouldn’t be considered as plagiarism.",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q676",
+    question:
+      "Dr. A is in the process of writing review of literature for her thesis. Her guide has instructed her to avoid plagiarism. Dr. A should take all the following measures to avoid plagiarism, except",
+    options: [
+      {
+        id: "a",
+        text: "Avoid copying and pasting",
+      },
+      {
+        id: "b",
+        text: "Acknowledge original sources",
+      },
+      {
+        id: "c",
+        text: "Take help of anti-plagiarism software",
+      },
+      {
+        id: "d",
+        text: "Copy from her own previous work",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q677",
+    question:
+      "Which of the following is correct in relation to the conflict of interest?",
+    options: [
+      {
+        id: "a",
+        text: "Conflict of interest is always financial",
+      },
+      {
+        id: "b",
+        text: "Conflict of interest necessarily changes the outcome of interest",
+      },
+      {
+        id: "c",
+        text: "It is recommended to hide the COI during submission of a manuscript",
+      },
+      {
+        id: "d",
+        text: "Readers can determine the influence of COI on conclusion of the paper",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q678",
+    question:
+      "An editor of a reputed journal found that most of the finding of a manuscript matches with a previously published paper by different authors. The editor considered it as a case of plagiarism. Which of the following about plagiarism is true?",
+    options: [
+      {
+        id: "a",
+        text: "The journal can retract the article, if already published",
+      },
+      {
+        id: "b",
+        text: "The editor can inform the authors’ institute about it",
+      },
+      {
+        id: "c",
+        text: "The researchers may lose their reputation",
+      },
+      {
+        id: "d",
+        text: "All of the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q679",
+    question: "Which of the following is TRUE regarding a clinical trial?",
+    options: [
+      {
+        id: "a",
+        text: "It is mandatory to register the trial under ‘Clinical Trials Registry of India’ after completing it.",
+      },
+      {
+        id: "b",
+        text: "Ethical issues are considerably low in clinical trials when compared with descriptive studies.",
+      },
+      {
+        id: "c",
+        text: "Informed consent is a must for recruiting a study participant in a clinical trial",
+      },
+      {
+        id: "d",
+        text: "Both ‘a’ and ‘c’",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q680",
+    question:
+      "Altering the original data to obtain a statistically significant result by the researcher is known as",
+    options: [
+      {
+        id: "a",
+        text: "Fabrication",
+      },
+      {
+        id: "b",
+        text: "Falsification",
+      },
+      {
+        id: "c",
+        text: "Fascination",
+      },
+      {
+        id: "d",
+        text: "Fasciation",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q681",
+    question:
+      "All the following help in reducing ethical issues associated with research publication, EXCEPT",
+    options: [
+      {
+        id: "a",
+        text: "Obtaining the institutional ethics committee permission",
+      },
+      {
+        id: "b",
+        text: "Including a guest author to improve the acceptance of the manuscript",
+      },
+      {
+        id: "c",
+        text: "Obtaining permission from the copyright holder to reproduce a figure",
+      },
+      {
+        id: "d",
+        text: "Declaring familial relationship between an author and the CEO of the funding agency",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q682",
+    question:
+      "Which of the following is INCORRECT about publishing research finding?",
+    options: [
+      {
+        id: "a",
+        text: "Publication often helps in career progression and academic promotion",
+      },
+      {
+        id: "b",
+        text: "It is a way to communicate research findings with the peer groups",
+      },
+      {
+        id: "c",
+        text: "Conflicts of interest can be suppressed as it has implication in study findings",
+      },
+      {
+        id: "d",
+        text: "It identifies research gaps",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q683",
+    question:
+      "State whether true or false. The first author is mostly responsible for addressing the comments received from the reviewers of the journal.",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q684",
+    question:
+      "Submitting a manuscript to more than one journal at the same time is known as",
+    options: [
+      {
+        id: "a",
+        text: "Duplicate publication",
+      },
+      {
+        id: "b",
+        text: "Self-citation",
+      },
+      {
+        id: "c",
+        text: "Simultaneous publication",
+      },
+      {
+        id: "d",
+        text: "Peer review",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
+  },
+  {
+    id: "q685",
+    question:
+      "Which of the following is NOT an essential criterion for authorship?",
+    options: [
+      {
+        id: "a",
+        text: "Conceptualizing the study",
+      },
+      {
+        id: "b",
+        text: "Drafting the manuscript",
+      },
+      {
+        id: "c",
+        text: "Approval of the final manuscript",
+      },
+      {
+        id: "d",
+        text: "Being departmental head",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["c"],
+  },
+  {
+    id: "q686",
+    question:
+      "A Post Graduate in a medical college submitted a proposal to the ethics committee of the institute. The committee found that the proposal is a near copy of an earlier proposal from the same department. This act of the PG can be best termed as",
+    options: [
+      {
+        id: "a",
+        text: "Fabrication",
+      },
+      {
+        id: "b",
+        text: "Falsification",
+      },
+      {
+        id: "c",
+        text: "Plagiarism",
+      },
+      {
+        id: "d",
+        text: "Breach of confidentiality",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["d"],
+  },
+  {
+    id: "q687",
+    question:
+      "State whether true or false. Unpublished work must be acknowledged in a manuscript.",
+    options: [
+      {
+        id: "a",
+        text: "True",
+      },
+      {
+        id: "b",
+        text: "False",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["a"],
+  },
+  {
+    id: "q688",
+    question:
+      "Direct or indirect influence of which of the following aspect is considered ‘conflict of interest’?",
+    options: [
+      {
+        id: "a",
+        text: "Financial",
+      },
+      {
+        id: "b",
+        text: "Personal",
+      },
+      {
+        id: "c",
+        text: "Social",
+      },
+      {
+        id: "d",
+        text: "All the above",
+      },
+    ],
+    courseId: "basic-biomedical-research",
+    courseName: "Basic Course in Biomedical Research",
+    correctAnswers: ["b"],
   },
 ];
