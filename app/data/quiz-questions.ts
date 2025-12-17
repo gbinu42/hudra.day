@@ -15827,7 +15827,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
-    correctAnswers: ["b"],
+    correctAnswers: ["d"],
   },
   {
     id: "q640",
@@ -15878,7 +15878,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
-    correctAnswers: ["b"],
+    correctAnswers: ["d"],
   },
   {
     id: "q642",
@@ -16302,7 +16302,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
-    correctAnswers: ["d"],
+    correctAnswers: ["b"],
   },
   {
     id: "q659",
@@ -16379,7 +16379,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
-    correctAnswers: ["c"],
+    correctAnswers: ["d"],
   },
   {
     id: "q662",
@@ -16404,7 +16404,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
-    correctAnswers: ["d"],
+    correctAnswers: ["c"],
   },
   {
     id: "q663",
@@ -16430,7 +16430,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
-    correctAnswers: ["c"],
+    correctAnswers: ["d"],
   },
   {
     id: "q664",
@@ -16456,7 +16456,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
-    correctAnswers: ["d"],
+    correctAnswers: ["b"],
   },
   {
     id: "q665",
@@ -16482,7 +16482,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
-    correctAnswers: ["b"],
+    correctAnswers: ["c"],
   },
   {
     id: "q666",
@@ -16508,7 +16508,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
-    correctAnswers: ["c"],
+    correctAnswers: ["b"],
   },
   {
     id: "q667",
@@ -16534,7 +16534,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
-    correctAnswers: ["b"],
+    correctAnswers: ["c"],
   },
   {
     id: "q668",
@@ -16560,7 +16560,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
-    correctAnswers: ["c"],
+    correctAnswers: ["a"],
   },
   {
     id: "q669",
@@ -16586,7 +16586,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
-    correctAnswers: ["a"],
+    correctAnswers: ["c"],
   },
   {
     id: "q670",
@@ -16604,7 +16604,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
-    correctAnswers: ["c"],
+    correctAnswers: ["a"],
   },
   {
     id: "q671",
@@ -16630,7 +16630,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
-    correctAnswers: ["a"],
+    correctAnswers: ["d"],
   },
   {
     id: "q672",
@@ -16647,7 +16647,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
-    correctAnswers: ["d"],
+    correctAnswers: ["b"],
   },
   {
     id: "q673",
@@ -16673,7 +16673,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
-    correctAnswers: ["b"],
+    correctAnswers: ["a"],
   },
   {
     id: "q674",
@@ -16699,7 +16699,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
-    correctAnswers: ["a"],
+    correctAnswers: ["b"],
   },
   {
     id: "q675",
@@ -16743,7 +16743,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
-    correctAnswers: ["b"],
+    correctAnswers: ["d"],
   },
   {
     id: "q677",
@@ -16820,7 +16820,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
-    correctAnswers: ["d"],
+    correctAnswers: ["c"],
   },
   {
     id: "q680",
@@ -16846,7 +16846,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
-    correctAnswers: ["c"],
+    correctAnswers: ["b"],
   },
   {
     id: "q681",
@@ -16898,7 +16898,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
-    correctAnswers: ["b"],
+    correctAnswers: ["c"],
   },
   {
     id: "q683",
@@ -16916,7 +16916,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
-    correctAnswers: ["c"],
+    correctAnswers: ["a"],
   },
   {
     id: "q684",
@@ -16942,7 +16942,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
-    correctAnswers: ["b"],
+    correctAnswers: ["c"],
   },
   {
     id: "q685",
@@ -16968,7 +16968,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
-    correctAnswers: ["c"],
+    correctAnswers: ["d"],
   },
   {
     id: "q686",
@@ -16994,7 +16994,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
-    correctAnswers: ["d"],
+    correctAnswers: ["c"],
   },
   {
     id: "q687",
@@ -17038,6 +17038,6 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     courseId: "basic-biomedical-research",
     courseName: "Basic Course in Biomedical Research",
-    correctAnswers: ["b"],
+    correctAnswers: ["d"],
   },
 ];
