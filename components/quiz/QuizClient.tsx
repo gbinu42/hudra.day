@@ -2,24 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { QuizQuestion } from "@/app/data/quiz-questions";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import {
-  CheckCircle,
-  XCircle,
-  AlertCircle,
-  BookOpen,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { Check, X, ChevronLeft, ChevronRight } from "lucide-react";
 
 const LOCAL_STORAGE_KEY = "quiz-user-answers";
 
@@ -33,12 +17,8 @@ export default function QuizClient({
   initialCorrectAnswers,
 }: QuizClientProps) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  // Correct answers from static data
   const correctAnswers = initialCorrectAnswers;
-  // User's own answers (stored in localStorage)
   const [userAnswers, setUserAnswers] = useState<Record<string, string[]>>({});
-  const [currentRange, setCurrentRange] = useState(0);
-  // Track if user has submitted their answer for current question
   const [submittedQuestions, setSubmittedQuestions] = useState<Set<string>>(
     new Set()
   );
@@ -46,23 +26,7 @@ export default function QuizClient({
   const currentQuestion = questions[currentQuestionIndex];
   const totalQuestions = questions.length;
 
-  // Question range configuration
-  const QUESTIONS_PER_RANGE = 25;
-  const totalRanges = Math.ceil(totalQuestions / QUESTIONS_PER_RANGE);
-
-  // Get questions for current range
-  const getRangeStart = (rangeIndex: number) =>
-    rangeIndex * QUESTIONS_PER_RANGE;
-  const getRangeEnd = (rangeIndex: number) =>
-    Math.min((rangeIndex + 1) * QUESTIONS_PER_RANGE, totalQuestions);
-
-  // Update current range when question index changes
-  useEffect(() => {
-    const newRange = Math.floor(currentQuestionIndex / QUESTIONS_PER_RANGE);
-    setCurrentRange(newRange);
-  }, [currentQuestionIndex]);
-
-  // Load user answers from localStorage
+  // Load from localStorage
   useEffect(() => {
     try {
       const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
@@ -72,11 +36,10 @@ export default function QuizClient({
         setSubmittedQuestions(new Set(parsed.submitted || []));
       }
     } catch (error) {
-      console.error("Error loading user answers from localStorage:", error);
+      console.error("Error loading from localStorage:", error);
     }
   }, []);
 
-  // Save user answers to localStorage
   const saveToLocalStorage = (
     answers: Record<string, string[]>,
     submitted: Set<string>
@@ -94,582 +57,253 @@ export default function QuizClient({
     }
   };
 
-  // User: Select option (toggle in localStorage)
-  const handleUserOptionClick = (optionId: string) => {
+  const handleOptionClick = (optionId: string) => {
     const questionId = currentQuestion.id;
-
-    // If already submitted, don't allow changes
-    if (submittedQuestions.has(questionId)) {
-      return;
-    }
+    if (submittedQuestions.has(questionId)) return;
 
     const currentUserAnswer = userAnswers[questionId] || [];
-    let newAnswers: string[];
+    const newAnswers = currentUserAnswer.includes(optionId)
+      ? currentUserAnswer.filter((id) => id !== optionId)
+      : [...currentUserAnswer, optionId].sort();
 
-    if (currentUserAnswer.includes(optionId)) {
-      newAnswers = currentUserAnswer.filter((id) => id !== optionId);
-    } else {
-      newAnswers = [...currentUserAnswer, optionId].sort();
-    }
-
-    const updatedAnswers = {
-      ...userAnswers,
-      [questionId]: newAnswers,
-    };
-
+    const updatedAnswers = { ...userAnswers, [questionId]: newAnswers };
     setUserAnswers(updatedAnswers);
     saveToLocalStorage(updatedAnswers, submittedQuestions);
   };
 
-  // User: Submit answer to see result
-  const handleSubmitAnswer = () => {
-    const questionId = currentQuestion.id;
+  const handleSubmit = () => {
     const newSubmitted = new Set(submittedQuestions);
-    newSubmitted.add(questionId);
+    newSubmitted.add(currentQuestion.id);
     setSubmittedQuestions(newSubmitted);
     saveToLocalStorage(userAnswers, newSubmitted);
   };
 
-  const goToQuestion = (index: number) => {
-    if (index >= 0 && index < totalQuestions) {
-      setCurrentQuestionIndex(index);
-    }
-  };
-
-  const goToPrevious = () => {
-    if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(currentQuestionIndex - 1);
-    }
-  };
-
-  const goToNext = () => {
-    if (currentQuestionIndex < totalQuestions - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-    }
+  const goTo = (index: number) => {
+    if (index >= 0 && index < totalQuestions) setCurrentQuestionIndex(index);
   };
 
   // Keyboard navigation
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
-      if (e.key === "ArrowLeft") {
-        if (currentQuestionIndex > 0) {
-          setCurrentQuestionIndex(currentQuestionIndex - 1);
-        }
-      } else if (e.key === "ArrowRight") {
-        if (currentQuestionIndex < totalQuestions - 1) {
-          setCurrentQuestionIndex(currentQuestionIndex + 1);
-        }
+      if (e.key === "ArrowLeft" && currentQuestionIndex > 0) {
+        setCurrentQuestionIndex(currentQuestionIndex - 1);
+      } else if (
+        e.key === "ArrowRight" &&
+        currentQuestionIndex < totalQuestions - 1
+      ) {
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
       }
     };
-
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
   }, [currentQuestionIndex, totalQuestions]);
 
-  const currentCorrectAnswers = correctAnswers[currentQuestion?.id] || [];
-  const currentUserAnswer = userAnswers[currentQuestion?.id] || [];
-  const isCurrentSubmitted = submittedQuestions.has(currentQuestion?.id);
-  const hasCorrectAnswerSet = currentCorrectAnswers.length > 0;
-
-  // Calculate stats
-  const answeredCount = submittedQuestions.size;
-
   if (!currentQuestion) {
     return (
-      <div className="container mx-auto px-4 py-16">
-        <Card className="max-w-3xl mx-auto">
-          <CardContent className="pt-6">
-            <Alert>
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>No quiz questions available.</AlertDescription>
-            </Alert>
-          </CardContent>
-        </Card>
+      <div className="flex-1 flex items-center justify-center text-muted-foreground">
+        No questions available.
       </div>
     );
   }
 
-  // Check if user got the current question correct
-  const isUserCorrect =
-    isCurrentSubmitted && hasCorrectAnswerSet
-      ? currentUserAnswer.length === currentCorrectAnswers.length &&
-        currentUserAnswer.every((a) => currentCorrectAnswers.includes(a))
-      : null;
+  const currentCorrectAnswers = correctAnswers[currentQuestion.id] || [];
+  const currentUserAnswer = userAnswers[currentQuestion.id] || [];
+  const isSubmitted = submittedQuestions.has(currentQuestion.id);
+  const isCorrect =
+    isSubmitted &&
+    currentCorrectAnswers.length > 0 &&
+    currentUserAnswer.length === currentCorrectAnswers.length &&
+    currentUserAnswer.every((a) => currentCorrectAnswers.includes(a));
+
+  // Calculate stats
+  const correctCount = Array.from(submittedQuestions).filter((qId) => {
+    const userAns = userAnswers[qId] || [];
+    const correctAns = correctAnswers[qId] || [];
+    return (
+      correctAns.length > 0 &&
+      userAns.length === correctAns.length &&
+      userAns.every((a) => correctAns.includes(a))
+    );
+  }).length;
 
   return (
-    <div className="container mx-auto px-4 py-8 flex-1">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="mb-6 md:mb-8 text-center">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <BookOpen className="h-6 w-6 md:h-8 md:w-8 text-primary" />
-            <h1 className="text-lg md:text-3xl font-bold text-foreground">
-              Basic Course in Biomedical Research
-            </h1>
-          </div>
-          <p className="text-sm md:text-base text-muted-foreground">
-            Quiz Questions
-          </p>
+    <div className="flex-1 flex flex-col max-w-2xl mx-auto w-full px-4 py-6">
+      {/* Title */}
+      <h1 className="text-lg md:text-xl font-semibold text-center mb-6">
+        Basic Course in Biomedical Research
+      </h1>
 
-          <div className="flex items-center justify-center gap-2 mt-2 flex-wrap">
-            <Badge variant="outline">
-              Select your answer and click Submit to check
-            </Badge>
-            <Badge variant="outline" className="hidden lg:inline-flex">
-              Use ← → arrow keys to navigate
-            </Badge>
-          </div>
-        </div>
+      {/* Navigation */}
+      <div className="mb-6 space-y-3">
+        <div className="flex items-center justify-between">
+          <button
+            onClick={() => goTo(currentQuestionIndex - 1)}
+            disabled={currentQuestionIndex === 0}
+            className="p-2 text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
 
-        {/* Progress Bar */}
-        <div className="mb-6">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-sm text-muted-foreground">
-              Question {currentQuestionIndex + 1} of {totalQuestions}
-            </span>
-            <span className="text-sm text-muted-foreground">
-              {answeredCount} / {totalQuestions} attempted
-            </span>
-          </div>
-          <div className="w-full bg-secondary rounded-full h-2">
-            <div
-              className="bg-primary h-2 rounded-full transition-all duration-300"
-              style={{
-                width: `${
-                  ((currentQuestionIndex + 1) / totalQuestions) * 100
-                }%`,
+          <div className="flex items-center gap-3">
+            <input
+              type="number"
+              min={1}
+              max={totalQuestions}
+              value={currentQuestionIndex + 1}
+              onChange={(e) => {
+                const val = parseInt(e.target.value);
+                if (val >= 1 && val <= totalQuestions) goTo(val - 1);
               }}
+              className="w-14 text-center bg-transparent border-b border-border text-sm py-1 focus:outline-none focus:border-foreground"
             />
+            <span className="text-sm text-muted-foreground">
+              / {totalQuestions}
+            </span>
           </div>
+
+          <button
+            onClick={() => goTo(currentQuestionIndex + 1)}
+            disabled={currentQuestionIndex === totalQuestions - 1}
+            className="p-2 text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
         </div>
 
-        {/* Top Navigation */}
-        <div className="flex justify-between items-center gap-2 md:gap-4 mb-4">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={goToPrevious}
-            disabled={currentQuestionIndex === 0}
-            className="text-xs md:text-sm"
-          >
-            <ChevronLeft className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
-            Prev
-          </Button>
-          <span className="text-xs md:text-sm font-medium text-muted-foreground">
-            {currentQuestionIndex + 1} / {totalQuestions}
-          </span>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={goToNext}
-            disabled={currentQuestionIndex === totalQuestions - 1}
-            className="text-xs md:text-sm"
-          >
-            Next
-            <ChevronRight className="h-3 w-3 md:h-4 md:w-4 ml-1 md:ml-2" />
-          </Button>
-        </div>
+        {/* Slider */}
+        <input
+          type="range"
+          min={0}
+          max={totalQuestions - 1}
+          value={currentQuestionIndex}
+          onChange={(e) => goTo(parseInt(e.target.value))}
+          className="w-full h-1.5 bg-secondary rounded-full appearance-none cursor-pointer
+            [&::-webkit-slider-thumb]:appearance-none
+            [&::-webkit-slider-thumb]:w-3
+            [&::-webkit-slider-thumb]:h-3
+            [&::-webkit-slider-thumb]:rounded-full
+            [&::-webkit-slider-thumb]:bg-foreground
+            [&::-webkit-slider-thumb]:cursor-pointer
+            [&::-moz-range-thumb]:w-3
+            [&::-moz-range-thumb]:h-3
+            [&::-moz-range-thumb]:rounded-full
+            [&::-moz-range-thumb]:bg-foreground
+            [&::-moz-range-thumb]:border-0
+            [&::-moz-range-thumb]:cursor-pointer"
+        />
+      </div>
 
-        {/* Status Badge - Above Question Card */}
-        {isCurrentSubmitted && (
-          <div className="flex justify-center mb-3">
-            <Badge variant={isUserCorrect ? "default" : "destructive"}>
-              {isUserCorrect ? (
-                <>
-                  <CheckCircle className="h-3 w-3 mr-1" />
-                  Correct!
-                </>
-              ) : (
-                <>
-                  <XCircle className="h-3 w-3 mr-1" />
-                  Incorrect
-                </>
-              )}
-            </Badge>
-          </div>
-        )}
+      {/* Question */}
+      <div className="flex-1">
+        <p className="text-base md:text-lg mb-6 leading-relaxed">
+          {currentQuestion.question}
+        </p>
 
-        {/* Question Card with Side Navigation */}
-        <div className="relative">
-          {/* Previous Button - Left Side */}
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={goToPrevious}
-            disabled={currentQuestionIndex === 0}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-16 h-12 w-12 rounded-full shadow-lg z-10 hidden lg:flex"
-            title="Previous Question (←)"
-          >
-            <ChevronLeft className="h-6 w-6" />
-          </Button>
+        {/* Options */}
+        <div className="space-y-2">
+          {currentQuestion.options.map((option, index) => {
+            const letter = String.fromCharCode(65 + index);
+            const isSelected = currentUserAnswer.includes(option.id);
+            const isCorrectOption = currentCorrectAnswers.includes(option.id);
+            const isWrongSelection =
+              isSubmitted && isSelected && !isCorrectOption;
 
-          {/* Next Button - Right Side */}
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={goToNext}
-            disabled={currentQuestionIndex === totalQuestions - 1}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-16 h-12 w-12 rounded-full shadow-lg z-10 hidden lg:flex"
-            title="Next Question (→)"
-          >
-            <ChevronRight className="h-6 w-6" />
-          </Button>
+            let classes =
+              "w-full text-left px-4 py-3 rounded-lg border transition-all text-sm md:text-base ";
 
-          <Card className="mb-6">
-            <CardHeader className="pb-3 md:pb-6">
-              <CardTitle className="text-base md:text-xl">
-                {currentQuestion.question}
-              </CardTitle>
-              {!isCurrentSubmitted && (
-                <CardDescription className="text-xs md:text-sm">
-                  Select your answer
-                  {hasCorrectAnswerSet && currentCorrectAnswers.length > 1
-                    ? "s"
-                    : ""}{" "}
-                  and click Submit
-                </CardDescription>
-              )}
-            </CardHeader>
-            <CardContent className="pt-0 md:pt-6">
-              <div className="space-y-2 md:space-y-3">
-                {currentQuestion.options.map((option, index) => {
-                  const optionLetter = String.fromCharCode(65 + index);
-                  const isCorrectOption = currentCorrectAnswers.includes(
-                    option.id
-                  );
-                  const isUserSelected = currentUserAnswer.includes(option.id);
+            if (isSubmitted) {
+              if (isCorrectOption) {
+                classes +=
+                  "border-green-500 bg-green-50 dark:bg-green-950/30 text-green-800 dark:text-green-200";
+              } else if (isWrongSelection) {
+                classes +=
+                  "border-red-500 bg-red-50 dark:bg-red-950/30 text-red-800 dark:text-red-200";
+              } else {
+                classes += "border-border opacity-50";
+              }
+            } else if (isSelected) {
+              classes +=
+                "border-foreground bg-foreground/5 ring-1 ring-foreground";
+            } else {
+              classes +=
+                "border-border hover:border-muted-foreground cursor-pointer";
+            }
 
-                  // User view - submitted
-                  if (isCurrentSubmitted) {
-                    let className =
-                      "w-full justify-start text-left h-auto py-2.5 px-3 md:py-4 md:px-4 text-sm md:text-base ";
-                    const variant: "default" | "outline" | "destructive" =
-                      "outline";
-
-                    if (isCorrectOption) {
-                      // This is a correct answer - show green
-                      className +=
-                        "ring-2 ring-green-500 bg-green-100 dark:bg-green-900/30 border-green-500 text-green-800 dark:text-green-200 hover:bg-green-100 dark:hover:bg-green-900/30";
-                    } else if (isUserSelected && !isCorrectOption) {
-                      // User selected this but it's wrong - show red
-                      className +=
-                        "ring-2 ring-red-500 bg-red-100 dark:bg-red-900/30 border-red-500 text-red-800 dark:text-red-200 hover:bg-red-100 dark:hover:bg-red-900/30";
-                    }
-
-                    return (
-                      <Button
-                        key={index}
-                        disabled
-                        variant={variant}
-                        className={className}
-                      >
-                        <div className="flex items-start gap-2 md:gap-3 w-full">
-                          <div
-                            className={`flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-full border-2 shrink-0 mt-0.5 ${
-                              isCorrectOption
-                                ? "border-green-600 text-green-600"
-                                : isUserSelected
-                                ? "border-red-600 text-red-600"
-                                : "border-current"
-                            }`}
-                          >
-                            {isCorrectOption ? (
-                              <CheckCircle className="h-3 w-3 md:h-4 md:w-4 text-green-600" />
-                            ) : isUserSelected ? (
-                              <XCircle className="h-3 w-3 md:h-4 md:w-4 text-red-600" />
-                            ) : (
-                              <span className="text-xs md:text-sm font-semibold">
-                                {optionLetter}
-                              </span>
-                            )}
-                          </div>
-                          <span className="flex-1 whitespace-normal break-words">
-                            {option.text}
-                          </span>
-                          {isCorrectOption && (
-                            <Badge
-                              variant="outline"
-                              className="shrink-0 bg-green-100 text-green-800 border-green-500 dark:bg-green-900/50 dark:text-green-200 text-xs"
-                            >
-                              Correct
-                            </Badge>
-                          )}
-                        </div>
-                      </Button>
-                    );
-                  }
-
-                  // User view - not submitted yet
-                  return (
-                    <Button
-                      key={index}
-                      onClick={() => handleUserOptionClick(option.id)}
-                      variant={isUserSelected ? "default" : "outline"}
-                      className={`w-full justify-start text-left h-auto py-2.5 px-3 md:py-4 md:px-4 text-sm md:text-base ${
-                        isUserSelected ? "ring-2 ring-primary" : ""
-                      }`}
-                    >
-                      <div className="flex items-start gap-2 md:gap-3 w-full">
-                        <div className="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-full border-2 border-current shrink-0 mt-0.5">
-                          {isUserSelected ? (
-                            <CheckCircle className="h-3 w-3 md:h-4 md:w-4" />
-                          ) : (
-                            <span className="text-xs md:text-sm font-semibold">
-                              {optionLetter}
-                            </span>
-                          )}
-                        </div>
-                        <span className="flex-1 whitespace-normal break-words">
-                          {option.text}
-                        </span>
-                      </div>
-                    </Button>
-                  );
-                })}
-              </div>
-
-              {/* Submit button */}
-              {!isCurrentSubmitted && currentUserAnswer.length > 0 && (
-                <div className="mt-4 md:mt-6">
-                  <Button
-                    onClick={handleSubmitAnswer}
-                    className="w-full"
-                    size="default"
+            return (
+              <button
+                key={option.id}
+                onClick={() => handleOptionClick(option.id)}
+                disabled={isSubmitted}
+                className={classes}
+              >
+                <div className="flex items-start gap-3">
+                  <span
+                    className={`w-6 h-6 shrink-0 rounded-full flex items-center justify-center text-xs font-medium border ${
+                      isSubmitted && isCorrectOption
+                        ? "border-green-500 bg-green-500 text-white"
+                        : isWrongSelection
+                          ? "border-red-500 bg-red-500 text-white"
+                          : isSelected
+                            ? "border-foreground bg-foreground text-background"
+                            : "border-current"
+                    }`}
                   >
-                    Submit Answer
-                  </Button>
-                </div>
-              )}
-
-              {/* Result display */}
-              {isCurrentSubmitted && (
-                <Alert
-                  className={`mt-4 md:mt-6 text-sm md:text-base ${
-                    isUserCorrect
-                      ? "border-green-500 bg-green-50 dark:bg-green-900/20"
-                      : "border-red-500 bg-red-50 dark:bg-red-900/20"
-                  }`}
-                >
-                  {isUserCorrect ? (
-                    <CheckCircle className="h-4 w-4 text-green-600" />
-                  ) : (
-                    <XCircle className="h-4 w-4 text-red-600" />
-                  )}
-                  <AlertDescription
-                    className={
-                      isUserCorrect
-                        ? "text-green-800 dark:text-green-200"
-                        : "text-red-800 dark:text-red-200"
-                    }
-                  >
-                    {isUserCorrect ? (
-                      <strong>Correct! Well done.</strong>
+                    {isSubmitted && isCorrectOption ? (
+                      <Check className="h-3 w-3" />
+                    ) : isWrongSelection ? (
+                      <X className="h-3 w-3" />
                     ) : (
-                      <>
-                        <strong>Incorrect.</strong> The correct answer
-                        {currentCorrectAnswers.length > 1
-                          ? "s are"
-                          : " is"}:{" "}
-                        {currentCorrectAnswers
-                          .map(
-                            (answerId) =>
-                              currentQuestion.options.find(
-                                (opt) => opt.id === answerId
-                              )?.text || answerId
-                          )
-                          .join(", ")}
-                      </>
+                      letter
                     )}
-                  </AlertDescription>
-                </Alert>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Mobile Navigation Buttons */}
-        <div className="lg:hidden space-y-4 mb-6">
-          {/* Mobile Range Selector */}
-          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-            {Array.from({ length: totalRanges }, (_, rangeIndex) => {
-              const start = getRangeStart(rangeIndex);
-              const end = getRangeEnd(rangeIndex);
-              const isCurrentRange = currentRange === rangeIndex;
-              const rangeAnsweredCount = questions
-                .slice(start, end)
-                .filter((q) => submittedQuestions.has(q.id)).length;
-              const rangeTotal = end - start;
-
-              return (
-                <Button
-                  key={rangeIndex}
-                  variant={isCurrentRange ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => {
-                    setCurrentRange(rangeIndex);
-                    goToQuestion(start);
-                  }}
-                  className="shrink-0"
-                >
-                  {start + 1}-{end}
-                  {rangeAnsweredCount > 0 && (
-                    <span className="ml-1 text-xs">
-                      ({rangeAnsweredCount}/{rangeTotal})
-                    </span>
-                  )}
-                </Button>
-              );
-            })}
-          </div>
-
-          {/* Navigation Buttons */}
-          <div className="flex justify-between items-center gap-4">
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={goToPrevious}
-              disabled={currentQuestionIndex === 0}
-              className="flex-1"
-            >
-              <ChevronLeft className="h-5 w-5 mr-2" />
-              Previous
-            </Button>
-
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">
-                {currentQuestionIndex + 1} / {totalQuestions}
-              </span>
-            </div>
-
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={goToNext}
-              disabled={currentQuestionIndex === totalQuestions - 1}
-              className="flex-1"
-            >
-              Next
-              <ChevronRight className="h-5 w-5 ml-2" />
-            </Button>
-          </div>
-        </div>
-
-        {/* Desktop Navigation - Question Grid with Ranges */}
-        <div className="hidden lg:block space-y-4">
-          {/* Range Selector */}
-          <div className="flex justify-center gap-2 flex-wrap">
-            {Array.from({ length: totalRanges }, (_, rangeIndex) => {
-              const start = getRangeStart(rangeIndex);
-              const end = getRangeEnd(rangeIndex);
-              const isCurrentRange = currentRange === rangeIndex;
-              const rangeAnsweredCount = questions
-                .slice(start, end)
-                .filter((q) => submittedQuestions.has(q.id)).length;
-              const rangeTotal = end - start;
-
-              return (
-                <Button
-                  key={rangeIndex}
-                  variant={isCurrentRange ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => {
-                    setCurrentRange(rangeIndex);
-                    goToQuestion(start);
-                  }}
-                  className="min-w-[100px]"
-                >
-                  <span className="font-semibold">
-                    {start + 1}-{end}
                   </span>
-                  {rangeAnsweredCount > 0 && (
-                    <Badge
-                      variant="secondary"
-                      className="ml-2 h-5 px-1.5 text-xs"
-                    >
-                      {rangeAnsweredCount}/{rangeTotal}
-                    </Badge>
-                  )}
-                </Button>
-              );
-            })}
-          </div>
-
-          {/* Question Grid for Current Range */}
-          <div className="flex justify-between items-center gap-4">
-            <Button
-              variant="outline"
-              onClick={goToPrevious}
-              disabled={currentQuestionIndex === 0}
-            >
-              <ChevronLeft className="h-4 w-4 mr-2" />
-              Previous
-            </Button>
-
-            <div className="flex gap-2 flex-wrap justify-center">
-              {questions
-                .slice(getRangeStart(currentRange), getRangeEnd(currentRange))
-                .map((_, rangeIdx) => {
-                  const index = getRangeStart(currentRange) + rangeIdx;
-                  const isCurrentQuestion = index === currentQuestionIndex;
-                  const questionId = questions[index].id;
-                  const isAnswered = submittedQuestions.has(questionId);
-
-                  // Show green/red based on correctness
-                  let buttonClass = "w-10 h-10 p-0";
-                  if (submittedQuestions.has(questionId)) {
-                    const userAns = userAnswers[questionId] || [];
-                    const correctAns = correctAnswers[questionId] || [];
-                    const isCorrect =
-                      userAns.length === correctAns.length &&
-                      userAns.every((a) => correctAns.includes(a));
-                    if (correctAns.length > 0) {
-                      buttonClass += isCorrect
-                        ? " bg-green-100 border-green-500 hover:bg-green-200 dark:bg-green-900/30"
-                        : " bg-red-100 border-red-500 hover:bg-red-200 dark:bg-red-900/30";
-                    }
-                  }
-
-                  return (
-                    <Button
-                      key={index}
-                      variant={isCurrentQuestion ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => goToQuestion(index)}
-                      className={buttonClass}
-                      title={`Question ${index + 1}${
-                        isAnswered ? " (Answered)" : ""
-                      }`}
-                    >
-                      {isAnswered ? (
-                        <CheckCircle className="h-4 w-4" />
-                      ) : (
-                        <span>{index + 1}</span>
-                      )}
-                    </Button>
-                  );
-                })}
-            </div>
-
-            <Button
-              variant="outline"
-              onClick={goToNext}
-              disabled={currentQuestionIndex === totalQuestions - 1}
-            >
-              Next
-              <ChevronRight className="h-4 w-4 ml-2" />
-            </Button>
-          </div>
+                  <span className="flex-1 leading-relaxed">{option.text}</span>
+                </div>
+              </button>
+            );
+          })}
         </div>
 
-        {/* Completion Message */}
-        {submittedQuestions.size === totalQuestions && (
-          <Alert className="mt-6">
-            <CheckCircle className="h-4 w-4" />
-            <AlertDescription>
-              You have completed all questions! Review your answers above.
-            </AlertDescription>
-          </Alert>
+        {/* Submit */}
+        {!isSubmitted && currentUserAnswer.length > 0 && (
+          <Button onClick={handleSubmit} className="w-full mt-6" size="lg">
+            Check Answer
+          </Button>
         )}
+
+        {/* Result */}
+        {isSubmitted && (
+          <p
+            className={`mt-6 text-sm ${
+              isCorrect
+                ? "text-green-600 dark:text-green-400"
+                : "text-red-600 dark:text-red-400"
+            }`}
+          >
+            {isCorrect ? "Correct!" : "Incorrect"}
+          </p>
+        )}
+      </div>
+
+      {/* Progress bar and stats */}
+      <div className="mt-8 pt-4 border-t border-border space-y-3">
+        {/* Progress bar */}
+        <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
+          <div
+            className="h-full bg-primary transition-all duration-300"
+            style={{
+              width: `${(submittedQuestions.size / totalQuestions) * 100}%`,
+            }}
+          />
+        </div>
+
+        {/* Stats */}
+        <div className="flex justify-between text-xs text-muted-foreground">
+          <span>{submittedQuestions.size} answered</span>
+          <span className="text-green-600 dark:text-green-400">
+            {correctCount} correct
+          </span>
+          <span>{totalQuestions - submittedQuestions.size} remaining</span>
+        </div>
       </div>
     </div>
   );
