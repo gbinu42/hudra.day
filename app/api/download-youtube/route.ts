@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { spawn } from "child_process";
-import { unlink, chmod } from "fs/promises";
+import { unlink, chmod, readFile } from "fs/promises";
 import { existsSync } from "fs";
 import path from "path";
 import { randomUUID } from "crypto";
@@ -137,11 +137,6 @@ export async function POST(request: NextRequest) {
       const ytDlp = spawn(ytDlpPath, ytDlpArgs);
 
       let stderr = "";
-      let stdout = "";
-
-      ytDlp.stdout.on("data", (data) => {
-        stdout += data.toString();
-      });
 
       ytDlp.stderr.on("data", (data) => {
         stderr += data.toString();
@@ -187,8 +182,7 @@ export async function POST(request: NextRequest) {
     ]);
 
     // Read the downloaded file
-    const fs = require("fs").promises;
-    const fileBuffer = await fs.readFile(downloadedFilePath);
+    const fileBuffer = await readFile(downloadedFilePath);
     const fileExtension = path.extname(downloadedFilePath);
     const fileName = `${platform}_audio${fileExtension}`;
 

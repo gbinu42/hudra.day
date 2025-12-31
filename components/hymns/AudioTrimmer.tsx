@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,6 +9,45 @@ import { Play, Pause, Scissors, RotateCcw, X, Volume2 } from "lucide-react";
 import { toast } from "sonner";
 import { useWavesurfer } from "@wavesurfer/react";
 import { Slider } from "@/components/ui/slider";
+
+type WaveSurferRegion = {
+  start: number;
+  end: number;
+  on: (eventName: "update" | "update-end", callback: () => void) => void;
+  play: () => void;
+  setOptions: (options: { start?: number; end?: number }) => void;
+};
+
+type RegionsPluginInstance = {
+  clearRegions: () => void;
+  addRegion: (options: {
+    start: number;
+    end: number;
+    color?: string;
+    drag?: boolean;
+    resize?: boolean;
+  }) => WaveSurferRegion;
+};
+
+type UnknownRecord = Record<string, unknown>;
+const isRecord = (v: unknown): v is UnknownRecord =>
+  typeof v === "object" && v !== null;
+
+const isRegionsPluginInstance = (p: unknown): p is RegionsPluginInstance => {
+  if (!isRecord(p)) return false;
+
+  const ctor = (p as { constructor?: unknown }).constructor;
+  const ctorName =
+    ctor && typeof ctor === "function"
+      ? (ctor as { name?: unknown }).name
+      : undefined;
+
+  return (
+    ctorName === "RegionsPlugin" &&
+    typeof (p as { clearRegions?: unknown }).clearRegions === "function" &&
+    typeof (p as { addRegion?: unknown }).addRegion === "function"
+  );
+};
 
 interface AudioTrimmerProps {
   audioFile: File;
@@ -33,7 +72,7 @@ export default function AudioTrimmer({
   const [volume, setVolume] = useState(1);
   const containerRef = useRef<HTMLDivElement>(null);
   const audioUrl = useRef<string>("");
-  const regionRef = useRef<any>(null);
+  const regionRef = useRef<WaveSurferRegion | null>(null);
 
   // Initialize wavesurfer
   const { wavesurfer, isReady } = useWavesurfer({
@@ -77,14 +116,59 @@ export default function AudioTrimmer({
     };
   }, [audioFile]);
 
+  const initializeRegion = useCallback(async (audioDuration: number) => {
+    if (!wavesurfer) return;
+
+    // Dynamically import regions plugin
+    const RegionsPlugin = (
+      await import("wavesurfer.js/dist/plugins/regions.esm.js")
+    ).default;
+
+    // Check if regions plugin is already registered
+    const activePlugins = wavesurfer.getActivePlugins() as unknown[];
+    let regions = activePlugins.find(isRegionsPluginInstance);
+
+    if (!regions) {
+      regions = wavesurfer.registerPlugin(
+        RegionsPlugin.create()
+      ) as unknown as RegionsPluginInstance;
+    }
+
+    // Clear existing regions
+    regions.clearRegions();
+
+    // Add a region for the entire audio
+    const region = regions.addRegion({
+      start: 0,
+      end: audioDuration,
+      color: "rgba(59, 130, 246, 0.2)",
+      drag: true,
+      resize: true,
+    });
+
+    regionRef.current = region;
+
+    // Update state while region is being dragged (real-time)
+    region.on("update", () => {
+      setStartTime(region.start);
+      setEndTime(region.end);
+    });
+
+    // Also update when drag ends
+    region.on("update-end", () => {
+      setStartTime(region.start);
+      setEndTime(region.end);
+    });
+
+    setStartTime(0);
+    setEndTime(audioDuration);
+  }, [wavesurfer]);
+
   useEffect(() => {
     if (!wavesurfer) return;
 
     // Load the audio
     wavesurfer.load(audioUrl.current);
-    
-    // Set initial volume
-    wavesurfer.setVolume(volume);
 
     // Set up event listeners
     const subscriptions = [
@@ -113,7 +197,7 @@ export default function AudioTrimmer({
     return () => {
       subscriptions.forEach((unsub) => unsub());
     };
-  }, [wavesurfer]);
+  }, [wavesurfer, audioFile, initializeRegion]);
 
   // Handle volume changes
   useEffect(() => {
@@ -121,49 +205,6 @@ export default function AudioTrimmer({
       wavesurfer.setVolume(volume);
     }
   }, [volume, wavesurfer]);
-
-  const initializeRegion = async (audioDuration: number) => {
-    if (!wavesurfer) return;
-
-    // Dynamically import regions plugin
-    const RegionsPlugin = (await import("wavesurfer.js/dist/plugins/regions.esm.js")).default;
-    
-    // Check if regions plugin is already registered
-    let regions: any = wavesurfer.getActivePlugins().find((p: any) => p.constructor.name === "RegionsPlugin");
-    
-    if (!regions) {
-      regions = wavesurfer.registerPlugin(RegionsPlugin.create());
-    }
-
-    // Clear existing regions
-    regions.clearRegions();
-
-    // Add a region for the entire audio
-    const region: any = regions.addRegion({
-      start: 0,
-      end: audioDuration,
-      color: "rgba(59, 130, 246, 0.2)",
-      drag: true,
-      resize: true,
-    });
-
-    regionRef.current = region;
-
-    // Update state while region is being dragged (real-time)
-    region.on("update", () => {
-      setStartTime(region.start);
-      setEndTime(region.end);
-    });
-
-    // Also update when drag ends
-    region.on("update-end", () => {
-      setStartTime(region.start);
-      setEndTime(region.end);
-    });
-
-    setStartTime(0);
-    setEndTime(audioDuration);
-  };
 
   const togglePlayPause = () => {
     if (wavesurfer) {

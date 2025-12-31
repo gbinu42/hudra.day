@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { spawn } from "child_process";
-import { writeFile, unlink } from "fs/promises";
+import { writeFile, unlink, readFile } from "fs/promises";
 import path from "path";
 import { randomUUID } from "crypto";
 
@@ -110,8 +110,7 @@ export async function POST(request: NextRequest) {
     await Promise.race([trimPromise, timeoutPromise]);
 
     // Read the trimmed file
-    const fs = require("fs").promises;
-    const trimmedBuffer = await fs.readFile(outputPath);
+    const trimmedBuffer = await readFile(outputPath);
     
     // Determine the appropriate MIME type based on file extension
     const mimeTypes: { [key: string]: string } = {
