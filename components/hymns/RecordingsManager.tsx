@@ -36,9 +36,12 @@ import {
   Edit,
   Check,
   XCircle,
+  Scissors,
 } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { MultiSelect, MultiSelectOption } from "@/components/ui/multi-select";
+import { Checkbox } from "@/components/ui/checkbox";
+import AudioTrimmer from "./AudioTrimmer";
 
 const recordingSchema = z
   .object({
@@ -120,8 +123,22 @@ export default function RecordingsManager({
   const [isUploading, setIsUploading] = useState(false);
   const [uploadFile, setUploadFile] = useState<File | null>(null);
   const [adminAudioFile, setAdminAudioFile] = useState<File | null>(null);
+  const [downloadYoutubeAudio, setDownloadYoutubeAudio] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadedFileSize, setDownloadedFileSize] = useState<string>("");
+  const [showTrimmer, setShowTrimmer] = useState(false);
+  const [fileToTrim, setFileToTrim] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const adminAudioInputRef = useRef<HTMLInputElement>(null);
+
+  // Helper function to format file size
+  const formatFileSize = (bytes: number): string => {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const sizes = ["Bytes", "KB", "MB", "GB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + " " + sizes[i];
+  };
 
   const isAdmin = userRole === "admin";
   const isEditing = editingRecordingId !== null;
@@ -155,6 +172,7 @@ export default function RecordingsManager({
   });
 
   const recordingType = watch("type");
+  const urlValue = watch("url");
 
   // Load all persons for performer selection
   useEffect(() => {
@@ -175,7 +193,15 @@ export default function RecordingsManager({
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setUploadFile(e.target.files[0]);
+      const file = e.target.files[0];
+      setUploadFile(file);
+      // Allow trimming for directly uploaded audio files too
+      if (recordingType === "audio") {
+        setFileToTrim(file);
+      } else {
+        setShowTrimmer(false);
+        setFileToTrim(null);
+      }
     }
   };
 
@@ -190,6 +216,13 @@ export default function RecordingsManager({
 
       if (acceptedTypes.some((type) => file.type.startsWith(type))) {
         setUploadFile(file);
+        // Allow trimming for directly dropped audio files too
+        if (recordingType === "audio") {
+          setFileToTrim(file);
+        } else {
+          setShowTrimmer(false);
+          setFileToTrim(null);
+        }
       } else {
         toast.error(`Please select a valid ${recordingType} file`);
       }
@@ -220,6 +253,13 @@ export default function RecordingsManager({
 
           if (acceptedTypes.some((type) => file.type.startsWith(type))) {
             setUploadFile(file);
+            // Allow trimming for directly pasted audio files too
+            if (recordingType === "audio") {
+              setFileToTrim(file);
+            } else {
+              setShowTrimmer(false);
+              setFileToTrim(null);
+            }
             break;
           } else {
             toast.error(`Please paste a valid ${recordingType} file`);
@@ -261,9 +301,76 @@ export default function RecordingsManager({
     reset();
     setUploadFile(null);
     setAdminAudioFile(null);
+    setDownloadYoutubeAudio(false);
+    setDownloadedFileSize("");
+    downloadedUrlRef.current = "";
     setSelectedPerformers([]);
     setShowForm(false);
+    setShowTrimmer(false);
+    setFileToTrim(null);
   };
+
+  // Handle YouTube audio download when checkbox is checked
+  const downloadedUrlRef = useRef<string>("");
+
+  useEffect(() => {
+    const handleDownload = async () => {
+      const url = urlValue;
+      
+      // Only proceed if checkbox is checked, URL exists, and we haven't already downloaded this URL
+      if (!url || !downloadYoutubeAudio || isDownloading) return;
+      
+      // Prevent downloading the same URL multiple times
+      if (downloadedUrlRef.current === url) return;
+
+      downloadedUrlRef.current = url;
+      setIsDownloading(true);
+      
+      try {
+        const response = await fetch("/api/download-youtube", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            url: url,
+          }),
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.details || "Failed to download YouTube audio");
+        }
+
+        // Get the downloaded file
+        const blob = await response.blob();
+        const fileName = response.headers.get("X-File-Name") || "youtube_audio.webm";
+        const file = new File([blob], fileName, { type: blob.type });
+        
+        // Set file size
+        setDownloadedFileSize(formatFileSize(file.size));
+        
+        // Set as the upload file and keep reference for trimming
+        setFileToTrim(file);
+        setUploadFile(file);
+        toast.success(`Audio downloaded successfully! (${formatFileSize(file.size)}) - Click "Trim Audio" if you want to trim it.`);
+      } catch (error) {
+        console.error("Error downloading YouTube audio:", error);
+        toast.error(
+          error instanceof Error ? error.message : "Failed to download YouTube audio"
+        );
+        // Uncheck the checkbox on error and reset the ref
+        setDownloadYoutubeAudio(false);
+        downloadedUrlRef.current = "";
+      } finally {
+        setIsDownloading(false);
+      }
+    };
+
+    if (downloadYoutubeAudio) {
+      handleDownload();
+    }
+  }, [downloadYoutubeAudio, urlValue, isDownloading]);
 
   const onSubmit = async (data: RecordingFormData) => {
     setIsUploading(true);
@@ -772,6 +879,46 @@ export default function RecordingsManager({
                   </div>
                 )}
 
+                {recordingType === "audio" && 
+                 urlValue && 
+                 (urlValue.includes("youtube.com") || urlValue.includes("youtu.be") || 
+                  urlValue.includes("facebook.com") || urlValue.includes("fb.com") || urlValue.includes("fb.watch")) && (
+                  <div className="flex items-center gap-2 p-2 border rounded bg-blue-50">
+                    <Checkbox
+                      id="download-youtube-audio"
+                      checked={downloadYoutubeAudio}
+                      onCheckedChange={(checked) => {
+                        if (!checked) {
+                          // Reset when unchecked
+                          downloadedUrlRef.current = "";
+                          setDownloadedFileSize("");
+                          setUploadFile(null);
+                          setShowTrimmer(false);
+                          setFileToTrim(null);
+                        }
+                        setDownloadYoutubeAudio(checked === true);
+                      }}
+                      className="h-4 w-4"
+                    />
+                    <Label
+                      htmlFor="download-youtube-audio"
+                      className="text-xs font-normal cursor-pointer flex-1"
+                    >
+                      Download audio from YouTube/Facebook using yt-dlp
+                      {isDownloading && (
+                        <span className="ml-2 text-blue-600 font-medium">
+                          (downloading...)
+                        </span>
+                      )}
+                      {!isDownloading && downloadedFileSize && (
+                        <span className="ml-2 text-green-600 font-medium">
+                          ✓ Downloaded ({downloadedFileSize})
+                        </span>
+                      )}
+                    </Label>
+                  </div>
+                )}
+
                 {recordingType === "youtube" && isAdmin && (
                   <div className="space-y-2">
                     <Label
@@ -824,6 +971,54 @@ export default function RecordingsManager({
                       Upload an audio file for this YouTube video. This file
                       will only be visible to admins.
                     </p>
+                  </div>
+                )}
+
+                {/* Audio Trimmer */}
+                {showTrimmer && fileToTrim && (
+                  <AudioTrimmer
+                    key={fileToTrim.name + fileToTrim.size}
+                    audioFile={fileToTrim}
+                    onTrimComplete={(trimmedFile) => {
+                      setUploadFile(trimmedFile);
+                      setFileToTrim(trimmedFile); // Update fileToTrim so re-trimming uses the trimmed version
+                      setShowTrimmer(false);
+                      toast.success("Audio trimmed and ready to upload!");
+                    }}
+                    onCancel={() => {
+                      setShowTrimmer(false);
+                      // Keep the current upload file (either trimmed or original)
+                      if (!uploadFile && fileToTrim) {
+                        setUploadFile(fileToTrim);
+                      }
+                    }}
+                  />
+                )}
+
+                {/* Show trim button for ANY selected audio file (downloaded via yt-dlp or uploaded directly) */}
+                {!showTrimmer && recordingType === "audio" && uploadFile && (
+                  <div className="flex items-center gap-2 p-3 border rounded bg-green-50">
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-green-800">
+                        Audio ready: {uploadFile.name}
+                      </p>
+                      <p className="text-xs text-green-600">
+                        Size: {formatFileSize(uploadFile.size)}
+                      </p>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        // Use the current uploadFile for trimming (which could already be trimmed)
+                        setFileToTrim(uploadFile);
+                        setShowTrimmer(true);
+                      }}
+                    >
+                      <Scissors className="h-4 w-4 mr-2" />
+                      Trim Audio
+                    </Button>
                   </div>
                 )}
 
@@ -919,11 +1114,14 @@ export default function RecordingsManager({
                     type="button"
                     variant="outline"
                     onClick={handleCancelEdit}
+                    disabled={isUploading || isDownloading}
                   >
                     Cancel
                   </Button>
-                  <Button type="submit" disabled={isUploading}>
-                    {isUploading
+                  <Button type="submit" disabled={isUploading || isDownloading}>
+                    {isDownloading
+                      ? "Downloading from YouTube..."
+                      : isUploading
                       ? isEditing
                         ? "Updating..."
                         : "Uploading..."
