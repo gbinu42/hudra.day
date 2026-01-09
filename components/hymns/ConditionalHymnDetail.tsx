@@ -74,7 +74,11 @@ export default function ConditionalHymnDetail({
       {user && (
         <div className="mt-8 space-y-8">
           <ImagesClient hymnId={hymnId} imageGroups={hymn.hymnImageGroups} />
-          <RecordingsClient hymnId={hymnId} recordings={hymn.recordings} />
+          <RecordingsClient 
+            hymnId={hymnId} 
+            recordings={hymn.recordings}
+            hymnName={hymn.titles.find((t) => t.language?.toLowerCase() === "english")?.title || "Untitled"}
+          />
         </div>
       )}
 

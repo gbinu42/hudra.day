@@ -104,14 +104,11 @@ export async function POST(request: NextRequest) {
       `${outputPath}.%(ext)s`,
     ];
     
-    // Facebook often doesn't have separate audio-only streams, so extract audio from video
+    // For Facebook, try to get audio-only stream if available
+    // Don't force conversion - just extract in best available format
     if (isFacebook) {
       ytDlpArgs.push(
-        "-x",              // Extract audio
-        "--audio-format",
-        "mp3",             // Convert to mp3
-        "--audio-quality",
-        "5"                // Decent quality (0=best, 9=worst)
+        "-x"               // Extract audio only (keeps original format when possible)
       );
     }
 
@@ -186,6 +183,17 @@ export async function POST(request: NextRequest) {
     const fileExtension = path.extname(downloadedFilePath);
     const fileName = `${platform}_audio${fileExtension}`;
 
+    // Determine the appropriate MIME type based on file extension
+    const mimeTypes: { [key: string]: string } = {
+      '.mp3': 'audio/mpeg',
+      '.m4a': 'audio/mp4',
+      '.webm': 'audio/webm',
+      '.ogg': 'audio/ogg',
+      '.opus': 'audio/opus',
+      '.wav': 'audio/wav',
+    };
+    const mimeType = mimeTypes[fileExtension] || 'audio/mpeg';
+
     // Clean up the downloaded file
     try {
       await unlink(downloadedFilePath);
@@ -197,7 +205,7 @@ export async function POST(request: NextRequest) {
     return new NextResponse(fileBuffer, {
       status: 200,
       headers: {
-        "Content-Type": "audio/mpeg",
+        "Content-Type": mimeType,
         "Content-Disposition": `attachment; filename="${fileName}"`,
         "X-File-Name": fileName,
       },

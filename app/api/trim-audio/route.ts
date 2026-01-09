@@ -18,6 +18,7 @@ export async function POST(request: NextRequest) {
     const file = formData.get("file") as File;
     const startTime = formData.get("startTime") as string;
     const endTime = formData.get("endTime") as string;
+    const gainDbStr = formData.get("gainDb") as string;
 
     if (!file) {
       return NextResponse.json(
@@ -36,6 +37,7 @@ export async function POST(request: NextRequest) {
     // Validate time format (should be in seconds)
     const start = parseFloat(startTime);
     const end = parseFloat(endTime);
+    const gainDb = gainDbStr ? parseFloat(gainDbStr) : 0;
 
     if (isNaN(start) || isNaN(end) || start < 0 || end <= start) {
       return NextResponse.json(
@@ -45,7 +47,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate unique filenames
-    // Preserve the original file extension for proper stream copy
+    // Always preserve the original file extension
     const fileExtension = file.name.split('.').pop() || 'mp3';
     const inputFilename = `input_${randomUUID()}.${fileExtension}`;
     const outputFilename = `trimmed_${randomUUID()}.${fileExtension}`;
@@ -57,28 +59,86 @@ export async function POST(request: NextRequest) {
     const buffer = Buffer.from(arrayBuffer);
     await writeFile(inputPath, buffer);
 
-    // Use ffmpeg to trim the audio WITHOUT re-encoding (stream copy)
-    // This is much faster and preserves original quality/bitrate
-    const ffmpegArgs = [
-      "-ss",
-      start.toString(), // Seek to start position BEFORE input (faster)
-      "-i",
-      inputPath,
-      "-to",
-      end.toString(), // End position
-      "-c",
-      "copy", // Copy streams without re-encoding
-      "-avoid_negative_ts",
-      "make_zero", // Fix timestamp issues
-      "-fflags",
-      "+genpts", // Generate presentation timestamps
-      "-map_metadata",
-      "0", // Copy metadata from input
-      "-movflags",
-      "+faststart", // Enable fast start for web playback
-      "-y", // Overwrite output file if it exists
-      outputPath,
-    ];
+    // Build ffmpeg arguments based on whether we need to apply gain
+    let ffmpegArgs: string[];
+    
+    // Calculate duration from start and end times
+    // Using -t (duration) instead of -to (end time) is more reliable with -ss
+    const duration = end - start;
+    
+    if (gainDb !== 0) {
+      // Need to re-encode to apply volume filter
+      // Convert dB to volume multiplier: multiplier = 10^(dB/20)
+      const volumeMultiplier = Math.pow(10, gainDb / 20);
+      
+      // Determine codec and bitrate based on file extension to preserve original format
+      // Use conservative bitrates to avoid size increases (suitable for voice/hymns)
+      let codec = "libmp3lame";
+      let bitrate = "96k";
+      const extraArgs: string[] = [];
+      
+      if (fileExtension === "m4a") {
+        codec = "aac";
+        bitrate = "64k"; // AAC is very efficient, 64k is good quality for voice
+        extraArgs.push("-movflags", "+faststart");
+      } else if (fileExtension === "opus") {
+        codec = "libopus";
+        bitrate = "48k"; // Opus is extremely efficient, 48k is excellent for voice
+      } else if (fileExtension === "ogg") {
+        codec = "libvorbis";
+        bitrate = "80k";
+      } else if (fileExtension === "webm") {
+        codec = "libopus";
+        bitrate = "48k"; // Opus is extremely efficient
+      }
+      
+      ffmpegArgs = [
+        "-ss",
+        start.toString(),
+        "-i",
+        inputPath,
+        "-t",
+        duration.toString(), // Use duration instead of end time
+        "-af",
+        `volume=${volumeMultiplier}`, // Apply volume filter
+        "-c:a",
+        codec, // Use appropriate codec for the format
+        "-b:a",
+        bitrate,
+        "-avoid_negative_ts",
+        "make_zero",
+        "-fflags",
+        "+genpts",
+        "-map_metadata",
+        "0",
+        ...extraArgs,
+        "-y",
+        outputPath,
+      ];
+    } else {
+      // Use stream copy (no re-encoding) when no gain adjustment needed
+      // This is much faster and preserves original quality/bitrate
+      ffmpegArgs = [
+        "-ss",
+        start.toString(),
+        "-i",
+        inputPath,
+        "-t",
+        duration.toString(), // Use duration instead of end time
+        "-c",
+        "copy",
+        "-avoid_negative_ts",
+        "make_zero",
+        "-fflags",
+        "+genpts",
+        "-map_metadata",
+        "0",
+        "-movflags",
+        "+faststart",
+        "-y",
+        outputPath,
+      ];
+    }
 
     const trimPromise = new Promise<void>((resolve, reject) => {
       const ffmpeg = spawn("ffmpeg", ffmpegArgs);

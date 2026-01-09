@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -66,10 +66,33 @@ export default function CommentsSection({
   });
   
   const [errors, setErrors] = useState<Record<string, string>>({});
+  
+  // Track if initial load has happened to avoid double-fetching
+  const hasLoadedRef = useRef(false);
+  const previousRoleRef = useRef<string | undefined>(undefined);
 
-  // Load comments on mount and when user profile changes
+  // Load comments on mount and only reload if role actually changes (for admin view toggle)
   useEffect(() => {
-    loadComments();
+    const currentRole = userProfile?.role;
+    
+    // First load: always fetch
+    if (!hasLoadedRef.current) {
+      hasLoadedRef.current = true;
+      previousRoleRef.current = currentRole;
+      loadComments();
+      return;
+    }
+    
+    // Subsequent: only reload if role changed from one defined value to another
+    // This handles admin toggling between user/admin view
+    // Skip if just going from undefined to a value (initial auth load)
+    if (previousRoleRef.current !== undefined && currentRole !== previousRoleRef.current) {
+      previousRoleRef.current = currentRole;
+      loadComments();
+    } else if (previousRoleRef.current === undefined && currentRole !== undefined) {
+      // Just update ref without reloading - initial auth completed
+      previousRoleRef.current = currentRole;
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resourceType, resourceId, userProfile?.role]);
 

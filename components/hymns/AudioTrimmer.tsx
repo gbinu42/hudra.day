@@ -4,8 +4,8 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Play, Pause, Scissors, RotateCcw, X, Volume2 } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Play, Pause, Scissors, RotateCcw, Volume2 } from "lucide-react";
 import { toast } from "sonner";
 import { useWavesurfer } from "@wavesurfer/react";
 import { Slider } from "@/components/ui/slider";
@@ -70,6 +70,7 @@ export default function AudioTrimmer({
   const [originalFileSize, setOriginalFileSize] = useState(0);
   const [trimmedFileSize, setTrimmedFileSize] = useState(0);
   const [volume, setVolume] = useState(1);
+  const [gainDb, setGainDb] = useState(0); // Audio gain in decibels (-20 to +20)
   const containerRef = useRef<HTMLDivElement>(null);
   const audioUrl = useRef<string>("");
   const regionRef = useRef<WaveSurferRegion | null>(null);
@@ -199,12 +200,20 @@ export default function AudioTrimmer({
     };
   }, [wavesurfer, audioFile, initializeRegion]);
 
-  // Handle volume changes
+  // Handle volume and gain changes - apply both to playback for real-time feedback
   useEffect(() => {
     if (wavesurfer) {
-      wavesurfer.setVolume(volume);
+      // Apply both volume slider and gain adjustment
+      // Convert dB to volume multiplier: multiplier = 10^(dB/20)
+      const gainMultiplier = Math.pow(10, gainDb / 20);
+      const combinedVolume = volume * gainMultiplier;
+      
+      // Clamp to valid range [0, 1] for HTML audio element
+      // Note: Preview may clip if gain is too high, but output file will have the full gain applied
+      const clampedVolume = Math.max(0, Math.min(1, combinedVolume));
+      wavesurfer.setVolume(clampedVolume);
     }
-  }, [volume, wavesurfer]);
+  }, [volume, gainDb, wavesurfer]);
 
   const togglePlayPause = () => {
     if (wavesurfer) {
@@ -275,6 +284,7 @@ export default function AudioTrimmer({
       formData.append("file", audioFile);
       formData.append("startTime", startTime.toString());
       formData.append("endTime", endTime.toString());
+      formData.append("gainDb", gainDb.toString());
 
       const response = await fetch("/api/trim-audio", {
         method: "POST",
@@ -288,7 +298,8 @@ export default function AudioTrimmer({
 
       const blob = await response.blob();
       const fileName = response.headers.get("X-File-Name") || "trimmed_audio.mp3";
-      const trimmedFile = new File([blob], fileName, { type: "audio/mpeg" });
+      const contentType = response.headers.get("Content-Type") || "audio/mpeg";
+      const trimmedFile = new File([blob], fileName, { type: contentType });
 
       setTrimmedFile(trimmedFile);
       setTrimmedFileSize(trimmedFile.size);
@@ -322,44 +333,56 @@ export default function AudioTrimmer({
   };
 
   return (
-    <div className="relative left-1/2 right-1/2 -mx-[50vw] w-screen my-6">
+    <div className="relative left-1/2 right-1/2 -mx-[50vw] w-screen my-4">
       <Card className="border-2 border-blue-500 mx-4">
-        <CardHeader className="bg-blue-50 py-3 px-6">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-lg">Trim Audio</CardTitle>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={onCancel}
-              disabled={isTrimming}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-4 pt-4 pb-4 px-6">
+        <CardContent className="space-y-2 pt-3 pb-3 px-4">
         {/* Waveform container */}
-        <div className="space-y-2">
-          <div className="flex items-center justify-between mb-2">
-            <Label className="text-sm font-medium">Waveform & Selection</Label>
-            <div className="flex items-center gap-3">
-              <Volume2 className="h-4 w-4 text-muted-foreground" />
-              <div className="w-24">
-                <Slider
-                  value={[volume * 100]}
-                  min={0}
-                  max={100}
-                  step={1}
-                  onValueChange={(values) => setVolume(values[0] / 100)}
-                  className="cursor-pointer"
-                />
+        <div className="space-y-1">
+          <div className="flex items-center justify-between gap-4 mb-1">
+            <div className="flex items-center gap-2">
+              <Label className="text-sm font-medium whitespace-nowrap">Preview Volume</Label>
+              <div className="flex items-center gap-2">
+                <Volume2 className="h-4 w-4 text-muted-foreground" />
+                <div className="w-24">
+                  <Slider
+                    value={[volume * 100]}
+                    min={0}
+                    max={100}
+                    step={1}
+                    onValueChange={(values) => setVolume(values[0] / 100)}
+                    className="cursor-pointer"
+                  />
+                </div>
+                <span className="text-xs text-muted-foreground w-8 text-right">
+                  {Math.round(volume * 100)}%
+                </span>
               </div>
-              <span className="text-xs text-muted-foreground w-8 text-right">
-                {Math.round(volume * 100)}%
-              </span>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <Label className="text-sm font-medium whitespace-nowrap">Output Gain</Label>
+              <div className="flex items-center gap-2">
+                <Volume2 className="h-4 w-4 text-muted-foreground" />
+                <div className="w-32">
+                  <Slider
+                    value={[gainDb]}
+                    min={-20}
+                    max={20}
+                    step={0.5}
+                    onValueChange={(values) => setGainDb(values[0])}
+                    className="cursor-pointer"
+                  />
+                </div>
+                <span className="text-xs text-muted-foreground w-12 text-right">
+                  {gainDb > 0 ? '+' : ''}{gainDb.toFixed(1)} dB
+                </span>
+              </div>
             </div>
           </div>
+          
+          <p className="text-xs text-muted-foreground italic">
+            Gain adjusts output volume (preview reflects changes in real-time)
+          </p>
 
           <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
             <span>{formatTime(currentTime)}</span>
@@ -372,12 +395,12 @@ export default function AudioTrimmer({
           />
 
           <p className="text-xs text-muted-foreground text-center">
-            Drag the highlighted region edges to select the portion to keep
+            Drag region edges to select portion to keep
           </p>
         </div>
 
         {/* Playback controls */}
-        <div className="flex justify-center gap-3">
+        <div className="flex justify-center gap-2">
           <Button
             type="button"
             variant="outline"
@@ -408,8 +431,8 @@ export default function AudioTrimmer({
         </div>
 
         {/* Manual time input */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-1">
             <Label htmlFor="start-time">Start Time (MM:SS)</Label>
             <Input
               id="start-time"
@@ -420,7 +443,7 @@ export default function AudioTrimmer({
               className="font-mono text-base"
             />
           </div>
-          <div className="space-y-2">
+          <div className="space-y-1">
             <Label htmlFor="end-time">End Time (MM:SS)</Label>
             <Input
               id="end-time"
@@ -434,8 +457,8 @@ export default function AudioTrimmer({
         </div>
 
         {/* File size comparison */}
-        <div className="p-4 bg-muted rounded-lg text-sm space-y-2">
-          <div className="grid grid-cols-2 gap-4">
+        <div className="p-3 bg-muted rounded-lg text-sm space-y-1">
+          <div className="grid grid-cols-2 gap-3">
             <div>
               <p className="text-muted-foreground">Original Duration:</p>
               <p className="font-semibold text-base">{formatTime(duration)}</p>
@@ -445,7 +468,7 @@ export default function AudioTrimmer({
               <p className="font-semibold text-base">{formatFileSize(originalFileSize)}</p>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3">
             <div>
               <p className="text-muted-foreground">Trimmed Duration:</p>
               <p className="font-semibold text-base">{formatTime(endTime - startTime)}</p>
@@ -458,21 +481,21 @@ export default function AudioTrimmer({
             )}
           </div>
           {trimmedFileSize > 0 && (
-            <div className="pt-2 border-t">
+            <div className="pt-1 border-t">
               <p className="text-green-600 font-bold text-base">
                 Saved: {formatFileSize(originalFileSize - trimmedFileSize)} ({Math.round(((originalFileSize - trimmedFileSize) / originalFileSize) * 100)}%)
               </p>
             </div>
           )}
           {trimmedFileSize === 0 && duration > 0 && (
-            <p className="text-muted-foreground text-xs italic pt-2 border-t">
-              Estimated trimmed size: ~{formatFileSize(Math.round((originalFileSize * (endTime - startTime)) / duration))} (stream copy - no re-encoding)
+            <p className="text-muted-foreground text-xs italic pt-1 border-t">
+              Estimated: ~{formatFileSize(Math.round((originalFileSize * (endTime - startTime)) / duration))}
             </p>
           )}
         </div>
 
         {/* Action buttons */}
-        <div className="flex justify-end gap-3">
+        <div className="flex justify-end gap-2">
           {trimmedFile && (
             <Button 
               type="button"
@@ -494,7 +517,7 @@ export default function AudioTrimmer({
           </Button>
           {!trimmedFile && (
             <Button 
-              type="button" 
+              type="button"
               onClick={handleTrim} 
               disabled={isTrimming || !isReady}
             >

@@ -1336,8 +1336,8 @@ export default function SyriacEditor({
         onSpace={handleKeyboardSpace}
       />
 
-      {/* Mobile keyboard spacer - prevents content from being hidden */}
-      {keyboardVisible && <div className="h-80 md:hidden" aria-hidden="true" />}
+      {/* Touch device keyboard spacer - prevents content from being hidden */}
+      {keyboardVisible && isTouchDevice && <div className="h-80" aria-hidden="true" />}
     </>
   );
 }

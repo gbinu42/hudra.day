@@ -10,11 +10,13 @@ import { HymnRecording } from "@/lib/types/hymn";
 interface RecordingsClientProps {
   hymnId: string;
   recordings: HymnRecording[] | undefined;
+  hymnName?: string;
 }
 
 export default function RecordingsClient({
   hymnId,
   recordings,
+  hymnName,
 }: RecordingsClientProps) {
   const { user, userProfile } = useAuth();
   const [isClient, setIsClient] = useState(false);
@@ -56,6 +58,7 @@ export default function RecordingsClient({
       contributorName={userProfile?.displayName || user.email || "Anonymous"}
       userRole={userProfile?.role}
       onUpdate={handleRefresh}
+      hymnName={hymnName}
     />
   );
 }
