@@ -30,11 +30,16 @@ const isTouchDevice = () => {
 const playTapSound = (() => {
   let audioContext: AudioContext | null = null;
   
-  return () => {
+  return async () => {
     try {
       if (!audioContext) {
         const AudioContextConstructor = window.AudioContext || (window as typeof window & { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
         audioContext = new AudioContextConstructor();
+      }
+      
+      // Resume context if it's suspended (required for mobile browsers)
+      if (audioContext.state === "suspended") {
+        await audioContext.resume();
       }
       
       const oscillator = audioContext.createOscillator();
@@ -278,8 +283,7 @@ export default function SyriacKeyboard({
       variant="outline"
       size="sm"
       className={`
-        h-8 min-w-6 p-1
-        ${isTouchScreen ? "text-lg" : "text-lg"}
+        ${isTouchScreen ? "h-8 p-0.5 text-2xl" : "h-8 min-w-6 p-1 text-lg"}
         ${isSpecial && isTouchScreen ? "text-sm bg-muted" : isSpecial ? "bg-muted" : ""}
       `}
       onMouseDown={(e) => {
@@ -387,13 +391,13 @@ export default function SyriacKeyboard({
       {!isCollapsed && (
         <div
           className={`
-            ${isTouchScreen ? "p-2 pb-1 max-h-none" : "p-3 max-h-[500px] overflow-y-auto"}
+            ${isTouchScreen ? "px-2 py-1 pb-1 max-h-none" : "p-3 max-h-[500px] overflow-y-auto"}
           `}
           dir="rtl"
         >
           {showNumbers ? (
             /* Numbers and Punctuation */
-            <div className={isTouchScreen ? "space-y-2" : "space-y-3"}>
+            <div className={isTouchScreen ? "space-y-1" : "space-y-3"}>
               <div>
                 {!isTouchScreen && (
                   <div
@@ -404,7 +408,7 @@ export default function SyriacKeyboard({
                   </div>
                 )}
                 <div
-                  className={`grid grid-cols-5 ${isTouchScreen ? "gap-0.5 mb-2" : "gap-1"}`}
+                  className={`grid grid-cols-5 ${isTouchScreen ? "gap-0.5 mb-1" : "gap-1"}`}
                   dir="rtl"
                 >
                   {keyboardData.numbers.map((key, idx) => (
@@ -422,7 +426,7 @@ export default function SyriacKeyboard({
                   </div>
                 )}
                 <div
-                  className={`grid ${isTouchScreen ? "grid-cols-5 gap-0.5 mb-2" : "grid-cols-6 gap-1"}`}
+                  className={`grid ${isTouchScreen ? "grid-cols-5 gap-0.5 mb-1" : "grid-cols-6 gap-1"}`}
                   dir="rtl"
                 >
                   {keyboardData.punctuation.map((key, idx) => (
@@ -442,7 +446,7 @@ export default function SyriacKeyboard({
             </div>
           ) : (
             /* Letters and Diacritics */
-            <div className={isTouchScreen ? "space-y-2" : "space-y-3"}>
+            <div className={isTouchScreen ? "space-y-1" : "space-y-3"}>
               <div>
                 {!isTouchScreen && (
                   <div
@@ -453,7 +457,7 @@ export default function SyriacKeyboard({
                   </div>
                 )}
                 <div
-                  className={`grid grid-cols-8 ${isTouchScreen ? "gap-0.5 mb-2" : "gap-1"}`}
+                  className={`grid grid-cols-8 ${isTouchScreen ? "gap-0.5 mb-1" : "gap-1"}`}
                   dir="rtl"
                 >
                   {keyboardData.basicLetters.map((key, idx) => (
@@ -477,7 +481,7 @@ export default function SyriacKeyboard({
                   </div>
                 )}
                 <div
-                  className={`grid grid-cols-8 ${isTouchScreen ? "gap-0.5 mb-2" : "gap-1"}`}
+                  className={`grid grid-cols-8 ${isTouchScreen ? "gap-0.5 mb-1" : "gap-1"}`}
                   dir="rtl"
                 >
                   {keyboardData.supplement.map((key, idx) => (
@@ -496,7 +500,7 @@ export default function SyriacKeyboard({
                   </div>
                 )}
                 <div
-                  className={`grid grid-cols-6 ${isTouchScreen ? "gap-0.5 mb-2" : "gap-1"}`}
+                  className={`grid grid-cols-6 ${isTouchScreen ? "gap-0.5 mb-1" : "gap-1"}`}
                   dir="rtl"
                 >
                   {keyboardData.vowels.map((key, idx) => (
@@ -513,7 +517,7 @@ export default function SyriacKeyboard({
           )}
 
           {/* Special Keys */}
-          <div className={`border-t border-border ${isTouchScreen ? "mt-2 pt-2" : "mt-3 pt-3"}`}>
+          <div className={`border-t border-border ${isTouchScreen ? "mt-1 pt-1" : "mt-3 pt-3"}`}>
             <div
               className={`${isTouchScreen ? "flex justify-between gap-1" : "grid grid-cols-5 gap-1"}`}
               dir="ltr"
@@ -535,7 +539,7 @@ export default function SyriacKeyboard({
                   playTapSound();
                   setShowNumbers(!showNumbers);
                 }}
-                className={`h-8 text-xs px-2 ${isTouchScreen ? "w-12 flex-none" : ""}`}
+                className={`h-8 text-xs ${isTouchScreen ? "w-11 flex-none px-1" : "px-2"}`}
               >
                 {showNumbers ? "ABC" : "123"}
               </Button>
@@ -543,7 +547,7 @@ export default function SyriacKeyboard({
               <Button
                 variant="outline"
                 size="sm"
-                className={`h-8 text-xs px-2 ${isTouchScreen ? "flex-1" : ""}`}
+                className={`h-8 text-xs ${isTouchScreen ? "flex-1 px-1" : "px-2"}`}
                 onMouseDown={(e) => {
                   e.preventDefault();
                   if (isTouchScreen) {
@@ -563,7 +567,7 @@ export default function SyriacKeyboard({
               <Button
                 variant="outline"
                 size="sm"
-                className={`h-8 px-2 ${isTouchScreen ? "w-12 text-sm flex-none" : "text-xs"}`}
+                className={`h-8 ${isTouchScreen ? "w-11 text-sm flex-none px-1" : "text-xs px-2"}`}
                 onMouseDown={(e) => {
                   e.preventDefault();
                   if (isTouchScreen) {
@@ -583,7 +587,7 @@ export default function SyriacKeyboard({
               <Button
                 variant="outline"
                 size="sm"
-                className={`h-8 px-2 ${isTouchScreen ? "w-12 text-sm flex-none" : "text-xs"}`}
+                className={`h-8 ${isTouchScreen ? "w-11 text-sm flex-none px-1" : "text-xs px-2"}`}
                 onMouseDown={(e) => {
                   e.preventDefault();
                   if (isTouchScreen) {
@@ -603,7 +607,7 @@ export default function SyriacKeyboard({
               <Button
                 variant="destructive"
                 size="sm"
-                className={`h-8 text-xs px-2 ${isTouchScreen ? "w-12 flex-none" : ""}`}
+                className={`h-8 text-xs ${isTouchScreen ? "w-11 flex-none px-1" : "px-2"}`}
                 onMouseDown={(e) => {
                   e.preventDefault();
                   if (isTouchScreen) {
