@@ -27,41 +27,44 @@ const isTouchDevice = () => {
 };
 
 // Helper function to create and play tap sound using Web Audio API
+// This is fire-and-forget - it never blocks execution
 const playTapSound = (() => {
   let audioContext: AudioContext | null = null;
   
-  return async () => {
-    try {
-      if (!audioContext) {
-        const AudioContextConstructor = window.AudioContext || (window as typeof window & { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-        audioContext = new AudioContextConstructor();
+  return () => {
+    // Use requestAnimationFrame to defer audio to next frame (truly non-blocking)
+    requestAnimationFrame(() => {
+      try {
+        if (!audioContext) {
+          const AudioContextConstructor = window.AudioContext || (window as typeof window & { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+          audioContext = new AudioContextConstructor();
+        }
+        
+        // Resume context if suspended (don't await - let it happen async)
+        if (audioContext.state === "suspended") {
+          audioContext.resume().catch(() => {/* ignore errors */});
+        }
+        
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        // Create a short, pleasant tap sound
+        oscillator.frequency.value = 800;
+        oscillator.type = "sine";
+        
+        // Quick fade out
+        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.05);
+      } catch {
+        // Silently fail
       }
-      
-      // Resume context if it's suspended (required for mobile browsers)
-      if (audioContext.state === "suspended") {
-        await audioContext.resume();
-      }
-      
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-      
-      // Create a short, pleasant tap sound
-      oscillator.frequency.value = 800; // Higher frequency for a click-like sound
-      oscillator.type = "sine";
-      
-      // Quick fade out
-      gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
-      
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.05);
-    } catch (error) {
-      // Silently fail if audio context is not supported
-      console.warn("Could not play tap sound:", error);
-    }
+    });
   };
 })();
 
@@ -278,34 +281,62 @@ export default function SyriacKeyboard({
     title: string;
     display?: string;
     isSpecial?: boolean;
-  }) => (
-    <Button
-      variant="outline"
-      size="sm"
-      className={`
-        ${isTouchScreen ? "h-8 p-0.5 text-2xl" : "h-8 min-w-6 p-1 text-lg"}
-        ${isSpecial && isTouchScreen ? "text-sm bg-muted" : isSpecial ? "bg-muted" : ""}
-      `}
-      onMouseDown={(e) => {
-        e.preventDefault(); // Prevent focus change
-        if (isTouchScreen) {
-          playTapSound();
-        }
-        onKeyPress(char);
-      }}
-      onTouchStart={(e) => {
-        e.preventDefault();
-        playTapSound();
-        onKeyPress(char);
-      }}
-      title={title}
-      style={{
-        fontFamily: "Karshon, East Syriac Adiabene, East Syriac Malankara",
-      }}
-    >
-      {display || char}
-    </Button>
-  );
+  }) => {
+    const handlePress = (e: React.TouchEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      // Insert character FIRST (synchronous)
+      onKeyPress(char);
+      // Play sound in background (fire-and-forget)
+      playTapSound();
+    };
+
+    const handleMousePress = (e: React.MouseEvent) => {
+      e.preventDefault();
+      onKeyPress(char);
+    };
+
+    // Use plain button for touch devices to avoid extra styling
+    if (isTouchScreen) {
+      return (
+        <button
+          onTouchStart={handlePress}
+          title={title}
+          className={`
+            h-8 text-2xl border border-gray-200 rounded-sm bg-white cursor-pointer
+            flex items-center justify-center
+            active:bg-gray-100
+            ${isSpecial ? "text-sm bg-gray-100" : ""}
+          `}
+          style={{
+            fontFamily: "Karshon, East Syriac Adiabene, East Syriac Malankara",
+            padding: "1px 0",
+            margin: 0,
+            minWidth: 0,
+            width: "100%",
+            boxSizing: "border-box",
+          }}
+        >
+          {display || char}
+        </button>
+      );
+    }
+
+    return (
+      <Button
+        variant="outline"
+        size="sm"
+        className="h-8 min-w-6 p-1 text-lg"
+        onMouseDown={handleMousePress}
+        title={title}
+        style={{
+          fontFamily: "Karshon, East Syriac Adiabene, East Syriac Malankara",
+        }}
+      >
+        {display || char}
+      </Button>
+    );
+  };
 
   return (
     <div
@@ -320,6 +351,11 @@ export default function SyriacKeyboard({
           left: `${position.x}px`,
           top: `${position.y}px`,
           width: "320px",
+        }),
+        ...(isTouchScreen && {
+          maxWidth: "100vw",
+          overflow: "visible", // Changed from hidden to visible
+          boxSizing: "border-box",
         }),
       }}
     >
@@ -340,6 +376,7 @@ export default function SyriacKeyboard({
               className="h-6 w-6 p-0"
               onMouseDown={(e) => {
                 e.stopPropagation(); // Prevent drag on collapse button
+                e.preventDefault();
                 const newCollapsed = !isCollapsed;
                 setIsCollapsed(newCollapsed);
                 onCollapseChange?.(newCollapsed);
@@ -354,6 +391,7 @@ export default function SyriacKeyboard({
               className="h-6 w-6 p-0"
               onMouseDown={(e) => {
                 e.stopPropagation(); // Prevent drag on close button
+                e.preventDefault();
                 onToggle();
               }}
               title="Hide Keyboard"
@@ -367,21 +405,15 @@ export default function SyriacKeyboard({
       {/* Touch Device Collapse Button - Positioned above keyboard on the left */}
       {isTouchScreen && (
         <button
-          className="absolute -top-6 left-4 w-12 h-6 text-lg font-bold bg-gradient-to-b from-white to-gray-100 border border-gray-300 rounded-t-full shadow-md z-10 flex items-center justify-center"
-          onMouseDown={(e) => {
-            e.preventDefault();
-            const newCollapsed = !isCollapsed;
-            setIsCollapsed(newCollapsed);
-            onCollapseChange?.(newCollapsed);
-          }}
+          className="absolute -top-7 left-4 w-12 h-7 text-lg font-bold bg-gradient-to-b from-white to-gray-100 border border-gray-400 rounded-t-full shadow-lg z-[10000] flex items-center justify-center"
           onTouchStart={(e) => {
             e.preventDefault();
-            playTapSound();
             const newCollapsed = !isCollapsed;
             setIsCollapsed(newCollapsed);
             onCollapseChange?.(newCollapsed);
+            playTapSound();
           }}
-          style={{ lineHeight: "18px" }}
+          style={{ lineHeight: "20px", pointerEvents: "auto" }}
         >
           {isCollapsed ? "▲" : "▼"}
         </button>
@@ -391,9 +423,10 @@ export default function SyriacKeyboard({
       {!isCollapsed && (
         <div
           className={`
-            ${isTouchScreen ? "px-2 py-1 pb-1 max-h-none" : "p-3 max-h-[500px] overflow-y-auto"}
+            ${isTouchScreen ? "px-0.5 py-1 pb-1 max-h-none" : "p-3 max-h-[500px] overflow-y-auto"}
           `}
           dir="rtl"
+          style={isTouchScreen ? { boxSizing: "border-box" } : undefined}
         >
           {showNumbers ? (
             /* Numbers and Punctuation */
@@ -408,7 +441,7 @@ export default function SyriacKeyboard({
                   </div>
                 )}
                 <div
-                  className={`grid grid-cols-5 ${isTouchScreen ? "gap-0.5 mb-1" : "gap-1"}`}
+                  className={`grid grid-cols-5 ${isTouchScreen ? "gap-[1px] mb-1" : "gap-1"}`}
                   dir="rtl"
                 >
                   {keyboardData.numbers.map((key, idx) => (
@@ -426,7 +459,7 @@ export default function SyriacKeyboard({
                   </div>
                 )}
                 <div
-                  className={`grid ${isTouchScreen ? "grid-cols-5 gap-0.5 mb-1" : "grid-cols-6 gap-1"}`}
+                  className={`grid ${isTouchScreen ? "grid-cols-5 gap-px mb-1" : "grid-cols-6 gap-1"}`}
                   dir="rtl"
                 >
                   {keyboardData.punctuation.map((key, idx) => (
@@ -457,7 +490,7 @@ export default function SyriacKeyboard({
                   </div>
                 )}
                 <div
-                  className={`grid grid-cols-8 ${isTouchScreen ? "gap-0.5 mb-1" : "gap-1"}`}
+                  className={`grid grid-cols-8 ${isTouchScreen ? "gap-[1px] mb-1" : "gap-1"}`}
                   dir="rtl"
                 >
                   {keyboardData.basicLetters.map((key, idx) => (
@@ -481,7 +514,7 @@ export default function SyriacKeyboard({
                   </div>
                 )}
                 <div
-                  className={`grid grid-cols-8 ${isTouchScreen ? "gap-0.5 mb-1" : "gap-1"}`}
+                  className={`grid grid-cols-8 ${isTouchScreen ? "gap-[1px] mb-1" : "gap-1"}`}
                   dir="rtl"
                 >
                   {keyboardData.supplement.map((key, idx) => (
@@ -500,7 +533,7 @@ export default function SyriacKeyboard({
                   </div>
                 )}
                 <div
-                  className={`grid grid-cols-6 ${isTouchScreen ? "gap-0.5 mb-1" : "gap-1"}`}
+                  className={`grid grid-cols-6 ${isTouchScreen ? "gap-[1px] mb-1" : "gap-1"}`}
                   dir="rtl"
                 >
                   {keyboardData.vowels.map((key, idx) => (
@@ -519,111 +552,144 @@ export default function SyriacKeyboard({
           {/* Special Keys */}
           <div className={`border-t border-border ${isTouchScreen ? "mt-1 pt-1" : "mt-3 pt-3"}`}>
             <div
-              className={`${isTouchScreen ? "flex justify-between gap-1" : "grid grid-cols-5 gap-1"}`}
+              className={`${isTouchScreen ? "flex justify-between gap-[1px]" : "grid grid-cols-5 gap-1"}`}
               dir="ltr"
             >
               {/* Keep special keys LTR for clarity */}
-              {/* ABC/123 Toggle */}
-              <Button
-                variant="outline"
-                size="sm"
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                  if (isTouchScreen) {
-                    playTapSound();
-                  }
-                  setShowNumbers(!showNumbers);
-                }}
-                onTouchStart={(e) => {
-                  e.preventDefault();
-                  playTapSound();
-                  setShowNumbers(!showNumbers);
-                }}
-                className={`h-8 text-xs ${isTouchScreen ? "w-11 flex-none px-1" : "px-2"}`}
-              >
-                {showNumbers ? "ABC" : "123"}
-              </Button>
+              {isTouchScreen ? (
+                <>
+                  {/* ABC/123 Toggle */}
+                  <button
+                    onTouchStart={(e) => {
+                      e.preventDefault();
+                      setShowNumbers(!showNumbers);
+                      playTapSound();
+                    }}
+                    className="h-8 w-10 text-xs border border-gray-200 rounded-sm bg-white flex items-center justify-center active:bg-gray-100"
+                    style={{ padding: 0, margin: 0, minWidth: 0, boxSizing: "border-box" }}
+                  >
+                    {showNumbers ? "ABC" : "123"}
+                  </button>
 
-              <Button
-                variant="outline"
-                size="sm"
-                className={`h-8 text-xs ${isTouchScreen ? "flex-1 px-1" : "px-2"}`}
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                  if (isTouchScreen) {
-                    playTapSound();
-                  }
-                  onSpace();
-                }}
-                onTouchStart={(e) => {
-                  e.preventDefault();
-                  playTapSound();
-                  onSpace();
-                }}
-                title="Space"
-              >
-                Space
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className={`h-8 ${isTouchScreen ? "w-11 text-sm flex-none px-1" : "text-xs px-2"}`}
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                  if (isTouchScreen) {
-                    playTapSound();
-                  }
-                  onEnter();
-                }}
-                onTouchStart={(e) => {
-                  e.preventDefault();
-                  playTapSound();
-                  onEnter();
-                }}
-                title="Enter"
-              >
-                ↵
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className={`h-8 ${isTouchScreen ? "w-11 text-sm flex-none px-1" : "text-xs px-2"}`}
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                  if (isTouchScreen) {
-                    playTapSound();
-                  }
-                  onBackspace();
-                }}
-                onTouchStart={(e) => {
-                  e.preventDefault();
-                  playTapSound();
-                  onBackspace();
-                }}
-                title="Backspace"
-              >
-                ⌫
-              </Button>
-              <Button
-                variant="destructive"
-                size="sm"
-                className={`h-8 text-xs ${isTouchScreen ? "w-11 flex-none px-1" : "px-2"}`}
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                  if (isTouchScreen) {
-                    playTapSound();
-                  }
-                  onClear();
-                }}
-                onTouchStart={(e) => {
-                  e.preventDefault();
-                  playTapSound();
-                  onClear();
-                }}
-                title="Clear All"
-              >
-                <Trash2 size={16} />
-              </Button>
+                  <button
+                    onTouchStart={(e) => {
+                      e.preventDefault();
+                      onSpace();
+                      playTapSound();
+                    }}
+                    className="h-8 flex-1 text-xs border border-gray-200 rounded-sm bg-white flex items-center justify-center active:bg-gray-100"
+                    style={{ padding: 0, margin: 0, minWidth: 0, boxSizing: "border-box" }}
+                    title="Space"
+                  >
+                    Space
+                  </button>
+
+                  <button
+                    onTouchStart={(e) => {
+                      e.preventDefault();
+                      onEnter();
+                      playTapSound();
+                    }}
+                    className="h-8 w-10 text-sm border border-gray-200 rounded-sm bg-white flex items-center justify-center active:bg-gray-100"
+                    style={{ padding: 0, margin: 0, minWidth: 0, boxSizing: "border-box" }}
+                    title="Enter"
+                  >
+                    ↵
+                  </button>
+
+                  <button
+                    onTouchStart={(e) => {
+                      e.preventDefault();
+                      onBackspace();
+                      playTapSound();
+                    }}
+                    className="h-8 w-10 text-sm border border-gray-200 rounded-sm bg-white flex items-center justify-center active:bg-gray-100"
+                    style={{ padding: 0, margin: 0, minWidth: 0, boxSizing: "border-box" }}
+                    title="Backspace"
+                  >
+                    ⌫
+                  </button>
+
+                  <button
+                    onTouchStart={(e) => {
+                      e.preventDefault();
+                      onClear();
+                      playTapSound();
+                    }}
+                    className="h-8 w-10 text-xs border border-red-200 rounded-sm bg-red-50 flex items-center justify-center active:bg-red-100"
+                    style={{ padding: 0, margin: 0, minWidth: 0, boxSizing: "border-box" }}
+                    title="Clear All"
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      setShowNumbers(!showNumbers);
+                    }}
+                    className="h-8 text-xs px-2"
+                  >
+                    {showNumbers ? "ABC" : "123"}
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-8 text-xs px-2"
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      onSpace();
+                    }}
+                    title="Space"
+                  >
+                    Space
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-8 text-xs px-2"
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      onEnter();
+                    }}
+                    title="Enter"
+                  >
+                    ↵
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-8 text-xs px-2"
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      onBackspace();
+                    }}
+                    title="Backspace"
+                  >
+                    ⌫
+                  </Button>
+
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    className="h-8 text-xs px-2"
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      onClear();
+                    }}
+                    title="Clear All"
+                  >
+                    <Trash2 size={16} />
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>
