@@ -1202,13 +1202,13 @@ export default function BookViewer({
 
     return (
       <div
-        className={`flex items-center ${
-          showAddButton ? "justify-between" : "justify-center"
-        } px-4 ${className}`}
+        className={`flex flex-col sm:flex-row items-center ${
+          showAddButton ? "sm:justify-between" : "sm:justify-center"
+        } px-2 sm:px-4 gap-2 ${className}`}
       >
         {/* Control buttons on the left when showing add button */}
         {showAddButton && (
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center justify-center gap-2 w-full sm:w-auto">
             {/* View Mode Toggle - show on large screens */}
             <Button
               size="sm"
@@ -1218,7 +1218,7 @@ export default function BookViewer({
                 )
               }
               variant="outline"
-              className="hidden lg:flex h-8 px-3 text-xs items-center gap-1"
+              className="hidden lg:flex h-8 px-2 sm:px-3 text-xs items-center gap-1"
               title={
                 viewMode === "horizontal"
                   ? "Switch to vertical view"
@@ -1235,7 +1235,7 @@ export default function BookViewer({
               size="sm"
               onClick={() => setShowHeaders(!showHeaders)}
               variant="outline"
-              className="h-8 px-3 text-xs flex items-center gap-1"
+              className="h-8 px-2 sm:px-3 text-xs flex items-center gap-1"
               title={showHeaders ? "Enter reading mode" : "Exit reading mode"}
             >
               {showHeaders ? "👁️" : "👁️‍🗨️"}
@@ -1244,7 +1244,7 @@ export default function BookViewer({
               </span>
             </Button>
             {/* Sedra Meanings Toggle */}
-            <div className="flex items-center gap-2 h-8 px-3 border border-gray-300 rounded-md bg-white">
+            <div className="flex items-center gap-2 h-8 px-2 sm:px-3 border border-gray-300 rounded-md bg-white">
               <input
                 type="checkbox"
                 id="sedra-meanings"
@@ -1254,7 +1254,7 @@ export default function BookViewer({
               />
               <label
                 htmlFor="sedra-meanings"
-                className="text-xs cursor-pointer select-none"
+                className="text-xs cursor-pointer select-none whitespace-nowrap"
                 title="Toggle Sedra word meanings"
               >
                 📖 Sedra
@@ -1262,7 +1262,7 @@ export default function BookViewer({
             </div>
             {/* Scroll Lock Toggle - only show in vertical view */}
             {viewMode === "vertical" && (
-              <div className="flex items-center gap-2 h-8 px-3 border border-gray-300 rounded-md bg-white">
+              <div className="flex items-center gap-2 h-8 px-2 sm:px-3 border border-gray-300 rounded-md bg-white">
                 <input
                   type="checkbox"
                   id="scroll-lock"
@@ -1272,7 +1272,7 @@ export default function BookViewer({
                 />
                 <label
                   htmlFor="scroll-lock"
-                  className="text-xs cursor-pointer select-none"
+                  className="text-xs cursor-pointer select-none whitespace-nowrap"
                   title="Lock scroll between transcript and image"
                 >
                   🔗 Lock Scroll
@@ -1283,7 +1283,7 @@ export default function BookViewer({
         )}
 
         {/* Navigation */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           {/* For RTL documents, reverse the navigation */}
           {book.textDirection === "rtl" ? (
             <>
@@ -1293,15 +1293,15 @@ export default function BookViewer({
                 size="sm"
                 onClick={goToNextPage}
                 disabled={selectedPageIndex === pageCount - 1}
-                className="h-8 px-3 flex items-center gap-1"
+                className="h-8 px-2 sm:px-3 flex items-center gap-1"
                 title="Next Page"
               >
                 <ChevronLeft className="w-3 h-3" />
-                <span className="text-xs hidden sm:inline">Next</span>
+                <span className="text-xs hidden md:inline">Next</span>
               </Button>
 
               {/* Page Selector */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 sm:gap-2">
                 <Select
                   value={String(selectedPageIndex + 1)}
                   onValueChange={(value) => {
@@ -1312,7 +1312,7 @@ export default function BookViewer({
                     }
                   }}
                 >
-                  <SelectTrigger className="w-32 h-8">
+                  <SelectTrigger className="w-24 sm:w-32 h-8">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="max-h-[300px] overflow-y-auto">
@@ -1346,7 +1346,7 @@ export default function BookViewer({
                     ))}
                   </SelectContent>
                 </Select>
-                <span className="text-sm text-slate-600 font-medium">
+                <span className="text-xs sm:text-sm text-slate-600 font-medium whitespace-nowrap">
                   of {pageCount}
                 </span>
               </div>
@@ -1357,10 +1357,10 @@ export default function BookViewer({
                 size="sm"
                 onClick={goToPreviousPage}
                 disabled={selectedPageIndex === 0}
-                className="h-8 px-3 flex items-center gap-1"
+                className="h-8 px-2 sm:px-3 flex items-center gap-1"
                 title="Previous Page"
               >
-                <span className="text-xs hidden sm:inline">Previous</span>
+                <span className="text-xs hidden md:inline">Previous</span>
                 <ChevronRight className="w-3 h-3" />
               </Button>
             </>
@@ -1372,15 +1372,15 @@ export default function BookViewer({
                 size="sm"
                 onClick={goToPreviousPage}
                 disabled={selectedPageIndex === 0}
-                className="h-8 px-3 flex items-center gap-1"
+                className="h-8 px-2 sm:px-3 flex items-center gap-1"
                 title="Previous Page"
               >
                 <ChevronLeft className="w-3 h-3" />
-                <span className="text-xs hidden sm:inline">Previous</span>
+                <span className="text-xs hidden md:inline">Previous</span>
               </Button>
 
               {/* Page Selector */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 sm:gap-2">
                 <Select
                   value={String(selectedPageIndex + 1)}
                   onValueChange={(value) => {
@@ -1391,7 +1391,7 @@ export default function BookViewer({
                     }
                   }}
                 >
-                  <SelectTrigger className="w-32 h-8">
+                  <SelectTrigger className="w-24 sm:w-32 h-8">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="max-h-[300px] overflow-y-auto">
@@ -1425,7 +1425,7 @@ export default function BookViewer({
                     ))}
                   </SelectContent>
                 </Select>
-                <span className="text-sm text-slate-600 font-medium">
+                <span className="text-xs sm:text-sm text-slate-600 font-medium whitespace-nowrap">
                   of {pageCount}
                 </span>
               </div>
@@ -1436,10 +1436,10 @@ export default function BookViewer({
                 size="sm"
                 onClick={goToNextPage}
                 disabled={selectedPageIndex === pageCount - 1}
-                className="h-8 px-3 flex items-center gap-1"
+                className="h-8 px-2 sm:px-3 flex items-center gap-1"
                 title="Next Page"
               >
-                <span className="text-xs hidden sm:inline">Next</span>
+                <span className="text-xs hidden md:inline">Next</span>
                 <ChevronRight className="w-3 h-3" />
               </Button>
             </>
