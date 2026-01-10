@@ -97,18 +97,18 @@ export async function POST(request: NextRequest) {
     const outputPath = path.join("/tmp", outputFilename);
 
     // Download audio using yt-dlp
+    // Use worstaudio for both platforms to get smallest file size
     const ytDlpArgs: string[] = [
       "-f",
-      isFacebook ? "bestaudio/best" : "worstaudio",
+      "worstaudio/worst",
       "-o",
       `${outputPath}.%(ext)s`,
     ];
     
-    // For Facebook, try to get audio-only stream if available
-    // Don't force conversion - just extract in best available format
+    // For Facebook, also extract audio if video format is downloaded
     if (isFacebook) {
       ytDlpArgs.push(
-        "-x"               // Extract audio only (keeps original format when possible)
+        "-x"  // Extract audio only (in case worst format includes video)
       );
     }
 

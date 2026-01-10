@@ -34,10 +34,54 @@ export async function POST(request: NextRequest) {
     const inputPath = path.join("/tmp", inputFilename);
     const outputPath = path.join("/tmp", outputFilename);
 
+    // Define MIME types (used later)
+    const mimeTypes: { [key: string]: string } = {
+      'mp3': 'audio/mpeg',
+      'm4a': 'audio/mp4',
+      'webm': 'audio/webm',
+      'ogg': 'audio/ogg',
+      'opus': 'audio/opus',
+      'wav': 'audio/wav',
+    };
+
     // Write the uploaded file to disk
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
     await writeFile(inputPath, buffer);
+
+    // First, probe the input file to get its current bitrate
+    const probeResult = await new Promise<{ bitrate: number; sampleRate: number }>((resolve, reject) => {
+      const ffprobe = spawn("ffprobe", [
+        "-v", "quiet",
+        "-print_format", "json",
+        "-show_format",
+        "-show_streams",
+        inputPath
+      ]);
+
+      let output = "";
+      ffprobe.stdout.on("data", (data) => {
+        output += data.toString();
+      });
+
+      ffprobe.on("close", (code) => {
+        if (code === 0) {
+          try {
+            const data = JSON.parse(output);
+            const audioStream = data.streams?.find((s: any) => s.codec_type === "audio");
+            const bitrate = parseInt(audioStream?.bit_rate || data.format?.bit_rate || "0") / 1000; // Convert to kbps
+            const sampleRate = parseInt(audioStream?.sample_rate || "44100");
+            resolve({ bitrate, sampleRate });
+          } catch (e) {
+            reject(new Error("Failed to parse ffprobe output"));
+          }
+        } else {
+          reject(new Error("ffprobe failed"));
+        }
+      });
+
+      ffprobe.on("error", reject);
+    });
 
     // Determine compression settings based on quality
     let audioBitrate = "96k"; // default medium quality
@@ -78,6 +122,24 @@ export async function POST(request: NextRequest) {
       codec = "libvorbis";
       // Vorbis is similar to AAC efficiency
       adjustedBitrate = quality === "low" ? "48k" : quality === "medium" ? "80k" : "112k";
+    }
+
+    // Check if file is already compressed enough
+    const targetBitrateNum = parseInt(adjustedBitrate);
+    if (probeResult.bitrate > 0 && probeResult.bitrate <= targetBitrateNum) {
+      // File is already at or below target bitrate, just return it as-is
+      await unlink(inputPath);
+      
+      return new NextResponse(buffer, {
+        status: 200,
+        headers: {
+          "Content-Type": mimeTypes[fileExtension] || 'audio/mpeg',
+          "Content-Disposition": `attachment; filename="${file.name}"`,
+          "X-Original-Size": buffer.length.toString(),
+          "X-Compressed-Size": buffer.length.toString(),
+          "X-Skipped-Reason": `Already compressed (${Math.round(probeResult.bitrate)}kbps <= ${targetBitrateNum}kbps)`,
+        },
+      });
     }
 
     // Use ffmpeg to compress the audio while preserving format
@@ -128,14 +190,6 @@ export async function POST(request: NextRequest) {
     await unlink(outputPath);
 
     // Determine MIME type based on file extension
-    const mimeTypes: { [key: string]: string } = {
-      'mp3': 'audio/mpeg',
-      'm4a': 'audio/mp4',
-      'webm': 'audio/webm',
-      'ogg': 'audio/ogg',
-      'opus': 'audio/opus',
-      'wav': 'audio/wav',
-    };
     const mimeType = mimeTypes[fileExtension] || 'audio/mpeg';
     
     // Return the compressed file
