@@ -68,11 +68,11 @@ export async function POST(request: NextRequest) {
         if (code === 0) {
           try {
             const data = JSON.parse(output);
-            const audioStream = data.streams?.find((s: any) => s.codec_type === "audio");
+            const audioStream = data.streams?.find((s: { codec_type?: string }) => s.codec_type === "audio");
             const bitrate = parseInt(audioStream?.bit_rate || data.format?.bit_rate || "0") / 1000; // Convert to kbps
             const sampleRate = parseInt(audioStream?.sample_rate || "44100");
             resolve({ bitrate, sampleRate });
-          } catch (e) {
+          } catch {
             reject(new Error("Failed to parse ffprobe output"));
           }
         } else {
