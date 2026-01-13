@@ -5,6 +5,8 @@ import { Hymn, HymnRecording } from "@/lib/types/hymn";
 import { hymnService } from "@/lib/hymn-services";
 import { Metadata } from "next";
 import { Timestamp } from "firebase/firestore";
+import { Mail } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export const metadata: Metadata = {
   title: "Syriac Hymns & Prayers",
@@ -79,7 +81,21 @@ export default async function HymnsPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto px-4 pt-8 pb-16">
+        {/* Submission Banner */}
+        <Alert className="mb-6 bg-blue-50 border-blue-200">
+          <Mail className="h-4 w-4 text-blue-600" />
+          <AlertDescription className="text-sm text-blue-900">
+            Want to submit a hymn?{" "}
+            <a
+              href="mailto:gbinu44@gmail.com"
+              className="font-medium underline hover:text-blue-700"
+            >
+              Send an email to gbinu44@gmail.com
+            </a>
+          </AlertDescription>
+        </Alert>
+
         <HymnsListStatic hymns={hymns} />
       </div>
       <Footer />
