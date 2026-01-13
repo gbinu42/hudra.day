@@ -906,7 +906,14 @@ export default function HymnDetail({
                     className="text-primary hover:underline font-medium"
                   >
                     create an account
-                  </Link>
+                  </Link>{" "}
+                  or email it to{" "}
+                  <a
+                    href="mailto:gbinu44@gmail.com"
+                    className="text-primary hover:underline font-medium"
+                  >
+                    gbinu44@gmail.com
+                  </a>
                 </p>
               </div>
             )}
