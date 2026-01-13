@@ -42,6 +42,7 @@ import { useEffect, useRef } from "react";
 import { MultiSelect, MultiSelectOption } from "@/components/ui/multi-select";
 import { Checkbox } from "@/components/ui/checkbox";
 import AudioTrimmer from "./AudioTrimmer";
+import { ENABLE_EXPERIMENTAL_FEATURES } from "@/lib/config";
 
 const recordingSchema = z
   .object({
@@ -234,7 +235,7 @@ export default function RecordingsManager({
       setOriginalFileSize(0);
       setCompressedFileSize(0);
       // Allow trimming for directly uploaded audio files too (dev only)
-      if (recordingType === "audio" && process.env.NODE_ENV !== "production") {
+      if (recordingType === "audio" && ENABLE_EXPERIMENTAL_FEATURES) {
         setFileToTrim(file);
       } else {
         setShowTrimmer(false);
@@ -260,7 +261,7 @@ export default function RecordingsManager({
         setOriginalFileSize(0);
         setCompressedFileSize(0);
         // Allow trimming for directly dropped audio files too (dev only)
-        if (recordingType === "audio" && process.env.NODE_ENV !== "production") {
+        if (recordingType === "audio" && ENABLE_EXPERIMENTAL_FEATURES) {
           setFileToTrim(file);
         } else {
           setShowTrimmer(false);
@@ -302,7 +303,7 @@ export default function RecordingsManager({
             setOriginalFileSize(0);
             setCompressedFileSize(0);
             // Allow trimming for directly pasted audio files too (dev only)
-            if (recordingType === "audio" && process.env.NODE_ENV !== "production") {
+            if (recordingType === "audio" && ENABLE_EXPERIMENTAL_FEATURES) {
               setFileToTrim(file);
             } else {
               setShowTrimmer(false);
@@ -410,11 +411,11 @@ export default function RecordingsManager({
         setCompressedFileSize(0);
         
         // Set as the upload file and keep reference for trimming (dev only)
-        if (process.env.NODE_ENV !== "production") {
+        if (ENABLE_EXPERIMENTAL_FEATURES) {
           setFileToTrim(file);
         }
         setUploadFile(file);
-        const trimMessage = process.env.NODE_ENV !== "production" ? ' - Click "Trim Audio" if you want to trim it.' : '';
+        const trimMessage = ENABLE_EXPERIMENTAL_FEATURES ? ' - Click "Trim Audio" if you want to trim it.' : '';
         toast.success(`Audio downloaded successfully! (${formatFileSize(file.size)})${trimMessage}`);
       } catch (error) {
         console.error("Error downloading YouTube audio:", error);
@@ -976,7 +977,7 @@ export default function RecordingsManager({
                         <p className="text-sm text-muted-foreground">
                           Selected: {uploadFile.name}
                         </p>
-                        {recordingType === "audio" && process.env.NODE_ENV !== "production" && (
+                        {recordingType === "audio" && ENABLE_EXPERIMENTAL_FEATURES && (
                           <div className="flex items-center gap-2 p-3 border rounded bg-green-50">
                             <Checkbox
                               id="compress-audio"
@@ -1064,7 +1065,7 @@ export default function RecordingsManager({
                  urlValue && 
                  (urlValue.includes("youtube.com") || urlValue.includes("youtu.be") || 
                   urlValue.includes("facebook.com") || urlValue.includes("fb.com") || urlValue.includes("fb.watch")) &&
-                 process.env.NODE_ENV !== "production" && (
+                 ENABLE_EXPERIMENTAL_FEATURES && (
                   <div className="flex items-center gap-2 p-2 border rounded bg-blue-50">
                     <Checkbox
                       id="download-youtube-audio"
@@ -1161,7 +1162,7 @@ export default function RecordingsManager({
                 )}
 
                 {/* Audio Trimmer */}
-                {showTrimmer && fileToTrim && process.env.NODE_ENV !== "production" && (
+                {showTrimmer && fileToTrim && ENABLE_EXPERIMENTAL_FEATURES && (
                   <AudioTrimmer
                     key={fileToTrim.name + fileToTrim.size}
                     audioFile={fileToTrim}
@@ -1187,7 +1188,7 @@ export default function RecordingsManager({
                 )}
 
                 {/* Show trim button for ANY selected audio file (downloaded via yt-dlp or uploaded directly) */}
-                {!showTrimmer && recordingType === "audio" && uploadFile && process.env.NODE_ENV !== "production" && (
+                {!showTrimmer && recordingType === "audio" && uploadFile && ENABLE_EXPERIMENTAL_FEATURES && (
                   <div className="flex items-center gap-2 p-3 border rounded bg-green-50">
                     <div className="flex-1">
                       <p className="text-sm font-medium text-green-800">
@@ -1214,7 +1215,7 @@ export default function RecordingsManager({
                 )}
 
                 {/* Show file info in production without trim button */}
-                {recordingType === "audio" && uploadFile && process.env.NODE_ENV === "production" && (
+                {recordingType === "audio" && uploadFile && !ENABLE_EXPERIMENTAL_FEATURES && (
                   <div className="flex items-center gap-2 p-3 border rounded bg-green-50">
                     <div className="flex-1">
                       <p className="text-sm font-medium text-green-800">
