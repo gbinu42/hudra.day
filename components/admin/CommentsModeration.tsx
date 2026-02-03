@@ -4,7 +4,15 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MessageSquare, Check, X, ExternalLink, Trash2, RefreshCw, TrendingUp } from "lucide-react";
+import {
+  MessageSquare,
+  Check,
+  X,
+  ExternalLink,
+  Trash2,
+  RefreshCw,
+  TrendingUp,
+} from "lucide-react";
 import { commentService } from "@/lib/comment-services";
 import { Comment } from "@/lib/types/comment";
 import Link from "next/link";
@@ -31,6 +39,40 @@ export default function CommentsModeration() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter]);
 
+  const mapSnapshotToComments = (
+    snapshot: Awaited<ReturnType<typeof commentService.getPendingComments>>
+  ) =>
+    snapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        ...data,
+        createdAt: data.createdAt?.toDate?.() || new Date(),
+        updatedAt: data.updatedAt?.toDate?.() || new Date(),
+      } as Comment;
+    });
+
+  const loadStats = async () => {
+    try {
+      const [pendingSnap, approvedSnap, rejectedSnap, allSnap] =
+        await Promise.all([
+          commentService.getCommentsByStatus("pending"),
+          commentService.getCommentsByStatus("approved"),
+          commentService.getCommentsByStatus("rejected"),
+          commentService.getAllComments(),
+        ]);
+
+      setStats({
+        pending: pendingSnap.size,
+        approved: approvedSnap.size,
+        rejected: rejectedSnap.size,
+        total: allSnap.size,
+      });
+    } catch (error) {
+      console.error("Error loading comment stats:", error);
+    }
+  };
+
   const loadComments = async (isRefresh = false) => {
     try {
       if (isRefresh) {
@@ -39,29 +81,20 @@ export default function CommentsModeration() {
         setLoading(true);
       }
       
+      let snapshot;
+
       if (filter === "pending") {
-        const snapshot = await commentService.getPendingComments();
-        const loadedComments = snapshot.docs.map((doc) => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            ...data,
-            createdAt: data.createdAt?.toDate?.() || new Date(),
-            updatedAt: data.updatedAt?.toDate?.() || new Date(),
-          } as Comment;
-        });
-        setComments(loadedComments);
-        
-        // Update stats
-        setStats((prev) => ({
-          ...prev,
-          pending: loadedComments.length,
-        }));
+        snapshot = await commentService.getPendingComments();
+      } else if (filter === "approved") {
+        snapshot = await commentService.getCommentsByStatus("approved");
+      } else if (filter === "rejected") {
+        snapshot = await commentService.getCommentsByStatus("rejected");
       } else {
-        // For other filters, we'd need to add more service methods
-        // For now, just show pending
-        setComments([]);
+        snapshot = await commentService.getAllComments();
       }
+
+      setComments(mapSnapshotToComments(snapshot));
+      await loadStats();
     } catch (error) {
       console.error("Error loading comments:", error);
     } finally {
@@ -196,25 +229,37 @@ export default function CommentsModeration() {
                 size="sm"
                 variant={filter === "approved" ? "default" : "outline"}
                 onClick={() => setFilter("approved")}
-                disabled
               >
                 Approved
+                {stats.approved > 0 && (
+                  <Badge variant="secondary" className="ml-2">
+                    {stats.approved}
+                  </Badge>
+                )}
               </Button>
               <Button
                 size="sm"
                 variant={filter === "rejected" ? "default" : "outline"}
                 onClick={() => setFilter("rejected")}
-                disabled
               >
                 Rejected
+                {stats.rejected > 0 && (
+                  <Badge variant="secondary" className="ml-2">
+                    {stats.rejected}
+                  </Badge>
+                )}
               </Button>
               <Button
                 size="sm"
                 variant={filter === "all" ? "default" : "outline"}
                 onClick={() => setFilter("all")}
-                disabled
               >
                 All
+                {stats.total > 0 && (
+                  <Badge variant="secondary" className="ml-2">
+                    {stats.total}
+                  </Badge>
+                )}
               </Button>
             </div>
           </div>
@@ -293,6 +338,18 @@ export default function CommentsModeration() {
                         <p className="whitespace-pre-wrap text-sm">
                           {comment.comment}
                         </p>
+                        {resourceUrl && (
+                          <div className="mt-3">
+                            <Link
+                              href={resourceUrl}
+                              target="_blank"
+                              className="text-sm text-primary inline-flex items-center gap-1 hover:underline"
+                            >
+                              View page
+                              <ExternalLink className="h-3 w-3" />
+                            </Link>
+                          </div>
+                        )}
                       </div>
 
                       {/* Action Buttons */}

@@ -21,7 +21,11 @@ import {
   type DocumentSnapshot,
 } from "firebase/firestore";
 import { db } from "./firebase";
-import { CreateCommentData, UpdateCommentData, ResourceType } from "./types/comment";
+import {
+  CreateCommentData,
+  UpdateCommentData,
+  ResourceType,
+} from "./types/comment";
 
 export const commentService = {
   /**
@@ -139,6 +143,28 @@ export const commentService = {
       where("status", "==", "pending"),
       orderBy("createdAt", "desc")
     );
+    return await getDocs(q);
+  },
+
+  /**
+   * Get comments by status (approved/rejected/pending)
+   */
+  async getCommentsByStatus(
+    status: "pending" | "approved" | "rejected"
+  ): Promise<QuerySnapshot<DocumentData>> {
+    const q = query(
+      collection(db, "comments"),
+      where("status", "==", status),
+      orderBy("createdAt", "desc")
+    );
+    return await getDocs(q);
+  },
+
+  /**
+   * Get all comments (for moderation dashboard)
+   */
+  async getAllComments(): Promise<QuerySnapshot<DocumentData>> {
+    const q = query(collection(db, "comments"), orderBy("createdAt", "desc"));
     return await getDocs(q);
   },
 
