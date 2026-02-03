@@ -1,6 +1,6 @@
 /**
  * Comment Services
- * 
+ *
  * Firebase operations for the comment system.
  * Supports comments on any resource type (hymns, books, texts, etc.)
  */
@@ -61,7 +61,7 @@ export const commentService = {
     includeAllStatuses: boolean = false
   ): Promise<QuerySnapshot<DocumentData>> {
     let q;
-    
+
     if (includeAllStatuses) {
       // For admins: get all comments regardless of status
       q = query(
@@ -80,14 +80,16 @@ export const commentService = {
         orderBy("createdAt", "desc")
       );
     }
-    
+
     return await getDocs(q);
   },
 
   /**
    * Get a single comment by ID
    */
-  async getCommentById(commentId: string): Promise<DocumentSnapshot<DocumentData>> {
+  async getCommentById(
+    commentId: string
+  ): Promise<DocumentSnapshot<DocumentData>> {
     return await getDoc(doc(db, "comments", commentId));
   },
 
@@ -175,8 +177,11 @@ export const commentService = {
     resourceType: ResourceType,
     resourceId: string
   ): Promise<number> {
-    const snapshot = await this.getCommentsByResource(resourceType, resourceId, false);
+    const snapshot = await this.getCommentsByResource(
+      resourceType,
+      resourceId,
+      false
+    );
     return snapshot.size;
   },
 };
-

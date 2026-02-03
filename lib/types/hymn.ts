@@ -243,6 +243,20 @@ export const CHURCH_DISPLAY_ORDER = [
   "Other",
 ] as const;
 
+// Distinct colours for each church (for indicators in recordings list)
+export const CHURCH_COLORS: Record<string, string> = {
+  "Syro-Malabar Church": "#e11d48", // red-600
+  "Chaldean Catholic Church": "#2563eb", // blue-600
+  "Assyrian Church of the East": "#059669", // emerald-600
+  "Ancient Church of the East": "#7c3aed", // violet-600
+  "Syro-Malankara Church": "#d97706", // amber-600
+  "Syriac Orthodox Church": "#dc2626", // red-700
+  "Syriac Catholic Church": "#0284c7", // sky-600
+  "Maronite Church": "#65a30d", // lime-600
+  "Malankara Orthodox Church": "#c026d3", // fuchsia-600
+  Other: "#6b7280", // gray-500
+};
+
 // Helper function to sort by church priority
 export function sortByChurchPriority<
   T extends { churchName?: string; church?: string }
