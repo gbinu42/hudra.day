@@ -140,15 +140,16 @@ async function handleProgressStream(inputUrl: string) {
     url.includes("facebook.com") ||
     url.includes("fb.com") ||
     url.includes("fb.watch");
+  const isInstagram = url.includes("instagram.com");
 
-  if (!isYouTube && !isFacebook) {
+  if (!isYouTube && !isFacebook && !isInstagram) {
     return NextResponse.json(
-      { error: "Only YouTube and Facebook URLs are supported" },
+      { error: "Only YouTube, Facebook, and Instagram URLs are supported" },
       { status: 400 },
     );
   }
 
-  const platform = isYouTube ? "youtube" : "facebook";
+  const platform = isYouTube ? "youtube" : isInstagram ? "instagram" : "facebook";
   const outputFilename = `${platform}_audio_${randomUUID()}`;
   const outputPath = path.join("/tmp", outputFilename);
 
@@ -166,7 +167,7 @@ async function handleProgressStream(inputUrl: string) {
       "--no-warnings", // Suppress warnings in output
     );
   } else {
-    // For Facebook
+    // For Facebook and Instagram
     ytDlpArgs.push(
       "-f",
       "worstaudio/worst",
@@ -414,16 +415,17 @@ export async function POST(request: NextRequest) {
       return handleProgressStream(url);
     }
 
-    // Check if URL is from YouTube or Facebook
+    // Check if URL is from YouTube, Facebook, or Instagram
     const isYouTube = url.includes("youtube.com") || url.includes("youtu.be");
     const isFacebook =
       url.includes("facebook.com") ||
       url.includes("fb.com") ||
       url.includes("fb.watch");
+    const isInstagram = url.includes("instagram.com");
 
-    if (!isYouTube && !isFacebook) {
+    if (!isYouTube && !isFacebook && !isInstagram) {
       return NextResponse.json(
-        { error: "Only YouTube and Facebook URLs are supported" },
+        { error: "Only YouTube, Facebook, and Instagram URLs are supported" },
         { status: 400 },
       );
     }
@@ -452,7 +454,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate unique filename
-    const platform = isYouTube ? "youtube" : "facebook";
+    const platform = isYouTube ? "youtube" : isInstagram ? "instagram" : "facebook";
     const outputFilename = `${platform}_audio_${randomUUID()}`;
     const outputPath = path.join("/tmp", outputFilename);
 
@@ -471,7 +473,7 @@ export async function POST(request: NextRequest) {
         "--no-warnings", // Suppress warnings in output
       );
     } else {
-      // For Facebook
+      // For Facebook and Instagram
       ytDlpArgs.push(
         "-f",
         "worstaudio/worst",
@@ -623,7 +625,7 @@ export async function POST(request: NextRequest) {
       {
         error: "Failed to download audio",
         details: error instanceof Error ? error.message : String(error),
-        hint: "If this is a Facebook URL, it may require cookies. You can set YTDLP_COOKIES_PATH to a Netscape cookies.txt file. Also make sure yt-dlp is up to date (bin/yt-dlp -U or replace the binary).",
+        hint: "If this is a Facebook or Instagram URL, it may require cookies. You can set YTDLP_COOKIES_PATH to a Netscape cookies.txt file. Also make sure yt-dlp is up to date (bin/yt-dlp -U or replace the binary).",
         ytDlpVersion: version ?? undefined,
       },
       { status: 500 },
