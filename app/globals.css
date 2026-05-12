@@ -176,6 +176,18 @@
   --sidebar-ring: oklch(0.55 0.18 10); /* Lighter version for dark mode */
 }
 
+/* Article body typography */
+.article-body p {
+  margin-top: 1.25em;
+}
+
+.article-body h2,
+.article-body h3,
+.article-body h4 {
+  margin-top: 2em;
+  margin-bottom: 0.5em;
+}
+
 @layer utilities {
   /* Hide scrollbar but keep functionality */
   .scrollbar-hide {
