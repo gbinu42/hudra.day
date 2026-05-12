@@ -498,6 +498,14 @@ export default function QaleDonyathaDsahde() {
 
   return (
     <>
+      <div className="not-prose mb-6 rounded-lg bg-yellow-50 border border-yellow-300 px-5 py-3 flex items-center gap-3 text-yellow-800">
+        <span className="text-lg" aria-hidden="true">🚧</span>
+        <p className="text-sm font-medium m-0">
+          Work in progress — this article is incomplete and may change
+          significantly.
+        </p>
+      </div>
+
       <div className="not-prose mb-8 rounded-lg bg-amber-50 border border-amber-200 px-6 py-5 flex flex-col sm:flex-row items-center gap-5">
         <img
           src="/images/thoma-kathanar.png"
