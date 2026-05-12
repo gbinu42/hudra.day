@@ -574,17 +574,7 @@ export default function QaleDonyathaDsahde() {
       ))}
 
       <h2>Conclusion</h2>
-      <p>
-        The <em>onyatha d&apos;sahde</em> are among the most ancient and widely
-        shared elements of the East Syriac liturgical heritage. Composed to
-        honour the martyrs whose relics Mar Marutha gathered in the wake of the
-        great persecutions, they have been transmitted through centuries of
-        prayer and singing across three major communities — the Assyrian Church
-        of the East, the Chaldean Catholic Church, and the Syro-Malabar Church.
-        Though each tradition has shaped the melodies in its own way, the texts
-        remain a common inheritance: a shared voice of veneration that continues
-        to be raised in liturgical prayer to this day.
-      </p>
+      <p></p>
 
       <ol className="footnotes">
         <li id="fn1">
