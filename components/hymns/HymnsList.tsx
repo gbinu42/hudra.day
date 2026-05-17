@@ -21,7 +21,7 @@ export default function HymnsList({
   onAddClick,
 }: HymnsListProps) {
   const [alphabetOrder, setAlphabetOrder] = useState<"english" | "syriac">(
-    "english"
+    "english",
   );
 
   const filteredAndSortedHymns = useMemo(() => {
@@ -41,17 +41,17 @@ export default function HymnsList({
       if (alphabetOrder === "syriac") {
         // Try to get Syriac title first
         const syriacTitle = hymn.titles?.find(
-          (t) => t.language?.toLowerCase() === "syriac"
+          (t) => t.language?.toLowerCase() === "syriac",
         )?.title;
         if (syriacTitle) return syriacTitle;
       }
       // Fallback to English title
       const englishTitle = hymn.titles?.find(
-        (t) => t.language?.toLowerCase() === "english"
+        (t) => t.language?.toLowerCase() === "english",
       )?.title;
       return englishTitle || hymn.titles?.[0]?.title || "Untitled";
     },
-    [alphabetOrder]
+    [alphabetOrder],
   );
 
   // Helper function to get the first character for grouping
@@ -68,7 +68,7 @@ export default function HymnsList({
   const totalRecordings = useMemo(() => {
     return filteredAndSortedHymns.reduce(
       (total, hymn) => total + (hymn.recordings?.length || 0),
-      0
+      0,
     );
   }, [filteredAndSortedHymns]);
 
@@ -125,13 +125,13 @@ export default function HymnsList({
     const syriacVocalized = hymn.titles.find(
       (t) =>
         t.language?.toLowerCase() === "syriac" &&
-        t.transliteration !== "non-vocalized"
+        t.transliteration !== "non-vocalized",
     )?.title;
 
     const syriacNonVocalized = hymn.titles.find(
       (t) =>
         t.language?.toLowerCase() === "syriac" &&
-        t.transliteration === "non-vocalized"
+        t.transliteration === "non-vocalized",
     )?.title;
 
     return { english: englishTitle, syriacVocalized, syriacNonVocalized };

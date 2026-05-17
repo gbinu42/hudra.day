@@ -899,11 +899,11 @@ const NOT_RETAINED: ReshQala[] = [
 function ReshQalaEntry({ r, open }: { r: ReshQala; open: boolean }) {
   return (
     <details open={open} className="not-prose mb-2">
-      <summary className="group/summary flex cursor-pointer list-none justify-between items-start py-2 px-1 -mx-1 rounded-md font-[family-name:var(--font-lora)] select-none transition-colors hover:bg-slate-50">
-        <span className="flex items-start gap-2">
-          <span className="shrink-0 text-xs text-gray-400 transition-[color,transform] group-open:rotate-90 group-hover/summary:text-slate-600 mt-1.5">
-            ▶
-          </span>
+      <summary className="group/summary flex cursor-pointer list-none py-2 px-1 -mx-1 rounded-md font-[family-name:var(--font-lora)] select-none transition-colors hover:bg-slate-50">
+        <span className="shrink-0 text-xs text-gray-400 transition-[color,transform] group-open:rotate-90 group-hover/summary:text-slate-600 mt-1.5 mr-2">
+          ▶
+        </span>
+        <span className="flex flex-col sm:flex-row sm:justify-between sm:items-start w-full gap-0.5 sm:gap-2">
           <span>
             <span className="text-base font-semibold text-slate-800 block transition-colors group-hover/summary:text-primary">
               {r.num}. {r.name}
@@ -912,10 +912,10 @@ function ReshQalaEntry({ r, open }: { r: ReshQala; open: boolean }) {
               {r.nameMal}
             </Mal>
           </span>
+          <Syr className="text-lg text-slate-600 sm:shrink-0 transition-colors group-hover/summary:text-slate-800">
+            {r.nameSyr}
+          </Syr>
         </span>
-        <Syr className="text-lg text-slate-600 shrink-0 transition-colors group-hover/summary:text-slate-800">
-          {r.nameSyr}
-        </Syr>
       </summary>
 
       <div className="mt-3 ml-6 space-y-2 text-sm font-[family-name:var(--font-lora)] text-slate-600 pb-2">

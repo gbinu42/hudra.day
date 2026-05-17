@@ -393,11 +393,11 @@ function SyriacText({ children }: { children: ReactNode }) {
 function AntiphonEntry({ a, open }: { a: Antiphon; open: boolean }) {
   return (
     <details open={open} className="not-prose group mb-2">
-      <summary className="flex cursor-pointer list-none justify-between py-2 font-[family-name:var(--font-lora)] select-none">
-        <span className="flex items-start gap-2">
-          <span className="shrink-0 text-xs text-gray-400 transition-transform group-open:rotate-90 mt-1.5">
-            ▶
-          </span>
+      <summary className="flex cursor-pointer list-none py-2 font-[family-name:var(--font-lora)] select-none">
+        <span className="shrink-0 text-xs text-gray-400 transition-transform group-open:rotate-90 mt-1.5 mr-2">
+          ▶
+        </span>
+        <span className="flex flex-col sm:flex-row sm:justify-between sm:items-start w-full gap-0.5 sm:gap-2">
           <span>
             <span className="text-lg font-semibold text-slate-800 block">
               {a.num}. {a.titleEn}
@@ -406,16 +406,16 @@ function AntiphonEntry({ a, open }: { a: Antiphon; open: boolean }) {
               {a.subtitle}
             </span>
           </span>
-        </span>
-        <span className="text-right">
-          <SyriacText>
-            <span className="text-lg font-normal text-slate-600 block mb-1">
-              {a.titleSyr}
-            </span>
-          </SyriacText>
-          <SyriacText>
-            <span className="text-sm text-gray-500 block">{a.subtitleSyr}</span>
-          </SyriacText>
+          <span className="sm:text-right">
+            <SyriacText>
+              <span className="text-lg font-normal text-slate-600 block mb-1">
+                {a.titleSyr}
+              </span>
+            </SyriacText>
+            <SyriacText>
+              <span className="text-sm text-gray-500 block">{a.subtitleSyr}</span>
+            </SyriacText>
+          </span>
         </span>
       </summary>
 

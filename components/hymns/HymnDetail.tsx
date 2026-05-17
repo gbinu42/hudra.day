@@ -52,8 +52,8 @@ export default function HymnDetail({
     hasSyriacText
       ? "syriac"
       : hymn.translations && hymn.translations.length > 0
-      ? "translation-0"
-      : "syriac"
+        ? "translation-0"
+        : "syriac",
   );
 
   // Tab state for church versions (indexed by version index)
@@ -95,15 +95,15 @@ export default function HymnDetail({
     const sortedGroups = Object.entries(grouped).sort(
       ([churchA], [churchB]) => {
         const indexA = CHURCH_DISPLAY_ORDER.indexOf(
-          churchA as (typeof CHURCH_DISPLAY_ORDER)[number]
+          churchA as (typeof CHURCH_DISPLAY_ORDER)[number],
         );
         const indexB = CHURCH_DISPLAY_ORDER.indexOf(
-          churchB as (typeof CHURCH_DISPLAY_ORDER)[number]
+          churchB as (typeof CHURCH_DISPLAY_ORDER)[number],
         );
         const priorityA = indexA === -1 ? 999 : indexA;
         const priorityB = indexB === -1 ? 999 : indexB;
         return priorityA - priorityB;
-      }
+      },
     );
 
     return { sortedGroups, ungrouped };
@@ -187,7 +187,7 @@ export default function HymnDetail({
             {(recording.type === "audio" || recording.type === "video") &&
               recording.originalUrl &&
               !recording.originalUrl.includes(
-                "firebasestorage.googleapis.com"
+                "firebasestorage.googleapis.com",
               ) && (
                 <Button
                   size="sm"
@@ -238,20 +238,20 @@ export default function HymnDetail({
 
   // Get titles
   const mainEnglishTitle = hymn.titles?.find(
-    (t) => t.language?.toLowerCase() === "english"
+    (t) => t.language?.toLowerCase() === "english",
   );
   const englishTitle = mainEnglishTitle?.title || "Untitled";
 
   const syriacVocalizedTitle = hymn.titles?.find(
     (t) =>
       t.language?.toLowerCase() === "syriac" &&
-      t.transliteration !== "non-vocalized"
+      t.transliteration !== "non-vocalized",
   );
 
   const syriacNonVocalizedTitle = hymn.titles?.find(
     (t) =>
       t.language?.toLowerCase() === "syriac" &&
-      t.transliteration === "non-vocalized"
+      t.transliteration === "non-vocalized",
   );
 
   // Get alternate titles (exclude the specific ones we're showing in the header)
@@ -260,7 +260,7 @@ export default function HymnDetail({
       (t) =>
         t !== mainEnglishTitle &&
         t !== syriacVocalizedTitle &&
-        t !== syriacNonVocalizedTitle
+        t !== syriacNonVocalizedTitle,
     ) || [];
 
   return (
@@ -513,7 +513,7 @@ export default function HymnDetail({
                               </p>
                             )}
                           </div>
-                        )
+                        ),
                     )}
                   </div>
                 )}
@@ -703,7 +703,7 @@ export default function HymnDetail({
                                     </p>
                                   )}
                                 </div>
-                              )
+                              ),
                           )}
                         </div>
                       )}
@@ -848,7 +848,7 @@ export default function HymnDetail({
                         )}
                       </div>
                     );
-                  }
+                  },
                 )}
               </div>
             </CardContent>
@@ -877,7 +877,7 @@ export default function HymnDetail({
                       )
                         return true; // Users see their own pending recordings
                       return false; // Hide other users' pending/rejected recordings
-                    }
+                    },
                   );
 
                   const { sortedGroups, ungrouped } =
@@ -909,7 +909,7 @@ export default function HymnDetail({
                                 </div>
                               ) : (
                                 renderRecording(recording)
-                              )
+                              ),
                             )}
                           </div>
                         </div>
@@ -939,7 +939,7 @@ export default function HymnDetail({
                                 </div>
                               ) : (
                                 renderRecording(recording)
-                              )
+                              ),
                             )}
                           </div>
                         </div>

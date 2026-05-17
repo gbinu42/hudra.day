@@ -19,7 +19,7 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
   const { userProfile } = useAuth();
   const isAdmin = userProfile?.role === "admin";
   const [alphabetOrder, setAlphabetOrder] = useState<"english" | "syriac">(
-    "english"
+    "english",
   );
   const [showScrollToTop, setShowScrollToTop] = useState(false);
 
@@ -41,11 +41,30 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
   };
 
   // Complete alphabets
-  const ENGLISH_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  const ENGLISH_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
   const SYRIAC_ALPHABET = [
-    'ܐ', 'ܒ', 'ܓ', 'ܕ', 'ܗ', 'ܘ', 'ܙ', 'ܚ', 'ܛ', 'ܝ',
-    'ܟ', 'ܠ', 'ܡ', 'ܢ', 'ܣ', 'ܥ', 'ܦ', 'ܨ', 'ܩ', 'ܪ',
-    'ܫ', 'ܬ'
+    "ܐ",
+    "ܒ",
+    "ܓ",
+    "ܕ",
+    "ܗ",
+    "ܘ",
+    "ܙ",
+    "ܚ",
+    "ܛ",
+    "ܝ",
+    "ܟ",
+    "ܠ",
+    "ܡ",
+    "ܢ",
+    "ܣ",
+    "ܥ",
+    "ܦ",
+    "ܨ",
+    "ܩ",
+    "ܪ",
+    "ܫ",
+    "ܬ",
   ];
 
   // Helper function to get the title for alphabetical sorting
@@ -54,17 +73,17 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
       if (alphabetOrder === "syriac") {
         // Try to get Syriac title first
         const syriacTitle = hymn.titles?.find(
-          (t) => t.language?.toLowerCase() === "syriac"
+          (t) => t.language?.toLowerCase() === "syriac",
         )?.title;
         if (syriacTitle) return syriacTitle;
       }
       // Fallback to English title
       const englishTitle = hymn.titles?.find(
-        (t) => t.language?.toLowerCase() === "english"
+        (t) => t.language?.toLowerCase() === "english",
       )?.title;
       return englishTitle || hymn.titles?.[0]?.title || "Untitled";
     },
-    [alphabetOrder]
+    [alphabetOrder],
   );
 
   // Sort hymns based on selected alphabet order
@@ -80,7 +99,7 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
   const totalRecordings = useMemo(() => {
     return sortedHymns.reduce(
       (total, hymn) => total + (hymn.recordings?.length || 0),
-      0
+      0,
     );
   }, [sortedHymns]);
 
@@ -147,13 +166,13 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
     const syriacVocalized = hymn.titles.find(
       (t) =>
         t.language?.toLowerCase() === "syriac" &&
-        t.transliteration !== "non-vocalized"
+        t.transliteration !== "non-vocalized",
     )?.title;
 
     const syriacNonVocalized = hymn.titles.find(
       (t) =>
         t.language?.toLowerCase() === "syriac" &&
-        t.transliteration === "non-vocalized"
+        t.transliteration === "non-vocalized",
     )?.title;
 
     return { english: englishTitle, syriacVocalized, syriacNonVocalized };
@@ -217,7 +236,7 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
               : SYRIAC_ALPHABET
             ).map((letter) => {
               const hasHymns = groupedHymns.some(
-                (group) => group.letter === letter
+                (group) => group.letter === letter,
               );
               return (
                 <button
@@ -225,7 +244,7 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
                   onClick={() => {
                     if (hasHymns) {
                       const element = document.getElementById(
-                        `letter-${letter}`
+                        `letter-${letter}`,
                       );
                       if (element) {
                         element.scrollIntoView({
@@ -424,7 +443,7 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
           "fixed bottom-10 right-4 z-50 rounded-full shadow-lg transition-all duration-300",
           showScrollToTop
             ? "opacity-100 translate-y-0"
-            : "opacity-0 translate-y-2 pointer-events-none"
+            : "opacity-0 translate-y-2 pointer-events-none",
         )}
         aria-label="Scroll to top"
       >
