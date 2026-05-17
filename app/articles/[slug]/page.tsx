@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { articles, getArticleBySlug } from "@/lib/articles";
+import ArticleTitle from "@/components/ArticleTitle";
+import { articles, getArticleBySlug, getArticleFullTitle } from "@/lib/articles";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
@@ -31,11 +32,11 @@ export async function generateMetadata({
   if (!article) return {};
 
   return {
-    title: `${article.title} – Hudra`,
+    title: `${getArticleFullTitle(article)} – Hudra`,
     description: article.description,
     keywords: article.keywords,
     openGraph: {
-      title: article.title,
+      title: getArticleFullTitle(article),
       description: article.description,
       type: "article",
       publishedTime: article.date,
@@ -71,19 +72,7 @@ export default async function ArticlePage({
         {/* Header */}
         <header className="mb-10">
           <h1 className="text-4xl font-semibold text-primary mb-3 leading-tight font-[family-name:var(--font-eb-garamond)]">
-            {article.title}
-            {article.titleSyriac && (
-              <>
-                <span className="mx-3">–</span>
-                <span
-                  className="text-2xl font-normal [font-family:'Idiqlat',serif]"
-                  dir="rtl"
-                  style={{ fontWeight: 400, fontSynthesis: "none" }}
-                >
-                  {article.titleSyriac}
-                </span>
-              </>
-            )}
+            <ArticleTitle article={article} />
           </h1>
           {article.subtitle && (
             <p className="text-base text-muted-foreground mb-4 font-sans">

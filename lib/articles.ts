@@ -2,6 +2,8 @@ export interface Article {
   slug: string;
   title: string;
   titleSyriac?: string;
+  /** Rendered after {title} and {titleSyriac}, e.g. a geographic or tradition qualifier */
+  titleSuffix?: string;
   subtitle?: string;
   date: string;
   author?: string;
@@ -14,11 +16,12 @@ export const articles: Article[] = [
     slug: "resh-qale",
     title: "Resh Qale",
     titleSyriac: "ܪܹܫ ܩܵܠܹ̈ܐ",
+    titleSuffix: "in the Malabar East Syriac Tradition",
     subtitle: "Head melodies in the Malabar East Syriac tradition",
     date: "2026-05-17",
     author: "Binu George",
     description:
-      "An introduction to the Resh Qale — the canonical head melodies of the East Syriac liturgical tradition — as preserved and practised in the Syro-Malabar Church.",
+      "An introduction to the Resh Qale - the canonical head melodies of the East Syriac liturgical tradition - as preserved and practised in the Syro-Malabar Church.",
     keywords: [
       "resh qale",
       "head melodies",
@@ -35,7 +38,7 @@ export const articles: Article[] = [
     title: "Qale d'onyatha d'sahde",
     titleSyriac: "ܩܵܠܹ̈ܐ ܕܥܘܿܢ̈ܝܵܬ݂ܵܐ ܕܣܵܗܕܹ̈ܐ",
     subtitle:
-      "The tunes of the Martyrs' Antiphons in the Malabar, Assyrian, and Chaldean Traditions of the Church fo the East",
+      "The tunes of the Martyrs' Antiphons in the Malabar, Assyrian, and Chaldean Traditions of the Church of the East",
     date: "2026-05-06",
     author: "Binu George",
     description:
@@ -57,4 +60,9 @@ export const articles: Article[] = [
 
 export function getArticleBySlug(slug: string): Article | undefined {
   return articles.find((a) => a.slug === slug);
+}
+
+export function getArticleFullTitle(article: Article): string {
+  const base = article.title;
+  return article.titleSuffix ? `${base} (${article.titleSuffix})` : base;
 }

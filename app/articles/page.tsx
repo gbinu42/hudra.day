@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ArticleTitle from "@/components/ArticleTitle";
 import { articles } from "@/lib/articles";
 import { Metadata } from "next";
 import { Separator } from "@/components/ui/separator";
@@ -51,19 +52,10 @@ export default function ArticlesPage() {
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 min-w-0">
                 <h2 className="text-2xl font-semibold text-foreground group-hover:text-primary transition-colors mb-1 font-[family-name:var(--font-eb-garamond)]">
-                  {article.title}
-                  {article.titleSyriac && (
-                    <>
-                      <span className="mx-2">–</span>
-                      <span
-                        className="text-xl font-normal [font-family:'Idiqlat',serif]"
-                        dir="rtl"
-                        style={{ fontWeight: 400, fontSynthesis: "none" }}
-                      >
-                        {article.titleSyriac}
-                      </span>
-                    </>
-                  )}
+                  <ArticleTitle
+                    article={article}
+                    syriacClassName="text-xl font-normal [font-family:'Idiqlat',serif]"
+                  />
                 </h2>
                 {article.subtitle && (
                   <p className="text-sm text-muted-foreground mb-3 italic font-[family-name:var(--font-eb-garamond)]">
