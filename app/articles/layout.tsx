@@ -26,7 +26,7 @@ export default function ArticlesLayout({
         crossOrigin="anonymous"
       />
       <link
-        href="https://fonts.googleapis.com/css2?family=Idiqlat&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Idiqlat&family=Noto+Sans+Malayalam:wght@400;500&display=swap"
         rel="stylesheet"
       />
       <div className={`${ebGaramond.variable} ${lora.variable}`}>{children}</div>

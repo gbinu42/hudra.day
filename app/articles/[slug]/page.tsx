@@ -7,9 +7,11 @@ import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import { CalendarDays, ArrowLeft } from "lucide-react";
 import QaleDonyathaDsahde from "@/components/articles/QaleDonyathaDsahde";
+import ReshQale from "@/components/articles/ReshQale";
 import { ComponentType } from "react";
 
 const articleContent: Record<string, ComponentType> = {
+  "resh-qale": ReshQale,
   "qale-donyatha-dsahde": QaleDonyathaDsahde,
 };
 

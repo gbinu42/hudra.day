@@ -11,6 +11,26 @@ export interface Article {
 
 export const articles: Article[] = [
   {
+    slug: "resh-qale",
+    title: "Resh Qale",
+    titleSyriac: "ܪܹܫ ܩܵܠܹ̈ܐ",
+    subtitle: "Head melodies in the Malabar East Syriac tradition",
+    date: "2026-05-17",
+    author: "Binu George",
+    description:
+      "An introduction to the Resh Qale — the canonical head melodies of the East Syriac liturgical tradition — as preserved and practised in the Syro-Malabar Church.",
+    keywords: [
+      "resh qale",
+      "head melodies",
+      "East Syriac",
+      "Syro-Malabar",
+      "liturgical chant",
+      "Malabar",
+      "qale",
+      "Church of the East",
+    ],
+  },
+  {
     slug: "qale-donyatha-dsahde",
     title: "Qale d'onyatha d'sahde",
     titleSyriac: "ܩܵܠܹ̈ܐ ܕܥܘܿܢ̈ܝܵܬ݂ܵܐ ܕܣܵܗܕܹ̈ܐ",
