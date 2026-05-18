@@ -898,7 +898,7 @@ const NOT_RETAINED: ReshQala[] = [
 
 function ReshQalaEntry({ r, open }: { r: ReshQala; open: boolean }) {
   return (
-    <details open={open} className="not-prose mb-2">
+    <details open={open} className="not-prose group mb-2">
       <summary className="group/summary flex cursor-pointer list-none py-2 px-1 -mx-1 rounded-md font-[family-name:var(--font-lora)] select-none transition-colors hover:bg-slate-50">
         <span className="shrink-0 text-xs text-gray-400 transition-[color,transform] group-open:rotate-90 group-hover/summary:text-slate-600 mt-1.5 mr-2">
           ▶
