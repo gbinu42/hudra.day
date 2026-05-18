@@ -2,6 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 interface ReshQala {
   num: number;
@@ -896,141 +902,158 @@ const NOT_RETAINED: ReshQala[] = [
   },
 ];
 
-function ReshQalaEntry({ r, open }: { r: ReshQala; open: boolean }) {
+function ReshQalaList({
+  items,
+  openItems,
+  onOpenChange,
+}: {
+  items: ReshQala[];
+  openItems: string[];
+  onOpenChange: (value: string[]) => void;
+}) {
   return (
-    <details open={open} className="not-prose group mb-2">
-      <summary className="group/summary flex cursor-pointer list-none py-2 px-1 -mx-1 rounded-md font-[family-name:var(--font-lora)] select-none transition-colors hover:bg-slate-50">
-        <span className="shrink-0 text-xs text-gray-400 transition-[color,transform] group-open:rotate-90 group-hover/summary:text-slate-600 mt-1.5 mr-2">
-          ▶
-        </span>
-        <span className="flex flex-col sm:flex-row sm:justify-between sm:items-start w-full gap-0.5 sm:gap-2">
-          <span>
-            <span className="text-base font-semibold text-slate-800 block transition-colors group-hover/summary:text-primary">
-              {r.num}. {r.name}
-            </span>
-            <Mal className="text-sm text-slate-500 block mt-0.5 transition-colors group-hover/summary:text-slate-600">
-              {r.nameMal}
-            </Mal>
-          </span>
-          <Syr className="text-lg text-slate-600 sm:shrink-0 transition-colors group-hover/summary:text-slate-800">
-            {r.nameSyr}
-          </Syr>
-        </span>
-      </summary>
-
-      <div className="mt-3 ml-6 space-y-2 text-sm font-[family-name:var(--font-lora)] text-slate-600 pb-2">
-        {r.syriacText && (
-          <div className="mb-3 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 space-y-3">
-            {r.syriacText.stanzas.map((stanza, si) => (
-              <p
-                key={si}
-                className="leading-loose [font-family:'Idiqlat',serif] text-base m-0"
-                dir="rtl"
-                style={{ fontWeight: 400, fontSynthesis: "none" }}
-              >
-                {stanza.shuraya && (
-                  <>
-                    <span className="text-red-700">{stanza.shuraya}</span>{" "}
-                  </>
-                )}
-                {stanza.body.split("܀").map((part, i, arr) => (
-                  <span key={i}>
-                    {part}
-                    {i < arr.length - 1 && (
-                      <span className="text-red-700">܀</span>
-                    )}
-                  </span>
-                ))}
-              </p>
-            ))}
-            {r.syriacText.teni && (
-              <p
-                className="leading-loose [font-family:'Idiqlat',serif] text-base m-0 text-red-700"
-                dir="rtl"
-                style={{ fontWeight: 400, fontSynthesis: "none" }}
-              >
-                {r.syriacText.teni}
-              </p>
-            )}
-          </div>
-        )}
-        {r.alsoKnownAs && (
-          <div className="m-0">
-            <span className="font-semibold text-slate-500">Also known as:</span>{" "}
-            {r.alsoKnownAs.map((aka, i) => (
-              <span key={i}>
-                {i > 0 && "; "}
-                {aka.latin}{" "}
-                {aka.syr && <Syr className="text-base">{aka.syr}</Syr>}
+    <Accordion
+      type="multiple"
+      value={openItems}
+      onValueChange={onOpenChange}
+      className="not-prose"
+    >
+      {items.map((r) => (
+        <AccordionItem key={r.num} value={String(r.num)} className="mb-2 border-none">
+          <AccordionTrigger className="font-[family-name:var(--font-lora)]">
+            <span className="flex flex-col sm:flex-row sm:justify-between sm:items-start w-full gap-0.5 sm:gap-2">
+              <span>
+                <span className="text-base font-semibold text-slate-800 block group-data-[state=open]/trigger:text-primary transition-colors">
+                  {r.num}. {r.name}
+                </span>
+                <Mal className="text-sm text-slate-500 block mt-0.5">
+                  {r.nameMal}
+                </Mal>
               </span>
-            ))}
-          </div>
-        )}
-        {r.malayalamCommonName && (
-          <p className="m-0">
-            <span className="font-semibold text-slate-500">
-              Malayalam name:
-            </span>{" "}
-            <Mal>{r.malayalamCommonName.text}</Mal>
-            {r.malayalamCommonName.note && (
-              <> — {r.malayalamCommonName.note}.</>
-            )}
-          </p>
-        )}
-        {r.structure && (
-          <p className="m-0">
-            <span className="font-semibold text-slate-500">Structure:</span>{" "}
-            {r.structure}
-          </p>
-        )}
-        {r.note && (
-          <p className="m-0">
-            <span className="font-semibold text-slate-500">Note:</span> {r.note}
-          </p>
-        )}
-        <div className="pt-2 border-t border-slate-100">
-          <p className="font-semibold text-slate-500 m-0 mb-2">Recordings</p>
-          <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3">
-            {r.recordings && r.recordings.length > 0 ? (
-              <div className="space-y-3">
-                {r.recordings.map((rec, i) => (
-                  <div key={i}>
-                    <p className="text-xs text-slate-500 m-0 mb-1">
-                      {rec.hymnName && (
-                        <span className="italic">{rec.hymnName}</span>
+              <Syr className="text-lg text-slate-600 sm:shrink-0">
+                {r.nameSyr}
+              </Syr>
+            </span>
+          </AccordionTrigger>
+          <AccordionContent className="mt-3 ml-6 pb-2">
+            <div className="space-y-2 text-sm font-[family-name:var(--font-lora)] text-slate-600">
+              {r.syriacText && (
+                <div className="mb-3 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 space-y-3">
+                  {r.syriacText.stanzas.map((stanza, si) => (
+                    <p
+                      key={si}
+                      className="leading-loose [font-family:'Idiqlat',serif] text-base m-0"
+                      dir="rtl"
+                      style={{ fontWeight: 400, fontSynthesis: "none" }}
+                    >
+                      {stanza.shuraya && (
+                        <>
+                          <span className="text-red-700">{stanza.shuraya}</span>{" "}
+                        </>
                       )}
-                      {rec.hymnName && " · "}
-                      {rec.performer}
+                      {stanza.body.split("܀").map((part, i, arr) => (
+                        <span key={i}>
+                          {part}
+                          {i < arr.length - 1 && (
+                            <span className="text-red-700">܀</span>
+                          )}
+                        </span>
+                      ))}
                     </p>
-                    <audio
-                      controls
-                      preload="none"
-                      className="w-full h-9"
-                      src={rec.url}
-                    />
-                  </div>
-                ))}
+                  ))}
+                  {r.syriacText.teni && (
+                    <p
+                      className="leading-loose [font-family:'Idiqlat',serif] text-base m-0 text-red-700"
+                      dir="rtl"
+                      style={{ fontWeight: 400, fontSynthesis: "none" }}
+                    >
+                      {r.syriacText.teni}
+                    </p>
+                  )}
+                </div>
+              )}
+              {r.alsoKnownAs && (
+                <div className="m-0">
+                  <span className="font-semibold text-slate-500">Also known as:</span>{" "}
+                  {r.alsoKnownAs.map((aka, i) => (
+                    <span key={i}>
+                      {i > 0 && "; "}
+                      {aka.latin}{" "}
+                      {aka.syr && <Syr className="text-base">{aka.syr}</Syr>}
+                    </span>
+                  ))}
+                </div>
+              )}
+              {r.malayalamCommonName && (
+                <p className="m-0">
+                  <span className="font-semibold text-slate-500">Malayalam name:</span>{" "}
+                  <Mal>{r.malayalamCommonName.text}</Mal>
+                  {r.malayalamCommonName.note && (
+                    <> — {r.malayalamCommonName.note}.</>
+                  )}
+                </p>
+              )}
+              {r.structure && (
+                <p className="m-0">
+                  <span className="font-semibold text-slate-500">Structure:</span>{" "}
+                  {r.structure}
+                </p>
+              )}
+              {r.note && (
+                <p className="m-0">
+                  <span className="font-semibold text-slate-500">Note:</span> {r.note}
+                </p>
+              )}
+              <div className="pt-2 border-t border-slate-100">
+                <p className="font-semibold text-slate-500 m-0 mb-2">Recordings</p>
+                <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3">
+                  {r.recordings && r.recordings.length > 0 ? (
+                    <div className="space-y-3">
+                      {r.recordings.map((rec, i) => (
+                        <div key={i}>
+                          <p className="text-xs text-slate-500 m-0 mb-1">
+                            {rec.hymnName && (
+                              <span className="italic">{rec.hymnName}</span>
+                            )}
+                            {rec.hymnName && " · "}
+                            {rec.performer}
+                          </p>
+                          <audio
+                            controls
+                            controlsList="nodownload"
+                            preload="none"
+                            className="w-full h-9"
+                            src={rec.url}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-slate-400 italic text-xs m-0">Coming soon.</p>
+                  )}
+                </div>
               </div>
-            ) : (
-              <p className="text-slate-400 italic text-xs m-0">Coming soon.</p>
-            )}
-          </div>
-        </div>
-        {r.link && (
-          <Link
-            href={r.link}
-            className="inline-block text-sm text-primary hover:underline"
-          >
-            For more details, view hymn page →
-          </Link>
-        )}
-      </div>
-    </details>
+              {r.link && (
+                <Link
+                  href={r.link}
+                  className="inline-block text-sm text-primary hover:underline"
+                >
+                  For more details, view hymn page →
+                </Link>
+              )}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      ))}
+    </Accordion>
   );
 }
 
 export default function ReshQale() {
-  const [allOpen, setAllOpen] = useState(false);
+  const retainedKeys = RETAINED.map((r) => String(r.num));
+  const notRetainedKeys = NOT_RETAINED.map((r) => String(r.num));
+  const [retainedOpen, setRetainedOpen] = useState<string[]>([]);
+  const [notRetainedOpen, setNotRetainedOpen] = useState<string[]>([]);
 
   return (
     <>
@@ -1154,26 +1177,40 @@ export default function ReshQale() {
           Resh Qale retained in the Malayalam translation
         </h3>
         <button
-          onClick={() => setAllOpen((prev) => !prev)}
+          onClick={() =>
+            setRetainedOpen(retainedOpen.length > 0 ? [] : retainedKeys)
+          }
           className="text-xs text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
         >
-          {allOpen ? "Collapse all" : "Expand all"}
+          {retainedOpen.length > 0 ? "Collapse all" : "Expand all"}
         </button>
       </div>
 
-      {RETAINED.map((r) => (
-        <ReshQalaEntry key={r.num} r={r} open={allOpen} />
-      ))}
+      <ReshQalaList
+        items={RETAINED}
+        openItems={retainedOpen}
+        onOpenChange={setRetainedOpen}
+      />
 
-      <div className="not-prose mt-10 mb-4">
+      <div className="not-prose flex items-baseline gap-3 mt-10 mb-4">
         <h3 className="text-lg font-semibold font-[family-name:var(--font-lora)] text-slate-700 m-0">
           Resh Qale not in the Malayalam translation
         </h3>
+        <button
+          onClick={() =>
+            setNotRetainedOpen(notRetainedOpen.length > 0 ? [] : notRetainedKeys)
+          }
+          className="text-xs text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+        >
+          {notRetainedOpen.length > 0 ? "Collapse all" : "Expand all"}
+        </button>
       </div>
 
-      {NOT_RETAINED.map((r) => (
-        <ReshQalaEntry key={r.num} r={r} open={allOpen} />
-      ))}
+      <ReshQalaList
+        items={NOT_RETAINED}
+        openItems={notRetainedOpen}
+        onOpenChange={setNotRetainedOpen}
+      />
 
       <div className="not-prose mt-10 mb-4">
         <h2 className="text-xl font-semibold font-[family-name:var(--font-lora)] text-slate-700 m-0">

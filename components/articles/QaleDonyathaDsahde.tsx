@@ -1,6 +1,12 @@
 "use client";
 
 import { ReactNode, useState } from "react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 interface Stanza {
   psalm: string;
@@ -14,6 +20,7 @@ interface TraditionNote {
   label: string;
   note?: string;
   tunes?: number;
+  recordings?: { url: string; performer: string }[];
 }
 
 interface Antiphon {
@@ -48,7 +55,15 @@ const ANTIPHONS: Antiphon[] = [
       },
     ],
     traditions: [
-      { label: "Syro-Malabar" },
+      {
+        label: "Syro-Malabar",
+        recordings: [
+          {
+            url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fsahde-qandishe-sallaw-al-shayna%2Faudio%2F1779123434625.m4a?alt=media&token=93ea705f-912c-44f0-b4e5-74334a8b62fa",
+            performer: "Binu George",
+          },
+        ],
+      },
       { label: "Chaldean" },
       { label: "Assyrian", tunes: 2 },
     ],
@@ -70,7 +85,15 @@ const ANTIPHONS: Antiphon[] = [
       },
     ],
     traditions: [
-      { label: "Syro-Malabar" },
+      {
+        label: "Syro-Malabar",
+        recordings: [
+          {
+            url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fbenda-sapra-methpathhin%2Faudio%2F1779123811606.m4a?alt=media&token=eddb2ce4-3a84-4a2c-a3c1-afb5c103646d",
+            performer: "Binu George",
+          },
+        ],
+      },
       { label: "Chaldean" },
       { label: "Assyrian" },
     ],
@@ -97,7 +120,15 @@ const ANTIPHONS: Antiphon[] = [
       },
     ],
     traditions: [
-      { label: "Syro-Malabar" },
+      {
+        label: "Syro-Malabar",
+        recordings: [
+          {
+            url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Festhapanos-urha-drash%2Faudio%2F1779125470261.m4a?alt=media&token=f753507e-05bf-4704-a3ac-292671f0961c",
+            performer: "Binu George",
+          },
+        ],
+      },
       { label: "Chaldean", note: "Melody same as one of the Assyrian tunes" },
       { label: "Assyrian", tunes: 2 },
     ],
@@ -124,7 +155,15 @@ const ANTIPHONS: Antiphon[] = [
       },
     ],
     traditions: [
-      { label: "Syro-Malabar" },
+      {
+        label: "Syro-Malabar",
+        recordings: [
+          {
+            url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fsahde-waython-thangare%2Faudio%2F1779125270060.m4a?alt=media&token=4ca08b23-0a1a-4bc2-a69c-d57a6a8d8bcb",
+            performer: "Binu George",
+          },
+        ],
+      },
       { label: "Chaldean", note: "Tune has differences from Assyrian" },
       { label: "Assyrian", tunes: 2 },
     ],
@@ -151,7 +190,15 @@ const ANTIPHONS: Antiphon[] = [
       },
     ],
     traditions: [
-      { label: "Syro-Malabar" },
+      {
+        label: "Syro-Malabar",
+        recordings: [
+          {
+            url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fsahde-qandishe-dethqathal%2Faudio%2F1779125122899.m4a?alt=media&token=294b86fd-99f3-421f-b341-3022fc8a8847",
+            performer: "Binu George",
+          },
+        ],
+      },
       { label: "Chaldean" },
       { label: "Assyrian" },
     ],
@@ -173,7 +220,15 @@ const ANTIPHONS: Antiphon[] = [
       },
     ],
     traditions: [
-      { label: "Syro-Malabar" },
+      {
+        label: "Syro-Malabar",
+        recordings: [
+          {
+            url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fsahde-qandishe-malpane-dhaymanutha%2Faudio%2F1779125173348.m4a?alt=media&token=1ff37378-a499-4a40-ab61-11a088d63b47",
+            performer: "Binu George",
+          },
+        ],
+      },
       {
         label: "Chaldean",
         note: "Same tune as Assyrian (tune of B'madnahay Sapra)",
@@ -198,7 +253,15 @@ const ANTIPHONS: Antiphon[] = [
       },
     ],
     traditions: [
-      { label: "Syro-Malabar" },
+      {
+        label: "Syro-Malabar",
+        recordings: [
+          {
+            url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fsahde-brikhe%2Faudio%2F1779124136877.m4a?alt=media&token=211c148b-1541-4cf1-b757-f986cfb6d093",
+            performer: "Binu George",
+          },
+        ],
+      },
       { label: "Chaldean", note: "Uses the Dayra Ellayta tune" },
       { label: "Assyrian", tunes: 2 },
     ],
@@ -225,7 +288,15 @@ const ANTIPHONS: Antiphon[] = [
       },
     ],
     traditions: [
-      { label: "Syro-Malabar" },
+      {
+        label: "Syro-Malabar",
+        recordings: [
+          {
+            url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fshlama-lsahde-walgarmayhon-iqara%2Faudio%2F1779124294649.m4a?alt=media&token=35bc74d3-1b98-4b9f-b129-8cb4b8f8545d",
+            performer: "Binu George",
+          },
+        ],
+      },
       { label: "Chaldean" },
       { label: "Assyrian" },
     ],
@@ -247,7 +318,15 @@ const ANTIPHONS: Antiphon[] = [
       },
     ],
     traditions: [
-      { label: "Syro-Malabar" },
+      {
+        label: "Syro-Malabar",
+        recordings: [
+          {
+            url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fmshiha-paroqe-dalma%2Faudio%2F1779124798989.m4a?alt=media&token=95ab823d-111f-430c-acda-26068f51abab",
+            performer: "Binu George",
+          },
+        ],
+      },
       { label: "Chaldean" },
       { label: "Assyrian" },
     ],
@@ -269,7 +348,15 @@ const ANTIPHONS: Antiphon[] = [
       },
     ],
     traditions: [
-      { label: "Syro-Malabar" },
+      {
+        label: "Syro-Malabar",
+        recordings: [
+          {
+            url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fbrikh-hayla-kasya%2Faudio%2F1779124703528.m4a?alt=media&token=b5d859b4-54fd-4eea-b77e-e6b30e44ce54",
+            performer: "Binu George",
+          },
+        ],
+      },
       { label: "Chaldean" },
       { label: "Assyrian" },
     ],
@@ -291,7 +378,15 @@ const ANTIPHONS: Antiphon[] = [
       },
     ],
     traditions: [
-      { label: "Syro-Malabar" },
+      {
+        label: "Syro-Malabar",
+        recordings: [
+          {
+            url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fsahde-qandishe-lwishay-nuhra%2Faudio%2F1779124595627.m4a?alt=media&token=616becf6-d167-4e2b-b081-eac5e06068d0",
+            performer: "Binu George",
+          },
+        ],
+      },
       { label: "Chaldean" },
       { label: "Assyrian" },
     ],
@@ -318,7 +413,15 @@ const ANTIPHONS: Antiphon[] = [
       },
     ],
     traditions: [
-      { label: "Syro-Malabar" },
+      {
+        label: "Syro-Malabar",
+        recordings: [
+          {
+            url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fbsapra-sahde%2Faudio%2F1779124483859.m4a?alt=media&token=19b9b543-6dd1-4def-ab3e-7097b810b3ed",
+            performer: "Binu George",
+          },
+        ],
+      },
       { label: "Chaldean" },
       { label: "Assyrian" },
     ],
@@ -343,7 +446,15 @@ const ANTIPHONS: Antiphon[] = [
       },
     ],
     traditions: [
-      { label: "Syro-Malabar" },
+      {
+        label: "Syro-Malabar",
+        recordings: [
+          {
+            url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fsahdaw-dawra%2Faudio%2F1779124369618.m4a?alt=media&token=b7048068-062f-4735-92b5-cb00ce15c2c8",
+            performer: "Binu George",
+          },
+        ],
+      },
       { label: "Chaldean" },
       { label: "Assyrian" },
     ],
@@ -390,111 +501,9 @@ function SyriacText({ children }: { children: ReactNode }) {
   );
 }
 
-function AntiphonEntry({ a, open }: { a: Antiphon; open: boolean }) {
-  return (
-    <details open={open} className="not-prose group mb-2">
-      <summary className="flex cursor-pointer list-none py-2 font-[family-name:var(--font-lora)] select-none">
-        <span className="shrink-0 text-xs text-gray-400 transition-transform group-open:rotate-90 mt-1.5 mr-2">
-          ▶
-        </span>
-        <span className="flex flex-col sm:flex-row sm:justify-between sm:items-start w-full gap-0.5 sm:gap-2">
-          <span>
-            <span className="text-lg font-semibold text-slate-800 block">
-              {a.num}. {a.titleEn}
-            </span>
-            <span className="text-sm text-gray-500 block mt-1">
-              {a.subtitle}
-            </span>
-          </span>
-          <span className="sm:text-right">
-            <SyriacText>
-              <span className="text-lg font-normal text-slate-600 block mb-1">
-                {a.titleSyr}
-              </span>
-            </SyriacText>
-            <SyriacText>
-              <span className="text-sm text-gray-500 block">{a.subtitleSyr}</span>
-            </SyriacText>
-          </span>
-        </span>
-      </summary>
-
-      <div className="mt-3 ml-4">
-        {/* Syriac text */}
-        <div className="mb-4 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3">
-          <div
-            className="leading-loose [font-family:'Idiqlat',serif] text-base text-justify"
-            dir="rtl"
-            style={{ fontWeight: 400, fontSynthesis: "none" }}
-          >
-            {a.stanzas.map((s, i) => (
-              <p key={i} className={i < a.stanzas.length - 1 ? "mb-3" : ""}>
-                <span className="text-red-700">{s.psalm}</span>
-                {s.dzuwrta && <> ܕܨܘܼܪܬܵܐ.</>}
-                {s.antiphonRedPart && (
-                  <>
-                    {" "}
-                    <span className="text-red-700">{s.antiphonRedPart}</span>
-                  </>
-                )}{" "}
-                <span className="text-slate-600">{s.antiphon}</span>
-              </p>
-            ))}
-          </div>
-        </div>
-
-        {/* Traditions */}
-        <div className="rounded-lg border border-slate-200 bg-white px-4 py-3 space-y-4">
-          {a.traditions.map((t) => (
-            <div key={t.label}>
-              <p className="font-[family-name:var(--font-lora)] text-sm font-semibold text-slate-600 mb-1">
-                {t.label}
-              </p>
-              {t.note && (
-                <p className="text-xs text-gray-400 italic ml-3 mb-1">
-                  {t.note}
-                </p>
-              )}
-              {t.tunes ? (
-                <div className="ml-3 space-y-1">
-                  {Array.from({ length: t.tunes }, (_, i) => (
-                    <p key={i} className="text-sm text-gray-400 italic">
-                      Tune {i + 1} — Recording coming soon.
-                    </p>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-sm text-gray-400 italic ml-3">
-                  Recording coming soon.
-                </p>
-              )}
-            </div>
-          ))}
-        </div>
-        {a.description && (
-          <p className="font-[family-name:var(--font-lora)] text-sm text-gray-700 mt-3">
-            {a.description}
-          </p>
-        )}
-        {a.hudraLink && (
-          <p className="text-xs text-gray-400 mt-2">
-            For more recordings, see the{" "}
-            <a
-              href={a.hudraLink}
-              className="text-primary underline underline-offset-2 hover:text-primary/80"
-            >
-              hymn page on Hudra
-            </a>
-            .
-          </p>
-        )}
-      </div>
-    </details>
-  );
-}
-
 export default function QaleDonyathaDsahde() {
-  const [allOpen, setAllOpen] = useState(true);
+  const allKeys = ANTIPHONS.map((a) => String(a.num));
+  const [openItems, setOpenItems] = useState<string[]>([]);
 
   return (
     <>
@@ -570,16 +579,126 @@ export default function QaleDonyathaDsahde() {
           Qale d&apos;Onyatha d&apos;Sahde
         </h2>
         <button
-          onClick={() => setAllOpen((prev) => !prev)}
+          onClick={() =>
+            setOpenItems(openItems.length > 0 ? [] : allKeys)
+          }
           className="text-xs text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
         >
-          {allOpen ? "Collapse all" : "Expand all"}
+          {openItems.length > 0 ? "Collapse all" : "Expand all"}
         </button>
       </div>
 
-      {ANTIPHONS.map((a) => (
-        <AntiphonEntry key={a.num} a={a} open={allOpen} />
-      ))}
+      <Accordion
+        type="multiple"
+        value={openItems}
+        onValueChange={setOpenItems}
+        className="not-prose"
+      >
+        {ANTIPHONS.map((a) => (
+          <AccordionItem key={a.num} value={String(a.num)} className="mb-2 border-none">
+            <AccordionTrigger className="font-[family-name:var(--font-lora)]">
+              <span className="flex flex-col sm:flex-row sm:justify-between sm:items-start w-full gap-0.5 sm:gap-2">
+                <span>
+                  <span className="text-lg font-semibold text-slate-800 block group-data-[state=open]/trigger:text-primary transition-colors">
+                    {a.num}. {a.titleEn}
+                  </span>
+                  <span className="text-sm text-gray-500 block mt-1">
+                    {a.subtitle}
+                  </span>
+                </span>
+                <span className="sm:text-right">
+                  <SyriacText>
+                    <span className="text-lg font-normal text-slate-600 block mb-1">
+                      {a.titleSyr}
+                    </span>
+                  </SyriacText>
+                  <SyriacText>
+                    <span className="text-sm text-gray-500 block">
+                      {a.subtitleSyr}
+                    </span>
+                  </SyriacText>
+                </span>
+              </span>
+            </AccordionTrigger>
+            <AccordionContent className="mt-3 ml-4">
+              {/* Syriac text */}
+              <div className="mb-4 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3">
+                <div
+                  className="leading-loose [font-family:'Idiqlat',serif] text-base text-justify"
+                  dir="rtl"
+                  style={{ fontWeight: 400, fontSynthesis: "none" }}
+                >
+                  {a.stanzas.map((s, i) => (
+                    <p key={i} className={i < a.stanzas.length - 1 ? "mb-3" : ""}>
+                      <span className="text-red-700">{s.psalm}</span>
+                      {s.dzuwrta && <> ܕܨܘܼܪܬܵܐ.</>}
+                      {s.antiphonRedPart && (
+                        <>
+                          {" "}
+                          <span className="text-red-700">{s.antiphonRedPart}</span>
+                        </>
+                      )}{" "}
+                      <span className="text-slate-600">{s.antiphon}</span>
+                    </p>
+                  ))}
+                </div>
+              </div>
+
+              {/* Traditions */}
+              <div className="rounded-lg border border-slate-200 bg-white px-4 py-3 space-y-4">
+                {a.traditions.map((t) => (
+                  <div key={t.label}>
+                    <p className="font-[family-name:var(--font-lora)] text-sm font-semibold text-slate-600 mb-1">
+                      {t.label}
+                    </p>
+                    {t.note && (
+                      <p className="text-xs text-gray-400 italic ml-3 mb-1">
+                        {t.note}
+                      </p>
+                    )}
+                    {t.recordings && t.recordings.length > 0 ? (
+                      <div className="ml-3 space-y-2">
+                        {t.recordings.map((rec, i) => (
+                          <audio key={i} controls controlsList="nodownload" preload="none" className="w-full h-9" src={rec.url} />
+                        ))}
+                      </div>
+                    ) : t.tunes ? (
+                      <div className="ml-3 space-y-1">
+                        {Array.from({ length: t.tunes }, (_, i) => (
+                          <p key={i} className="text-sm text-gray-400 italic">
+                            Tune {i + 1} — Recording coming soon.
+                          </p>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-gray-400 italic ml-3">
+                        Recording coming soon.
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </div>
+              {a.description && (
+                <p className="font-[family-name:var(--font-lora)] text-sm text-gray-700 mt-3">
+                  {a.description}
+                </p>
+              )}
+              {a.hudraLink && (
+                <p className="text-xs text-gray-400 mt-2">
+                  For more recordings, see the{" "}
+                  <a
+                    href={a.hudraLink}
+                    className="text-primary underline underline-offset-2 hover:text-primary/80"
+                  >
+                    hymn page on Hudra
+                  </a>
+                  .
+                </p>
+              )}
+            </AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
 
       <h2>Conclusion</h2>
       <p></p>
