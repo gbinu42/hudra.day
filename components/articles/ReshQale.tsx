@@ -1133,8 +1133,10 @@ function ReshQalaList({
 export default function ReshQale() {
   const retainedKeys = RETAINED.map((r) => String(r.num));
   const notRetainedKeys = NOT_RETAINED.map((r) => String(r.num));
-  const [retainedOpen, setRetainedOpen] = useState<string[]>([]);
-  const [notRetainedOpen, setNotRetainedOpen] = useState<string[]>([]);
+  const [retainedOpen, setRetainedOpen] = useState<string[]>(retainedKeys);
+  const [notRetainedOpen, setNotRetainedOpen] = useState<string[]>(
+    notRetainedKeys,
+  );
 
   return (
     <>

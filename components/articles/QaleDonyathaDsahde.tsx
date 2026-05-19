@@ -570,7 +570,7 @@ function SyriacText({ children }: { children: ReactNode }) {
 
 export default function QaleDonyathaDsahde() {
   const allKeys = ANTIPHONS.map((a) => String(a.num));
-  const [openItems, setOpenItems] = useState<string[]>([]);
+  const [openItems, setOpenItems] = useState<string[]>(allKeys);
 
   return (
     <>
