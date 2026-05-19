@@ -598,7 +598,19 @@ const ANTIPHONS: Antiphon[] = [
       },
     ],
     traditions: [
-      { label: "Syro-Malabar" },
+      {
+        label: "Syro-Malabar",
+        recordings: [
+          {
+            url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fla-metthalmin%2Faudio%2F1779217771190.m4a?alt=media&token=c8f3fc1b-7a45-4849-8770-dd653e821d62",
+            hymnName: "Syriac",
+          },
+          {
+            url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Ftranslations%2FNew%20Recording%20708.m4a?alt=media&token=95553eac-d96f-4303-ab1d-16192bc48651",
+            hymnName: "English",
+          },
+        ],
+      },
       { label: "Chaldean" },
       { label: "Assyrian" },
     ],
