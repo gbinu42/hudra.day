@@ -216,7 +216,7 @@ const ANTIPHONS: Antiphon[] = [
           "ܢܵܨܚܝܼܢ ܥܲܡܠܲܝ̈ܟ݁ܘܿܢ ܘܲܡܚܲܕܸܐ ܠܲܢ: ܥܘܼܗܕܵܢܵܐ ܕܬܲܟ݂ܬ݁ܘܼܫܲܝ̈ܟ݁ܘܿܢ. ܕܲܚܠܵܦ ܡܫܝܼܚܵܐ ܐܸܬ݂ܩܲܛܲܠܬ݁ܘܿܢ: ܘܥܲܡܹܗ ܒܪܵܘܡܵܐ ܬܲܡܠ̱ܟ݂ܘܿܢ.",
         psalmEn: "In heaven and on earth.",
         antiphonEn:
-          "Your triumphant labors shine,\nAnd your struggles bring us joy;\nFor M'shiha you were slain,\nYou shall reign with Him on high.",
+          "Your triumphant labours shine,\nAnd your struggles bring us joy;\nFor M'shiha you were slain,\nYou shall reign with Him on high.",
       },
     ],
     traditions: [
@@ -249,7 +249,7 @@ const ANTIPHONS: Antiphon[] = [
           "ܣܵܗܕܹ̈ܐ ܩܲܕܝܼܫܹ̈ܐ ܡܲܠܦܵܢܹ̈ܐ ܕܗܲܝܡܵܢܘܼܬ݂ܵܐ: ܨܲܠܵܘ ܕܢܸܗܘܹܐ ܫܲܝܢܵܐ ܒܲܒܼܪܝܼܬ݂ܵܐ. ܩܪܵܒܹܐ ܢܸܬ݂ܒܲܛܠܘܿܢ ܘܚܸܪ̈ܝܵܢܹܐ ܢܸܫܠܘܿܢ ܡܸܢܲܢ: ܘܥܹܕܬܵܐ ܬܸܙܡܲܪ ܫܘܼܒ݂ܚܵܐ ܒܦܘܼܡ ܝܲܠܕܹܝ̈ـܗ̇.",
         psalmEn: "Your servants give thanks to You, MarYah",
         antiphonEn:
-          "Holy Sahde all,\nTeachers of the holy faith, pray that there will be peace in all the world, may all battles cease.\nAnd let all the strife cease from us, so the Church may sing\nPraises through her children.",
+          "Holy Sahde all,\nTeachers of the holy faith, pray that there will be peace in all the world, may all battles cease.\nAnd let all the strife cease from us, so the Church may sing\nPraises through her sons.",
       },
     ],
     traditions: [
@@ -285,7 +285,7 @@ const ANTIPHONS: Antiphon[] = [
           "ܣܵܗܕܹ̈ܐ ܒܪ̈ܝܼܟܹܐ ܝܘܼܬ݂ܪܵܢܵܐ: ܣܲܓܝܼܐܵܐ ܚܲܫܒ̇ܘܼܗܝ ܠܡܵܘܬܵܐ. ܘܐܲܝܟ݂ ܐܝܼܩܵܪܹ̈ܐ ܘܡܵܘܗܲܒ݂ܬ݂ܵܐ: ܩܲܒܸ̇ܠܘ ܢܸܓ݂ܕܹ̈ܐ ܘܲܣܪ̈ܵܩܹܐ. ܘܗܵܫܵܐ ܒܵܬܲܪ ܡܵܘܬܲܝ̈ـܗܘܿܢ: ܠܥܵܠܡܵܐ ܡܦܲܠܓ݂ܝܼܢ ܛܵܒ݂̈ܵܬ݂ܵܐ: ܘܣܝܼܡܵܬ݂ܵܐ ܕܡܲܠ̈ܝܵܢ ܥܘܼܕ݂ܪ̈ܵܢܹܐ.",
         psalmEn: "Blessed are you of MarYah",
         antiphonEn:
-          "Blessed Sahde,\nAs a mighty profit,\nThey considered death,\nAnd like honors and a gift,\nThey received the stripes and pain,\nAnd now even after death,\nTo the world they share good things,\nAnd great treasures abounding with help.",
+          "Blessed Sahde,\nAs a mighty profit,\nThey considered death,\nAnd like honours and a gift,\nThey received the stripes and pain,\nAnd now even after death,\nTo the world they share good things,\nAnd great treasures abounding with help.",
       },
     ],
     traditions: [
@@ -318,7 +318,7 @@ const ANTIPHONS: Antiphon[] = [
           "ܫܠܵܡܵܐ ܠܣܵܗܕܹ̈ܐ ܘܲܠܓܲܪ̈ܡܲܝܗܘܿܢ ܐܝܼܩܵܪܵܐ: ܘܲܠܡܵܪܗܘܿܢ ܫܘܼܒܼܚܵܐ: ܘܠܲܢ ܒܲܨܠܘܿܬ݂ܗܘܿܢ ܥܘܼܕ݂ܪ̈ܵܢܹܐ.",
         psalmEn: "He who speaks peace to His people and to His righteous ones.",
         antiphonEn:
-          "Peace to Sahde,\nAnd unto their bones honor,\nGlory to their Lord,\nAnd to us help through their prayers.",
+          "Peace to Sahde,\nAnd unto their bones honour,\nGlory to their Lord,\nAnd to us help through their prayers.",
       },
       {
         psalm: "ܘܲܒ݂ܢܘܼܗܪܵܟ݂ ܗ݇ܘ̣ ܚܵܙܹܝܢܲܢ ܢܘܼܗܪܵܐ.",
@@ -393,7 +393,7 @@ const ANTIPHONS: Antiphon[] = [
           "ܒܪܝܼܟܼ ܚܲܝܠܵܐ ܟܲܣܝܵܐ ܕܲܫܪܸܐ ܒܓܲܪ̈ܡܲܝܗܘܿܢ ܕܣܵܗܕܹ̈ܐ: ܣܝܼܡܝܼܢ ܓܹܝܪ ܒܩܲܒ݂ܪ̈ܲܝܗܘܿܢ: ܘܪܵܕ݂ܦܝܼܢ ܫܹܐܕܹ̈ܐ ܡ̣ܢ ܥܵܠܡܵܐ. ܒܝܘܼܠܦܵܢܗܘܿܢ ܒܲܛܸܠܘ ܛܘܼܥܝܲܝ ܟܠܵܗ̇ ܕܲܓ݂ܠܝܼܦܹ̈ܐ: ܘܣܵܥܪܝܼܢ ܟܲܣܝܵܐܝܼܬ݂ ܠܲܒ݂ܪܝܼܬ݂ܵܐ ܘܡܲܠܦܝܼܢ ܠܡܸܣܓܲܕ݂ ܠܵܟܼ: ܡܵܪܝܵܐ ܕܐܲܢ݇ܬ̇ܘܼ ܒܲܠܚܘܿܕܲܝܟ.",
         psalmEn: "I will bless MarYah at all times.",
         antiphonEn:
-          "Blest, hidden power,\nDwelling in the Sahdes' bones, laid to rest within their graves, driving demons from the world.\nThrough their teaching they stopped all the error carved in stone, unseen, they visit all the earth, teaching all to worship You:\nFor You Alone are MarYah.",
+          "Blest, hidden power,\nDwelling in the Sahdes' bones, laid to rest within their graves, driving demons from the world.\nThrough their teaching they stopped all the error carved in stone; unseen, they visit all the earth, teaching all to worship You:\nFor You Alone are MarYah.",
       },
     ],
     traditions: [
@@ -459,7 +459,7 @@ const ANTIPHONS: Antiphon[] = [
           "ܒܨܲܦܪܵܐ ܣܵܗܕܹ̈ܐ ܠܩܸܛܠܵܐ ܐܸܙܕܲܡܲܢܘ: ܘܝܲܡܝܼܢ ܡܵܪܲܢ ܓܵܕܼܠܵܐ ܟܠܝܼܠܲܝ̈ܗܘܿܢ.",
         psalmEn: "MarYah, in the morning You hear my voice.",
         antiphonEn:
-          "Morning Sahde,\nSummoned to their death;\nMaran's right hand,\nWeaves their holy crowns.",
+          "At dawn Sahde,\nare called to their death;\nMaran's right hand,\nWeaves their holy crowns.",
       },
       {
         psalm: "ܘܲܒ݂ܨܲܦܪܵܐ ܐܸܬ݁ܛܲܝܲܒ݂ ܘܐܸܬ݂ܚܙܸܐ ܠܵܟ݂.",
@@ -467,7 +467,7 @@ const ANTIPHONS: Antiphon[] = [
           "ܒܨܲܦܪܵܐ ܣܵܗ̈ܕܹܐ ܪܵܗܛܝܼܢ ܠܐܵܓ݂ܘܿܢܵܐ: ܠܡܸܣܲܒ݂ ܐܲܓ݂ܪܵܐ ܥܦܝܼܦܵܐ ܕܥܲܡܠܲܝ̈ܗܘܿܢ.",
         psalmEn: "And in the morning I prepare to meet You.",
         antiphonEn:
-          "Morning Sahde,\nRun to the contest;\nTo claim reward,\nDouble for their toil.",
+          "At dawn Sahde,\nHasten to the race;\nTo claim reward,\nDouble for their toil.",
       },
     ],
     traditions: [
@@ -542,7 +542,7 @@ const ANTIPHONS: Antiphon[] = [
         antiphonRedPartEn:
           "Amen, amen, I say to you: He who hears you hears me; and he who rejects you rejects me; and he who rejects me rejects Him who sent me.",
         antiphonEn:
-          "Your holy labors are not lost, Sahde,\nMshiha the King you loved will not pass by;\nFor in the earth your triumphant bones rest,\nAnd in life's book your names, friends of the Son.",
+          "Your holy labours are not lost, Sahde,\nMshiha the King you loved will not pass by;\nFor in the earth your triumphant bones rest,\nAnd in life's book your names, friends of the Son.",
       },
     ],
     traditions: [
@@ -643,13 +643,13 @@ export default function QaleDonyathaDsahde() {
         traditions are given in the links below each hymn.
       </p>
 
-      <div className="not-prose flex items-baseline gap-3 mt-10 mb-4">
+      <div className="not-prose flex flex-col gap-2 sm:flex-row sm:items-baseline sm:gap-3 mt-10 mb-4">
         <h2 className="text-xl font-semibold font-[family-name:var(--font-lora)] text-slate-700 m-0">
           Qale d&apos;Onyatha d&apos;Sahde
         </h2>
         <button
           onClick={() => setOpenItems(openItems.length > 0 ? [] : allKeys)}
-          className="text-xs text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+          className="text-xs text-gray-400 hover:text-gray-600 transition-colors cursor-pointer self-start sm:self-auto"
         >
           {openItems.length > 0 ? "Collapse all" : "Expand all"}
         </button>
@@ -760,16 +760,16 @@ export default function QaleDonyathaDsahde() {
               <div className="rounded-lg border border-slate-200 bg-white px-4 py-3 space-y-4">
                 {a.traditions.map((t) => (
                   <div key={t.label}>
-                    <p className="font-[family-name:var(--font-lora)] text-sm font-semibold text-slate-600 mb-1">
+                    <p className="font-[family-name:var(--font-lora)] text-sm font-semibold text-slate-600 mb-2">
                       {t.label}
                     </p>
                     {t.note && (
-                      <p className="text-xs text-gray-400 italic ml-3 mb-1">
+                      <p className="text-xs text-gray-400 italic ml-3 mb-2">
                         {t.note}
                       </p>
                     )}
                     {t.recordings && t.recordings.length > 0 ? (
-                      <div className="ml-3 space-y-2">
+                      <div className="ml-3 space-y-3 mt-2">
                         {t.recordings.map((rec, i) => (
                           <audio
                             key={i}

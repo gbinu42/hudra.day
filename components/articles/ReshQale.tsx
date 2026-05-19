@@ -1078,7 +1078,7 @@ function ReshQalaList({
                 </p>
               )}
               <div className="pt-2 border-t border-slate-100">
-                <p className="font-semibold text-slate-500 m-0 mb-2">
+                <p className="font-semibold text-slate-500 m-0 mb-3">
                   Recordings
                 </p>
                 <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3">
@@ -1086,7 +1086,7 @@ function ReshQalaList({
                     <div className="space-y-3">
                       {r.recordings.map((rec, i) => (
                         <div key={i}>
-                          <p className="text-xs text-slate-500 m-0 mb-1">
+                          <p className="text-xs text-slate-500 m-0 mb-3">
                             <span className="italic">
                               {rec.hymnName ?? r.name}
                             </span>
@@ -1255,7 +1255,7 @@ export default function ReshQale() {
         themselves well to Malayalam text.
       </p>
 
-      <div className="not-prose flex items-baseline gap-3 mt-10 mb-4">
+      <div className="not-prose flex flex-col gap-2 sm:flex-row sm:items-baseline sm:gap-3 mt-10 mb-4">
         <h3 className="text-lg font-semibold font-[family-name:var(--font-lora)] text-slate-700 m-0">
           Resh Qale retained in the Malayalam translation
         </h3>
@@ -1263,7 +1263,7 @@ export default function ReshQale() {
           onClick={() =>
             setRetainedOpen(retainedOpen.length > 0 ? [] : retainedKeys)
           }
-          className="text-xs text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+          className="text-xs text-gray-400 hover:text-gray-600 transition-colors cursor-pointer self-start sm:self-auto"
         >
           {retainedOpen.length > 0 ? "Collapse all" : "Expand all"}
         </button>
@@ -1275,7 +1275,7 @@ export default function ReshQale() {
         onOpenChange={setRetainedOpen}
       />
 
-      <div className="not-prose flex items-baseline gap-3 mt-10 mb-4">
+      <div className="not-prose flex flex-col gap-2 sm:flex-row sm:items-baseline sm:gap-3 mt-10 mb-4">
         <h3 className="text-lg font-semibold font-[family-name:var(--font-lora)] text-slate-700 m-0">
           Resh Qale not in the Malayalam translation
         </h3>
@@ -1285,7 +1285,7 @@ export default function ReshQale() {
               notRetainedOpen.length > 0 ? [] : notRetainedKeys,
             )
           }
-          className="text-xs text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+          className="text-xs text-gray-400 hover:text-gray-600 transition-colors cursor-pointer self-start sm:self-auto"
         >
           {notRetainedOpen.length > 0 ? "Collapse all" : "Expand all"}
         </button>
