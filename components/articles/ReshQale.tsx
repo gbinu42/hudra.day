@@ -105,6 +105,7 @@ const RETAINED: ReshQala[] = [
         },
       ],
     },
+    recordings: [{ url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fsahde-brikhe%2Faudio%2F1779124136877.m4a?alt=media&token=211c148b-1541-4cf1-b757-f986cfb6d093", performer: "Binu George" }],
     link: "hymns/sahde-brikhe",
   },
   {
@@ -126,6 +127,7 @@ const RETAINED: ReshQala[] = [
         },
       ],
     },
+    recordings: [{ url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fsahdaw-dawra%2Faudio%2F1779124369618.m4a?alt=media&token=b7048068-062f-4735-92b5-cb00ce15c2c8", performer: "Binu George" }],
     link: "hymns/sahdaw-dawra",
   },
   {
@@ -166,6 +168,7 @@ const RETAINED: ReshQala[] = [
         },
       ],
     },
+    recordings: [{ url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fsahde-waython-thangare%2Faudio%2F1779125270060.m4a?alt=media&token=4ca08b23-0a1a-4bc2-a69c-d57a6a8d8bcb", performer: "Binu George" }],
     link: "/hymns/sahde-waython-thangare",
   },
   {
@@ -186,6 +189,7 @@ const RETAINED: ReshQala[] = [
         },
       ],
     },
+    recordings: [{ url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Festhapanos-urha-drash%2Faudio%2F1779125470261.m4a?alt=media&token=f753507e-05bf-4704-a3ac-292671f0961c", performer: "Binu George" }],
     link: "/hymns/esthapanos-urha-drash",
   },
   {
@@ -323,6 +327,7 @@ const RETAINED: ReshQala[] = [
         },
       ],
     },
+    recordings: [{ url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fmshiha-paroqe-dalma%2Faudio%2F1779124798989.m4a?alt=media&token=95ab823d-111f-430c-acda-26068f51abab", performer: "Binu George" }],
     link: "/hymns/mshiha-paroqe-dalma",
   },
   {
@@ -346,6 +351,7 @@ const RETAINED: ReshQala[] = [
         },
       ],
     },
+    recordings: [{ url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fsahde-qandishe-sallaw-al-shayna%2Faudio%2F1779123434625.m4a?alt=media&token=93ea705f-912c-44f0-b4e5-74334a8b62fa", performer: "Binu George" }],
     link: "/hymns/sahde-qandishe-sallaw-al-shayna",
   },
   {
@@ -555,6 +561,7 @@ const NOT_RETAINED: ReshQala[] = [
         },
       ],
     },
+    recordings: [{ url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fsahde-qandishe-lwishay-nuhra%2Faudio%2F1779124595627.m4a?alt=media&token=616becf6-d167-4e2b-b081-eac5e06068d0", performer: "Binu George" }],
     link: "/hymns/sahde-qandishe-lwishay-nuhra",
   },
   {
@@ -685,6 +692,7 @@ const NOT_RETAINED: ReshQala[] = [
         },
       ],
     },
+    recordings: [{ url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fbrikh-hayla-kasya%2Faudio%2F1779124703528.m4a?alt=media&token=b5d859b4-54fd-4eea-b77e-e6b30e44ce54", performer: "Binu George" }],
     link: "/hymns/brikh-hayla-kasya",
   },
   {
@@ -721,6 +729,7 @@ const NOT_RETAINED: ReshQala[] = [
         },
       ],
     },
+    recordings: [{ url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fsahde-qandishe-dethqathal%2Faudio%2F1779125122899.m4a?alt=media&token=294b86fd-99f3-421f-b341-3022fc8a8847", performer: "Binu George" }],
     link: "/hymns/sahde-qandishe-dethqathal",
   },
   {
@@ -842,6 +851,7 @@ const NOT_RETAINED: ReshQala[] = [
         },
       ],
     },
+    recordings: [{ url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fshlama-lsahde-walgarmayhon-iqara%2Faudio%2F1779124294649.m4a?alt=media&token=35bc74d3-1b98-4b9f-b129-8cb4b8f8545d", performer: "Binu George" }],
     link: "/hymns/shlama-lsahde-walgarmayhon-iqara",
   },
   {
@@ -930,7 +940,7 @@ function ReshQalaList({
                   {r.nameMal}
                 </Mal>
               </span>
-              <Syr className="text-lg text-slate-600 sm:shrink-0">
+              <Syr className="text-lg text-slate-600 text-right self-end w-full sm:w-auto sm:shrink-0">
                 {r.nameSyr}
               </Syr>
             </span>
@@ -1012,11 +1022,13 @@ function ReshQalaList({
                       {r.recordings.map((rec, i) => (
                         <div key={i}>
                           <p className="text-xs text-slate-500 m-0 mb-1">
-                            {rec.hymnName && (
-                              <span className="italic">{rec.hymnName}</span>
+                            <span className="italic">{rec.hymnName ?? r.name}</span>
+                            {rec.performer && (
+                              <>
+                                {" · "}
+                                {rec.performer}
+                              </>
                             )}
-                            {rec.hymnName && " · "}
-                            {rec.performer}
                           </p>
                           <audio
                             controls

@@ -606,7 +606,7 @@ export default function QaleDonyathaDsahde() {
                     {a.subtitle}
                   </span>
                 </span>
-                <span className="sm:text-right">
+                <span className="text-right self-end w-full sm:w-auto">
                   <SyriacText>
                     <span className="text-lg font-normal text-slate-600 block mb-1">
                       {a.titleSyr}
