@@ -11,6 +11,9 @@ import {
 interface Stanza {
   psalm: string;
   antiphon: string;
+  psalmEn?: string;
+  antiphonEn?: string;
+  antiphonRedPartEn?: string;
   // For stanzas with a ܕܨܘܼܪܬܵܐ rubric and split antiphon colouring
   dzuwrta?: boolean;
   antiphonRedPart?: string; // shown in red before antiphon
@@ -47,11 +50,17 @@ const ANTIPHONS: Antiphon[] = [
         psalm: "ܫܲܒܲܚܘ ܙܲܕ̇ܝܼܩܹ̈ܐ ܠܡܵܪܝܵܐ.",
         antiphon:
           "ܣܵܗܕܹ̈ܐ ܩܲܕܝܼܫܹ̈ܐ ܨܲܠܵܘ ܥܲܠ ܫܲܝܢܵܐ: ܕܲܒ݂ܚܲܕ݂ܘܵܬ݂ܵܐ ܢܸܥܒܸ݁ܕ݂ ܥܹܐܕܲܝ̈ܟ̇ܘܿܢ.",
+        psalmEn: "O you righteous, Praise MarYah!",
+        antiphonEn:
+          "Holy Sahde, pray for a lasting peace\nThat we may with joy celebrate your feast",
       },
       {
         psalm: "ܘܠܲܬ݂ܪ̈ܝܼܨܹ̈ܐ ܝܵܐܝܵܐ ܬܸܫܒ݁ܘܿܚܬܵܐ.",
         antiphon:
           "ܣܵܗܕܹ̈ܐ ܕܐܸܬ݂ܪܲܓ݂ܪܲܓ݂ܘ ܕܢܸܚܙܘܿܢ ܠܲܡܫܝܼܚܵܐ: ܒܣܲܝܦܵܐ ܩܢܵܘ ܓܸܦܹ̈ܐ ܘܲܦܪܲܚܘ ܠܲܫܡܲܝܵܐ.",
+        psalmEn: "And to the upright, praise is fitting!",
+        antiphonEn:
+          "Sahde who desired to see Mshiha the Lord\nBy the sword gained wings and to heaven soared",
       },
     ],
     traditions: [
@@ -82,6 +91,9 @@ const ANTIPHONS: Antiphon[] = [
         psalm: "ܡܵܪܝܵܐ ܒܨܲܦܪܵܐ ܬܸܫܡܲܥ ܩܵܠܝ.",
         antiphon:
           "ܒܥܸܕܵܢ ܨܲܦܪܵܐ ܕܡܸܬ݂ܦܲܬ݂ܚܝܼܢ: ܬܲܪ̈ܥܲܝ ܪܵܘܡܵܐ ܠܲܨܠܘܿܬܼܵܐ: ܩܲܒܸ̇ܠ ܡܵܪܲܢ ܒܵܥܘܼܬܲܢ. ܘܦܲܢܵܐ ܒܪ̈ܲܚܡܲܝܟ ܫܹ̈ܐܠܵܬܲܢ: ܘܲܥܒܸܕ݂ ܣܲܒ݂ܪܵܐ ܘܦܘܼܪܩܵܢܵܐ: ܠܢܲܦ̮ܫܵܬ݂ܵܐ ܕܲܡܣܲܟ̇ܝ̈ܵܢ ܠܵܟ݂.",
+        psalmEn: "MarYah, in the morning You hear my voice.",
+        antiphonEn:
+          "When the doors of heaven part\nIn the morning for our prayer,\nO Maran, receive our plea.\nIn Your mercy answer us;\nGrant salvation and new hope\nTo the souls that wait for You.",
       },
     ],
     traditions: [
@@ -112,11 +124,17 @@ const ANTIPHONS: Antiphon[] = [
         psalm: "ܕܘܼܟ݂ܪܵܢܵܐ ܠܥܵܠܲܡ ܢܸܗܘܹܐ ܠܙܲܕܝܼܩܵܐ.",
         antiphon:
           "ܐܸܣܛܲܦܵܢܘܿܣ ܐܘܼܪܚܵܐ ܕܪܲܫ: ܘܲܒ݂ܥܸܩܒ݂ܵܬܹ̈ܗ ܪܕ݂ܵܘ ܣܵܗܕܹ̈ܐ. ܘܥܲܡܹܗ ܕܚܲܬ݂ܢܵܐ ܡܸܬ݂ܒܲܣܡܝܼܢ: ܒܲܓ݂ܢܘܿܢ ܢܘܼܗܪܵܐ ܕܠܵܐ ܡܸܫܬ݁ܪܸܐ.",
+        psalmEn: "The righteous shall be in everlasting remembrance.",
+        antiphonEn:
+          "Estappanos paved the way,\nSahde followed in his steps;\nWith the Bridegroom they rejoice\nIn the endless realm of light.",
       },
       {
         psalm: "ܘܡ̣ܢ ܛܸܒܵܐ ܒܝܼܫܵܐ ܠܵܐ ܢܸܕ݂ܚܲܠ.",
         antiphon:
           "ܐܸܣܛܲܦܵܢܘܿܣ ܟܲܕ݂ ܐܸܬ݂ܪܓܸܡ: ܙܝܼܘܵܐ ܕܡܵܪܹܗ ܒܪܵܘܡܵܐ ܚܙܵܐ. ܘܲܠܪܘܼܚܩܘܼܕ݂ܫܵܐ ܟܲܕ݂ ܓܵܕ݂ܠܵܐ: ܟܠܝܼܠܵܐ ܠܪܹܫܵܐ ܕܲܡܗܲܝܡܢܹ̈ܐ.",
+        psalmEn: "He shall not be afraid of evil tidings.",
+        antiphonEn:
+          "As Estappanos was stoned,\nHe beheld his Lord on high;\nAnd Ruha d'Qudsha wove\nCrowns to grace the faithful head.",
       },
     ],
     traditions: [
@@ -147,11 +165,17 @@ const ANTIPHONS: Antiphon[] = [
         psalm: "ܫܲܒܲܚܘ ܙܲܕ̇ܝܼܩܹ̈ܐ ܠܡܵܪܝܵܐ.",
         antiphon:
           "ܣܵܗܕܹ̈ܐ ܗ̤ܘܲܝܬ̇ܘܿܢ ܬܲܓܵܪܹ̈ܐ: ܘܗܵܐ ܣܝܼ̈ܡܵܬ݂ܟ݂ܘܿܢ ܒܲܫܡܲܝܵܐ. ܙܒܲܢܬ̇ܘܿܢܵܗ̇ ܠܡܲܪܓܵܢܝܼܬ݂ܵܐ: ܒܲܕ݂ܡܵܐ ܕܐܲܪܕܝܼܘ ܨܵܘܪ̈ܲܝܟ̇ܘܿܢ.",
+        psalmEn: "O you righteous, praise MarYah!",
+        antiphonEn:
+          "O you Sahde, merchants wise,\nWith your treasures stored on high,\nYou have bought the precious pearl\nWith the blood poured from your necks.",
       },
       {
         psalm: "ܘܠܲܬ݂ܪ̈ܝܼܨܹܐ ܝܵܐܝܵܐ ܬܸܫܒ݁ܘܿܚܬܵܐ.",
         antiphon:
           "ܣܵܗܕܹ̈ܐ ܕܐܸܬ݂ܥܲܠܝܼܘ ܘܲܡܛܵܘ: ܠܐܘܿܪܸܫܠܸܡ ܗܵܝ ܕܒܲܫܡܲܝܵܐ. ܘܙܲܒ݂ܢܘܼܗܝ ܒܲܕ݂ܡܵܐ ܕܨܵܘܪ̈ܲܝܗܘܿܢ: ܠܐܲܬ݂ܪܵܐ ܕܠܹܗ̤ܘ ܡܣܲܟܹ݁ܝܢ ܗ݇ܘ̣ܵܘ.",
+        psalmEn: "And to the upright, praise is fitting!",
+        antiphonEn:
+          "Sahde who arose and reached\nThe heavenly Ore'shlem,\nBy the blood poured from their necks,\nBought the home they waited for.",
       },
     ],
     traditions: [
@@ -182,11 +206,17 @@ const ANTIPHONS: Antiphon[] = [
         psalm: "ܡܸܛܠܵܬܼܵܟܼ ܐܸܬ݂ܩܲܛܲܠܢ ܟܠܝܘܿܡ.",
         antiphon:
           "ܣܵܗܕܹ̈ܐ ܩܲܕܝܼܫܹ̈ܐ ܕܐܸܬ݂ܩܲܛܲܠܘ: ܡܸܛܠ ܚܘܼܒܹ̇ܗ ܕܲܡܫܝܼܚܵܐ. ܡܦܝܼܣܝܼܢܲܢ ܥܲܠ ܟܠܲܢ: ܒܥܵܘ ܪ̈ܲܚܡܹܐ ܡ̣ܢ ܐܲܠܵܗܵܐ.",
+        psalmEn: "For Your sake we are killed all day long.",
+        antiphonEn:
+          "Holy Sahde who were slain,\nFor the love of the M'shiha,\nPray for all of us, we beg,\nAsk for mercy from Alaha.",
       },
       {
         psalm: "ܒܲܫܡܲܝܵܐ ܘܒܲܪܥܵܐ.",
         antiphon:
           "ܢܵܨܚܝܼܢ ܥܲܡܠܲܝ̈ܟ݁ܘܿܢ ܘܲܡܚܲܕܸܐ ܠܲܢ: ܥܘܼܗܕܵܢܵܐ ܕܬܲܟ݂ܬ݁ܘܼܫܲܝ̈ܟ݁ܘܿܢ. ܕܲܚܠܵܦ ܡܫܝܼܚܵܐ ܐܸܬ݂ܩܲܛܲܠܬ݁ܘܿܢ: ܘܥܲܡܹܗ ܒܪܵܘܡܵܐ ܬܲܡܠ̱ܟ݂ܘܿܢ.",
+        psalmEn: "In heaven and on earth.",
+        antiphonEn:
+          "Your triumphant labors shine,\nAnd your struggles bring us joy;\nFor M'shiha you were slain,\nYou shall reign with Him on high.",
       },
     ],
     traditions: [
@@ -217,6 +247,9 @@ const ANTIPHONS: Antiphon[] = [
         psalm: "ܢܵܘܕ̇ܘܿܢ ܠܵܟܼ ܡܵܪܝܵܐ ܥܲܒܼܕܲܝ̈ܟ.",
         antiphon:
           "ܣܵܗܕܹ̈ܐ ܩܲܕܝܼܫܹ̈ܐ ܡܲܠܦܵܢܹ̈ܐ ܕܗܲܝܡܵܢܘܼܬ݂ܵܐ: ܨܲܠܵܘ ܕܢܸܗܘܹܐ ܫܲܝܢܵܐ ܒܲܒܼܪܝܼܬ݂ܵܐ. ܩܪܵܒܹܐ ܢܸܬ݂ܒܲܛܠܘܿܢ ܘܚܸܪ̈ܝܵܢܹܐ ܢܸܫܠܘܿܢ ܡܸܢܲܢ: ܘܥܹܕܬܵܐ ܬܸܙܡܲܪ ܫܘܼܒ݂ܚܵܐ ܒܦܘܼܡ ܝܲܠܕܹܝ̈ـܗ̇.",
+        psalmEn: "Your servants give thanks to You, MarYah",
+        antiphonEn:
+          "Holy Sahde all,\nTeachers of the holy faith, pray that there will be peace in all the world, may all battles cease.\nAnd let all the strife cease from us, so the Church may sing\nPraises through her children.",
       },
     ],
     traditions: [
@@ -250,6 +283,9 @@ const ANTIPHONS: Antiphon[] = [
         psalm: "ܒܪܝܼܟܼܝܼܬ̇ܘܿܢ ܠܡܵܪܝܵܐ.",
         antiphon:
           "ܣܵܗܕܹ̈ܐ ܒܪ̈ܝܼܟܹܐ ܝܘܼܬ݂ܪܵܢܵܐ: ܣܲܓܝܼܐܵܐ ܚܲܫܒ̇ܘܼܗܝ ܠܡܵܘܬܵܐ. ܘܐܲܝܟ݂ ܐܝܼܩܵܪܹ̈ܐ ܘܡܵܘܗܲܒ݂ܬ݂ܵܐ: ܩܲܒܸ̇ܠܘ ܢܸܓ݂ܕܹ̈ܐ ܘܲܣܪ̈ܵܩܹܐ. ܘܗܵܫܵܐ ܒܵܬܲܪ ܡܵܘܬܲܝ̈ـܗܘܿܢ: ܠܥܵܠܡܵܐ ܡܦܲܠܓ݂ܝܼܢ ܛܵܒ݂̈ܵܬ݂ܵܐ: ܘܣܝܼܡܵܬ݂ܵܐ ܕܡܲܠ̈ܝܵܢ ܥܘܼܕ݂ܪ̈ܵܢܹܐ.",
+        psalmEn: "Blessed are you of MarYah",
+        antiphonEn:
+          "Blessed Sahde,\nAs a mighty profit,\nThey considered death,\nAnd like honors and a gift,\nThey received the stripes and pain,\nAnd now even after death,\nTo the world they share good things,\nAnd great treasures abounding with help.",
       },
     ],
     traditions: [
@@ -280,11 +316,17 @@ const ANTIPHONS: Antiphon[] = [
         psalm: "ܕܡܡܲܠܸܠ ܫܠܵܡܵܐ ܥܲܠ ܥܲܡܹܗ ܘܥܲܡ ܙܲܕܝܼܩܵܘ̈ܗܝ.",
         antiphon:
           "ܫܠܵܡܵܐ ܠܣܵܗܕܹ̈ܐ ܘܲܠܓܲܪ̈ܡܲܝܗܘܿܢ ܐܝܼܩܵܪܵܐ: ܘܲܠܡܵܪܗܘܿܢ ܫܘܼܒܼܚܵܐ: ܘܠܲܢ ܒܲܨܠܘܿܬ݂ܗܘܿܢ ܥܘܼܕ݂ܪ̈ܵܢܹܐ.",
+        psalmEn: "He who speaks peace to His people and to His righteous ones.",
+        antiphonEn:
+          "Peace to Sahde,\nAnd unto their bones honor,\nGlory to their Lord,\nAnd to us help through their prayers.",
       },
       {
         psalm: "ܘܲܒ݂ܢܘܼܗܪܵܟ݂ ܗ݇ܘ̣ ܚܵܙܹܝܢܲܢ ܢܘܼܗܪܵܐ.",
         antiphon:
           "ܣܵܗܕܹ̈ܐ ܒܢܘܼܗܪܵܐ ܘܲܫܠܝܼܚܹ̈ܐ ܒܲܓ݂ܢܘܿܢ ܢܘܼܗܪܵܐ: ܘܗܵܐ ܙܵܡܪܝܼܢ ܫܘܼܒ݂ܚܵܐ: ܠܐܝܼܬ݂ܝܵܐ ܫܪܸܐ ܒܢܘܼܗܪܵܐ ܓܲܐܝܵܐ.",
+        psalmEn: "And in Your light we see light.",
+        antiphonEn:
+          "Sahde in light,\nAnd Shlihe in light's chamber,\nAnd they sing His praise,\nTo the One in splendid light.",
       },
     ],
     traditions: [
@@ -315,6 +357,10 @@ const ANTIPHONS: Antiphon[] = [
         psalm: "ܗܵܠܹܝܢ ܟܠܗܹܝܢ ܓܕܲܫ̈ ܠܲܢ ܘܠܵܐ ܛܥܲܝܢܵܟܼ.",
         antiphon:
           "ܡܫܝܼܚܵܐ ܦܵܪܘܿܩܹܗ ܕܥܵܠܡܵܐ: ܡܲܠܟܵܐ ܪܲܒܵܐ ܕܬܸܫܒ̇ܘܿܚܬܵܐ: ܣܵܗܕܹ̈ܐ ܕܪܲܚܡܘܼܗܝ ܘܗܲܝܡܸܢܘ ܒܹܗ: ܠܐܵܟܹܠܩܲܪܨܵܐ ܐܲܒ݂ܗܸܬ݂ܘ ܗ݇ܘ̣ܵܘ. ܘܥܲܡ ܡܲܠܲܐܟܹ̈ܐ ܚܵܕܹܝܢ ܒܲܡܪ̈ܵܘܡܹܐ: ܘܲܩܕ݂ܵܡ ܐܲܠܵܗܵܐ ܩܵܝܡܝܼܢ: ܘܠܲܒ݂ܥܸܠܕܲܪܵܐ ܘܲܠܚܲܝܠܹܗ: ܬܚܘܿܬ݂ ܪܸ̈ܓ݂ܠܲܝܗܘܿܢ ܫܲܥܒܸܕ݂ܘ ܗ݇ܘ̣ܵܘ.",
+        psalmEn:
+          "All these things have come upon us, yet we have not forgotten You.",
+        antiphonEn:
+          "Mshiha, Savior of the world,\nGreat and glorified High King,\nSahde loved Him and believed,\nThey put Satan unto shame.\nWith the angels they rejoice,\nStanding before Alaha;\nThey subdued the enemy\nAnd his power 'neath their feet.",
       },
     ],
     traditions: [
@@ -345,6 +391,9 @@ const ANTIPHONS: Antiphon[] = [
         psalm: "ܐܹܒܲܪܸܟܼ ܠܡܵܪܝܵܐ ܒܟܼܠܙܒܲܢ.",
         antiphon:
           "ܒܪܝܼܟܼ ܚܲܝܠܵܐ ܟܲܣܝܵܐ ܕܲܫܪܸܐ ܒܓܲܪ̈ܡܲܝܗܘܿܢ ܕܣܵܗܕܹ̈ܐ: ܣܝܼܡܝܼܢ ܓܹܝܪ ܒܩܲܒ݂ܪ̈ܲܝܗܘܿܢ: ܘܪܵܕ݂ܦܝܼܢ ܫܹܐܕܹ̈ܐ ܡ̣ܢ ܥܵܠܡܵܐ. ܒܝܘܼܠܦܵܢܗܘܿܢ ܒܲܛܸܠܘ ܛܘܼܥܝܲܝ ܟܠܵܗ̇ ܕܲܓ݂ܠܝܼܦܹ̈ܐ: ܘܣܵܥܪܝܼܢ ܟܲܣܝܵܐܝܼܬ݂ ܠܲܒ݂ܪܝܼܬ݂ܵܐ ܘܡܲܠܦܝܼܢ ܠܡܸܣܓܲܕ݂ ܠܵܟܼ: ܡܵܪܝܵܐ ܕܐܲܢ݇ܬ̇ܘܼ ܒܲܠܚܘܿܕܲܝܟ.",
+        psalmEn: "I will bless MarYah at all times.",
+        antiphonEn:
+          "Blest, hidden power,\nDwelling in the Sahdes' bones, laid to rest within their graves, driving demons from the world.\nThrough their teaching they stopped all the error carved in stone, unseen, they visit all the earth, teaching all to worship You:\nFor You Alone are MarYah.",
       },
     ],
     traditions: [
@@ -375,6 +424,9 @@ const ANTIPHONS: Antiphon[] = [
         psalm: "ܒܟܼܠܵܗ̇ ܐܲܪܥܵܐ ܢܸܦܩܲܬ̤ ܣܒܲܪܬ̇ܗܘܿܢ.",
         antiphon:
           "ܣܵܗܕܹ̈ܐ ܩܲܕܝܼܫܹ̈ܐ ܠܒܼܝܼܫܲܝ̈ ܢܘܼܗܪܵܐ: ܠܐܲܪܒܲܥܦܸܢܝܵܬܹ̈ܗ ܕܥܵܠܡܵܐ ܢܦܲܩܘ ܗ݇ܘ̣ܵܘ ܠܲܡܣܲܒܵܪܘܼ. ܬܠܝܼܬܼܵܝܘܼܬ݂ܵܐ ܡܫܲܒܲܚܬܵܐ: ܐܲܒ݂ܵܐ ܘܲܒ݂ܪܵܐ ܘܪܘܼܚܩܘܼܕ݂ܫܵܐ.",
+        psalmEn: "Through all the earth their message went forth.",
+        antiphonEn:
+          "Sahde, holy ones, clothed in bright light:\nTo the corners of the earth they went out to proclaim.\nThe glorious Trinity:\nFather, Son, and Ruhqudsha.",
       },
     ],
     traditions: [
@@ -405,11 +457,17 @@ const ANTIPHONS: Antiphon[] = [
         psalm: "ܡܵܪܝܵܐ ܒܨܲܦܪܵܐ ܬܸܫܡܲܥ ܩܵܠܝ.",
         antiphon:
           "ܒܨܲܦܪܵܐ ܣܵܗܕܹ̈ܐ ܠܩܸܛܠܵܐ ܐܸܙܕܲܡܲܢܘ: ܘܝܲܡܝܼܢ ܡܵܪܲܢ ܓܵܕܼܠܵܐ ܟܠܝܼܠܲܝ̈ܗܘܿܢ.",
+        psalmEn: "Lord, in the morning You shall hear my voice.",
+        antiphonEn:
+          "In the morn, Sahde,\nCalled to face their death;\nAnd Maran's right hand,\nWeaves their holy crowns.",
       },
       {
         psalm: "ܘܲܒ݂ܨܲܦܪܵܐ ܐܸܬ݁ܛܲܝܲܒ݂ ܘܐܸܬ݂ܚܙܸܐ ܠܵܟ݂.",
         antiphon:
           "ܒܨܲܦܪܵܐ ܣܵܗ̈ܕܹܐ ܪܵܗܛܝܼܢ ܠܐܵܓ݂ܘܿܢܵܐ: ܠܡܸܣܲܒ݂ ܐܲܓ݂ܪܵܐ ܥܦܝܼܦܵܐ ܕܥܲܡܠܲܝ̈ܗܘܿܢ.",
+        psalmEn: "And in the morning I prepare to meet You.",
+        antiphonEn:
+          "In the morn, Sahde,\nRun to the contest,\nTo claim their reward,\nDouble for their toil.",
       },
     ],
     traditions: [
@@ -443,6 +501,10 @@ const ANTIPHONS: Antiphon[] = [
           "ܐܲܢ݇ܬ݁ܘܿܢ ܐܸܢܘܿܢ ܣܵܗܕܵܘ̈ܗܝ ܕܲܒܼܪܵܐ ܘܲܓܼܒܲـ̈ـܝܵܐ ܕܝܼܠܹܗ.",
         antiphon:
           "ܣܵܗܕܵܘ̈ܗܝ ܕܲܒ݂ܪܵܐ ܩܲܕ̇ܝܼܫܵܐ: ܒܪܲܗܛܵܐ ܛܵܒ݂ܵܐ ܐܸܬ݂ܟܲܠܲܠܘ: ܒܟ݂ܵܪܘܿܙܘܼܬ݂ܵܐ ܕܲܫܪܵܪܵܐ: ܘܥܲܡ ܡܲܠܲܐܟܹ̈ܐ ܕܒܲܫܡܲܝܵܐ: ܚܵܕܹܝܢ ܘܲܡܫܲܒ̇ܚܝܼܢ ܠܐܲܠܵܗܵܐ: ܥܒ݂ܝܼܕ݂ܝܼܢ ܚܠܵܦܲܝܢ ܒܲܥܵܝܹ̈ܐ.",
+        psalmEn: "And all of you are sons of the Most High.",
+        antiphonRedPartEn: "You are the Sahde of the Son and His chosen ones.",
+        antiphonEn:
+          "Sahde of the Holy Son,\nCrowned by running the good race,\nIn the preaching of the truth,\nAnd with angels in heaven,\nJoyfully praise Alaha,\nMade intercessors for us.",
       },
     ],
     traditions: [
@@ -476,6 +538,11 @@ const ANTIPHONS: Antiphon[] = [
           "ܐܵܡܹܝܢ ܐܵܡܹܝܢ ܐܵܡܲܪ ܐ݇ܢܵܐ ܠܟܼܘܿܢ: ܕܡ̇ܢ ܕܲܠܟܼܘܿܢ ܫܵܡܲܥ ܠܝܼ ܫܵܡܲܥ: ܘܡ̇ܢ ܕܲܠܟܼܘܿܢ ܛܵܠܹܡ ܠܝܼ ܛܵܠܹܡ: ܘܡ̇ܢ ܕܠܝܼ ܛܵܠܹܡ: ܛܵܠܹܡ ܠܡ̇ܢ ܕܫܲܠܚܲܢܝ.",
         antiphon:
           "ܠܵܐ ܡܸܬ̇ܛܲܠܡܝܼܢ ܥܲܡܠܲܝ̈ܟ̇ܘܿܢ ܣܵܗܕܹ̈ܐ: ܘܠܵܐ ܥܵܒܲܪ ܡܲܠܟܵܐ ܡܫܝܼܚܵܐ ܕܲܪܚܸܡܬ̇ܘܿܢܵܝܗܝ. ܕܒܲܐܪܥܵܐ ܣܝܼܡܝܼܢ ܓܲܪ̈ܡܲܝܟ̇ܘܿܢ ܕܐܸܬ݂ܢܲܨܲܚܘ: ܘܒܲܣܦܲܪ ܚܲܝܹ̈ܐ ܫܡܵܗܲܝ̈ܟ̇ܘܿܢ ܪ̈ܵܚܡܵܘܗܝ ܕܲܒܼܪܵܐ.",
+        psalmEn: "He executes justice for the oppressed.",
+        antiphonRedPartEn:
+          "Amen, amen, I say to you: He who hears you hears me; and he who rejects you rejects me; and he who rejects me rejects Him who sent me.",
+        antiphonEn:
+          "Your holy labors are not lost, Sahde,\nMshiha the King you loved will not pass by;\nFor in the earth your triumphant bones rest,\nAnd in life's book your names, friends of the Son.",
       },
     ],
     traditions: [
@@ -624,33 +691,69 @@ export default function QaleDonyathaDsahde() {
                 </span>
               </span>
             </AccordionTrigger>
-            <AccordionContent className="mt-3 ml-4">
+            <AccordionContent className="mt-1 ml-4">
               {/* Syriac text */}
-              <div className="mb-4 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3">
+              <div className="mb-4 rounded-lg border border-slate-200 bg-slate-50 px-4 pt-2 pb-3">
                 <div
                   className="leading-loose [font-family:'Idiqlat',serif] text-base text-justify"
                   dir="rtl"
                   style={{ fontWeight: 400, fontSynthesis: "none" }}
                 >
-                  {a.stanzas.map((s, i) => (
-                    <p
-                      key={i}
-                      className={i < a.stanzas.length - 1 ? "mb-3" : ""}
-                    >
-                      <span className="text-red-700">{s.psalm}</span>
-                      {s.dzuwrta && <> ܕܨܘܼܪܬܵܐ.</>}
-                      {s.antiphonRedPart && (
-                        <>
-                          {" "}
-                          <span className="text-red-700">
-                            {s.antiphonRedPart}
-                          </span>
-                        </>
-                      )}{" "}
-                      <span className="text-slate-600">{s.antiphon}</span>
-                    </p>
-                  ))}
+                  <p className="m-0">
+                    {a.stanzas.map((s, i) => (
+                      <span key={i}>
+                        {i > 0 && <br />}
+                        <span className="text-red-700">{s.psalm}</span>
+                        {s.dzuwrta && <> ܕܨܘܼܪܬܵܐ.</>}
+                        {s.antiphonRedPart && (
+                          <>
+                            {" "}
+                            <span className="text-red-700">
+                              {s.antiphonRedPart}
+                            </span>
+                          </>
+                        )}{" "}
+                        <span className="text-slate-600">{s.antiphon}</span>
+                      </span>
+                    ))}
+                  </p>
                 </div>
+                {a.stanzas.some((s) => s.psalmEn) && (
+                  <div
+                    className="mt-2 pt-2 border-t border-slate-200 leading-normal [font-family:'Idiqlat',serif] text-sm"
+                    style={{ fontWeight: 400, fontSynthesis: "none" }}
+                  >
+                    {a.stanzas.map(
+                      (s, i) =>
+                        s.psalmEn && (
+                          <div
+                            key={i}
+                            className={i < a.stanzas.length - 1 ? "mb-3" : ""}
+                          >
+                            <p className="m-0 leading-normal whitespace-pre-line">
+                              <span className="text-red-700">{s.psalmEn}</span>
+                              {s.antiphonRedPartEn && (
+                                <>
+                                  {"\n"}
+                                  <span className="text-red-700">
+                                    {s.antiphonRedPartEn}
+                                  </span>
+                                </>
+                              )}
+                              {s.antiphonEn && (
+                                <>
+                                  {"\n"}
+                                  <span className="text-slate-600">
+                                    {s.antiphonEn}
+                                  </span>
+                                </>
+                              )}
+                            </p>
+                          </div>
+                        ),
+                    )}
+                  </div>
+                )}
               </div>
 
               {/* Traditions */}
