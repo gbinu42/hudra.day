@@ -457,9 +457,9 @@ const ANTIPHONS: Antiphon[] = [
         psalm: "ܡܵܪܝܵܐ ܒܨܲܦܪܵܐ ܬܸܫܡܲܥ ܩܵܠܝ.",
         antiphon:
           "ܒܨܲܦܪܵܐ ܣܵܗܕܹ̈ܐ ܠܩܸܛܠܵܐ ܐܸܙܕܲܡܲܢܘ: ܘܝܲܡܝܼܢ ܡܵܪܲܢ ܓܵܕܼܠܵܐ ܟܠܝܼܠܲܝ̈ܗܘܿܢ.",
-        psalmEn: "Lord, in the morning You shall hear my voice.",
+        psalmEn: "MarYah, in the morning You hear my voice.",
         antiphonEn:
-          "In the morn, Sahde,\nCalled to face their death;\nAnd Maran's right hand,\nWeaves their holy crowns.",
+          "Morning Sahde,\nSummoned to their death;\nMaran's right hand,\nWeaves their holy crowns.",
       },
       {
         psalm: "ܘܲܒ݂ܨܲܦܪܵܐ ܐܸܬ݁ܛܲܝܲܒ݂ ܘܐܸܬ݂ܚܙܸܐ ܠܵܟ݂.",
@@ -467,7 +467,7 @@ const ANTIPHONS: Antiphon[] = [
           "ܒܨܲܦܪܵܐ ܣܵܗ̈ܕܹܐ ܪܵܗܛܝܼܢ ܠܐܵܓ݂ܘܿܢܵܐ: ܠܡܸܣܲܒ݂ ܐܲܓ݂ܪܵܐ ܥܦܝܼܦܵܐ ܕܥܲܡܠܲܝ̈ܗܘܿܢ.",
         psalmEn: "And in the morning I prepare to meet You.",
         antiphonEn:
-          "In the morn, Sahde,\nRun to the contest,\nTo claim their reward,\nDouble for their toil.",
+          "Morning Sahde,\nRun to the contest;\nTo claim reward,\nDouble for their toil.",
       },
     ],
     traditions: [
