@@ -23,7 +23,7 @@ interface TraditionNote {
   label: string;
   note?: string;
   tunes?: number;
-  recordings?: { url: string; performer: string }[];
+  recordings?: { url: string; performer?: string; hymnName?: string }[];
 }
 
 interface Antiphon {
@@ -69,7 +69,11 @@ const ANTIPHONS: Antiphon[] = [
         recordings: [
           {
             url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fsahde-qandishe-sallaw-al-shayna%2Faudio%2F1779123434625.m4a?alt=media&token=93ea705f-912c-44f0-b4e5-74334a8b62fa",
-            performer: "Binu George",
+            hymnName: "Syriac",
+          },
+          {
+            url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Ftranslations%2FNew%20Recording%20682.m4a?alt=media&token=3049c05a-44c2-4ace-94ea-3316063288ac",
+            hymnName: "English",
           },
         ],
       },
@@ -102,7 +106,11 @@ const ANTIPHONS: Antiphon[] = [
         recordings: [
           {
             url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fbenda-sapra-methpathhin%2Faudio%2F1779123811606.m4a?alt=media&token=eddb2ce4-3a84-4a2c-a3c1-afb5c103646d",
-            performer: "Binu George",
+            hymnName: "Syriac",
+          },
+          {
+            url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Ftranslations%2FNew%20Recording%20684.m4a?alt=media&token=27dbcd2d-236f-49eb-b0ec-e9f8d9f5808a",
+            hymnName: "English",
           },
         ],
       },
@@ -143,7 +151,11 @@ const ANTIPHONS: Antiphon[] = [
         recordings: [
           {
             url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Festhapanos-urha-drash%2Faudio%2F1779125470261.m4a?alt=media&token=f753507e-05bf-4704-a3ac-292671f0961c",
-            performer: "Binu George",
+            hymnName: "Syriac",
+          },
+          {
+            url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Ftranslations%2FNew%20Recording%20685.m4a?alt=media&token=7b4dc787-cbef-4714-bd50-4d75f657016e",
+            hymnName: "English",
           },
         ],
       },
@@ -184,7 +196,11 @@ const ANTIPHONS: Antiphon[] = [
         recordings: [
           {
             url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fsahde-waython-thangare%2Faudio%2F1779125270060.m4a?alt=media&token=4ca08b23-0a1a-4bc2-a69c-d57a6a8d8bcb",
-            performer: "Binu George",
+            hymnName: "Syriac",
+          },
+          {
+            url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Ftranslations%2FNew%20Recording%20687.m4a?alt=media&token=e2a07aee-180d-488e-acf2-72d3ccf4dce4",
+            hymnName: "English",
           },
         ],
       },
@@ -225,7 +241,11 @@ const ANTIPHONS: Antiphon[] = [
         recordings: [
           {
             url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fsahde-qandishe-dethqathal%2Faudio%2F1779125122899.m4a?alt=media&token=294b86fd-99f3-421f-b341-3022fc8a8847",
-            performer: "Binu George",
+            hymnName: "Syriac",
+          },
+          {
+            url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Ftranslations%2FNew%20Recording%20689.m4a?alt=media&token=8cbf7cb1-bb10-41a0-9fbb-6bc7d7548fa5",
+            hymnName: "English",
           },
         ],
       },
@@ -258,7 +278,11 @@ const ANTIPHONS: Antiphon[] = [
         recordings: [
           {
             url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fsahde-qandishe-malpane-dhaymanutha%2Faudio%2F1779125173348.m4a?alt=media&token=1ff37378-a499-4a40-ab61-11a088d63b47",
-            performer: "Binu George",
+            hymnName: "Syriac",
+          },
+          {
+            url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Ftranslations%2FNew%20Recording%20691.m4a?alt=media&token=355eaa9c-c57e-4904-bfb0-7c68f2cc1c64",
+            hymnName: "English",
           },
         ],
       },
@@ -294,7 +318,11 @@ const ANTIPHONS: Antiphon[] = [
         recordings: [
           {
             url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fsahde-brikhe%2Faudio%2F1779124136877.m4a?alt=media&token=211c148b-1541-4cf1-b757-f986cfb6d093",
-            performer: "Binu George",
+            hymnName: "Syriac",
+          },
+          {
+            url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Ftranslations%2FNew%20Recording%20693.m4a?alt=media&token=76ec85e8-71e1-4a21-bea0-9fc1dca887e5",
+            hymnName: "English",
           },
         ],
       },
@@ -335,7 +363,11 @@ const ANTIPHONS: Antiphon[] = [
         recordings: [
           {
             url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fshlama-lsahde-walgarmayhon-iqara%2Faudio%2F1779124294649.m4a?alt=media&token=35bc74d3-1b98-4b9f-b129-8cb4b8f8545d",
-            performer: "Binu George",
+            hymnName: "Syriac",
+          },
+          {
+            url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Ftranslations%2FNew%20Recording%20694.m4a?alt=media&token=1ccb6722-96d7-45fd-b40f-35c8f1e00bed",
+            hymnName: "English",
           },
         ],
       },
@@ -369,7 +401,11 @@ const ANTIPHONS: Antiphon[] = [
         recordings: [
           {
             url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fmshiha-paroqe-dalma%2Faudio%2F1779124798989.m4a?alt=media&token=95ab823d-111f-430c-acda-26068f51abab",
-            performer: "Binu George",
+            hymnName: "Syriac",
+          },
+          {
+            url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Ftranslations%2FNew%20Recording%20695.m4a?alt=media&token=ce0cc245-9c92-4d13-b3ee-0ca4c5df0352",
+            hymnName: "English",
           },
         ],
       },
@@ -402,7 +438,11 @@ const ANTIPHONS: Antiphon[] = [
         recordings: [
           {
             url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fbrikh-hayla-kasya%2Faudio%2F1779124703528.m4a?alt=media&token=b5d859b4-54fd-4eea-b77e-e6b30e44ce54",
-            performer: "Binu George",
+            hymnName: "Syriac",
+          },
+          {
+            url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Ftranslations%2FNew%20Recording%20696.m4a?alt=media&token=33862632-3846-4615-b619-590e426d97e1",
+            hymnName: "English",
           },
         ],
       },
@@ -435,7 +475,11 @@ const ANTIPHONS: Antiphon[] = [
         recordings: [
           {
             url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fsahde-qandishe-lwishay-nuhra%2Faudio%2F1779124595627.m4a?alt=media&token=616becf6-d167-4e2b-b081-eac5e06068d0",
-            performer: "Binu George",
+            hymnName: "Syriac",
+          },
+          {
+            url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Ftranslations%2FNew%20Recording%20697.m4a?alt=media&token=35e85130-29cb-4123-b4f0-573098a9395f",
+            hymnName: "English",
           },
         ],
       },
@@ -476,7 +520,11 @@ const ANTIPHONS: Antiphon[] = [
         recordings: [
           {
             url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fbsapra-sahde%2Faudio%2F1779124483859.m4a?alt=media&token=19b9b543-6dd1-4def-ab3e-7097b810b3ed",
-            performer: "Binu George",
+            hymnName: "Syriac",
+          },
+          {
+            url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Ftranslations%2FNew%20Recording%20701.m4a?alt=media&token=653955ef-ae0e-404c-859b-2fb6c93a7c17",
+            hymnName: "English",
           },
         ],
       },
@@ -513,7 +561,11 @@ const ANTIPHONS: Antiphon[] = [
         recordings: [
           {
             url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fsahdaw-dawra%2Faudio%2F1779124369618.m4a?alt=media&token=b7048068-062f-4735-92b5-cb00ce15c2c8",
-            performer: "Binu George",
+            hymnName: "Syriac",
+          },
+          {
+            url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Ftranslations%2FNew%20Recording%20700.m4a?alt=media&token=176dd992-8adc-44ae-99bd-d833162ec357",
+            hymnName: "English",
           },
         ],
       },
@@ -771,14 +823,24 @@ export default function QaleDonyathaDsahde() {
                     {t.recordings && t.recordings.length > 0 ? (
                       <div className="ml-3 space-y-3 mt-2">
                         {t.recordings.map((rec, i) => (
-                          <audio
-                            key={i}
-                            controls
-                            controlsList="nodownload"
-                            preload="none"
-                            className="w-full h-9"
-                            src={rec.url}
-                          />
+                          <div key={i}>
+                            {(rec.hymnName || rec.performer) && (
+                              <p className="text-xs text-slate-500 m-0 mb-1">
+                                {rec.hymnName && (
+                                  <span className="italic">{rec.hymnName}</span>
+                                )}
+                                {rec.hymnName && rec.performer && " · "}
+                                {rec.performer}
+                              </p>
+                            )}
+                            <audio
+                              controls
+                              controlsList="nodownload"
+                              preload="none"
+                              className="w-full h-9"
+                              src={rec.url}
+                            />
+                          </div>
                         ))}
                       </div>
                     ) : t.tunes ? (
