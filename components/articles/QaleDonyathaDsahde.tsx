@@ -374,7 +374,7 @@ const ANTIPHONS: Antiphon[] = [
       {
         psalm: "ܒܟܼܠܵܗ̇ ܐܲܪܥܵܐ ܢܸܦܩܲܬ̤ ܣܒܲܪܬ̇ܗܘܿܢ.",
         antiphon:
-          "ܣܵܗܕܹ̈ܐ ܩܲܕܝܼܫܹ̈ܐ ܠܒܼܝܼܫܲܝ̈ ܢܘܼܗܪܵܐ: ܠܐܲܒܲܥܦܸܢܝܵܬܹ̈ܗ ܕܥܵܠܡܵܐ ܢܦܲܩܘ ܗ݇ܘ̣ܵܘ ܠܲܡܣܲܒܵܪܘܼ. ܬܠܝܼܬܼܵܝܘܼܬ݂ܵܐ ܡܫܲܒܲܚܬܵܐ: ܐܲܒ݂ܵܐ ܘܲܒ݂ܪܵܐ ܘܪܘܼܚܩܘܼܕ݂ܫܵܐ.",
+          "ܣܵܗܕܹ̈ܐ ܩܲܕܝܼܫܹ̈ܐ ܠܒܼܝܼܫܲܝ̈ ܢܘܼܗܪܵܐ: ܠܐܲܪܒܲܥܦܸܢܝܵܬܹ̈ܗ ܕܥܵܠܡܵܐ ܢܦܲܩܘ ܗ݇ܘ̣ܵܘ ܠܲܡܣܲܒܵܪܘܼ. ܬܠܝܼܬܼܵܝܘܼܬ݂ܵܐ ܡܫܲܒܲܚܬܵܐ: ܐܲܒ݂ܵܐ ܘܲܒ݂ܪܵܐ ܘܪܘܼܚܩܘܼܕ݂ܫܵܐ.",
       },
     ],
     traditions: [
@@ -508,7 +508,9 @@ export default function QaleDonyathaDsahde() {
   return (
     <>
       <div className="not-prose mb-6 rounded-lg bg-yellow-50 border border-yellow-300 px-5 py-3 flex items-center gap-3 text-yellow-800">
-        <span className="text-lg" aria-hidden="true">🚧</span>
+        <span className="text-lg" aria-hidden="true">
+          🚧
+        </span>
         <p className="text-sm font-medium m-0">
           Work in progress — this article is incomplete and may change
           significantly.
@@ -579,9 +581,7 @@ export default function QaleDonyathaDsahde() {
           Qale d&apos;Onyatha d&apos;Sahde
         </h2>
         <button
-          onClick={() =>
-            setOpenItems(openItems.length > 0 ? [] : allKeys)
-          }
+          onClick={() => setOpenItems(openItems.length > 0 ? [] : allKeys)}
           className="text-xs text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
         >
           {openItems.length > 0 ? "Collapse all" : "Expand all"}
@@ -595,7 +595,11 @@ export default function QaleDonyathaDsahde() {
         className="not-prose"
       >
         {ANTIPHONS.map((a) => (
-          <AccordionItem key={a.num} value={String(a.num)} className="mb-2 border-none">
+          <AccordionItem
+            key={a.num}
+            value={String(a.num)}
+            className="mb-2 border-none"
+          >
             <AccordionTrigger className="font-[family-name:var(--font-lora)]">
               <span className="flex flex-col sm:flex-row sm:justify-between sm:items-start w-full gap-0.5 sm:gap-2">
                 <span>
@@ -629,13 +633,18 @@ export default function QaleDonyathaDsahde() {
                   style={{ fontWeight: 400, fontSynthesis: "none" }}
                 >
                   {a.stanzas.map((s, i) => (
-                    <p key={i} className={i < a.stanzas.length - 1 ? "mb-3" : ""}>
+                    <p
+                      key={i}
+                      className={i < a.stanzas.length - 1 ? "mb-3" : ""}
+                    >
                       <span className="text-red-700">{s.psalm}</span>
                       {s.dzuwrta && <> ܕܨܘܼܪܬܵܐ.</>}
                       {s.antiphonRedPart && (
                         <>
                           {" "}
-                          <span className="text-red-700">{s.antiphonRedPart}</span>
+                          <span className="text-red-700">
+                            {s.antiphonRedPart}
+                          </span>
                         </>
                       )}{" "}
                       <span className="text-slate-600">{s.antiphon}</span>
@@ -659,7 +668,14 @@ export default function QaleDonyathaDsahde() {
                     {t.recordings && t.recordings.length > 0 ? (
                       <div className="ml-3 space-y-2">
                         {t.recordings.map((rec, i) => (
-                          <audio key={i} controls controlsList="nodownload" preload="none" className="w-full h-9" src={rec.url} />
+                          <audio
+                            key={i}
+                            controls
+                            controlsList="nodownload"
+                            preload="none"
+                            className="w-full h-9"
+                            src={rec.url}
+                          />
                         ))}
                       </div>
                     ) : t.tunes ? (
