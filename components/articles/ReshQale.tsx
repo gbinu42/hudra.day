@@ -711,6 +711,12 @@ const NOT_RETAINED: ReshQala[] = [
         },
       ],
     },
+    recordings: [
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fla-metthalmin%2Faudio%2F1779217771190.m4a?alt=media&token=c8f3fc1b-7a45-4849-8770-dd653e821d62",
+        performer: "Binu George",
+      },
+    ],
     link: "/hymns/la-metthalmin",
   },
   {
