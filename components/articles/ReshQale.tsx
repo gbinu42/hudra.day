@@ -1123,6 +1123,8 @@ function ReshQalaList({
               {r.link && (
                 <Link
                   href={r.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-block text-sm text-primary hover:underline"
                 >
                   For more details, view hymn page →

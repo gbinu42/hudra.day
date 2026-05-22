@@ -5,7 +5,13 @@
  * (hymns, books, texts, etc.) by using a resourceType and resourceId pattern.
  */
 
-export type ResourceType = "hymn" | "book" | "text" | "person" | "other";
+export type ResourceType =
+  | "hymn"
+  | "book"
+  | "text"
+  | "person"
+  | "article"
+  | "other";
 
 export interface Comment {
   id: string;

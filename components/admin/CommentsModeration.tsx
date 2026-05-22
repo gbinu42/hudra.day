@@ -158,6 +158,8 @@ export default function CommentsModeration() {
         return `/hymns/${comment.resourceId}`;
       case "book":
         return `/books/${comment.resourceId}`;
+      case "article":
+        return `/articles/${comment.resourceId}`;
       case "text":
         return `/texts/${comment.resourceId}`;
       case "person":

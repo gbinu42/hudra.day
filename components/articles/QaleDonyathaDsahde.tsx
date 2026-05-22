@@ -1,6 +1,7 @@
 "use client";
 
-import { ReactNode, useState } from "react";
+import { Fragment, ReactNode, useState } from "react";
+import Link from "next/link";
 import {
   Accordion,
   AccordionContent,
@@ -589,12 +590,12 @@ const ANTIPHONS: Antiphon[] = [
         antiphonRedPart:
           "ܐܵܡܹܝܢ ܐܵܡܹܝܢ ܐܵܡܲܪ ܐ݇ܢܵܐ ܠܟܼܘܿܢ: ܕܡ̇ܢ ܕܲܠܟܼܘܿܢ ܫܵܡܲܥ ܠܝܼ ܫܵܡܲܥ: ܘܡ̇ܢ ܕܲܠܟܼܘܿܢ ܛܵܠܹܡ ܠܝܼ ܛܵܠܹܡ: ܘܡ̇ܢ ܕܠܝܼ ܛܵܠܹܡ: ܛܵܠܹܡ ܠܡ̇ܢ ܕܫܲܠܚܲܢܝ.",
         antiphon:
-          "ܠܵܐ ܡܸܬ̇ܛܲܠܡܝܼܢ ܥܲܡܠܲܝ̈ܟ̇ܘܿܢ ܣܵܗܕܹ̈ܐ: ܘܠܵܐ ܥܵܒܲܪ ܡܲܠܟܵܐ ܡܫܝܼܚܵܐ ܕܲܪܚܸܡܬ̇ܘܿܢܵܝܗܝ. ܕܒܲܐܪܥܵܐ ܣܝܼܡܝܼܢ ܓܲܪ̈ܡܲܝܟ̇ܘܿܢ ܕܐܸܬ݂ܢܲܨܲܚܘ: ܘܒܲܣܦܲܪ ܚܲܝܹ̈ܐ ܫܡܵܗܲܝ̈ܟ̇ܘܿܢ ܪ̈ܵܚܡܵܘܗܝ ܕܲܒܼܪܵܐ.",
+          "ܠܵܐ ܡܸܬ̇ܛܲܠܡܝܼܢ ܥܲܡܠܲܝ̈ܟ̇ܘܿܢ ܐܘܿ ܣܵܗܕܹ̈ܐ: ܘܠܵܐ ܥܵܒܲܪ ܡܲܠܟܵܐ ܡܫܝܼܚܵܐ ܕܲܪܚܸܡܬ̇ܘܿܢܵܝܗܝ. ܕܒܲܐܪܥܵܐ ܣܝܼܡܝܼܢ ܓܲܪ̈ܡܲܝܟ̇ܘܿܢ ܕܐܸܬ݂ܢܲܨܲܚܘ: ܘܒܲܣܦܲܪ ܚܲܝܹ̈ܐ ܫܡܵܗܲܝ̈ܟ̇ܘܿܢ ܪ̈ܵܚܡܵܘܗܝ ܕܲܒܼܪܵܐ.",
         psalmEn: "He executes justice for the oppressed.",
         antiphonRedPartEn:
           "Amen, amen, I say to you: He who hears you hears me; and he who rejects you rejects me; and he who rejects me rejects Him who sent me.",
         antiphonEn:
-          "Your holy labours are not lost, Sahde,\nMshiha the King you loved will not pass by;\nFor in the earth your triumphant bones rest,\nAnd in life's book your names, friends of the Son.",
+          "Your holy labours are not lost, O Sahde,\nMshiha the King you loved will not pass by;\nFor in the earth your triumphant bones rest,\nAnd in life's book your names, friends of the Son.",
       },
     ],
     traditions: [
@@ -619,6 +620,52 @@ const ANTIPHONS: Antiphon[] = [
     hudraLink: "/hymns/la-metthalmin",
   },
 ];
+
+function SundaySapraSpecialCases() {
+  return (
+    <div className="mt-0 rounded-lg border border-slate-200 bg-slate-50/80 px-6 pt-3 pb-5 text-[15px] leading-relaxed text-slate-700 font-[family-name:var(--font-lora)]">
+      <h3 className="text-lg font-semibold text-slate-800 m-0 mb-4 font-[family-name:var(--font-eb-garamond)]">
+        Onyatha d'Sahde on Sundays
+      </h3>
+      <p className="mt-0">
+        The <em>Onyatha d&apos;Sahde</em> for the <em>Sapra</em> of the Sundays
+        of the <em>Qadmaya</em> (First) and <em>Ahraya</em> (Last) weeks stand
+        apart from the weekday series. They are absent from{" "}
+        <em>Qdam w&apos;Dwathar</em> (&ldquo;Before and After&rdquo;), printed
+        at Mosul in 1903 at the press of the Dominican Fathers; from Paul
+        Bedjan&apos;s <em>Breviarium Chaldaicum</em> (1886); and from the{" "}
+        <em>Kthawa Daslotha Qanonayta</em> (Book of Canonical Prayers) printed
+        at Mannanam at the end of the 19th century. They do appear, however, in
+        the <em>Hudra</em> printed at the press of Mar Narsai Malpana in
+        Thrissur, South India, in 1961. On page 452 of each of its three volumes
+        the following notice is given:
+      </p>
+      <blockquote className="border-l-4 border-primary/30 pl-4 my-5 italic text-slate-600 text-sm leading-relaxed">
+        As is clear to the discerning, the <em>Onyatha</em> of the Sahde are
+        introduced and customary only in the <em>Ramsha</em> and <em>Sapra</em>{" "}
+        of ordinary weekdays; for on feasts, commemorations, and during Great
+        Lent there are no anthems of the martyrs, nor even on Sunday evenings.
+        These particular anthems of the martyrs, however&mdash;selected and
+        arranged for the morning prayer of the <em>Qadmaya</em> and{" "}
+        <em>Ahraya</em> weeks&mdash;are in some places performed after the Holy{" "}
+        <em>Qurbana</em> and communion in the Body of our Lord.
+      </blockquote>
+      <p>
+        Both hymns are also very commonly used as{" "}
+        <Link
+          href="/articles/resh-qale"
+          className="text-primary underline underline-offset-2 hover:text-primary/80"
+        >
+          <em>Resh Qale</em>
+        </Link>
+        &nbsp;- head melodies to which other hymns may be sung. The West Syriac
+        tradition, too, preserves a melody, and a hymn entitled{" "}
+        <em>La Mettalmin</em>, whose text differs slightly from the version
+        given in the East Syriac <em>Hudra</em>.
+      </p>
+    </div>
+  );
+}
 
 function SyriacText({ children }: { children: ReactNode }) {
   return (
@@ -726,170 +773,175 @@ export default function QaleDonyathaDsahde() {
         className="not-prose"
       >
         {ANTIPHONS.map((a) => (
-          <AccordionItem
-            key={a.num}
-            value={String(a.num)}
-            className="mb-2 border-none"
-          >
-            <AccordionTrigger className="font-[family-name:var(--font-lora)]">
-              <span className="flex flex-col sm:flex-row sm:justify-between sm:items-start w-full gap-0.5 sm:gap-2">
-                <span>
-                  <span className="text-lg font-semibold text-slate-800 block group-data-[state=open]/trigger:text-primary transition-colors">
-                    {a.num}. {a.titleEn}
-                  </span>
-                  <span className="text-sm text-gray-500 block mt-1">
-                    {a.subtitle}
-                  </span>
-                </span>
-                <span className="text-right self-end w-full sm:w-auto">
-                  <SyriacText>
-                    <span className="text-lg font-normal text-slate-600 block mb-1">
-                      {a.titleSyr}
+          <Fragment key={a.num}>
+            {a.num === 13 && <SundaySapraSpecialCases />}
+            <AccordionItem value={String(a.num)} className="mb-2 border-none">
+              <AccordionTrigger className="font-[family-name:var(--font-lora)]">
+                <span className="flex flex-col sm:flex-row sm:justify-between sm:items-start w-full gap-0.5 sm:gap-2">
+                  <span>
+                    <span className="text-lg font-semibold text-slate-800 block group-data-[state=open]/trigger:text-primary transition-colors">
+                      {a.num}. {a.titleEn}
                     </span>
-                  </SyriacText>
-                  <SyriacText>
-                    <span className="text-sm text-gray-500 block">
-                      {a.subtitleSyr}
+                    <span className="text-sm text-gray-500 block mt-1">
+                      {a.subtitle}
                     </span>
-                  </SyriacText>
-                </span>
-              </span>
-            </AccordionTrigger>
-            <AccordionContent className="mt-1 ml-4">
-              {/* Syriac text */}
-              <div className="mb-4 rounded-lg border border-slate-200 bg-slate-50 px-4 pt-2 pb-3">
-                <div
-                  className="leading-loose [font-family:'Idiqlat',serif] text-base text-justify"
-                  dir="rtl"
-                  style={{ fontWeight: 400, fontSynthesis: "none" }}
-                >
-                  <p className="m-0">
-                    {a.stanzas.map((s, i) => (
-                      <span key={i}>
-                        {i > 0 && <br />}
-                        <span className="text-red-700">{s.psalm}</span>
-                        {s.dzuwrta && <> ܕܨܘܼܪܬܵܐ.</>}
-                        {s.antiphonRedPart && (
-                          <>
-                            {" "}
-                            <span className="text-red-700">
-                              {s.antiphonRedPart}
-                            </span>
-                          </>
-                        )}{" "}
-                        <span className="text-slate-600">{s.antiphon}</span>
+                  </span>
+                  <span className="text-right self-end w-full sm:w-auto">
+                    <SyriacText>
+                      <span className="text-lg font-normal text-slate-600 block mb-1">
+                        {a.titleSyr}
                       </span>
-                    ))}
-                  </p>
-                </div>
-                {a.stanzas.some((s) => s.psalmEn) && (
+                    </SyriacText>
+                    <SyriacText>
+                      <span className="text-sm text-gray-500 block">
+                        {a.subtitleSyr}
+                      </span>
+                    </SyriacText>
+                  </span>
+                </span>
+              </AccordionTrigger>
+              <AccordionContent className="mt-1 ml-4">
+                {/* Syriac text */}
+                <div className="mb-4 rounded-lg border border-slate-200 bg-slate-50 px-4 pt-2 pb-3">
                   <div
-                    className="mt-2 pt-2 border-t border-slate-200 leading-normal [font-family:'Idiqlat',serif] text-sm"
+                    className="leading-loose [font-family:'Idiqlat',serif] text-base text-justify"
+                    dir="rtl"
                     style={{ fontWeight: 400, fontSynthesis: "none" }}
                   >
-                    {a.stanzas.map(
-                      (s, i) =>
-                        s.psalmEn && (
-                          <div
-                            key={i}
-                            className={i < a.stanzas.length - 1 ? "mb-3" : ""}
-                          >
-                            <p className="m-0 leading-normal whitespace-pre-line">
-                              <span className="text-red-700">{s.psalmEn}</span>
-                              {s.antiphonRedPartEn && (
-                                <>
-                                  {"\n"}
-                                  <span className="text-red-700">
-                                    {s.antiphonRedPartEn}
-                                  </span>
-                                </>
-                              )}
-                              {s.antiphonEn && (
-                                <>
-                                  {"\n"}
-                                  <span className="text-slate-600">
-                                    {s.antiphonEn}
-                                  </span>
-                                </>
-                              )}
-                            </p>
-                          </div>
-                        ),
-                    )}
-                  </div>
-                )}
-              </div>
-
-              {/* Traditions */}
-              <div className="rounded-lg border border-slate-200 bg-white px-4 py-3 space-y-4">
-                {a.traditions.map((t) => (
-                  <div key={t.label}>
-                    <p className="font-[family-name:var(--font-lora)] text-sm font-semibold text-slate-600 mb-2">
-                      {t.label}
+                    <p className="m-0">
+                      {a.stanzas.map((s, i) => (
+                        <span key={i}>
+                          {i > 0 && <br />}
+                          <span className="text-red-700">{s.psalm}</span>
+                          {s.dzuwrta && <> ܕܨܘܼܪܬܵܐ.</>}
+                          {s.antiphonRedPart && (
+                            <>
+                              {" "}
+                              <span className="text-red-700">
+                                {s.antiphonRedPart}
+                              </span>
+                            </>
+                          )}{" "}
+                          <span className="text-slate-600">{s.antiphon}</span>
+                        </span>
+                      ))}
                     </p>
-                    {t.note && (
-                      <p className="text-xs text-gray-400 italic ml-3 mb-2">
-                        {t.note}
-                      </p>
-                    )}
-                    {t.recordings && t.recordings.length > 0 ? (
-                      <div className="ml-3 space-y-3 mt-2">
-                        {t.recordings.map((rec, i) => (
-                          <div key={i}>
-                            {(rec.hymnName || rec.performer) && (
-                              <p className="text-xs text-slate-500 m-0 mb-1">
-                                {rec.hymnName && (
-                                  <span className="italic">{rec.hymnName}</span>
-                                )}
-                                {rec.hymnName && rec.performer && " · "}
-                                {rec.performer}
-                              </p>
-                            )}
-                            <audio
-                              controls
-                              controlsList="nodownload"
-                              preload="none"
-                              className="w-full h-9"
-                              src={rec.url}
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    ) : t.tunes ? (
-                      <div className="ml-3 space-y-1">
-                        {Array.from({ length: t.tunes }, (_, i) => (
-                          <p key={i} className="text-sm text-gray-400 italic">
-                            Tune {i + 1} — Recording coming soon.
-                          </p>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="text-sm text-gray-400 italic ml-3">
-                        Recording coming soon.
-                      </p>
-                    )}
                   </div>
-                ))}
-              </div>
-              {a.description && (
-                <p className="font-[family-name:var(--font-lora)] text-sm text-gray-700 mt-3">
-                  {a.description}
-                </p>
-              )}
-              {a.hudraLink && (
-                <p className="text-xs text-gray-400 mt-2">
-                  For more recordings, see the{" "}
-                  <a
-                    href={a.hudraLink}
-                    className="text-primary underline underline-offset-2 hover:text-primary/80"
-                  >
-                    hymn page on Hudra
-                  </a>
-                  .
-                </p>
-              )}
-            </AccordionContent>
-          </AccordionItem>
+                  {a.stanzas.some((s) => s.psalmEn) && (
+                    <div
+                      className="mt-2 pt-2 border-t border-slate-200 leading-normal [font-family:'Idiqlat',serif] text-sm"
+                      style={{ fontWeight: 400, fontSynthesis: "none" }}
+                    >
+                      {a.stanzas.map(
+                        (s, i) =>
+                          s.psalmEn && (
+                            <div
+                              key={i}
+                              className={i < a.stanzas.length - 1 ? "mb-3" : ""}
+                            >
+                              <p className="m-0 leading-normal whitespace-pre-line">
+                                <span className="text-red-700">
+                                  {s.psalmEn}
+                                </span>
+                                {s.antiphonRedPartEn && (
+                                  <>
+                                    {"\n"}
+                                    <span className="text-red-700">
+                                      {s.antiphonRedPartEn}
+                                    </span>
+                                  </>
+                                )}
+                                {s.antiphonEn && (
+                                  <>
+                                    {"\n"}
+                                    <span className="text-slate-600">
+                                      {s.antiphonEn}
+                                    </span>
+                                  </>
+                                )}
+                              </p>
+                            </div>
+                          ),
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Traditions */}
+                <div className="rounded-lg border border-slate-200 bg-white px-4 py-3 space-y-4">
+                  {a.traditions.map((t) => (
+                    <div key={t.label}>
+                      <p className="font-[family-name:var(--font-lora)] text-sm font-semibold text-slate-600 mb-2">
+                        {t.label}
+                      </p>
+                      {t.note && (
+                        <p className="text-xs text-gray-400 italic ml-3 mb-2">
+                          {t.note}
+                        </p>
+                      )}
+                      {t.recordings && t.recordings.length > 0 ? (
+                        <div className="ml-3 space-y-3 mt-2">
+                          {t.recordings.map((rec, i) => (
+                            <div key={i}>
+                              {(rec.hymnName || rec.performer) && (
+                                <p className="text-xs text-slate-500 m-0 mb-1">
+                                  {rec.hymnName && (
+                                    <span className="italic">
+                                      {rec.hymnName}
+                                    </span>
+                                  )}
+                                  {rec.hymnName && rec.performer && " · "}
+                                  {rec.performer}
+                                </p>
+                              )}
+                              <audio
+                                controls
+                                controlsList="nodownload"
+                                preload="none"
+                                className="w-full h-9"
+                                src={rec.url}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      ) : t.tunes ? (
+                        <div className="ml-3 space-y-1">
+                          {Array.from({ length: t.tunes }, (_, i) => (
+                            <p key={i} className="text-sm text-gray-400 italic">
+                              Tune {i + 1} — Recording coming soon.
+                            </p>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-gray-400 italic ml-3">
+                          Recording coming soon.
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                {a.description && (
+                  <p className="font-[family-name:var(--font-lora)] text-sm text-gray-700 mt-3">
+                    {a.description}
+                  </p>
+                )}
+                {a.hudraLink && (
+                  <p className="text-xs text-gray-400 mt-2">
+                    For more recordings, see the{" "}
+                    <a
+                      href={a.hudraLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary underline underline-offset-2 hover:text-primary/80"
+                    >
+                      hymn page on Hudra
+                    </a>
+                    .
+                  </p>
+                )}
+              </AccordionContent>
+            </AccordionItem>
+          </Fragment>
         ))}
       </Accordion>
 

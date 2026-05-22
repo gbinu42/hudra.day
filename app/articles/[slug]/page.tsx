@@ -1,7 +1,10 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ArticleTitle from "@/components/ArticleTitle";
+import CommentsSectionWithStatic from "@/components/CommentsSectionWithStatic";
 import { articles, getArticleBySlug, getArticleFullTitle } from "@/lib/articles";
+import { commentService } from "@/lib/comment-services";
+import { Comment } from "@/lib/types/comment";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
@@ -55,6 +58,26 @@ export default async function ArticlePage({
 
   const Content = articleContent[slug];
 
+  let comments: Comment[] = [];
+  try {
+    const commentsSnapshot = await commentService.getCommentsByResource(
+      "article",
+      slug,
+      false
+    );
+    comments = commentsSnapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        ...data,
+        createdAt: data.createdAt?.toDate?.() || new Date(),
+        updatedAt: data.updatedAt?.toDate?.() || new Date(),
+      } as Comment;
+    });
+  } catch (error) {
+    console.error("Error fetching comments for article:", error);
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
@@ -105,6 +128,14 @@ export default async function ArticlePage({
             <p className="text-muted-foreground italic">Content coming soon.</p>
           )}
         </div>
+        </div>
+
+        <div className="mt-8 bg-white rounded-2xl shadow-sm border border-gray-100 px-8 py-8 font-sans">
+          <CommentsSectionWithStatic
+            resourceType="article"
+            resourceId={slug}
+            initialComments={comments}
+          />
         </div>
       </article>
       <Footer />
