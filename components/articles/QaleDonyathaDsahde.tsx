@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, ReactNode, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import {
   Accordion,
@@ -625,7 +626,7 @@ function SundaySapraSpecialCases() {
   return (
     <div className="mt-0 rounded-lg border border-slate-200 bg-slate-50/80 px-6 pt-3 pb-5 text-[15px] leading-relaxed text-slate-700 font-[family-name:var(--font-lora)]">
       <h3 className="text-lg font-semibold text-slate-800 m-0 mb-4 font-[family-name:var(--font-eb-garamond)]">
-        Onyatha d'Sahde on Sundays
+        Onyatha d&apos;Sahde on Sundays
       </h3>
       <p className="mt-0">
         The <em>Onyatha d&apos;Sahde</em> for the <em>Sapra</em> of the Sundays
@@ -696,9 +697,11 @@ export default function QaleDonyathaDsahde() {
       </div>
 
       <div className="not-prose mb-8 rounded-lg bg-amber-50 border border-amber-200 px-6 py-5 flex flex-col sm:flex-row items-center gap-5">
-        <img
+        <Image
           src="/images/thoma-kathanar.png"
           alt="Very Rev. Malpan Koonammakkal Thoma Kathanar"
+          width={256}
+          height={256}
           className="w-48 h-48 sm:w-64 sm:h-64 rounded-full object-cover object-top shrink-0 border-2 border-amber-200"
         />
         <div>

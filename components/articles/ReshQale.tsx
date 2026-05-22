@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import {
   Accordion,
@@ -1159,9 +1160,11 @@ export default function ReshQale() {
       </div>
 
       <div className="not-prose mb-8 rounded-lg bg-amber-50 border border-amber-200 px-6 py-5 flex flex-col sm:flex-row items-center gap-5">
-        <img
+        <Image
           src="/images/thoma-kathanar.png"
           alt="Very Rev. Malpan Koonammakkal Thoma Kathanar"
+          width={256}
+          height={256}
           className="w-48 h-48 sm:w-64 sm:h-64 rounded-full object-cover object-top shrink-0 border-2 border-amber-200"
         />
         <div>
