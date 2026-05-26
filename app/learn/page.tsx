@@ -132,15 +132,15 @@ export default function LearnPage() {
               <div className="border-t border-dashed border-primary/20" />
 
               {/* WhatsApp CTA */}
-              <div className="text-center space-y-4">
-                <p className="text-muted-foreground text-sm">
+              <div className="rounded-xl bg-[#f0fdf4] border border-[#bbf7d0] p-5 space-y-4 text-center">
+                <p className="text-sm text-gray-600">
                   Those interested in joining are kindly requested to join the
                   aspirants&apos; WhatsApp group. All further communication will
                   take place there.
                 </p>
                 <Button
                   size="lg"
-                  className="bg-[#25D366] hover:bg-[#1ebe5d] text-white font-semibold gap-2 shadow-md px-8"
+                  className="w-full bg-[#25D366] hover:bg-[#1fbc5a] active:bg-[#18a34a] text-white font-bold gap-2.5 rounded-xl shadow-md text-base py-6"
                   asChild
                 >
                   <a
@@ -153,7 +153,8 @@ export default function LearnPage() {
                   </a>
                 </Button>
                 <p className="text-xs text-muted-foreground">
-                  Deadline: <strong>June 14, 2026</strong>
+                  Last date to join:{" "}
+                  <span className="font-semibold text-red-600">14 June 2026</span>
                 </p>
               </div>
 
