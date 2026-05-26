@@ -50,86 +50,97 @@ export default function LearnPage() {
     <div className="min-h-screen bg-gradient-to-b from-primary/5 via-white to-white">
       <Navbar />
 
-      <main className="container mx-auto px-4 py-14 md:py-20">
-        <div className="max-w-xl mx-auto space-y-6">
+      <main className="container mx-auto px-4 py-12 md:py-20">
+        <div className="max-w-2xl mx-auto space-y-8">
 
-          {/* Blessing */}
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-primary">
+          {/* Blessing header */}
+          <div className="text-center space-y-2">
+            <p className="text-2xl">🙏 🙏 🙏</p>
+            <h1 className="text-2xl md:text-3xl font-bold text-primary leading-snug">
               Praise be to Lord our God
             </h1>
+            <p className="text-2xl">🙏 🙏 🙏</p>
           </div>
 
-          {/* Main card */}
-          <Card className="shadow-xl border-0 overflow-hidden rounded-2xl">
-            <div className="h-1.5 bg-gradient-to-r from-primary via-primary/70 to-primary/40" />
+          {/* Main announcement card */}
+          <Card className="shadow-lg border-primary/20 overflow-hidden">
+            {/* Coloured top strip */}
+            <div className="h-2 bg-gradient-to-r from-primary to-primary/60" />
 
-            <CardContent className="py-8 px-6 space-y-7">
+            <CardContent className="pt-8 pb-8 space-y-8">
 
-              {/* Title */}
-              <div className="text-center space-y-2">
-                <span                   className="inline-block bg-primary/10 text-primary font-semibold text-xs px-4 py-1.5 rounded-full tracking-wide uppercase">
+              {/* Batch badge + intro */}
+              <div className="text-center space-y-3">
+                <span className="inline-block bg-primary/10 text-primary font-semibold text-sm px-4 py-1.5 rounded-full">
                   13th Batch
                 </span>
-                <h2 className="text-xl font-bold text-gray-900">
+                <h2 className="text-xl md:text-2xl font-bold">
                   Learn East Syriac Program
                 </h2>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  By the mercy of the Lord, we are pleased to announce a basic
-                  course designed to provide foundational literacy in East Syriac.
+                <p className="text-muted-foreground">
+                  By the mercy of the Lord, we are pleased to announce the{" "}
+                  <strong>13th batch</strong> of the{" "}
+                  <strong>Learn East Syriac</strong> program — a basic course
+                  designed to provide foundational literacy in East Syriac.
                 </p>
               </div>
 
-              {/* Details grid */}
-              <div className="grid grid-cols-2 gap-3">
+              {/* Key details */}
+              <div className="grid sm:grid-cols-2 gap-4">
                 <div className="flex items-start gap-3 bg-primary/5 rounded-xl p-4">
-                  <Calendar className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                  <Calendar className="h-5 w-5 text-primary mt-0.5 shrink-0" />
                   <div>
-                    <p className="text-xs font-semibold text-gray-700">Starts</p>
-                    <p className="text-xs text-muted-foreground">Sunday after Dukhrana</p>
-                    <p className="text-sm font-bold text-primary mt-0.5">5 July 2026</p>
+                    <p className="font-semibold text-sm">Classes Commence</p>
+                    <p className="text-muted-foreground text-sm">
+                      Sunday following Dukhrana
+                    </p>
+                    <p className="font-bold text-primary">5th July 2026</p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-3 bg-primary/5 rounded-xl p-4">
-                  <Clock className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                  <Clock className="h-5 w-5 text-primary mt-0.5 shrink-0" />
                   <div>
-                    <p className="text-xs font-semibold text-gray-700">Duration</p>
-                    <p className="text-xs text-muted-foreground">~40 hours total</p>
-                    <p className="text-sm font-bold text-primary mt-0.5">1 class / week</p>
+                    <p className="font-semibold text-sm">Duration</p>
+                    <p className="text-muted-foreground text-sm">One year · ~40 hours total</p>
+                    <p className="font-bold text-primary">1 class per week</p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-3 bg-primary/5 rounded-xl p-4">
-                  <BookOpen className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                  <BookOpen className="h-5 w-5 text-primary mt-0.5 shrink-0" />
                   <div>
-                    <p className="text-xs font-semibold text-gray-700">Level</p>
-                    <p className="text-xs text-muted-foreground">No prior knowledge needed</p>
-                    <p className="text-sm font-bold text-primary mt-0.5">Beginner</p>
+                    <p className="font-semibold text-sm">Level</p>
+                    <p className="text-muted-foreground text-sm">
+                      Beginner-friendly
+                    </p>
+                    <p className="font-bold text-primary">Foundational literacy</p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-3 bg-red-50 rounded-xl p-4 border border-red-100">
-                  <Users className="h-4 w-4 text-red-500 mt-0.5 shrink-0" />
+                  <Users className="h-5 w-5 text-red-500 mt-0.5 shrink-0" />
                   <div>
-                    <p className="text-xs font-semibold text-red-700">Last Date</p>
-                    <p className="text-xs text-muted-foreground">Registration deadline</p>
-                    <p className="text-sm font-bold text-red-600 mt-0.5">14 June 2026</p>
+                    <p className="font-semibold text-sm text-red-700">Registration Deadline</p>
+                    <p className="text-muted-foreground text-sm">Last date to register</p>
+                    <p className="font-bold text-red-600">June 14, 2026</p>
                   </div>
                 </div>
               </div>
 
-              <div className="border-t border-dashed border-gray-200" />
+              {/* Divider */}
+              <div className="border-t border-dashed border-primary/20" />
 
               {/* WhatsApp CTA */}
-              <div className="text-center space-y-3">
-                <p className="text-sm text-muted-foreground">
-                  Join the aspirants&apos; WhatsApp group to register. All
-                  further communication will take place there.
+              <div className="text-center space-y-4">
+                <p className="text-muted-foreground text-sm">
+                  Those interested in joining are kindly requested to join the
+                  aspirants&apos; WhatsApp group. All further communication will
+                  take place there.
                 </p>
                 <Button
                   size="lg"
-                  className="w-full bg-[#25D366] hover:bg-[#1fbc5a] text-white font-semibold gap-2 rounded-xl shadow-md text-base"
+                  className="bg-[#25D366] hover:bg-[#1ebe5d] text-white font-semibold gap-2 shadow-md px-8"
                   asChild
                 >
                   <a
@@ -142,14 +153,17 @@ export default function LearnPage() {
                   </a>
                 </Button>
                 <p className="text-xs text-muted-foreground">
-                  Last date to join:{" "}
-                  <span className="font-semibold text-red-600">14 June 2026</span>
+                  Deadline: <strong>June 14, 2026</strong>
                 </p>
               </div>
 
             </CardContent>
           </Card>
 
+          {/* Footer note */}
+          <p className="text-center text-sm text-muted-foreground">
+            For any queries, please reach out through the WhatsApp group.
+          </p>
         </div>
       </main>
 
