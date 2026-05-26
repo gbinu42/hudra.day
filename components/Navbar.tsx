@@ -96,6 +96,14 @@ export default function Navbar() {
                 East Syriac Editor
               </NavigationMenuLink>
             </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink
+                href="/learn"
+                className="group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-semibold bg-primary text-white hover:bg-primary/90 transition-colors focus:outline-none rounded-full"
+              >
+                🎓 Learn Syriac
+              </NavigationMenuLink>
+            </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
 
@@ -196,6 +204,12 @@ export default function Navbar() {
                 className="text-lg font-medium text-primary hover:text-primary/80 transition-colors"
               >
                 East Syriac Editor
+              </Link>
+              <Link
+                href="/learn"
+                className="inline-flex items-center gap-2 text-lg font-semibold bg-primary text-white px-4 py-2 rounded-full hover:bg-primary/90 transition-colors"
+              >
+                🎓 Learn Syriac
               </Link>
 
               {/* Mobile Auth Section */}
