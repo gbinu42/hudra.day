@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Calendar, Clock, Users, MessageCircle, BookOpen } from "lucide-react";
+import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -53,15 +54,6 @@ export default function LearnPage() {
       <main className="container mx-auto px-4 py-12 md:py-20">
         <div className="max-w-2xl mx-auto space-y-8">
 
-          {/* Blessing header */}
-          <div className="text-center space-y-2">
-            <p className="text-2xl">🙏 🙏 🙏</p>
-            <h1 className="text-2xl md:text-3xl font-bold text-primary leading-snug">
-              Praise be to Lord our God
-            </h1>
-            <p className="text-2xl">🙏 🙏 🙏</p>
-          </div>
-
           {/* Main announcement card */}
           <Card className="shadow-lg border-primary/20 overflow-hidden">
             {/* Coloured top strip */}
@@ -77,6 +69,16 @@ export default function LearnPage() {
                 <h2 className="text-xl md:text-2xl font-bold">
                   Learn East Syriac Program
                 </h2>
+                <div className="flex items-center justify-center gap-2 pt-1">
+                  <Image
+                    src="/images/nas_found_logo.jpg"
+                    alt="Nasrani Foundation"
+                    width={28}
+                    height={28}
+                    className="rounded-full object-cover"
+                  />
+                  <span className="text-sm text-muted-foreground">by Nasrani Foundation</span>
+                </div>
                 <p className="text-muted-foreground">
                   By the mercy of the Lord, we are pleased to announce the{" "}
                   <strong>13th batch</strong> of the{" "}
