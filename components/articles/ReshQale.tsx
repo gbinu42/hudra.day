@@ -24,7 +24,12 @@ interface ReshQala {
     teni?: string;
   };
   link?: string;
-  recordings?: { url: string; performer: string; hymnName?: string }[];
+  recordings?: {
+    url: string;
+    performer: string;
+    hymnName?: string;
+    hymnLink?: string;
+  }[];
 }
 
 const Syr = ({
@@ -358,9 +363,12 @@ const RETAINED: ReshQala[] = [
   },
   {
     num: 14,
-    name: "Sahde Qandishe Sallaw",
-    nameSyr: "ܣܵܗܕܹ̈ܐ ܩܲܕܝܼܫܹ̈ܐ ܨܲܠܵܘ",
-    nameMal: "സഹദേ കന്ദീശേ സല്ലാവ്",
+    name: "Awun d'washmayya",
+    nameSyr: "ܐܲܒ݂ܘܼܢ ܕܒܲܫܡܲܝܵܐ",
+    nameMal: "ആവൂൻ ദ്‌വശ്‌മയ്യാ",
+    alsoKnownAs: [
+      { latin: "Sahde Qandishe Sallaw", syr: "ܣܵܗܕܹ̈ܐ ܩܲܕܝܼܫܹ̈ܐ ܨܲܠܵܘ" },
+    ],
     malayalamCommonName: {
       text: "അൽ മദ്‌ബഹ് കുദ്‌ശാ",
     },
@@ -368,12 +376,12 @@ const RETAINED: ReshQala[] = [
     syriacText: {
       stanzas: [
         {
-          shuraya: "ܫܲܒܲܚܘ ܙܲܕ̇ܝܼܩܹ̈ܐ ܠܡܵܪܝܵܐ.",
-          body: "ܣܵܗܕܹ̈ܐ ܩܲܕܝܼܫܹ̈ܐ ܨܲܠܵܘ ܥܲܠ ܫܲܝܢܵܐ: ܕܲܒ݂ܚܲܕ݂ܘܵܬ݂ܵܐ ܢܸܥܒܸ݁ܕ݂ ܥܹܐܕܲܝ̈ܟ̇ܘܿܢ.",
+          shuraya: "ܗ̇ܘ ܕܐܝܬ݂ܵܘܗܝ ܡ̣ܢ ܩܕ݂ܵܡ ܥܵܠܡܹ̈ܐ.",
+          body: "ܐܲܒ݂ܘܼܢ ܕܒܲܫܡܲܝܵܐ ܢܸܬ݂ܩܲܕܲܫ ܫܡܵܟ݂. ܬܹܐܬܸܐ ܡܲܠܟ݁ܘܼܬ݂ܵܟ݂ ܢܸܗܘܸܐ ܨܸܒ݂ܝܵܢܵܟ݂.",
         },
         {
-          shuraya: "ܘܠܲܬ݂ܪ̈ܝܼܨܹ̈ܐ ܝܵܐܝܵܐ ܬܸܫܒ݁ܘܿܚܬܵܐ.",
-          body: "ܣܵܗܕܹ̈ܐ ܕܐܸܬ݂ܪܲܓ݂ܪܲܓ݂ܘ ܕܢܸܚܙܘܿܢ ܠܲܡܫܝܼܚܵܐ: ܒܣܲܝܦܵܐ ܩܢܵܘ ܓܸܦܹ̈ܐ ܘܲܦܪܲܚܘ ܠܲܫܡܲܝܵܐ.",
+          shuraya: "ܚܲܕ݂ܘܼ ܘܠܲܝܬ݁ ܐ݇ܚܪܹܝܢ ܠܲܒܲܪ ܡܸܢܸܗ.",
+          body: "ܚܲܕ݂ܘܼ ܡܵܪܝܵܐ ܚܕ݂ܵܐ ܗܲܝܡܵܢܘܼܬ݂ܵܐ. ܚܕ݂ܵܐ ܡܲܥܡܘܿܕܝܼܬ݂ܵܐ ܠܫܘܼܒ݂ܩܵܢܵܐ ܕܚܵܘܒܹ̈ܐ.",
         },
       ],
     },
@@ -381,9 +389,11 @@ const RETAINED: ReshQala[] = [
       {
         url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fsahde-qandishe-sallaw-al-shayna%2Faudio%2F1779123434625.m4a?alt=media&token=93ea705f-912c-44f0-b4e5-74334a8b62fa",
         performer: "Binu George",
+        hymnName: "Sahde Qandishe Sallaw",
+        hymnLink: "/hymns/sahde-qandishe-sallaw-al-shayna",
       },
     ],
-    link: "/hymns/sahde-qandishe-sallaw-al-shayna",
+    link: "/hymns/awun-dwashmayya-qyamta-onitha",
   },
   {
     num: 15,
@@ -1095,7 +1105,16 @@ function ReshQalaList({
                         <div key={i}>
                           <p className="text-xs text-slate-500 m-0 mb-3">
                             <span className="italic">
-                              {rec.hymnName ?? r.name}
+                              {rec.hymnLink ? (
+                                <Link
+                                  href={rec.hymnLink}
+                                  className="text-primary hover:underline"
+                                >
+                                  {rec.hymnName ?? r.name}
+                                </Link>
+                              ) : (
+                                rec.hymnName ?? r.name
+                              )}
                             </span>
                             {rec.performer && (
                               <>
