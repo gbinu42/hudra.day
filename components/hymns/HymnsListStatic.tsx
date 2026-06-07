@@ -5,14 +5,37 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Hymn } from "@/lib/types/hymn";
-import { Music, User, Book, Languages, Plus, ChevronUp } from "lucide-react";
+import { Hymn, CHURCH_DISPLAY_ORDER } from "@/lib/types/hymn";
+import {
+  Music,
+  User,
+  Book,
+  Languages,
+  Plus,
+  ChevronUp,
+  ChevronDown,
+  Church,
+  X,
+} from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { cn } from "@/lib/utils";
 
+const FILTER_CHURCHES = CHURCH_DISPLAY_ORDER.slice(0, 4);
+
 interface HymnsListStaticProps {
   hymns: Hymn[];
+}
+
+function getApprovedRecordings(hymn: Hymn) {
+  return (hymn.recordings || []).filter(
+    (recording) => (recording.status || "approved") === "approved",
+  );
 }
 
 export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
@@ -21,7 +44,35 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
   const [alphabetOrder, setAlphabetOrder] = useState<"english" | "syriac">(
     "english",
   );
+  const [selectedChurches, setSelectedChurches] = useState<string[]>([]);
+  const [filterOpen, setFilterOpen] = useState(false);
   const [showScrollToTop, setShowScrollToTop] = useState(false);
+
+  const availableChurches = useMemo(() => {
+    const churchSet = new Set<string>();
+    hymns.forEach((hymn) => {
+      getApprovedRecordings(hymn).forEach((recording) => {
+        if (recording.church) {
+          churchSet.add(recording.church);
+        }
+      });
+    });
+
+    return FILTER_CHURCHES.filter((church) => churchSet.has(church));
+  }, [hymns]);
+
+  const filteredHymns = useMemo(() => {
+    if (selectedChurches.length === 0) {
+      return hymns;
+    }
+
+    return hymns.filter((hymn) =>
+      getApprovedRecordings(hymn).some(
+        (recording) =>
+          recording.church && selectedChurches.includes(recording.church),
+      ),
+    );
+  }, [hymns, selectedChurches]);
 
   // Handle scroll to top button visibility
   useEffect(() => {
@@ -88,20 +139,30 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
 
   // Sort hymns based on selected alphabet order
   const sortedHymns = useMemo(() => {
-    return [...hymns].sort((a, b) => {
+    return [...filteredHymns].sort((a, b) => {
       const aTitle = getTitleForAlphabet(a);
       const bTitle = getTitleForAlphabet(b);
       return aTitle.localeCompare(bTitle);
     });
-  }, [hymns, getTitleForAlphabet]);
+  }, [filteredHymns, getTitleForAlphabet]);
 
   // Calculate total recordings count
   const totalRecordings = useMemo(() => {
-    return sortedHymns.reduce(
-      (total, hymn) => total + (hymn.recordings?.length || 0),
-      0,
-    );
-  }, [sortedHymns]);
+    return sortedHymns.reduce((total, hymn) => {
+      const recordings = getApprovedRecordings(hymn);
+      if (selectedChurches.length === 0) {
+        return total + recordings.length;
+      }
+
+      return (
+        total +
+        recordings.filter(
+          (recording) =>
+            recording.church && selectedChurches.includes(recording.church),
+        ).length
+      );
+    }, 0);
+  }, [sortedHymns, selectedChurches]);
 
   // Helper function to get the first character for grouping
   const getFirstChar = (text: string): string => {
@@ -224,6 +285,61 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
         )}
       </div>
 
+      {availableChurches.length > 0 && (
+        <Collapsible
+          open={filterOpen}
+          onOpenChange={setFilterOpen}
+          className="bg-muted/30 rounded-lg border"
+        >
+          <div className="flex items-center justify-between gap-3 p-3">
+            <CollapsibleTrigger className="flex flex-1 items-center gap-2 text-left cursor-pointer rounded-md hover:bg-muted/50 transition-colors">
+              <Church className="h-4 w-4 shrink-0 text-muted-foreground" />
+              <span className="text-sm font-medium">Filter by church</span>
+              {selectedChurches.length > 0 && (
+                <Badge variant="secondary" className="text-xs">
+                  {selectedChurches.length} selected
+                </Badge>
+              )}
+              {filterOpen ? (
+                <ChevronUp className="h-4 w-4 shrink-0 text-muted-foreground ml-auto" />
+              ) : (
+                <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground ml-auto" />
+              )}
+            </CollapsibleTrigger>
+            {selectedChurches.length > 0 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSelectedChurches([])}
+                className="h-8 shrink-0 px-2 text-muted-foreground"
+              >
+                <X className="h-3.5 w-3.5 mr-1" />
+                Clear
+              </Button>
+            )}
+          </div>
+          <CollapsibleContent className="px-3 pb-3">
+            <ToggleGroup
+              type="multiple"
+              value={selectedChurches}
+              onValueChange={setSelectedChurches}
+              className="flex flex-wrap justify-start gap-2"
+            >
+              {availableChurches.map((church) => (
+                <ToggleGroupItem
+                  key={church}
+                  value={church}
+                  aria-label={`Filter by ${church}`}
+                  className="text-xs sm:text-sm whitespace-normal h-auto min-h-9 px-3 py-1.5"
+                >
+                  {church}
+                </ToggleGroupItem>
+              ))}
+            </ToggleGroup>
+          </CollapsibleContent>
+        </Collapsible>
+      )}
+
       {/* Alphabetical Navigation */}
       {sortedHymns.length > 0 && (
         <div className="bg-muted/30 rounded-lg border p-3">
@@ -283,8 +399,20 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
             <Music className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
             <h3 className="text-lg font-semibold mb-2">No hymns found</h3>
             <p className="text-muted-foreground">
-              No hymns have been added yet
+              {selectedChurches.length > 0
+                ? "No hymns match the selected church filter"
+                : "No hymns have been added yet"}
             </p>
+            {selectedChurches.length > 0 && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="mt-4"
+                onClick={() => setSelectedChurches([])}
+              >
+                Clear filter
+              </Button>
+            )}
           </CardContent>
         </Card>
       ) : (
