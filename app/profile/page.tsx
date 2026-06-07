@@ -151,7 +151,7 @@ export default function ProfilePage() {
               height={32}
               className="h-8 w-8"
             />
-            <span className="text-3xl font-syriac">ܚܘܼܕܪܵܐ</span>
+            <span className="text-3xl font-east-syriac-malankara-classical">ܚܘܼܕܪܵ‍ܐ</span>
           </Link>
           <Button variant="ghost" size="sm" asChild>
             <Link href="/">

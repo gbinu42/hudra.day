@@ -69,7 +69,7 @@ export default function AboutPage() {
               height={32}
               className="h-8 w-8"
             />
-            <span className="text-3xl font-syriac">ܚܘܼܕܪܵܐ</span>
+            <span className="text-3xl font-east-syriac-malankara-classical">ܚܘܼܕܪܵ‍ܐ</span>
           </Link>
           <Button variant="ghost" size="sm" asChild>
             <Link href="/">
@@ -116,7 +116,11 @@ export default function AboutPage() {
                     What is Hudra?
                   </h2>
                   <p className="text-muted-foreground mb-4">
-                    The Hudra (ܚܘܼܕܪܵܐ) is the East Syriac Breviary, containing
+                    The Hudra (
+                    <span className="font-east-syriac-malankara-classical">
+                      ܚܘܼܕܪܵ‍ܐ
+                    </span>
+                    ) is the East Syriac Breviary, containing
                     the liturgical prayers, hymns, and readings used in the
                     daily worship of the Church of the East tradition. This
                     includes the liturgical heritage of:

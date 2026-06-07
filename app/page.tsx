@@ -8,7 +8,7 @@ import {
   CardTitle,
   CardContent,
 } from "@/components/ui/card";
-import { BookOpen, Globe, Users, Edit3, Church, Scroll } from "lucide-react";
+import { BookOpen, Globe, Edit3, Church, Scroll, FileText } from "lucide-react";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
@@ -31,7 +31,9 @@ export default function HomePage() {
         <div className="container mx-auto text-center relative z-10">
           <div className="space-y-6 max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-6xl tracking-tight mb-4">
-              <span className="font-syriac text-primary">ܚܘܼܕܪܵܐ</span>
+              <span className="font-east-syriac-malankara-classical text-primary">
+                ܚܘܼܕܪܵ‍ܐ
+              </span>
               <span className="mx-4 bg-gradient-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent font-bold">
                 Hudra
               </span>
@@ -50,15 +52,15 @@ export default function HomePage() {
               >
                 Hendo Academy
               </a>{" "}
-              dedicated to digitizing and making freely available the rich
-              Eastern Syriac liturgical tradition for scholars, clergy, and
-              communities worldwide.
+              dedicated to digitizing and freely sharing the Eastern Syriac
+              liturgical tradition - through books, hymns, scholarly articles,
+              and tools for scholars, clergy, and communities worldwide.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-4 justify-center mt-8">
               <Button size="lg" className="text-lg px-8" asChild>
                 <Link href="/books">
                   <BookOpen className="mr-2 h-5 w-5" />
-                  Browse Liturgical Texts
+                  Browse Books
                 </Link>
               </Button>
               <Button size="lg" className="text-lg px-8" asChild>
@@ -67,16 +69,22 @@ export default function HomePage() {
                   Browse Hymns
                 </Link>
               </Button>
+              <Button size="lg" className="text-lg px-8" asChild>
+                <Link href="/articles">
+                  <FileText className="mr-2 h-5 w-5" />
+                  Browse Articles
+                </Link>
+              </Button>
               <Button
                 variant="outline"
                 size="lg"
                 className="text-lg px-8"
                 asChild
               >
-                <a href="/type">
+                <Link href="/editor">
                   <Edit3 className="mr-2 h-5 w-5" />
-                  Try East Syriac Editor
-                </a>
+                  East Syriac Editor
+                </Link>
               </Button>
             </div>
           </div>
@@ -89,20 +97,31 @@ export default function HomePage() {
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Mission</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Preserving and freely sharing the ancient Eastern Syriac
-              liturgical heritage through modern digital technology, making
-              these sacred texts accessible to all.
+              Preserving and freely sharing the Eastern Syriac liturgical
+              heritage through digitization, recordings, and scholarship -
+              making it accessible to all.
             </p>
+            <blockquote className="mt-10 space-y-3 max-w-3xl mx-auto">
+              <p
+                className="font-east-syriac-malankara-classical text-3xl md:text-4xl lg:text-5xl text-primary leading-relaxed"
+                dir="rtl"
+              >
+                ܡܲܓܵܢ ܢܣܲܒ݂ܬܘܿܢ ܡܲܓܵܢ ܗܲܒ݂ܘ܀ ܡܲܬܲܝ ܝ:ܚ
+              </p>
+              <p className="text-lg text-muted-foreground italic">
+                Freely you have received; freely give. — Matthew 10:8
+              </p>
+            </blockquote>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
             <Card className="text-center">
               <CardHeader>
-                <Scroll className="h-12 w-12 mx-auto text-primary mb-4" />
+                <BookOpen className="h-12 w-12 mx-auto text-primary mb-4" />
                 <CardTitle>Digitize</CardTitle>
                 <CardDescription>
-                  Converting ancient liturgical texts and hymns into
-                  high-quality digital formats for preservation and access
+                  Converting liturgical books and manuscripts into high-quality
+                  digital formats for preservation and study
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -112,19 +131,19 @@ export default function HomePage() {
                 <Globe className="h-12 w-12 mx-auto text-primary mb-4" />
                 <CardTitle>Share Freely</CardTitle>
                 <CardDescription>
-                  Making Eastern Syriac liturgical texts freely available to
-                  scholars, clergy, and communities worldwide
+                  Making hymns, recordings, and liturgical texts freely
+                  available to scholars, clergy, and communities worldwide
                 </CardDescription>
               </CardHeader>
             </Card>
 
             <Card className="text-center">
               <CardHeader>
-                <Users className="h-12 w-12 mx-auto text-primary mb-4" />
-                <CardTitle>Preserve</CardTitle>
+                <FileText className="h-12 w-12 mx-auto text-primary mb-4" />
+                <CardTitle>Publish</CardTitle>
                 <CardDescription>
-                  Ensuring the Eastern Syriac liturgical heritage continues to
-                  be accessible for future generations
+                  Scholarly articles on East Syriac liturgy, chant, and
+                  manuscript traditions across the Church of the East
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -140,7 +159,7 @@ export default function HomePage() {
               Explore the Library
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Dive into our growing collection of liturgical texts and hymns
+              Books, hymns, articles, and editing tools — all in one place
             </p>
           </div>
 
@@ -148,12 +167,12 @@ export default function HomePage() {
             <Card className="hover:shadow-xl transition-shadow border-2 hover:border-primary/50">
               <CardHeader className="text-center pb-4">
                 <BookOpen className="h-16 w-16 mx-auto text-primary mb-4" />
-                <CardTitle className="text-2xl">Liturgical Texts</CardTitle>
+                <CardTitle className="text-2xl">Syriac Library</CardTitle>
               </CardHeader>
               <CardContent className="text-center space-y-4">
                 <CardDescription className="text-base">
-                  Browse our collection of digitized East Syriac liturgical
-                  books, including the Hudra and other sacred texts
+                  Browse digitized East Syriac liturgical books, including the
+                  Hudra and other sacred texts
                 </CardDescription>
                 <Button size="lg" className="w-full" asChild>
                   <Link href="/books">
@@ -167,17 +186,55 @@ export default function HomePage() {
             <Card className="hover:shadow-xl transition-shadow border-2 hover:border-primary/50">
               <CardHeader className="text-center pb-4">
                 <Scroll className="h-16 w-16 mx-auto text-primary mb-4" />
-                <CardTitle className="text-2xl">Hymns & Prayers</CardTitle>
+                <CardTitle className="text-2xl">Hymns & Recordings</CardTitle>
               </CardHeader>
               <CardContent className="text-center space-y-4">
                 <CardDescription className="text-base">
-                  Explore individual hymns, prayers, and liturgical texts with
-                  translations and annotations
+                  Explore hymns and prayers with translations, annotations, and
+                  audio recordings from all four East Syriac churches
                 </CardDescription>
                 <Button size="lg" className="w-full" asChild>
                   <Link href="/hymns">
                     <Scroll className="mr-2 h-5 w-5" />
                     Browse Hymns
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="hover:shadow-xl transition-shadow border-2 hover:border-primary/50">
+              <CardHeader className="text-center pb-4">
+                <FileText className="h-16 w-16 mx-auto text-primary mb-4" />
+                <CardTitle className="text-2xl">Articles</CardTitle>
+              </CardHeader>
+              <CardContent className="text-center space-y-4">
+                <CardDescription className="text-base">
+                  Scholarly notes on East Syriac liturgy, chant, and manuscript
+                  traditions
+                </CardDescription>
+                <Button size="lg" className="w-full" asChild>
+                  <Link href="/articles">
+                    <FileText className="mr-2 h-5 w-5" />
+                    Read Articles
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="hover:shadow-xl transition-shadow border-2 hover:border-primary/50">
+              <CardHeader className="text-center pb-4">
+                <Edit3 className="h-16 w-16 mx-auto text-primary mb-4" />
+                <CardTitle className="text-2xl">East Syriac Editor</CardTitle>
+              </CardHeader>
+              <CardContent className="text-center space-y-4">
+                <CardDescription className="text-base">
+                  Type and edit East Syriac and Karshon texts online with full
+                  Unicode support and an on-screen keyboard
+                </CardDescription>
+                <Button size="lg" className="w-full" asChild>
+                  <Link href="/editor">
+                    <Edit3 className="mr-2 h-5 w-5" />
+                    Launch Editor
                   </Link>
                 </Button>
               </CardContent>
@@ -195,7 +252,7 @@ export default function HomePage() {
             </h2>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
               Our work serves the manuscript traditions of four churches that
-              are part of the East Syraic tradition, each with their unique
+              are part of the East Syriac tradition, each with their unique
               heritage and contributions to Christian liturgical life.
             </p>
           </div>
@@ -299,13 +356,13 @@ export default function HomePage() {
               </div>
 
               <Button size="lg" asChild>
-                <a href="/type">
+                <Link href="/editor">
                   <Edit3 className="mr-2 h-5 w-5" />
                   Launch East Syriac Editor
-                </a>
+                </Link>
               </Button>
             </div>
-            <a href="/type" className="cursor-pointer">
+            <Link href="/editor" className="cursor-pointer">
               <div className="bg-white p-8 rounded-lg shadow-lg border hover:shadow-2xl hover:scale-105 hover:border-primary/30 transition-all duration-300 ease-in-out">
                 <div className="space-y-4">
                   <div className="bg-white p-6 rounded  min-h-[300px] flex items-center justify-center">
@@ -323,7 +380,7 @@ export default function HomePage() {
                   </div>
                 </div>
               </div>
-            </a>
+            </Link>
           </div>
         </div>
       </section>

@@ -34,7 +34,7 @@ export default function Navbar() {
             height={32}
             className="h-8 w-8"
           />
-          <span className="text-3xl font-syriac">ܚܘܼܕܪܵܐ</span>
+          <span className="text-3xl font-east-syriac-malankara-classical">ܚܘܼܕܪܵ‍ܐ</span>
         </Link>
 
         {/* Desktop Navigation */}
@@ -156,7 +156,7 @@ export default function Navbar() {
                   height={24}
                   className="h-6 w-6"
                 />
-                <span className="font-syriac text-2xl">ܚܘܼܕܪܵܐ</span>
+                <span className="font-east-syriac-malankara-classical text-2xl">ܚܘܼܕܪܵ‍ܐ</span>
               </SheetTitle>
               <SheetDescription>
                 Free access to Church of the East liturgical texts

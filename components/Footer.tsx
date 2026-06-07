@@ -16,7 +16,7 @@ export default function Footer() {
                 height={32}
                 className="h-8 w-8"
               />
-              <span className="text-3xl font-syriac">ܚܘܼܕܪܵܐ</span>
+              <span className="text-3xl font-east-syriac-malankara-classical">ܚܘܼܕܪܵ‍ܐ</span>
             </div>
             <p className="text-white/80 mb-4 max-w-md">
               The East Syriac Breviary project(hudra.day) is dedicated to
