@@ -38,6 +38,18 @@ function getApprovedRecordings(hymn: Hymn) {
   );
 }
 
+function getVisibleRecordingCount(hymn: Hymn, selectedChurches: string[]) {
+  const recordings = getApprovedRecordings(hymn);
+  if (selectedChurches.length === 0) {
+    return recordings.length;
+  }
+
+  return recordings.filter(
+    (recording) =>
+      recording.church && selectedChurches.includes(recording.church),
+  ).length;
+}
+
 export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
   const { userProfile } = useAuth();
   const isAdmin = userProfile?.role === "admin";
@@ -148,20 +160,11 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
 
   // Calculate total recordings count
   const totalRecordings = useMemo(() => {
-    return sortedHymns.reduce((total, hymn) => {
-      const recordings = getApprovedRecordings(hymn);
-      if (selectedChurches.length === 0) {
-        return total + recordings.length;
-      }
-
-      return (
-        total +
-        recordings.filter(
-          (recording) =>
-            recording.church && selectedChurches.includes(recording.church),
-        ).length
-      );
-    }, 0);
+    return sortedHymns.reduce(
+      (total, hymn) =>
+        total + getVisibleRecordingCount(hymn, selectedChurches),
+      0,
+    );
   }, [sortedHymns, selectedChurches]);
 
   // Helper function to get the first character for grouping
@@ -446,6 +449,10 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
                 {group.hymns.map((hymn) => {
                   const { english, syriacVocalized, syriacNonVocalized } =
                     formatTitles(hymn);
+                  const recordingCount = getVisibleRecordingCount(
+                    hymn,
+                    selectedChurches,
+                  );
                   return (
                     <Link key={hymn.id} href={`/hymns/${hymn.id}`}>
                       <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer">
@@ -524,10 +531,10 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
                                       : "translations"}
                                   </span>
                                 )}
-                              {hymn.recordings?.length > 0 && (
+                              {recordingCount > 0 && (
                                 <span>
-                                  {hymn.recordings.length}{" "}
-                                  {hymn.recordings.length === 1
+                                  {recordingCount}{" "}
+                                  {recordingCount === 1
                                     ? "recording"
                                     : "recordings"}
                                 </span>

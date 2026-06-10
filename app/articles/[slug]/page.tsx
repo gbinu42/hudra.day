@@ -11,12 +11,14 @@ import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import { CalendarDays, ArrowLeft } from "lucide-react";
 import QaleDonyathaDsahde from "@/components/articles/QaleDonyathaDsahde";
+import QambelMaranCD from "@/components/articles/QambelMaranCD";
 import ReshQale from "@/components/articles/ReshQale";
 import { ComponentType } from "react";
 
 const articleContent: Record<string, ComponentType> = {
   "resh-qale": ReshQale,
   "qale-donyatha-dsahde": QaleDonyathaDsahde,
+  "qambel-maran-cd": QambelMaranCD,
 };
 
 export const dynamic = "force-static";
@@ -43,6 +45,9 @@ export async function generateMetadata({
       description: article.description,
       type: "article",
       publishedTime: article.date,
+      ...(article.image && {
+        images: [{ url: `https://hudra.day${article.image}` }],
+      }),
     },
   };
 }

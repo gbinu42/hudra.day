@@ -9,9 +9,33 @@ export interface Article {
   author?: string;
   description: string;
   keywords: string[];
+  image?: string;
+  imageAlt?: string;
 }
 
 export const articles: Article[] = [
+  {
+    slug: "qambel-maran-cd",
+    title: "Qambel Maran CD",
+    titleSyriac: "ܩܲܒܸܠ ܡܵܪܲܢ",
+    subtitle: "Hymn texts from the Qambel Maran CD by Rev. Dr. Joseph Palackal",
+    date: "2026-06-08",
+    author: "Binu George",
+    description:
+      "The complete hymn texts from the Qambel Maran CD by Rev. Dr. Joseph Palackal — a recording of East Syriac liturgical and devotional hymns in the Malabar tradition.",
+    keywords: [
+      "qambel maran",
+      "East Syriac",
+      "Syro-Malabar",
+      "liturgical chant",
+      "hymn texts",
+      "Malabar",
+      "CD",
+      "Church of the East",
+    ],
+    image: "/images/qambel-maran-cd.jpg",
+    imageAlt: "Qambel Maran CD cover",
+  },
   {
     slug: "resh-qale",
     title: "Resh Qale",
@@ -57,6 +81,10 @@ export const articles: Article[] = [
     ],
   },
 ];
+
+export function getArticlesForIndex(): Article[] {
+  return [...articles].sort((a, b) => b.date.localeCompare(a.date));
+}
 
 export function getArticleBySlug(slug: string): Article | undefined {
   return articles.find((a) => a.slug === slug);

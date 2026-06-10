@@ -1,10 +1,11 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ArticleTitle from "@/components/ArticleTitle";
-import { articles } from "@/lib/articles";
+import { getArticlesForIndex } from "@/lib/articles";
 import { Metadata } from "next";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
+import Image from "next/image";
 import { CalendarDays, ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -30,6 +31,8 @@ export const metadata: Metadata = {
 export const dynamic = "force-static";
 
 export default function ArticlesPage() {
+  const articles = getArticlesForIndex();
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
@@ -50,6 +53,15 @@ export default function ArticlesPage() {
                 className="group block rounded-xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow"
               >
                 <div className="flex items-start justify-between gap-4">
+                  {article.image && (
+                    <Image
+                      src={article.image}
+                      alt={article.imageAlt ?? article.title}
+                      width={96}
+                      height={96}
+                      className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg object-cover shrink-0 border border-gray-200 shadow-sm"
+                    />
+                  )}
                   <div className="flex-1 min-w-0">
                 <h2 className="text-2xl font-semibold text-foreground group-hover:text-primary transition-colors mb-1 font-[family-name:var(--font-eb-garamond)]">
                   <ArticleTitle

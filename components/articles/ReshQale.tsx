@@ -1307,7 +1307,7 @@ export default function ReshQale() {
 
       <div className="not-prose flex flex-col gap-2 sm:flex-row sm:items-baseline sm:gap-3 mt-10 mb-4">
         <h3 className="text-lg font-semibold font-[family-name:var(--font-lora)] text-slate-700 m-0">
-          Resh Qale not in the Malayalam translation
+          Resh Qale omitted from the Malayalam translation
         </h3>
         <button
           onClick={() =>
