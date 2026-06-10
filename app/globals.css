@@ -187,6 +187,16 @@
   margin-bottom: 0.5em;
 }
 
+.article-body a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.article-body a:hover {
+  color: color-mix(in oklch, var(--primary) 80%, transparent);
+}
+
 @layer utilities {
   /* Hide scrollbar but keep functionality */
   .scrollbar-hide {

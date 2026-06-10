@@ -22,7 +22,7 @@ export const articles: Article[] = [
     date: "2026-06-08",
     author: "Binu George",
     description:
-      "The complete hymn texts from the Qambel Maran CD by Rev. Dr. Joseph Palackal — a recording of East Syriac liturgical and devotional hymns in the Malabar tradition.",
+      "Syriac hymn texts from the Qambel Maran CD — 29 East Syriac liturgical chants from the Syro-Malabar tradition, with liturgical notes drawn from M Thomas Antony’s review.",
     keywords: [
       "qambel maran",
       "East Syriac",

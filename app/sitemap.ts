@@ -1,4 +1,5 @@
 import { MetadataRoute } from "next";
+import { articles } from "@/lib/articles";
 import { bookService } from "@/lib/firebase-services";
 import { hymnService } from "@/lib/hymn-services";
 import {
@@ -79,6 +80,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }),
   ];
 
+  // Articles routes
+  const articlesRoutes: MetadataRoute.Sitemap = [
+    createSitemapEntry(`${baseUrl}/articles`, {
+      changeFrequency: "weekly",
+      priority: 0.8,
+    }),
+    ...articles.map((article) =>
+      createSitemapEntry(`${baseUrl}/articles/${article.slug}`, {
+        lastModified: new Date(article.date),
+        changeFrequency: "monthly",
+        priority: 0.7,
+      }),
+    ),
+  ];
+
   // Texts routes - removed from sitemap per user request
 
   // Merge all sitemaps
@@ -88,7 +104,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     bookDetailRoutes,
     hymnsRoutes,
     hymnDetailRoutes,
-    personsRoutes
+    personsRoutes,
+    articlesRoutes,
   );
 
   // Deduplicate and log stats

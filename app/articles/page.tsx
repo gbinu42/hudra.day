@@ -25,6 +25,26 @@ export const metadata: Metadata = {
     description:
       "Scholarly articles on East Syriac liturgy, chant, manuscripts, and tradition.",
     type: "website",
+    url: "https://hudra.day/articles",
+    siteName: "Hudra - East Syriac Liturgical Archive",
+    images: [
+      {
+        url: "https://hudra.day/images/sliwa.png",
+        width: 1200,
+        height: 630,
+        alt: "Hudra Articles",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Articles – Hudra",
+    description:
+      "Scholarly articles on East Syriac liturgy, chant, manuscripts, and tradition.",
+    images: ["https://hudra.day/images/sliwa.png"],
+  },
+  alternates: {
+    canonical: "https://hudra.day/articles",
   },
 };
 

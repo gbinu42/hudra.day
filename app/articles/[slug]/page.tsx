@@ -36,18 +36,44 @@ export async function generateMetadata({
   const article = getArticleBySlug(slug);
   if (!article) return {};
 
+  const fullTitle = getArticleFullTitle(article);
+  const canonical = `https://hudra.day/articles/${slug}`;
+  const ogImage = article.image
+    ? `https://hudra.day${article.image}`
+    : "https://hudra.day/images/sliwa.png";
+
   return {
-    title: `${getArticleFullTitle(article)} – Hudra`,
+    title: `${fullTitle} – Hudra`,
     description: article.description,
     keywords: article.keywords,
+    authors: article.author ? [{ name: article.author }] : undefined,
     openGraph: {
-      title: getArticleFullTitle(article),
+      title: fullTitle,
       description: article.description,
       type: "article",
+      url: canonical,
+      siteName: "Hudra - East Syriac Liturgical Archive",
       publishedTime: article.date,
-      ...(article.image && {
-        images: [{ url: `https://hudra.day${article.image}` }],
-      }),
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: article.imageAlt ?? fullTitle,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: fullTitle,
+      description: article.description,
+      images: {
+        url: ogImage,
+        alt: article.imageAlt ?? fullTitle,
+      },
+    },
+    alternates: {
+      canonical,
     },
   };
 }

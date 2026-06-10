@@ -20,9 +20,12 @@ const HYMN_RESOURCE_LINKS: Record<
 > = {
   1: {
     cmsPath: "a/awun-dwasmayya-our-father-in-heaven",
-    hudraSlug: "awun-dwashmayya",
+    hudraSlug: "awun-dwashmayya-with-qanona",
   },
-  2: { cmsPath: "h/hallel-hallel-praise-praise" },
+  2: {
+    cmsPath: "h/hallel-hallel-praise-praise",
+    hudraSlug: "hallel-hallel-hallel-ire",
+  },
   3: {
     cmsPath: "i/iso-maran-m-siha-lord-jesus-christ",
     hudraSlug: "isho-maran-mshiha",
@@ -43,8 +46,14 @@ const HYMN_RESOURCE_LINKS: Record<
     cmsPath: "b/brik-hannana-blessed-is-the-merciful-one",
     hudraSlug: "brikh-hannana",
   },
-  8: { cmsPath: "e/etpan-al-slota-turn-to-the-prayer" },
-  9: { cmsPath: "t/taw-n-yaqar-come-let-us-honor" },
+  8: {
+    cmsPath: "e/etpan-al-slota-turn-to-the-prayer",
+    hudraSlug: "ethpan-al-slotha",
+  },
+  9: {
+    cmsPath: "t/taw-n-yaqar-come-let-us-honor",
+    hudraSlug: "taw-nyaqar",
+  },
   10: {
     cmsPath: "s/sliwa-dahwa-lan-the-cross-that-became-for-us",
     hudraSlug: "sliwa-dahwa-lan",
@@ -57,10 +66,7 @@ const HYMN_RESOURCE_LINKS: Record<
     cmsPath: "k/k-tawa-ramba-dawrek-sawe",
     hudraSlug: "kthawa-ramba",
   },
-  13: {
-    cmsPath: "s/slam-lek-maryam-hail-to-you-mary",
-    hudraSlug: "shlam-lekh-maryam",
-  },
+  13: { cmsPath: "s/slam-lek-maryam-hail-to-you-mary" },
   14: {
     cmsPath: "q/qambel-maran-receive-o-our-lord",
     hudraSlug: "qambel-maran",
@@ -69,7 +75,10 @@ const HYMN_RESOURCE_LINKS: Record<
     cmsPath: "l/la-tekre-lak-dont-be-sorry",
     hudraSlug: "la-tekre-lakh",
   },
-  16: { cmsPath: "l/layka-ezal-min-ruhak-res-qala" },
+  16: {
+    cmsPath: "l/layka-ezal-min-ruhak-res-qala",
+    hudraSlug: "layka-maran",
+  },
   17: {
     cmsPath: "b/bhad-min-yawmin-on-one-of-the-days",
     hudraSlug: "bhad-min-yawmin",
@@ -92,10 +101,7 @@ const HYMN_RESOURCE_LINKS: Record<
     cmsPath: "l/lak-mar-yawsep-you-st-joseph",
     hudraSlug: "lakh-mar-yawsep",
   },
-  27: {
-    cmsPath: "s/sambah-l-marya-praise-the-lord",
-    hudraSlug: "shambah-lmarya-teshbohta-hdata",
-  },
+  27: { cmsPath: "s/sambah-l-marya-praise-the-lord" },
   28: {
     cmsPath: "h/had-min-ire-one-from-the-angels",
     hudraSlug: "had-min-ire",
@@ -159,6 +165,59 @@ interface Hymn {
   blocks: Block[];
   footnotes: string[];
   youtubeEmbedSrc?: string;
+}
+
+const CD_SECTIONS: { title: string; hymnNums: number[] }[] = [
+  {
+    title: "I. Chants from the Liturgy of Hours",
+    hymnNums: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+  },
+  { title: "II. Chants from the Raza", hymnNums: [10, 11, 12, 13] },
+  {
+    title: "III. Chants from the Services for the Dead",
+    hymnNums: [14, 15, 16, 17, 18],
+  },
+  {
+    title: "IV. Syriac Translations of Latin Chants",
+    hymnNums: [19, 20, 21, 22, 23, 24],
+  },
+  { title: "V. Chants for Special Occasions", hymnNums: [25, 26, 27, 28, 29] },
+];
+
+const HYMN_DESCRIPTIONS: Record<number, string> = {
+  1: "Slotha (prayer). The Lord’s Prayer, interpolated with the angelic hymn (Isaiah 6:3 / Revelation 4:8), sung at solemn Ramsa (vespers); celebrant and choir alternate verses.",
+  2: "From Leliya (night office). Sung before the Christmas midnight Qurbana; from the third marmitha of Psalms 93–95.",
+  3: "Acrostic teshbohta by St Ephrem the Syrian (d. 373), sung at Sapra on Sunday. A melody common to all Syriac traditions in Kerala.",
+  4: "Onyatha from Leliya on Thursday. The lament of a repentant sinner seeking God’s mercy.",
+  5: "Onyatha d'sahde from Sapra on Monday, describing the scene at Christ’s second coming. An example of hepta-syllabic verse.",
+  6: "Onyatha d'sahde from Ramsa on Tuesday, on the martyrdom of St Stephen.",
+  7: "Teshbohta from Lelya on Sunday, sung during sung during Subara and Denha, praising the mystery of the Incarnation.",
+  8: "Teshbohta from Lelya on Monday.",
+  9: "From Lelya on the feast of virgins.",
+  10: "Onitha d'qanke sung at the opening of the Malabar Raza: the celebrant offers the cross for the people to venerate.",
+  11: "Turgama before the biblical reading. The vocable inja at each line-end — absent from the text — fills the metre; a feature common to the Malabar tradition and the Chaldean/Assyrian traditions.",
+  12: "Sung during the Gospel procession at Raza; the same text and melody are repeated four times, each with a different incipit.",
+  13: "Huttama (concluding prayer) from the liturgy of a Marian feast; celebrant sings verses, congregation responds Amen.",
+  14: "Madrasha from the short office for the dead, in solo-and-refrain form. On the CD this is sung by Fr Abel Periappuram CMI",
+  15: "From the funeral service for lay people; sung during the procession from home to church.",
+  16: "By Mar Aprem Malpana, based on Psalm 139. An example of Syriac prosody with lines of varying syllable count.",
+  17: "Madrasha for the funeral of lay women, on the grief of Martha and Mary at the death of Lazarus.",
+  18: "Madrasha from the funeral service for priests.",
+  19: "Syriac rendering of Kyrie eleison, used in the Ladinj - a paraliturgical litany in honour of the Blessed Virgin Mary.",
+  20: "Syriac translation of a Latin Good Friday chant: “Behold the wood of the cross.”",
+  21: "A free Syriac rendering of the opening stanza of the Latin Pange lingua; sung at Benediction of the Blessed Sacrament.",
+  22: "Syriac translation of the last two stanzas of Pange Lingua.",
+  23: "Syriacised Veni Creator Spiritus, invoking the Holy Spirit at ordinations.",
+  24: "Syriac translation of Salve Regina, used in Ladinj and similar devotions.",
+  25: "Ancient chant of the Knanaya community, used in the wedding ceremony.",
+  26: "A hymn in praise of St Joseph, probably introduced in the post-Diamper period.",
+  27: "Psalm 117 with a Hallelujah refrain, sung at the flag-hoisting on the first day of a parish feast.",
+  28: "On the angel Gabriel, used on the feast of the Annunciation (25 March).",
+  29: "Teshbohta in honour of the Blessed Virgin Mary, from solemn vespers for Marian feasts.",
+};
+
+function getHymnSectionTitle(num: number): string | undefined {
+  return CD_SECTIONS.find((s) => s.hymnNums.includes(num))?.title;
 }
 
 function HymnResourceLinks({ num }: { num: number }) {
@@ -1437,7 +1496,7 @@ const HYMNS: Hymn[] = [
   },
   {
     num: 24,
-    title: "Slam Lek",
+    title: "Shlam Lek",
     blocks: [],
     footnotes: [],
     youtubeEmbedSrc: "https://www.youtube-nocookie.com/embed/SVV-ZksRTHU",
@@ -1586,6 +1645,16 @@ const HYMNS: Hymn[] = [
 export default function QambelMaranCD() {
   return (
     <>
+      <div className="not-prose mb-6 rounded-lg bg-yellow-50 border border-yellow-300 px-5 py-3 flex items-center gap-3 text-yellow-800">
+        <span className="text-lg" aria-hidden="true">
+          🚧
+        </span>
+        <p className="text-sm font-medium m-0">
+          Work in progress — this article is incomplete and may change
+          significantly.
+        </p>
+      </div>
+
       <div className="not-prose mb-8 flex justify-center">
         <Image
           src="/images/qambel-maran-cd.jpg"
@@ -1599,16 +1668,24 @@ export default function QambelMaranCD() {
 
       <h2>Introduction</h2>
       <p>
-        The hymn texts from the <em>Qambel Maran</em> CD are available in
-        English transliteration and translation in the CD booklet, and on the{" "}
+        <em>Qambel Maran: Syriac Chants from South India</em> is a 66-minute CD
+        of 29 East Syriac liturgical chants, released by Pan Records
+        (Netherlands) under their ethnic series and produced by the{" "}
         <a
           href="https://thecmsindia.org"
           target="_blank"
           rel="noopener noreferrer"
         >
           Christian Musicological Society of India
-        </a>{" "}
-        /{" "}
+        </a>
+        . The recordings feature CMI priests from Mannanam monastery and Syriac
+        choirs from St John&rsquo;s Church, Konthuruthy and St Mary&rsquo;s
+        Forane Church, Pallipuram, Cherthala. Rev. Dr. Joseph Palackal,
+        founder-president of the CMS India, assembled the project; texts were
+        drawn chiefly from the collection of ancient Syriac books at St
+        Joseph&rsquo;s Monastery, Mannanam. The accompanying 16-page booklet
+        provides transliteration, translation, and musical notes; further
+        material is on the{" "}
         <a
           href="https://aramaicproject.com/qambel-maran-syriac-chants"
           target="_blank"
@@ -1616,14 +1693,34 @@ export default function QambelMaranCD() {
         >
           Aramaic Project
         </a>{" "}
-        website&mdash;but not in Syriac script. This article is an attempt to
-        remedy that omission, presenting the texts in the original East Syriac.
+        website.
       </p>
       <p>
-        The Syriac text has been assembled from various sources. Liturgical
-        rubrics and refrains are shown in red. Where a source omits verses,
-        those gaps are noted inline. Text for hymns 19&ndash;26 is not yet
-        transcribed.
+        The CD spans the breadth of Malabar East Syriac music - from chants
+        attributed to St Ephrem the Syrian through the Portuguese period, when
+        Latin devotions were translated into Syriac, to hymns for weddings,
+        Marian feasts, and funerals. The 29 tracks are grouped in five sections:
+        the Liturgy of Hours, the Raza, services for the dead, Syriac
+        translations of Latin chants, and chants for special occasions. For a
+        detailed review of each track and its liturgical context, see M Thomas
+        Antony,{" "}
+        <a
+          href="http://nasrani.net/2008/10/31/qambel-maran-syriac-chants-from-south-india/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          &ldquo;Qambel Maran - Syriac Chants from South India: A Review and
+          Liturgical Music Tradition of Syriac Christians Revisited&rdquo;
+        </a>{" "}
+        (Nasrani.net, 2008). Check the links below each chant for more
+        information and other recordings of the chants.
+      </p>
+      <p>
+        The CD booklet and the Aramaic Project provide transliteration and
+        English translation of the hymns, but not the original Syriac text. What
+        follows is an attempt to supply that omission: each track transcribed
+        from manuscript and printed sources. Liturgical rubrics and refrains are
+        shown in red; where a recording omits verses, the gap is noted inline.
       </p>
 
       <h2 className="not-prose text-xl font-semibold font-[family-name:var(--font-lora)] text-slate-700 mt-10 mb-6">
@@ -1631,41 +1728,60 @@ export default function QambelMaranCD() {
       </h2>
 
       <div className="not-prose space-y-10">
-        {HYMNS.map((hymn) => (
-          <section key={hymn.num}>
-            <h3 className="text-lg font-semibold font-[family-name:var(--font-lora)] text-slate-800 mb-2">
-              {hymn.num}. {hymn.title}
-            </h3>
-            <div className="ml-4">
-              <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 space-y-0.5">
-                {hymn.blocks.length === 0 ? (
-                  <p className="text-sm italic text-muted-foreground m-0 font-[family-name:var(--font-lora)]">
-                    Text to be added.
-                  </p>
-                ) : (
-                  <HymnBlocks hymn={hymn} />
-                )}
-                {hymn.footnotes.length > 0 && (
-                  <div className="mt-3 mb-0 border-t border-slate-200 pt-3 space-y-2">
-                    {hymn.footnotes.map((fn, i) => (
-                      <FootnoteItem key={i} text={fn} />
-                    ))}
-                  </div>
-                )}
-              </div>
-              {hymn.youtubeEmbedSrc && (
-                <RecordingEmbed
-                  src={hymn.youtubeEmbedSrc}
-                  title={
-                    getYoutubeTitle(hymn.youtubeEmbedSrc) ??
-                    `${hymn.num}. ${hymn.title}`
-                  }
-                />
+        {HYMNS.map((hymn, index) => {
+          const sectionTitle = getHymnSectionTitle(hymn.num);
+          const prevSection =
+            index > 0 ? getHymnSectionTitle(HYMNS[index - 1].num) : undefined;
+          const showSection = sectionTitle && sectionTitle !== prevSection;
+
+          return (
+            <Fragment key={hymn.num}>
+              {showSection && (
+                <h3 className="text-base font-semibold font-[family-name:var(--font-lora)] text-slate-600 border-b border-slate-200 pb-2 pt-4">
+                  {sectionTitle}
+                </h3>
               )}
-              <HymnResourceLinks num={hymn.num} />
-            </div>
-          </section>
-        ))}
+              <section>
+                <h3 className="text-lg font-semibold font-[family-name:var(--font-lora)] text-slate-800 mb-1">
+                  {hymn.num}. {hymn.title}
+                </h3>
+                {HYMN_DESCRIPTIONS[hymn.num] && (
+                  <p className="text-sm text-muted-foreground mb-2 font-[family-name:var(--font-lora)] leading-relaxed">
+                    {HYMN_DESCRIPTIONS[hymn.num]}
+                  </p>
+                )}
+                <div className="ml-4">
+                  <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 space-y-0.5">
+                    {hymn.blocks.length === 0 ? (
+                      <p className="text-sm italic text-muted-foreground m-0 font-[family-name:var(--font-lora)]">
+                        Text to be added.
+                      </p>
+                    ) : (
+                      <HymnBlocks hymn={hymn} />
+                    )}
+                    {hymn.footnotes.length > 0 && (
+                      <div className="mt-3 mb-0 border-t border-slate-200 pt-3 space-y-2">
+                        {hymn.footnotes.map((fn, i) => (
+                          <FootnoteItem key={i} text={fn} />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  {hymn.youtubeEmbedSrc && (
+                    <RecordingEmbed
+                      src={hymn.youtubeEmbedSrc}
+                      title={
+                        getYoutubeTitle(hymn.youtubeEmbedSrc) ??
+                        `${hymn.num}. ${hymn.title}`
+                      }
+                    />
+                  )}
+                  <HymnResourceLinks num={hymn.num} />
+                </div>
+              </section>
+            </Fragment>
+          );
+        })}
       </div>
     </>
   );
