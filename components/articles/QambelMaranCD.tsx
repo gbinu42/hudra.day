@@ -1416,7 +1416,7 @@ const HYMNS: Hymn[] = [
   },
   {
     num: 22,
-    title: "Kollan Dasne",
+    title: "Kollan Dashne",
     blocks: [
       {
         segments: [
