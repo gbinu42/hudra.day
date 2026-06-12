@@ -157,7 +157,10 @@ interface Segment {
   role?: boolean;
 }
 
-type Block = { segments: Segment[] } | { skipped: string };
+type Block =
+  | { segments: Segment[] }
+  | { skipped: string }
+  | { paragraphBreak: true };
 
 interface Hymn {
   num: number;
@@ -206,7 +209,7 @@ const HYMN_DESCRIPTIONS: Record<number, string> = {
   19: "Syriac rendering of Kyrie eleison, used in the Ladinj - a paraliturgical litany in honour of the Blessed Virgin Mary.",
   20: "Syriac translation of a Latin Good Friday chant: “Behold the wood of the cross.”",
   21: "A free Syriac rendering of the opening stanza of the Latin Pange lingua; sung at Benediction of the Blessed Sacrament.",
-  22: "Syriac translation of the last two stanzas of Pange Lingua.",
+  22: "Syriac translation of Tantum Ergo.",
   23: "Syriacised Veni Creator Spiritus, invoking the Holy Spirit at ordinations.",
   24: "Syriac translation of Salve Regina, used in Ladinj and similar devotions.",
   25: "Ancient chant of the Knanaya community, used in the wedding ceremony.",
@@ -356,7 +359,7 @@ function SyriacBlock({
   );
 }
 
-const LINE_BREAK_HYMNS = new Set([1, 3, 7, 8, 15, 20, 21, 23, 26, 29]);
+const LINE_BREAK_HYMNS = new Set([1, 3, 7, 8, 15, 20, 21, 22, 23, 26, 29]);
 
 function SkippedNote({ text }: { text: string }) {
   return (
@@ -371,13 +374,15 @@ function SkippedNote({ text }: { text: string }) {
 
 function HymnBlocks({ hymn }: { hymn: Hymn }) {
   if (!LINE_BREAK_HYMNS.has(hymn.num)) {
-    return hymn.blocks.map((block, i) =>
-      "skipped" in block ? (
-        <SkippedNote key={i} text={block.skipped} />
-      ) : (
-        <SyriacBlock key={i} segments={block.segments} />
-      ),
-    );
+    return hymn.blocks.flatMap((block, i) => {
+      if ("skipped" in block) {
+        return [<SkippedNote key={i} text={block.skipped} />];
+      }
+      if ("paragraphBreak" in block) {
+        return [];
+      }
+      return [<SyriacBlock key={i} segments={block.segments} />];
+    });
   }
 
   const items: React.ReactNode[] = [];
@@ -393,6 +398,8 @@ function HymnBlocks({ hymn }: { hymn: Hymn }) {
     if ("skipped" in block) {
       flushSyriac();
       items.push(<SkippedNote key={items.length} text={block.skipped} />);
+    } else if ("paragraphBreak" in block) {
+      flushSyriac();
     } else {
       segmentGroups.push(block.segments);
     }
@@ -1370,7 +1377,7 @@ const HYMNS: Hymn[] = [
         segments: [{ text: "ܗܵܐ ܩܹܝܣ ܨܠܝܼܒ݂ܵܐ" }],
       },
       {
-        segments: [{ text: "ܕܒܹܗ ܬܠܹܐ ܦܘܼܪܩܵܢ ܥܵܠܡܵܐ" }],
+        segments: [{ text: "ܕܒܹܗ ܬܠܸܐ ܦܘܼܪܩܵܢ ܥܵܠܡܵܐ" }],
       },
       {
         segments: [{ text: "ܬܵܘ ܢܸܣܓܕܝܼܘܗܝ" }],
@@ -1387,20 +1394,22 @@ const HYMNS: Hymn[] = [
     blocks: [
       {
         segments: [
-          { text: "ܫܲܒܲܚ ܠܸܫܵܢܝ ܚܲܠܵܫܵܐ: ܐ݇ܪܵܙܵܐ ܕܦܲܓܪܵܐ ܕܠܵܐ ܡܘܼܡܵܐ." },
+          {
+            text: "ܫܲܒܲܚ ܠܸܫܵܢܝ ܚܲܠܵܫܵܐ: ܐ݇ܪܵܙܵܐ ܕܦܲܓ݂ܪܵܐ ܕܠܵܐ ܡܘܼܡܵܐ:",
+          },
         ],
       },
       {
         segments: [
           {
-            text: "ܘܲܕܟܵܣ ܕܸܡ ܕܘܼܟܵܝ ܢܲܦ̮ܫܵܐ. ܡܚܲܕܝܵܢܵܐ ܕܟܠܹܗ ܥܵܠܡܵܐ.",
+            text: "ܘܲܕܟ݂ܵܣ ܕܸܡ ܕܘܼܟܵܝ ܢܲܦ̮ܫܵܐ. ܡܚܲܕܝܵܢܵܐ ܕܟܠܹܗ ܥܵܠܡܵܐ",
           },
+          { text: "܀", color: "red" },
         ],
       },
-      { skipped: "[remaining verses omitted]" },
     ],
     footnotes: [
-      "Text from manuscript APSTCH MANN 00031 folio 10r at Mannanam.",
+      "Text from Kthawa Daslotha Kanonaita d'Yawmatha d'Ede, Mannanam 1930, p. 541; also manuscript APSTCH MANN 00031 folio 10r at Mannanam.",
       "This is not a word-for-word translation of Pange Lingua; each line has seven syllables.",
     ],
     youtubeEmbedSrc: "https://www.youtube-nocookie.com/embed/QJ12LUdj3mc",
@@ -1408,8 +1417,74 @@ const HYMNS: Hymn[] = [
   {
     num: 22,
     title: "Kollan Dasne",
-    blocks: [],
-    footnotes: [],
+    blocks: [
+      {
+        segments: [
+          {
+            text: "ܟܠܲܢ ܕܲܫܢܹ̈ܐ ܢܩܲܕܸܒ݂ ܠܹܗ: ܘܢܸܣܓ݁ܘܿܕ ܡܵܝ̈ܘܿܬܹܐ ܠܐ݇ܪ̈ܵܙܹܐ:",
+          },
+        ],
+      },
+      {
+        segments: [
+          {
+            text: "ܘܲܕܝܵܬܹܩܹܐ ܥܲܬ݁ܝܼܩܬܵܐ: ܬܸܬ݁ܛܲܠܲܩ ܒܲܕܪܲܚ ܚܕܲܬܵܐ",
+          },
+          { text: "܀", color: "red" },
+        ],
+      },
+      { paragraphBreak: true },
+      {
+        segments: [
+          {
+            text: "ܗܲܝܡܵܢܘܼܬ݂ܵܐ ܡܫܲܡܠܝܵܐ: ܚܲܣܝܼܪܘܼܬ݂ ܪܸܓ݂ܫܲܝ̈ ܦܲܓ݂ܪܵܐ:",
+          },
+        ],
+      },
+      {
+        segments: [
+          {
+            text: "ܕܒ݂ܵܗ̇ ܪܵܕܹܝܢܲܢ ܐܲܝܟ ܕܒܸܐܠܦܵܐ: ܒܗܵܢ ܝܲܡܵܐ ܣܲܓ݁ܝܼ ܫܓ݂ܝܼܫܵܐ",
+          },
+          { text: "܀", color: "red" },
+        ],
+      },
+      { paragraphBreak: true },
+      {
+        segments: [
+          {
+            text: "ܫܘܼܒ݂ܚܵܐ ܫܘܼܠܛܵܢ ܘܪܘܼܡܪܵܡܵܐ: ܠܐܲܒ݂ܵܐ ܘܠܲܒ݂ܪܹܗ ܚܲܒ݁ܝܼܒ݂ܵܐ:",
+          },
+        ],
+      },
+      {
+        segments: [
+          {
+            text: "ܘܲܠܪܘܼܚܵܐ ܦܵܪܲܩܠܹܝܛܵܐ: ܫܲܘܝܵܐ ܥܲܡܗܘܿܢ ܬܸܫܒܘܿܚܬܵܐ",
+          },
+          { text: "܀", color: "red" },
+        ],
+      },
+      { paragraphBreak: true },
+      {
+        segments: [
+          {
+            text: "ܠܲܚܡܵܐ ܕܡ݂ܢ ܫܡܲܝܵܐ ܝܲܗ݇ܒ݂ܬ݁ ܠܗܘܿܢ ܗܲܠܸܠܘܼܝܵܐ",
+          },
+        ],
+      },
+      {
+        segments: [
+          {
+            text: "ܕܐܝܼܬ ܒܹܗ ܟܠ ܚܲܠܝܘܼܬ݂ ܦܘܼܢܵܩܹܐ ܗܲܠܸܠܘܼܝܵܐ",
+          },
+        ],
+      },
+    ],
+    footnotes: [
+      "Text from Kthawa Daslotha Kanonaita d'Yawmatha d'Ede, Mannanam 1930, p. 542.",
+      "Syriac translation of Tantum Ergo; each line has seven syllables.",
+    ],
     youtubeEmbedSrc: "https://www.youtube-nocookie.com/embed/jEqfppJt7AY",
   },
   {

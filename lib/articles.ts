@@ -22,7 +22,7 @@ export const articles: Article[] = [
     date: "2026-06-08",
     author: "Binu George",
     description:
-      "Syriac hymn texts of 29 East Syriac liturgical chants from the Qambel Maran CD , with sources.",
+      "Syriac hymn texts of 29 East Syriac liturgical chants from the Qambel Maran CD, with sources.",
     keywords: [
       "qambel maran",
       "East Syriac",
