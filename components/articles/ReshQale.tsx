@@ -912,6 +912,12 @@ const RETAINED: ReshQala[] = [
         hymnLink: "/hymns/beda-shiwha-dyom-dukhrane",
         performer: "Fr. Charles Payngot CMI",
       },
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fman-meshkah-danthanne-taybutha%2Faudio%2F1781296340940.m4a?alt=media&token=82c2d8e2-7eba-4fe1-9e8b-fb839b1bab74",
+        performer: "Fr. Emmanuel Thelly CMI",
+        hymnName: "Man Meshkah",
+        hymnLink: "/hymns/man-meshkah-danthanne-taybutha",
+      },
     ],
     link: "/hymns/mambua-hayye",
   },
@@ -1223,7 +1229,10 @@ const NOT_RETAINED: ReshQala[] = [
     name: "Mannu Sapeq",
     nameSyr: "ܡܲܢܘܼ ܣܵܦܹܩ",
     nameMal: "മന്നൂ സാപേക്ക്",
-    alsoKnownAs: [{ latin: "Pthahlan Maran", syr: "ܦܬܲܚܠܲܢ ܡܵܪܲܢ" }],
+    alsoKnownAs: [
+      { latin: "Pthahlan Maran", syr: "ܦܬܲܚܠܲܢ ܡܵܪܲܢ" },
+      { latin: "Alaha Meltha", syr: "ܐܲܠܵܗܵܐ ܡܸܠܬ݂ܵܐ" },
+    ],
     structure: "",
     syriacText: {
       stanzas: [
@@ -1233,6 +1242,26 @@ const NOT_RETAINED: ReshQala[] = [
         },
       ],
     },
+    recordings: [
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fmannu-sapeq%2Faudio%2F1781096282139.m4a?alt=media&token=745935d1-6d37-46ac-84c4-b9472426f903",
+        performer: "Fr. Alexander Kattakayam CMI",
+        hymnName: "Mannu Sapeq",
+        hymnLink: "/hymns/mannu-sapeq",
+      },
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fmannu-sapeq%2Faudio%2F1781290099288.m4a?alt=media&token=36241934-cd81-49ef-9d9c-4ed70cedb984",
+        performer: "Fr. Emmanuel Thelly CMI",
+        hymnName: "Mannu Sapeq",
+        hymnLink: "/hymns/mannu-sapeq",
+      },
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Flakh-mawdenan%2Faudio%2F1781291199637.m4a?alt=media&token=ba652344-1f5b-471a-ab36-b207a2ba16a8",
+        performer: "Fr. Emmanuel Thelly CMI",
+        hymnName: "Lakh Mawdenan",
+        hymnLink: "/hymns/lakh-mawdenan",
+      },
+    ],
     link: "/hymns/mannu-sapeq",
   },
   {
@@ -1249,6 +1278,20 @@ const NOT_RETAINED: ReshQala[] = [
         },
       ],
     },
+    recordings: [
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fbaeynan-mennakh-maran%2Faudio%2F1781096321830.m4a?alt=media&token=53733f2b-cd27-4f26-90ca-edd75ab50481",
+        performer: "Fr. Alexander Kattakayam CMI",
+        hymnName: "Ba'eynan Mennakh Maran",
+        hymnLink: "/hymns/baeynan-mennakh-maran",
+      },
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fbaeynan-mennakh-maran%2Faudio%2F1781289976226.m4a?alt=media&token=de1bb799-c186-4e80-9342-b5f700632a4c",
+        performer: "Fr. Emmanuel Thelly CMI",
+        hymnName: "Ba'eynan Mennakh Maran",
+        hymnLink: "/hymns/baeynan-mennakh-maran",
+      },
+    ],
     link: "/hymns/lelya-mekkel",
   },
   {
@@ -1265,6 +1308,16 @@ const NOT_RETAINED: ReshQala[] = [
         },
       ],
     },
+    recordings: [
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fudranan-dilan%2Faudio%2F1781096344317.m4a?alt=media&token=70b8218a-f409-4784-a977-9ef8eb6adfe3",
+        performer: "Fr. Alexander Kattakayam CMI",
+      },
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fudranan-dilan%2Faudio%2F1781289997529.m4a?alt=media&token=42352f9f-4731-4870-a0d6-1c55e659bc05",
+        performer: "Fr. Emmanuel Thelly CMI",
+      },
+    ],
     link: "/hymns/udranan-dilan",
   },
   {
@@ -1282,6 +1335,32 @@ const NOT_RETAINED: ReshQala[] = [
         },
       ],
     },
+    recordings: [
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fhannana-wamle-rahme%2Faudio%2F1781096364086.m4a?alt=media&token=4abbf36c-ba91-4e26-97ab-c838a12c17a9",
+        performer: "Fr. Alexander Kattakayam CMI",
+        hymnName: "Hannana Wamle Rahme",
+        hymnLink: "/hymns/hannana-wamle-rahme",
+      },
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fhannana-wamle-rahme%2Faudio%2F1781290026522.m4a?alt=media&token=6affa316-9b93-4909-95e7-8d645f800156",
+        performer: "Fr. Emmanuel Thelly CMI",
+        hymnName: "Hannana Wamle Rahme",
+        hymnLink: "/hymns/hannana-wamle-rahme",
+      },
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fslotha-dawthultha-maryam%2Faudio%2F1781096465568.m4a?alt=media&token=0a937dc1-2d0b-463f-a3ae-d10470c1844a",
+        performer: "Fr. Alexander Kattakayam CMI",
+        hymnName: "Slotha Dawthulta Maryam",
+        hymnLink: "/hymns/slotha-dawthultha-maryam",
+      },
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fslotha-dawthultha-maryam%2Faudio%2F1781290335663.m4a?alt=media&token=53201f17-5391-4f98-afbb-4e23e36c6e7c",
+        performer: "Fr. Emmanuel Thelly CMI",
+        hymnName: "Slotha Dawthulta Maryam",
+        hymnLink: "/hymns/slotha-dawthultha-maryam",
+      },
+    ],
     link: "/hymns/hannana-wamle-rahme",
   },
   {
@@ -1302,6 +1381,26 @@ const NOT_RETAINED: ReshQala[] = [
       {
         url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fla-metthalmin%2Faudio%2F1779217771190.m4a?alt=media&token=c8f3fc1b-7a45-4849-8770-dd653e821d62",
         performer: "Binu George",
+        hymnName: "La Mettalmin",
+        hymnLink: "/hymns/la-metthalmin",
+      },
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Flakhu-qareyn-dallisin%2Faudio%2F1781096409514.m4a?alt=media&token=304626a0-b911-4aad-b81d-87f71b14625e",
+        performer: "Fr. Alexander Kattakayam CMI",
+        hymnName: "Lakhu Qareyn Dallisin",
+        hymnLink: "/hymns/lakhu-qareyn-dallisin",
+      },
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Flakhu-qareyn-dallisin%2Faudio%2F1781290264228.m4a?alt=media&token=c4cfdc67-0442-4d73-92b4-ae0142f35099",
+        performer: "Fr. Emmanuel Thelly CMI",
+        hymnName: "Lakhu Qareyn Dallisin",
+        hymnLink: "/hymns/lakhu-qareyn-dallisin",
+      },
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fo-maryam-emme%2Faudio%2F1781290822961.m4a?alt=media&token=001ca1ed-ae97-40ee-b2f9-1b7c2e3ff2ce",
+        performer: "Fr. Emmanuel Thelly CMI",
+        hymnName: "O Maryam Emme",
+        hymnLink: "/hymns/o-maryam-emme",
       },
     ],
     link: "/hymns/la-metthalmin",
@@ -1322,8 +1421,22 @@ const NOT_RETAINED: ReshQala[] = [
     },
     recordings: [
       {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fbrikh-hayla-kasya%2Faudio%2F1781292196786.m4a?alt=media&token=55541e88-bb43-4bc3-9454-c8123f91b69e",
+        performer: "Fr. Emmanuel Thelly CMI",
+        hymnName: "Brikh Hayla Kasya",
+        hymnLink: "/hymns/brikh-hayla-kasya",
+      },
+      {
         url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fbrikh-hayla-kasya%2Faudio%2F1779124703528.m4a?alt=media&token=b5d859b4-54fd-4eea-b77e-e6b30e44ce54",
         performer: "Binu George",
+        hymnName: "Brikh Hayla Kasya",
+        hymnLink: "/hymns/brikh-hayla-kasya",
+      },
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fbrikhu-mshiha-detha%2Faudio%2F1780065921619.m4a?alt=media&token=7d091dfd-78bf-442a-b3b2-64ed6b4a4d8d",
+        performer: "Binu George",
+        hymnName: "Brikhu Mshiha Detha",
+        hymnLink: "/hymns/brikhu-mshiha-detha",
       },
     ],
     link: "/hymns/brikh-hayla-kasya",
@@ -1342,6 +1455,20 @@ const NOT_RETAINED: ReshQala[] = [
         },
       ],
     },
+    recordings: [
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Ftheth-kenpe%2Faudio%2F1781096537810.m4a?alt=media&token=4b3acbff-cb64-42f0-bc12-3bc6f9e3f6d6",
+        performer: "Fr. Alexander Kattakayam CMI",
+        hymnName: "Theth Kenpe",
+        hymnLink: "/hymns/theth-kenpe",
+      },
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Ftheth-kenpe%2Faudio%2F1781290856095.m4a?alt=media&token=fe509543-59b4-421d-9a8d-1b0362a87173",
+        performer: "Fr. Emmanuel Thelly CMI",
+        hymnName: "Theth Kenpe",
+        hymnLink: "/hymns/theth-kenpe",
+      },
+    ],
     link: "/hymns/lakh-dayyana",
   },
   {
@@ -1364,8 +1491,22 @@ const NOT_RETAINED: ReshQala[] = [
     },
     recordings: [
       {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fsahde-qandishe-dethqathal%2Faudio%2F1781096553691.m4a?alt=media&token=dd39d0ed-91d9-4687-b1bc-5e0d37932232",
+        performer: "Fr. Alexander Kattakayam CMI",
+        hymnName: "Sahde Qandishe Dethqattal",
+        hymnLink: "/hymns/sahde-qandishe-dethqathal",
+      },
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fsahde-qandishe-dethqathal%2Faudio%2F1781290877921.m4a?alt=media&token=8cf604b5-105f-4a24-a2de-cf96a7d1048e",
+        performer: "Fr. Emmanuel Thelly CMI",
+        hymnName: "Sahde Qandishe Dethqattal",
+        hymnLink: "/hymns/sahde-qandishe-dethqathal",
+      },
+      {
         url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fsahde-qandishe-dethqathal%2Faudio%2F1779125122899.m4a?alt=media&token=294b86fd-99f3-421f-b341-3022fc8a8847",
         performer: "Binu George",
+        hymnName: "Sahde Qandishe Dethqattal",
+        hymnLink: "/hymns/sahde-qandishe-dethqathal",
       },
     ],
     link: "/hymns/sahde-qandishe-dethqathal",
@@ -1388,6 +1529,20 @@ const NOT_RETAINED: ReshQala[] = [
         },
       ],
     },
+    recordings: [
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fyathir-min-kol%2Faudio%2F1781096608897.m4a?alt=media&token=29b0cf6e-450b-4eec-b8c2-c4d9506c654c",
+        performer: "Fr. Alexander Kattakayam CMI",
+        hymnName: "Yathir Min Kol",
+        hymnLink: "/hymns/yathir-min-kol",
+      },
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fyathir-min-kol%2Faudio%2F1781291121145.m4a?alt=media&token=7b6dbdf4-55a6-43b6-8449-bc72cc57367d",
+        performer: "Fr. Emmanuel Thelly CMI",
+        hymnName: "Yathir Min Kol",
+        hymnLink: "/hymns/yathir-min-kol",
+      },
+    ],
     link: "/hymns/attu-nuhra",
   },
   {
@@ -1404,6 +1559,14 @@ const NOT_RETAINED: ReshQala[] = [
         },
       ],
     },
+    recordings: [
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Flwathakh-arimeth-aynay%2Faudio%2F1781296703606.m4a?alt=media&token=90d939fd-24b1-481f-8643-036692738656",
+        performer: "Fr. Emmanuel Thelly CMI",
+        hymnName: "L'wathakh Arimeth Aynay",
+        hymnLink: "/hymns/lwathakh-arimeth-aynay",
+      },
+    ],
     link: "/hymns/byad-shlama",
   },
   {
@@ -1421,6 +1584,26 @@ const NOT_RETAINED: ReshQala[] = [
         },
       ],
     },
+    recordings: [
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fnettaiyaw%2Faudio%2F1781096141516.m4a?alt=media&token=2be02986-b8a0-4cc2-917d-6c9dd618318a",
+        performer: "Fr. Alexander Kattakayam CMI",
+        hymnName: "Nettayaw",
+        hymnLink: "/hymns/nettaiyaw",
+      },
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fnettaiyaw%2Faudio%2F1781296727154.m4a?alt=media&token=b8c0e7c7-8290-49b3-8047-911389302279",
+        performer: "Fr. Emmanuel Thelly CMI",
+        hymnName: "Nettayaw",
+        hymnLink: "/hymns/nettaiyaw",
+      },
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fqrew-zawna-dalma-hana%2Faudio%2F1781291633254.m4a?alt=media&token=2a82b67e-c5da-4898-b74a-cdace665d741",
+        performer: "Fr. Emmanuel Thelly CMI",
+        hymnName: "Qrew Zawna d'Alma Hana",
+        hymnLink: "/hymns/qrew-zawna-dalma-hana",
+      },
+    ],
     link: "/hymns/nettaiyaw",
   },
   {
@@ -1437,6 +1620,14 @@ const NOT_RETAINED: ReshQala[] = [
         },
       ],
     },
+    recordings: [
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fshlama-nesge-lakh%2Faudio%2F1781293003500.m4a?alt=media&token=d085581c-5f75-4e55-845f-9b3c0ecfa223",
+        performer: "Fr. Emmanuel Thelly CMI",
+        hymnName: "Shlama Nesge Lakh",
+        hymnLink: "/hymns/shlama-nesge-lakh",
+      },
+    ],
     link: "/hymns/shlama-nesge-lakh",
   },
   {
@@ -1453,6 +1644,14 @@ const NOT_RETAINED: ReshQala[] = [
         },
       ],
     },
+    recordings: [
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Flzandiqe-la-qrayt%2Faudio%2F1781291261841.m4a?alt=media&token=f46e39b9-93a9-400e-bb6a-22862cc630e1",
+        performer: "Fr. Emmanuel Thelly CMI",
+        hymnName: "L'zandiqe La Qrayt",
+        hymnLink: "/hymns/lzandiqe-la-qrayt",
+      },
+    ],
     link: "/hymns/lzandiqe-la-qrayt",
   },
   {
@@ -1469,6 +1668,20 @@ const NOT_RETAINED: ReshQala[] = [
         },
       ],
     },
+    recordings: [
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fsagdinan-lakh-yaldaw-dadam%2Faudio%2F1781288033575.m4a?alt=media&token=eb8eba9b-a5a9-4d80-96e8-eb01129fdd27",
+        performer: "Fr. Alexander Kattakayam CMI",
+        hymnName: "Sagdin Lakh Yaldaw D'adam",
+        hymnLink: "/hymns/sagdinan-lakh-yaldaw-dadam",
+      },
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fsagdinan-lakh-yaldaw-dadam%2Faudio%2F1781292152033.m4a?alt=media&token=d3e6b8d6-d630-4e65-bc6b-cd7661a810eb",
+        performer: "Fr. Emmanuel Thelly CMI",
+        hymnName: "Sagdin Lakh Yaldaw D'adam",
+        hymnLink: "/hymns/sagdinan-lakh-yaldaw-dadam",
+      },
+    ],
     link: "/hymns/sagdinan-lakh-yaldaw-dadam",
   },
   {
@@ -1491,8 +1704,22 @@ const NOT_RETAINED: ReshQala[] = [
     },
     recordings: [
       {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fshlama-lsahde-walgarmayhon-iqara%2Faudio%2F1781287749793.m4a?alt=media&token=677a2ede-8995-44ea-9d9a-836891143854",
+        performer: "Fr. Alexander Kattakayam CMI",
+        hymnName: "Shlama L'sahde Walgarmayhon Iqara",
+        hymnLink: "/hymns/shlama-lsahde-walgarmayhon-iqara",
+      },
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fshlama-lsahde-walgarmayhon-iqara%2Faudio%2F1781291378796.m4a?alt=media&token=6b86baab-89ad-4a9e-ac3d-40811f6f383f",
+        performer: "Fr. Emmanuel Thelly CMI",
+        hymnName: "Shlama L'sahde Walgarmayhon Iqara",
+        hymnLink: "/hymns/shlama-lsahde-walgarmayhon-iqara",
+      },
+      {
         url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fshlama-lsahde-walgarmayhon-iqara%2Faudio%2F1779124294649.m4a?alt=media&token=35bc74d3-1b98-4b9f-b129-8cb4b8f8545d",
         performer: "Binu George",
+        hymnName: "Shlama L'sahde Walgarmayhon Iqara",
+        hymnLink: "/hymns/shlama-lsahde-walgarmayhon-iqara",
       },
     ],
     link: "/hymns/shlama-lsahde-walgarmayhon-iqara",
@@ -1511,23 +1738,15 @@ const NOT_RETAINED: ReshQala[] = [
         },
       ],
     },
+    recordings: [
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fbrikhu-dawrew-dukhranhon-harka%2Faudio%2F1781095009925.m4a?alt=media&token=d3e165f0-bd1a-477a-82e5-40ad92cc3708",
+        performer: "Fr. Emmanuel Thelly CMI",
+        hymnName: "Brikhu Dawrew Dukhranhon Harka",
+        hymnLink: "/hymns/brikhu-dawrew-dukhranhon-harka",
+      },
+    ],
     link: "/hymns/resh-haylawathe",
-  },
-  {
-    num: 24,
-    name: "Alaha Meltha",
-    nameSyr: "ܐܲܠܵܗܵܐ ܡܸܠܬ݂ܵܐ",
-    nameMal: "ആലാഹാ മെൽസാ",
-    structure: "",
-    syriacText: {
-      stanzas: [
-        {
-          shuraya: "ܪܥܝܹܗ ܕܝܼܣܪܝܹܠ ܨܘܼܬ.",
-          body: "ܐܲܠܵܗܵܐ ܡܸܠܬ݂ܵܐ ܕܡ̣ܢ ܐܲܒܵܐ. ܠܵܘ ܡ̣ܢ ܡܲܠܲܐܟܹ̈ܐ ܢܸܣܲܒ݂ ܕܡܘܼܬ݂ܵܐ ܕܥܲܒ݂ܕܵܐ. ܐܸܠܵܐ ܡ̣ܢ ܙܲܪܥܹܗ ܕܐܲܒ݂ܪܵܗܵܡ. ܘܲܒ݂ܐ݇ܢܵܫܘܼܬ݂ܵܐ ܕܝܼܠܲܢ ܐܸܬܵ݀ܐ ܒܛܲܝܒ݁ܘܼܬܹܗ. ܕܢܸܦܪܘܿܩ ܠܓܸܢܣܲܢ ܡ̣ܢ ܛܘܼܥܝܲܝ.",
-        },
-      ],
-    },
-    link: "/hymns/alaha-meltha",
   },
   {
     num: 25,
@@ -1551,7 +1770,36 @@ const NOT_RETAINED: ReshQala[] = [
     nameSyr: "ܩܵܠܵܐ ܪܲܒܵܐ",
     nameMal: "കാലാ റമ്പാ",
     structure: "",
+    recordings: [
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fmarya-enhu%2Faudio%2F1781292122442.m4a?alt=media&token=8fea3886-dee4-409a-89d7-3e4c7bc00566",
+        performer: "Fr. Emmanuel Thelly CMI",
+        hymnName: "Marya Enhu",
+        hymnLink: "/hymns/marya-enhu",
+      },
+    ],
     link: "/hymns/qala-ramba",
+  },
+  {
+    num: 27,
+    name: "Kyanaya mode",
+    nameSyr: "",
+    nameMal: "ക്യാനായ രീതി",
+    structure: "",
+    recordings: [
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fbkursay-dinakh%2Faudio%2F1781089763648.m4a?alt=media&token=a601f310-71cc-4c37-9eb9-810d331c9d49",
+        performer: "Fr. Alexander Kattakayam CMI",
+        hymnName: "B'kursay Dinakh",
+        hymnLink: "/hymns/bkursay-dinakh",
+      },
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fbkursay-dinakh%2Faudio%2F1781288340182.m4a?alt=media&token=1683834c-1c53-4ed1-83fd-d14d2cf8735d",
+        performer: "Fr. Emmanuel Thelly CMI",
+        hymnName: "B'kursay Dinakh",
+        hymnLink: "/hymns/bkursay-dinakh",
+      },
+    ],
   },
 ];
 
@@ -1618,9 +1866,11 @@ function ReshQalaList({
                   {r.nameMal}
                 </Mal>
               </span>
-              <Syr className="text-lg text-slate-600 text-right self-end w-full sm:w-auto sm:shrink-0">
-                {r.nameSyr}
-              </Syr>
+              {r.nameSyr && (
+                <Syr className="text-lg text-slate-600 text-right self-end w-full sm:w-auto sm:shrink-0">
+                  {r.nameSyr}
+                </Syr>
+              )}
             </span>
           </AccordionTrigger>
           <AccordionContent className="mt-3 ml-6 pb-2">
