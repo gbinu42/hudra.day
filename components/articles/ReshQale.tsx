@@ -159,6 +159,12 @@ const RETAINED: ReshQala[] = [
         performer: "Binu George",
         hymnLink: "/hymns/sahde-brikhe",
       },
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fmannu-netthel-li%2Faudio%2F1781297482055.m4a?alt=media&token=5565f7c6-8241-49b7-ad4e-45a33e11328f",
+        performer: "Fr. Emmanuel Thelly CMI",
+        hymnName: "Mannu Netthel Li",
+        hymnLink: "/hymns/mannu-netthel-li",
+      },
     ],
     link: "hymns/sahde-brikhe",
   },
@@ -917,6 +923,18 @@ const RETAINED: ReshQala[] = [
         performer: "Fr. Emmanuel Thelly CMI",
         hymnName: "Man Meshkah",
         hymnLink: "/hymns/man-meshkah-danthanne-taybutha",
+      },
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fyammin-rahmayk%2Faudio%2F1781475100467.wav?alt=media&token=b459b697-4451-43e2-a46f-0ea73a4a28b2",
+        performer: "Rev. Dr. George Vavanikunnel",
+        hymnName: "Yammin Rahmayk",
+        hymnLink: "/hymns/yammin-rahmayk",
+      },
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fyammin-rahmayk%2Faudio%2F1781475357403.wav?alt=media&token=cb9c3d50-c250-45a6-ad42-b70c18f80523",
+        performer: "Fr. George Plathottam",
+        hymnName: "Yammin Rahmayk",
+        hymnLink: "/hymns/yammin-rahmayk",
       },
     ],
     link: "/hymns/mambua-hayye",
@@ -1740,6 +1758,12 @@ const NOT_RETAINED: ReshQala[] = [
     },
     recordings: [
       {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fresh-haylawathe%2Faudio%2F1772346813467.m4a?alt=media&token=81979307-7a00-48f7-a9d4-76a2da725674",
+        performer: "Fr. Mathew Chellakandathil",
+        hymnName: "Resh Haylawatha",
+        hymnLink: "/hymns/resh-haylawathe",
+      },
+      {
         url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fbrikhu-dawrew-dukhranhon-harka%2Faudio%2F1781095009925.m4a?alt=media&token=d3e165f0-bd1a-477a-82e5-40ad92cc3708",
         performer: "Fr. Emmanuel Thelly CMI",
         hymnName: "Brikhu Dawrew Dukhranhon Harka",
@@ -1749,7 +1773,7 @@ const NOT_RETAINED: ReshQala[] = [
     link: "/hymns/resh-haylawathe",
   },
   {
-    num: 25,
+    num: 24,
     name: "Nawde w'nesgod le",
     nameSyr: "ܢܵܘܕܸܐ ܘܢܸܣܓ݁ܘܿܕ ܠܹܗ",
     nameMal: "നവ്‌ദേ ഉനെസ്ഗോദ് ലേ",
@@ -1765,11 +1789,21 @@ const NOT_RETAINED: ReshQala[] = [
     link: "/hymns/nawde-wnesgod-le",
   },
   {
-    num: 26,
+    num: 25,
     name: "Qala Ramba",
     nameSyr: "ܩܵܠܵܐ ܪܲܒܵܐ",
     nameMal: "കാലാ റമ്പാ",
     structure: "",
+    note: "Texts of this type can be longer; only a sample is given here.",
+    syriacText: {
+      stanzas: [
+        {
+          shuraya:
+            "ܙܲܕܝܼܩܲܬ݁ ܡܵܪܝܵܐ ܘܛܵܒ݂ ܬܪܝܼܨܝܼܢ ܕܝܼܢܲܝ̈ܟ: ܡܪܲܚܡܵܢ ܐܲܢ݇ܬ݁ ܡܵܪܝܵܐ ܘܙܲܕܝܼܩ.",
+          body: "ܡܵܪܝܵܐ ܐܸܢܗܘܼ ܕܥܲܠ ܙܲܕܝܼܩܹ̈ܐ ܬܪܲܚܸܡ. ܡ̣ܢ ܣܘܼܥܪܵܢܹ̈ܐ ܫܲܦܝܼܪܹ̈ܐ ܕܲܥܒܲܕܘ ܡܩܲܒ݁ܠܝܼܢ ܦܘܼܪܥܵܢܵܐ: ܘܠܝܼ ܕܠܲܝܬ݁ ܠܝܼ ܥܒ݂ܵܕܹ̈ܐ ܛܵܒܹ̈ܐ. ܘܐܸܢܵܐ ܠܵܐ ܫܵܘܹܐ ܐ݇ܢܵܐ ܠܪܲܚ̈ܡܹܐ: ܚܘܼܢܲܝܢܝ ܒܛܲܝܒ݁ܘܼܬ݂ܵܟ ܘܪܲܚܸܡܥܠܲܝܢ܀",
+        },
+      ],
+    },
     recordings: [
       {
         url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fmarya-enhu%2Faudio%2F1781292122442.m4a?alt=media&token=8fea3886-dee4-409a-89d7-3e4c7bc00566",
@@ -1778,14 +1812,23 @@ const NOT_RETAINED: ReshQala[] = [
         hymnLink: "/hymns/marya-enhu",
       },
     ],
-    link: "/hymns/qala-ramba",
+    link: "/hymns/marya-enhu",
   },
   {
-    num: 27,
+    num: 26,
     name: "Kyanaya mode",
     nameSyr: "",
     nameMal: "ക്യാനായ രീതി",
     structure: "",
+    syriacText: {
+      stanzas: [
+        {
+          shuraya:
+            "ܡ̣ܢ ܥܘܼܡܩܵܐ ܩܕܹܝܬ݂ܵܟ݂ ܡܵܪܝܵܐ ܘܲܫܡܲܥܬ݁ ܒܩܵܠܝ: ܪܢܹܝܬ݂ ܒܠܸܠܝܵܐ ܘܲܒ݂ܠܹܒ݁ܝ ܪܢܹܝܬ݂.",
+          body: "ܒܟ݂ܘܼܪܣܲܝ ܕܝܼܢܵܟ݂ ܪܢܹܝܬ݂ ܡܫܝܼܚܵܐ ܘܲܒ݂ܕܸܚܠܵܐ ܘܙܵܘܥܵܐ ܗܘܵܘ ܟܠܗܘܿܢ ܗܲܕܵܡܲܝ̈. ܡܲܢܘܼ ܩܕ݂ܵܡ ܒܹܝܡ ܕܝܼܠܵܟ݂ ܢܸܗܘܸܐ ܒܥܘܼܕܪܵܢܝ ܡ̣ܢ ܓܸܢܣܲܢ ܘܡ̣ܢ ܐ݇ܢܵܫܘܼܬܲܢ: ܕܪܵܚ̈ܡܲܝ ܟܠܗܘܿܢ ܥܲܡ ܩܲܪ̈ܝܼܒܲܝ: ܡ̣ܢ ܪܘܼܚܩܵܐ ܢܩܘܼܡܘܼܢ ܘܲܢܚܘܼܪܘܼܢ ܒܝܼ. ܕܲܝܵܢܵܐ ܟܹܐܢܵܐ ܐܲܝܟ݂ ܣܘܿܓ݂ܵܐܐ ܕܪ̈ܲܚܡܲܝܟ ܚܘܼܢܲܝܢܝ ܡܪܲܚܡܵܢܵܐ. ܘܠܵܐ ܡܵܪܝ ܐܲܝܟ݂ ܣܘܿܓ݂ܵܐܐ ܕܚܵܘ̈ܒܹ݁ܐ ܕܣܸܥܪܹܬ݂܀",
+        },
+      ],
+    },
     recordings: [
       {
         url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fbkursay-dinakh%2Faudio%2F1781089763648.m4a?alt=media&token=a601f310-71cc-4c37-9eb9-810d331c9d49",
@@ -1800,6 +1843,7 @@ const NOT_RETAINED: ReshQala[] = [
         hymnLink: "/hymns/bkursay-dinakh",
       },
     ],
+    link: "/hymns/bkursay-dinakh",
   },
 ];
 
@@ -1933,7 +1977,7 @@ function ReshQalaList({
                   </span>{" "}
                   <Mal>{r.malayalamCommonName.text}</Mal>
                   {r.malayalamCommonName.note && (
-                    <> — {r.malayalamCommonName.note}.</>
+                    <> - {r.malayalamCommonName.note}.</>
                   )}
                 </p>
               )}
@@ -2079,7 +2123,7 @@ export default function ReshQale() {
           🚧
         </span>
         <p className="text-sm font-medium m-0">
-          Work in progress — this article is incomplete and may change
+          Work in progress - this article is incomplete and may change
           significantly.
         </p>
       </div>
@@ -2151,7 +2195,7 @@ export default function ReshQale() {
         Hymns are known by the opening words of the <em>onitha</em> itself, not
         by those of the preceding <em>shuraya</em>. This is because different{" "}
         <em>onyatha</em> may share the same psalm verse, each sung to a
-        different tune — so the <em>shuraya</em> alone does not uniquely
+        different tune - so the <em>shuraya</em> alone does not uniquely
         identify a hymn.
       </p>
       <p>
@@ -2175,7 +2219,7 @@ export default function ReshQale() {
         Strikingly, almost all of these melodies differ from those currently in
         use in the East Syriac churches of the Middle East. This divergence
         points to an independent musical tradition rooted in the ancient
-        monastic (<em>dayra</em>) culture of Malabar — a strong local community
+        monastic (<em>dayra</em>) culture of Malabar - a strong local community
         of learning and liturgical practice that shaped these melodies into a
         distinctly Indian expression of the East Syriac heritage.
       </p>
@@ -2189,6 +2233,13 @@ export default function ReshQale() {
         Malayalam, only those <em>resh qale</em> with a regular, metered rhythm
         were retained, since the more freely flowing melodies do not lend
         themselves well to Malayalam text.
+      </p>
+      <p>
+        Some of these <em>qale</em> might have two (or more) variants. According
+        to Jarly Mathew Thalikasthanam, they represent the difference between
+        the Cathedral system and the monastic system - the melodies used in
+        the Liturgy of the Hours primarily being those of the monastic system,
+        and the ones from the Qurbana being those of the cathedral system.
       </p>
 
       <div className="not-prose flex flex-col gap-2 sm:flex-row sm:items-baseline sm:gap-3 mt-10 mb-4">
@@ -2245,7 +2296,7 @@ export default function ReshQale() {
         brought to light.
       </p>
       <p>
-        But you may ask — where is <em>Thuyay</em>? Where is{" "}
+        But you may ask - where is <em>Thuyay</em>? Where is{" "}
         <em>Brikh Hannana</em>? Why are they not present in these lists? Those
         melodies, though part of the Malabar repertoire, are melodies of{" "}
         <em>Teshbohyatha</em>, and not <em>onyatha</em>; they will be dealt with

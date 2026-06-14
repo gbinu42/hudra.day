@@ -9,7 +9,7 @@ import Footer from "@/components/Footer";
 export const metadata: Metadata = {
   title: "Learn East Syriac – 13th Batch | Hudra.day",
   description:
-    "Join the 13th batch of the Learn East Syriac program — a foundational literacy course starting July 5, 2026. Register before June 14, 2026.",
+    "Join the 13th batch of the Learn East Syriac program - a foundational literacy course starting July 5, 2026. Register before June 14, 2026.",
   keywords: [
     "Learn East Syriac",
     "Syriac language course",
@@ -82,7 +82,7 @@ export default function LearnPage() {
                 <p className="text-muted-foreground">
                   By the mercy of the Lord, we are pleased to announce the{" "}
                   <strong>13th batch</strong> of the{" "}
-                  <strong>Learn East Syriac</strong> program — a basic course
+                  <strong>Learn East Syriac</strong> program - a basic course
                   designed to provide foundational literacy in East Syriac.
                 </p>
               </div>

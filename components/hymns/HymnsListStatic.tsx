@@ -268,7 +268,7 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
             </div>
           </div>
           <p className="text-muted-foreground mt-2">
-            Hymns with words and recordings from all four East Syriac Churches —
+            Hymns with words and recordings from all four East Syriac Churches -
             Syro Malabar Church, Chaldean Catholic Church, Assyrian Church of
             the East, and Ancient Church of the East
           </p>

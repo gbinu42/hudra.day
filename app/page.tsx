@@ -109,7 +109,7 @@ export default function HomePage() {
                 ܡܲܓܵܢ ܢܣܲܒ݂ܬܘܿܢ ܡܲܓܵܢ ܗܲܒ݂ܘ܀ ܡܲܬܲܝ ܝ:ܚ
               </p>
               <p className="text-lg text-muted-foreground italic">
-                Freely you have received; freely give. — Matthew 10:8
+                Freely you have received; freely give. - Matthew 10:8
               </p>
             </blockquote>
           </div>
@@ -159,7 +159,7 @@ export default function HomePage() {
               Explore the Library
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Books, hymns, articles, and editing tools — all in one place
+              Books, hymns, articles, and editing tools - all in one place
             </p>
           </div>
 

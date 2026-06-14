@@ -489,7 +489,7 @@ const ANTIPHONS: Antiphon[] = [
       { label: "Assyrian" },
     ],
     description:
-      "The holy martyrs clothed in light went out to the four corners of the world to proclaim the glorified Trinity — Father, Son, and Holy Spirit.",
+      "The holy martyrs clothed in light went out to the four corners of the world to proclaim the glorified Trinity - Father, Son, and Holy Spirit.",
     hudraLink: "/hymns/sahde-qandishe-lwishay-nuhra",
   },
   {
@@ -617,7 +617,7 @@ const ANTIPHONS: Antiphon[] = [
       { label: "Assyrian" },
     ],
     description:
-      "The labours of the martyrs are not in vain, nor does Christ whom they loved pass them by. Their triumphant bones lie in the earth, and their names — as beloved ones of the Son — are written in the Book of Life.",
+      "The labours of the martyrs are not in vain, nor does Christ whom they loved pass them by. Their triumphant bones lie in the earth, and their names - as beloved ones of the Son - are written in the Book of Life.",
     hudraLink: "/hymns/la-metthalmin",
   },
 ];
@@ -691,7 +691,7 @@ export default function QaleDonyathaDsahde() {
           🚧
         </span>
         <p className="text-sm font-medium m-0">
-          Work in progress — this article is incomplete and may change
+          Work in progress - this article is incomplete and may change
           significantly.
         </p>
       </div>
@@ -911,7 +911,7 @@ export default function QaleDonyathaDsahde() {
                         <div className="ml-3 space-y-1">
                           {Array.from({ length: t.tunes }, (_, i) => (
                             <p key={i} className="text-sm text-gray-400 italic">
-                              Tune {i + 1} — Recording coming soon.
+                              Tune {i + 1} - Recording coming soon.
                             </p>
                           ))}
                         </div>

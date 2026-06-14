@@ -252,7 +252,7 @@ export default function RecordingsManager({
     if (titleManuallyEdited) return;
 
     if (selectedPerformers.length === 0) {
-      // No performers yet — use just the hymn name
+      // No performers yet - use just the hymn name
       setValue("title", hymnName);
     } else {
       // Generate title: "{hymn name} - {performer(s)}"
