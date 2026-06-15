@@ -24,6 +24,9 @@ interface ReshQala {
   syriacText?: {
     stanzas: { shuraya?: string; body: string }[];
     teni?: string;
+    english?: {
+      stanzas: { shuraya?: string; lines: string[] }[];
+    };
   };
   link?: string;
   recordings?: {
@@ -87,8 +90,7 @@ const RETAINED: ReshQala[] = [
         hymnLink: "/hymns/mara-dkolla",
       },
       {
-        youtubeEmbedSrc:
-          "https://www.youtube-nocookie.com/embed/tJvcYae8W8o",
+        youtubeEmbedSrc: "https://www.youtube-nocookie.com/embed/tJvcYae8W8o",
         hymnName: "Maryam B'thulta Qandishta",
         hymnLink: "/hymns/maryam-bsultha-qandishtha",
         performer: "Fr. Abel Periyappuram CMI",
@@ -113,6 +115,23 @@ const RETAINED: ReshQala[] = [
           body: "ܡܵܪܵܐ ܕܟ݂ܠܵܐ ܠܵܟ݂ ܡܵܘ̈ܕܝܵܢ ܩܲܕ݁ܝܼ̈ܫܵܬ݂ܵܐ ܕܐܲܚܸܒ݂ ܫܡܵܟ݂. ܕܲܓ݂ܒܲܝܬ݁ ܠܡܲܪܝܲܡ ܡ̣ܢ ܓܸܢܣܗܹܝܢ. ܘܐ݇ܪܵܙ ܟܲܣܝܘܼܬ݂ܵܟ݂ ܐܲܫܪܝܼܬ݁ ܒܵܗ̇. ܕܲܒ݂ܚܹܝܠ ܪܘܼܚܵܐ ܡܸܢܵܗ̇ ܕܢܲܚ. ܡܫܝܼܚܵܐ ܦܵܪܘܿܩܹܗ ܕܥܵܠܡܵܐ. ܘܥܹܕܲܬ݂ ܩܘܼܕܫܵܐ ܗܵܐ ܡܙܲܝܚܵܐ. ܠܝܘܿܡ ܕܘܼܟ݂ܪܵܢܵܗ̇ ܕܲܒ݂ܬ݂ܘܼܠܬܵܐ",
         },
       ],
+      english: {
+        stanzas: [
+          {
+            shuraya: "All those from the beginning and unto the end.",
+            lines: [
+              "Lord of all, they give You praise,",
+              "Blest women who loved Your name.",
+              "You chose Maryam from their line,",
+              "Made Your myst-ry dwell in her.",
+              "By the Ruha He shone forth:",
+              "Mshiha Savior of the world.",
+              "See the holy Church rejoice,",
+              "On the Virgin's holy feast.",
+            ],
+          },
+        ],
+      },
     },
   },
   {
@@ -133,11 +152,27 @@ const RETAINED: ReshQala[] = [
           body: "ܣܵܗܕܹ̈ܐ ܒܪ̈ܝܼܟܹܐ ܝܘܼܬ݂ܪܵܢܵܐ: ܣܲܓܝܼܐܵܐ ܚܲܫܒ̇ܘܼܗܝ ܠܡܵܘܬܵܐ. ܘܐܲܝܟ݂ ܐܝܼܩܵܪܹ̈ܐ ܘܡܵܘܗܲܒ݂ܬ݂ܵܐ: ܩܲܒܸ̇ܠܘ ܢܸܓ݂ܕܹ̈ܐ ܘܲܣܪ̈ܵܩܹܐ. ܘܗܵܫܵܐ ܒܵܬܲܪ ܡܵܘܬܲܝ̈ـܗܘܿܢ: ܠܥܵܠܡܵܐ ܡܦܲܠܓ݂ܝܼܢ ܛܵܒ݂̈ܵܬ݂ܵܐ: ܘܣܝܼܡܵܬ݂ܵܐ ܕܡܲܠ̈ܝܵܢ ܥܘܼܕ݂ܪ̈ܵܢܹܐ.",
         },
       ],
+      english: {
+        stanzas: [
+          {
+            shuraya: "Blessed are you of MarYah",
+            lines: [
+              "Blessed Sahde,",
+              "As a mighty profit,",
+              "They considered death,",
+              "And like honours and a gift,",
+              "They received the stripes and pain,",
+              "And now even after death,",
+              "To the world they share good things,",
+              "And great treasures abounding with help.",
+            ],
+          },
+        ],
+      },
     },
     recordings: [
       {
-        youtubeEmbedSrc:
-          "https://www.youtube-nocookie.com/embed/_X07mX8_Wos",
+        youtubeEmbedSrc: "https://www.youtube-nocookie.com/embed/_X07mX8_Wos",
         hymnName: "Sahde Brikhe",
         hymnLink: "/hymns/sahde-brikhe",
         performer: "Fr. Abel Periyappuram CMI",
@@ -186,6 +221,21 @@ const RETAINED: ReshQala[] = [
           body: "ܣܵܗܕܵܘ̈ܗܝ ܕܲܒ݂ܪܵܐ ܩܲܕ̇ܝܼܫܵܐ: ܒܪܲܗܛܵܐ ܛܵܒ݂ܵܐ ܐܸܬ݂ܟܲܠܲܠܘ: ܒܟ݂ܵܪܘܿܙܘܼܬ݂ܵܐ ܕܲܫܪܵܪܵܐ: ܘܥܲܡ ܡܲܠܲܐܟܹ̈ܐ ܕܒܲܫܡܲܝܵܐ: ܚܵܕܹܝܢ ܘܲܡܫܲܒ̇ܚܝܼܢ ܠܐܲܠܵܗܵܐ: ܥܒ݂ܝܼܕ݂ܝܼܢ ܚܠܵܦܲܝܢ ܒܲܥܵܝܹ̈ܐ.",
         },
       ],
+      english: {
+        stanzas: [
+          {
+            shuraya: "And all of you are sons of the Most High.",
+            lines: [
+              "Sahde of the Holy Son,",
+              "Crowned by running the good race,",
+              "In the preaching of the truth,",
+              "And with angels in heaven,",
+              "Joyfully praise Alaha,",
+              "Made intercessors for us.",
+            ],
+          },
+        ],
+      },
     },
     recordings: [
       {
@@ -194,8 +244,7 @@ const RETAINED: ReshQala[] = [
         hymnLink: "/hymns/sahdaw-dawra",
       },
       {
-        youtubeEmbedSrc:
-          "https://www.youtube-nocookie.com/embed/wNjBYWahg9M",
+        youtubeEmbedSrc: "https://www.youtube-nocookie.com/embed/wNjBYWahg9M",
         hymnName: "B'endan Sapra",
         hymnLink: "/hymns/benda-sapra-methpathhin",
         performer: "Qambel Maran CD",
@@ -234,15 +283,36 @@ const RETAINED: ReshQala[] = [
     syriacText: {
       stanzas: [
         {
-          shuraya: "ܒܵܟ݂ ܡܵܪܝܵܐ ܣܲܒ݁ܪܹܬ݂ ܠܵܐ ܐܸܒ݂ܪܹܬ݂ ܠܥܵܠܲܡ.",
+          shuraya: "ܒܵܟ݂ ܡܵܪܝܵܐ ܣܲܒ݁ܪܹܬ݂ ܠܵܐ ܐܸܒ݂ܗܲܬ݂ ܠܥܵܠܲܡ.",
           body: "ܠܵܐ ܒܵܗ̇ܬ݁ܝܼܢܲܢ ܝܼܫܘܿܥ ܒܲܨܠܝܼܒ݂ܵܟ݂. ܡܸܛܠ ܚܲܝܠܵܟ݂ ܪܲܒܵܐ ܕܲܟ݂ܣܸܐ ܒܹܗ. ܐܸܢ ܚܲܢܦܹ̈ܐ ܘܲܝܗܘܼܕ݂ܵܝܹ̈ܐ. ܡܒܲܙܚܝܼܢ ܒܵܗ̇ ܒܟ݂ܵܪܘܿܙܘܼܬ݂ܵܟ݂. ܐܸܠܵܐ ܠܲܡܒܲܛܵܠܘܼ ܫܪܵܪܵܐ ܡܬ݂ܘܿܡ ܠܵܐ ܡܸܫܟ݁ܚܝܼܢ. ܬܪ̈ܲܝܗܘܿܢ ܓܹܝܪ ܫܲܘܝܵܐܝܼܬ݂. ܗܵܐ ܩܵܥܹܝܢ ܥܲܠ ܙܵܟ݂ܘܼܬ݂ܵܟ݂. ܝܗ݇ܘܼܕ݂ܵܝܹ̈ܐ ܗܵܐ ܐܸܬ݂ܒܲܕܲܪܘ. ܘܝܘܼܠܦܵܢܵܐ ܕܚܲܢܦܹ̈ܐ ܐܸܫܬ݁ܪܝܼ. ܘܗܵܐ ܣܵܗ̇ܕܝܼܢ ܐܲܟܲܚ݇ܕ݂. ܕܪܲܒ݁ܘܼ ܚܲܝܠܵܟ݂ ܡܵܪܝܵܐ.",
         },
       ],
+      english: {
+        stanzas: [
+          {
+            shuraya:
+              "In You, O Lord, I have put my hope; may I never be ashamed.",
+            lines: [
+              "Not ashamed, Isho, of your cross",
+              "For your great power hides within",
+              "Though the pagans and the Jews",
+              "Scoff at it in your preaching,",
+              "Yet to bring it unto nought",
+              "Truth they never are able.",
+              "For see, both of them alike",
+              "Cry out for your victory.",
+              "Behold, the Jews were scattered,",
+              "Gentile teaching is rejected.",
+              "See, they testify as one",
+              "Great is your power, Marya.",
+            ],
+          },
+        ],
+      },
     },
     recordings: [
       {
-        youtubeEmbedSrc:
-          "https://www.youtube-nocookie.com/embed/xLMmQNVpk4I",
+        youtubeEmbedSrc: "https://www.youtube-nocookie.com/embed/xLMmQNVpk4I",
         hymnName: "Kthawa Ramba",
         hymnLink: "/hymns/kthawa-ramba",
         performer: "Fr. Probus Perumalil CMI",
@@ -291,11 +361,32 @@ const RETAINED: ReshQala[] = [
           body: "ܣܵܗܕܹ̈ܐ ܕܐܸܬ݂ܥܲܠܝܼܘ ܘܲܡܛܵܘ: ܠܐܘܿܪܸܫܠܸܡ ܗܵܝ ܕܒܲܫܡܲܝܵܐ. ܘܙܲܒ݂ܢܘܼܗܝ ܒܲܕ݂ܡܵܐ ܕܨܵܘܪ̈ܲܝܗܘܿܢ: ܠܐܲܬ݂ܪܵܐ ܕܠܹܗ̤ܘ ܡܣܲܟܹ݁ܝܢ ܗ݇ܘ̣ܵܘ.",
         },
       ],
+      english: {
+        stanzas: [
+          {
+            shuraya: "O you righteous, praise MarYah!",
+            lines: [
+              "O you Sahde, merchants wise,",
+              "With your treasures stored on high,",
+              "You have bought the precious pearl",
+              "With the blood poured from your necks.",
+            ],
+          },
+          {
+            shuraya: "And to the upright, praise is fitting!",
+            lines: [
+              "Sahde who arose and reached",
+              "The heavenly Ore'shlem,",
+              "By the blood poured from their necks,",
+              "Bought the home they waited for.",
+            ],
+          },
+        ],
+      },
     },
     recordings: [
       {
-        youtubeEmbedSrc:
-          "https://www.youtube-nocookie.com/embed/FrqfYn-sV40",
+        youtubeEmbedSrc: "https://www.youtube-nocookie.com/embed/FrqfYn-sV40",
         hymnName: "Sahde Wayton",
         hymnLink: "/hymns/sahde-waython-thangare",
         performer: "Fr. Abel Periyappuram CMI",
@@ -337,18 +428,38 @@ const RETAINED: ReshQala[] = [
           body: "ܐܸܣܛܲܦܵܢܘܿܣ ܟܲܕ݂ ܐܸܬ݂ܪܓܸܡ: ܙܝܼܘܵܐ ܕܡܵܪܹܗ ܒܪܵܘܡܵܐ ܚܙܵܐ. ܘܲܠܪܘܼܚܩܘܼܕ݂ܫܵܐ ܟܲܕ݂ ܓܵܕ݂ܠܵܐ: ܟܠܝܼܠܵܐ ܠܪܹܫܵܐ ܕܲܡܗܲܝܡܢܹ̈ܐ.",
         },
       ],
+      english: {
+        stanzas: [
+          {
+            shuraya: "The righteous shall be in everlasting remembrance.",
+            lines: [
+              "Estappanos paved the way,",
+              "Sahde followed in his steps;",
+              "With the Bridegroom they rejoice",
+              "In the endless realm of light.",
+            ],
+          },
+          {
+            shuraya: "He shall not be afraid of evil tidings.",
+            lines: [
+              "As Estappanos was stoned,",
+              "He beheld his Lord on high;",
+              "And Ruha d'Qudsha wove",
+              "Crowns to grace the faithful head.",
+            ],
+          },
+        ],
+      },
     },
     recordings: [
       {
-        youtubeEmbedSrc:
-          "https://www.youtube-nocookie.com/embed/O3rPM3e5H-A",
+        youtubeEmbedSrc: "https://www.youtube-nocookie.com/embed/O3rPM3e5H-A",
         hymnName: "Estappanos",
         hymnLink: "/hymns/esthapanos-urha-drash",
         performer: "Qambel Maran CD",
       },
       {
-        youtubeEmbedSrc:
-          "https://www.youtube-nocookie.com/embed/vQ0ClI-StYE",
+        youtubeEmbedSrc: "https://www.youtube-nocookie.com/embed/vQ0ClI-StYE",
         hymnName: "Estappanos",
         hymnLink: "/hymns/esthapanos-urha-drash",
         performer: "Fr. Abel Periyappuram CMI",
@@ -392,15 +503,13 @@ const RETAINED: ReshQala[] = [
     },
     recordings: [
       {
-        youtubeEmbedSrc:
-          "https://www.youtube-nocookie.com/embed/crQhB0QWQIU",
+        youtubeEmbedSrc: "https://www.youtube-nocookie.com/embed/crQhB0QWQIU",
         hymnName: "Yada'a Hushawe",
         hymnLink: "/hymns/yadaa-hushawe",
         performer: "Fr. Abel Periyappuram CMI",
       },
       {
-        youtubeEmbedSrc:
-          "https://www.youtube-nocookie.com/embed/78zyzj33WEk",
+        youtubeEmbedSrc: "https://www.youtube-nocookie.com/embed/78zyzj33WEk",
         hymnName: "Yada'a Hushawe",
         hymnLink: "/hymns/yadaa-hushawe",
         performer: "Fr. Paul Kodamullil",
@@ -446,8 +555,7 @@ const RETAINED: ReshQala[] = [
     },
     recordings: [
       {
-        youtubeEmbedSrc:
-          "https://www.youtube-nocookie.com/embed/aRKW_L4Fx6k",
+        youtubeEmbedSrc: "https://www.youtube-nocookie.com/embed/aRKW_L4Fx6k",
         hymnName: "Malka Mshiha Paroqan",
         hymnLink: "/hymns/malka-mshiha-paroqan",
         performer: "Fr. Abel Periyappuram CMI",
@@ -486,8 +594,7 @@ const RETAINED: ReshQala[] = [
     },
     recordings: [
       {
-        youtubeEmbedSrc:
-          "https://www.youtube-nocookie.com/embed/ONPnoPOxIHY",
+        youtubeEmbedSrc: "https://www.youtube-nocookie.com/embed/ONPnoPOxIHY",
         hymnName: "Ithya Dawremze",
         hymnLink: "/hymns/ithya-dawremze",
         performer: "Fr. Abel Periyappuram CMI",
@@ -523,8 +630,7 @@ const RETAINED: ReshQala[] = [
     },
     recordings: [
       {
-        youtubeEmbedSrc:
-          "https://www.youtube-nocookie.com/embed/TFS1M8NVUmg",
+        youtubeEmbedSrc: "https://www.youtube-nocookie.com/embed/TFS1M8NVUmg",
         hymnName: "Push Bashlama",
         hymnLink: "/hymns/push-bashlama",
         performer: "Fr. Abel Periyappuram CMI",
@@ -563,8 +669,7 @@ const RETAINED: ReshQala[] = [
     },
     recordings: [
       {
-        youtubeEmbedSrc:
-          "https://www.youtube-nocookie.com/embed/oyhRWnSbYYY",
+        youtubeEmbedSrc: "https://www.youtube-nocookie.com/embed/oyhRWnSbYYY",
         hymnName: "Marya Kolhon Hawbay",
         hymnLink: "/hymns/marya-kolhon-hawbay",
         performer: "Qambel Maran CD",
@@ -594,8 +699,7 @@ const RETAINED: ReshQala[] = [
         hymnLink: "/hymns/ha-gmar-tawa",
       },
       {
-        youtubeEmbedSrc:
-          "https://www.youtube-nocookie.com/embed/m2BWVVrbdOQ",
+        youtubeEmbedSrc: "https://www.youtube-nocookie.com/embed/m2BWVVrbdOQ",
         hymnName: "Shlama w'shayna",
         performer: "Fr. Charles Payngot CMI",
       },
@@ -621,15 +725,13 @@ const RETAINED: ReshQala[] = [
     },
     recordings: [
       {
-        youtubeEmbedSrc:
-          "https://www.youtube-nocookie.com/embed/3XiChppYhJM",
+        youtubeEmbedSrc: "https://www.youtube-nocookie.com/embed/3XiChppYhJM",
         hymnName: "Layka Maran",
         hymnLink: "/hymns/layka-maran",
         performer: "Qambel Maran CD",
       },
       {
-        youtubeEmbedSrc:
-          "https://www.youtube-nocookie.com/embed/6Kl1Yywsk_0",
+        youtubeEmbedSrc: "https://www.youtube-nocookie.com/embed/6Kl1Yywsk_0",
         hymnName: "Layka Maran",
         hymnLink: "/hymns/layka-maran",
         performer: "Fr. Abel Periyappuram CMI",
@@ -653,6 +755,24 @@ const RETAINED: ReshQala[] = [
           body: "ܡܫܝܼܚܵܐ ܦܵܪܘܿܩܹܗ ܕܥܵܠܡܵܐ: ܡܲܠܟܵܐ ܪܲܒܵܐ ܕܬܸܫܒ̇ܘܿܚܬܵܐ: ܣܵܗܕܹ̈ܐ ܕܪܲܚܡܘܼܗܝ ܘܗܲܝܡܸܢܘ ܒܹܗ: ܠܐܵܟܹܠܩܲܪܨܵܐ ܐܲܒ݂ܗܸܬ݂ܘ ܗ݇ܘ̣ܵܘ. ܘܥܲܡ ܡܲܠܲܐܟܹ̈ܐ ܚܵܕܹܝܢ ܒܲܡܪ̈ܵܘܡܹܐ: ܘܲܩܕ݂ܵܡ ܐܲܠܵܗܵܐ ܩܵܝܡܝܼܢ: ܘܲܠܒ݂ܥܸܠܕܲܪܵܐ ܘܲܠܚܲܝܠܹܗ: ܬܚܘܿܬ݂ ܪܸ̈ܓ݂ܠܲܝܗܘܿܢ ܫܲܥܒܸܕ݂ܘ ܗ݇ܘ̣ܵܘ.",
         },
       ],
+      english: {
+        stanzas: [
+          {
+            shuraya:
+              "All these things have come upon us, yet we have not forgotten You.",
+            lines: [
+              "Mshiha, Savior of the world,",
+              "Great and glorified High King,",
+              "Sahde loved Him and believed,",
+              "They put Satan unto shame.",
+              "With the angels they rejoice,",
+              "Standing before Alaha;",
+              "They subdued the enemy",
+              "And his power 'neath their feet.",
+            ],
+          },
+        ],
+      },
     },
     recordings: [
       {
@@ -701,8 +821,7 @@ const RETAINED: ReshQala[] = [
     },
     recordings: [
       {
-        youtubeEmbedSrc:
-          "https://www.youtube-nocookie.com/embed/QXTnyw86nDU",
+        youtubeEmbedSrc: "https://www.youtube-nocookie.com/embed/QXTnyw86nDU",
         hymnName: "Sahde Qandishe Sallaw",
         hymnLink: "/hymns/sahde-qandishe-sallaw-al-shayna",
         performer: "Fr. Abel Periyappuram CMI",
@@ -741,8 +860,7 @@ const RETAINED: ReshQala[] = [
     },
     recordings: [
       {
-        youtubeEmbedSrc:
-          "https://www.youtube-nocookie.com/embed/Ou7rvO7WuiE",
+        youtubeEmbedSrc: "https://www.youtube-nocookie.com/embed/Ou7rvO7WuiE",
         hymnName: "Am Kolhon",
         hymnLink: "/hymns/am-kolhon-qandishayk",
         performer: "Fr. Abel Periyappuram CMI",
@@ -813,8 +931,7 @@ const RETAINED: ReshQala[] = [
     },
     recordings: [
       {
-        youtubeEmbedSrc:
-          "https://www.youtube-nocookie.com/embed/bF9oz5PytYk",
+        youtubeEmbedSrc: "https://www.youtube-nocookie.com/embed/bF9oz5PytYk",
         hymnName: "Shama w'la Mahme",
         hymnLink: "/hymns/shama-wla-mahme",
         performer: "Fr. Abel Periyappuram CMI",
@@ -873,8 +990,7 @@ const RETAINED: ReshQala[] = [
     },
     recordings: [
       {
-        youtubeEmbedSrc:
-          "https://www.youtube-nocookie.com/embed/Mq0W7eKybAQ",
+        youtubeEmbedSrc: "https://www.youtube-nocookie.com/embed/Mq0W7eKybAQ",
         hymnName: "Maran Athe",
         hymnLink: "/hymns/maran-athe",
         performer: "Fr. Abel Periyappuram CMI",
@@ -905,15 +1021,13 @@ const RETAINED: ReshQala[] = [
         hymnLink: "/hymns/mambua-hayye",
       },
       {
-        youtubeEmbedSrc:
-          "https://www.youtube-nocookie.com/embed/YcMrJULLpu8",
+        youtubeEmbedSrc: "https://www.youtube-nocookie.com/embed/YcMrJULLpu8",
         hymnName: "Taw N'yaqar",
         hymnLink: "/hymns/taw-nyaqar",
         performer: "Qambel Maran CD",
       },
       {
-        youtubeEmbedSrc:
-          "https://www.youtube-nocookie.com/embed/Ls5iMKUYr9k",
+        youtubeEmbedSrc: "https://www.youtube-nocookie.com/embed/Ls5iMKUYr9k",
         hymnName: "B'eda Shwiha D'yom Dukhrane",
         hymnLink: "/hymns/beda-shiwha-dyom-dukhrane",
         performer: "Fr. Charles Payngot CMI",
@@ -1139,6 +1253,19 @@ const NOT_RETAINED: ReshQala[] = [
           body: "ܣܵܗܕܹ̈ܐ ܩܲܕܝܼܫܹ̈ܐ ܠܒܼܝܼܫܲܝ̈ ܢܘܼܗܪܵܐ: ܠܐܲܪܒܲܥܦܸܢܝܵܬܹ̈ܗ ܕܥܵܠܡܵܐ ܢܦܲܩܘ ܗ݇ܘ̣ܵܘ ܠܲܡܣܲܒܵܪܘܼ. ܬܠܝܼܬܼܵܝܘܼܬ݂ܵܐ ܡܫܲܒܲܚܬܵܐ: ܐܲܒ݂ܵܐ ܘܲܒ݂ܪܵܐ ܘܪܘܼܚܩܘܼܕ݂ܫܵܐ.",
         },
       ],
+      english: {
+        stanzas: [
+          {
+            shuraya: "Through all the earth their message went forth.",
+            lines: [
+              "Sahde, holy ones, clothed in bright light:",
+              "To the corners of the earth they went out to proclaim.",
+              "The glorious Trinity:",
+              "Father, Son, and Ruhqudsha.",
+            ],
+          },
+        ],
+      },
     },
     recordings: [
       {
@@ -1394,6 +1521,19 @@ const NOT_RETAINED: ReshQala[] = [
           body: "ܠܵܐ ܡܸܬ̇ܛܲܠܡܝܼܢ ܥܲܡܠܲܝ̈ܟ̇ܘܿܢ ܣܵܗܕܹ̈ܐ: ܘܠܵܐ ܥܵܒܲܪ ܡܲܠܟܵܐ ܡܫܝܼܚܵܐ ܕܲܪܚܸܡܬ̇ܘܿܢܵܝܗܝ. ܕܒܲܐܪܥܵܐ ܣܝܼܡܝܼܢ ܓܲܪ̈ܡܲܝܟ̇ܘܿܢ ܕܐܸܬ݂ܢܲܨܲܚܘ: ܘܒܲܣܦܲܪ ܚܲܝܹ̈ܐ ܫܡܵܗܲܝ̈ܟ̇ܘܿܢ ܪ̈ܵܚܡܵܘܗܝ ܕܲܒܼܪܵܐ.",
         },
       ],
+      english: {
+        stanzas: [
+          {
+            shuraya: "He executes justice for the oppressed.",
+            lines: [
+              "Your holy labours are not lost, O Sahde,",
+              "Mshiha the King you loved will not pass by;",
+              "For in the earth your triumphant bones rest,",
+              "And in life's book your names, friends of the Son.",
+            ],
+          },
+        ],
+      },
     },
     recordings: [
       {
@@ -1436,6 +1576,19 @@ const NOT_RETAINED: ReshQala[] = [
           body: "ܒܪܝܼܟܼ ܚܲܝܠܵܐ ܟܲܣܝܵܐ ܕܲܫܪܸܐ ܒܓܲܪ̈ܡܲܝܗܘܿܢ ܕܣܵܗܕܹ̈ܐ: ܣܝܼܡܝܼܢ ܓܹܝܪ ܒܩܲܒ݂ܪ̈ܲܝܗܘܿܢ: ܘܪܵܕ݂ܦܝܼܢ ܫܹܐܕܹ̈ܐ ܡ̣ܢ ܥܵܠܡܵܐ. ܒܝܘܼܠܦܵܢܗܘܿܢ ܒܲܛܸܠܘ ܛܘܼܥܝܲܝ ܟܠܵܗ̇ ܕܲܓ݂ܠܝܼܦܹ̈ܐ: ܘܣܵܥܪܝܼܢ ܟܲܣܝܵܐܝܼܬ݂ ܠܲܒ݂ܪܝܼܬ݂ܵܐ ܘܡܲܠܦܝܼܢ ܠܡܸܣܓܲܕ݂ ܠܵܟܼ: ܡܵܪܝܵܐ ܕܐܲܢ݇ܬ̇ܘܼ ܒܲܠܚܘܿܕܲܝܟ.",
         },
       ],
+      english: {
+        stanzas: [
+          {
+            shuraya: "I will bless MarYah at all times.",
+            lines: [
+              "Blest, hidden power,",
+              "Dwelling in the Sahdes' bones, laid to rest within their graves, driving demons from the world.",
+              "Through their teaching they stopped all the error carved in stone; unseen, they visit all the earth, teaching all to worship You:",
+              "For You Alone are MarYah.",
+            ],
+          },
+        ],
+      },
     },
     recordings: [
       {
@@ -1506,6 +1659,28 @@ const NOT_RETAINED: ReshQala[] = [
           body: "ܢܵܨܚܝܼܢ ܥܲܡܠܲܝ̈ܟ݁ܘܿܢ ܘܲܡܚܲܕܸܐ ܠܲܢ: ܥܘܼܗܕܵܢܵܐ ܕܬܲܟ݂ܬ݁ܘܼܫܲܝ̈ܟ݁ܘܿܢ. ܕܲܚܠܵܦ ܡܫܝܼܚܵܐ ܐܸܬ݂ܩܲܛܲܠܬ݁ܘܿܢ: ܘܥܲܡܹܗ ܒܪܵܘܡܵܐ ܬܲܡܠ̱ܟ݂ܘܿܢ.",
         },
       ],
+      english: {
+        stanzas: [
+          {
+            shuraya: "For Your sake we are killed all day long.",
+            lines: [
+              "Holy Sahde who were slain,",
+              "For the love of the M'shiha,",
+              "Pray for all of us, we beg,",
+              "Ask for mercy from Alaha.",
+            ],
+          },
+          {
+            shuraya: "In heaven and on earth.",
+            lines: [
+              "Your triumphant labours shine,",
+              "And your struggles bring us joy;",
+              "For M'shiha you were slain,",
+              "You shall reign with Him on high.",
+            ],
+          },
+        ],
+      },
     },
     recordings: [
       {
@@ -1719,6 +1894,29 @@ const NOT_RETAINED: ReshQala[] = [
           body: "ܣܵܗܕܹ̈ܐ ܒܢܘܼܗܪܵܐ ܘܲܫܠܝܼܚܹ̈ܐ ܒܲܓ݂ܢܘܿܢ ܢܘܼܗܪܵܐ: ܘܗܵܐ ܙܵܡܪܝܼܢ ܫܘܼܒ݂ܚܵܐ: ܠܐܝܼܬ݂ܝܵܐ ܫܪܸܐ ܒܢܘܼܗܪܵܐ ܓܲܐܝܵܐ.",
         },
       ],
+      english: {
+        stanzas: [
+          {
+            shuraya:
+              "He who speaks peace to His people and to His righteous ones.",
+            lines: [
+              "Peace to Sahde,",
+              "And unto their bones honour,",
+              "Glory to their Lord,",
+              "And to us help through their prayers.",
+            ],
+          },
+          {
+            shuraya: "And in Your light we see light.",
+            lines: [
+              "Sahde in light,",
+              "And Shlihe in light's chamber,",
+              "And they sing His praise,",
+              "To the One in splendid light.",
+            ],
+          },
+        ],
+      },
     },
     recordings: [
       {
@@ -1954,6 +2152,35 @@ function ReshQalaList({
                       {r.syriacText.teni}
                     </p>
                   )}
+                  {r.syriacText.english && (
+                    <div
+                      className="mt-2 pt-2 border-t border-slate-200 leading-normal [font-family:'Idiqlat',serif] text-sm"
+                      style={{ fontWeight: 400, fontSynthesis: "none" }}
+                    >
+                      {r.syriacText.english.stanzas.map((stanza, si, arr) => (
+                        <div
+                          key={si}
+                          className={si < arr.length - 1 ? "mb-3" : ""}
+                        >
+                          <p className="m-0 leading-normal whitespace-pre-line">
+                            {stanza.shuraya && (
+                              <span className="text-red-700">
+                                {stanza.shuraya}
+                              </span>
+                            )}
+                            {stanza.lines.length > 0 && (
+                              <>
+                                {"\n"}
+                                <span className="text-slate-600">
+                                  {stanza.lines.join("\n")}
+                                </span>
+                              </>
+                            )}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
               {r.alsoKnownAs && (
@@ -2013,9 +2240,7 @@ function ReshQalaList({
                       </span>
                       {r.link && (
                         <Link
-                          href={
-                            r.link.startsWith("/") ? r.link : `/${r.link}`
-                          }
+                          href={r.link.startsWith("/") ? r.link : `/${r.link}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
@@ -2058,7 +2283,9 @@ function ReshQalaList({
                                     {group.hymnName}
                                   </Link>
                                 ) : (
-                                  <span className="italic">{group.hymnName}</span>
+                                  <span className="italic">
+                                    {group.hymnName}
+                                  </span>
                                 )}
                               </p>
                               <div className="space-y-1.5">
@@ -2112,9 +2339,8 @@ export default function ReshQale() {
   const retainedKeys = RETAINED.map((r) => String(r.num));
   const notRetainedKeys = NOT_RETAINED.map((r) => String(r.num));
   const [retainedOpen, setRetainedOpen] = useState<string[]>(retainedKeys);
-  const [notRetainedOpen, setNotRetainedOpen] = useState<string[]>(
-    notRetainedKeys,
-  );
+  const [notRetainedOpen, setNotRetainedOpen] =
+    useState<string[]>(notRetainedKeys);
 
   return (
     <>
@@ -2237,9 +2463,9 @@ export default function ReshQale() {
       <p>
         Some of these <em>qale</em> might have two (or more) variants. According
         to Jarly Mathew Thalikasthanam, they represent the difference between
-        the Cathedral system and the monastic system - the melodies used in
-        the Liturgy of the Hours primarily being those of the monastic system,
-        and the ones from the Qurbana being those of the cathedral system.
+        the Cathedral system and the monastic system - the melodies used in the
+        Liturgy of the Hours primarily being those of the monastic system, and
+        the ones from the Qurbana being those of the cathedral system.
       </p>
 
       <div className="not-prose flex flex-col gap-2 sm:flex-row sm:items-baseline sm:gap-3 mt-10 mb-4">
