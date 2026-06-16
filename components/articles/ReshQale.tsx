@@ -125,7 +125,7 @@ const RETAINED: ReshQala[] = [
               "You chose Maryam from their line,",
               "Made Your myst-ry dwell in her.",
               "By the Ruha He shone forth:",
-              "Mshiha Savior of the world.",
+              "Mshiha Saviour of the world.",
               "See the holy Church rejoice,",
               "On the Virgin's holy feast.",
             ],
@@ -291,7 +291,7 @@ const RETAINED: ReshQala[] = [
         stanzas: [
           {
             shuraya:
-              "In You, O Lord, I have put my hope; may I never be ashamed.",
+              "In You, MarYah, I have put my hope; may I never be ashamed.",
             lines: [
               "Not ashamed, Isho, of your cross",
               "For your great power hides within",
@@ -304,7 +304,7 @@ const RETAINED: ReshQala[] = [
               "Behold, the Jews were scattered,",
               "Gentile teaching is rejected.",
               "See, they testify as one",
-              "Great is your power, Marya.",
+              "Great is your power, MarYah.",
             ],
           },
         ],
@@ -500,6 +500,19 @@ const RETAINED: ReshQala[] = [
           body: "ܝܵܕܲܥ ܚܘܼ̈ܫܵܒܹܐ ܕܟ݂ܠܗܘܿܢ ܒܢܲܝܢܵܫܵܐ. ܘܒܵܚܲܪ ܟܲܣ̈ܝܵܬ݂ܵܐ ܕܠܸܒܵܘ̈ܵܬ݂ܵܐ. ܐܲܢ݇ܬ݁ܘܼ ܝܵܕܲܥ ܡܚܝܼܠܘܼܬܲܢ. ܐܸܬ݂ܪܲܚܲܡ ܥܠܲܢ.",
         },
       ],
+      english: {
+        stanzas: [
+          {
+            shuraya: "He searches the heart and the reins.",
+            lines: [
+              "He knows all the thoughts of all sons of men.",
+              "And searches secrets within human hearts.",
+              "You yourself know our weakness.",
+              "Have mercy on us.",
+            ],
+          },
+        ],
+      },
     },
     recordings: [
       {
@@ -552,6 +565,28 @@ const RETAINED: ReshQala[] = [
           body: "ܣܲܓ݂ܕܝܼܢܲܢ ܡܵܪܝ ܠܲܨܠܝܼܒ݂ܵܟ݂. ܕܒܹܗ ܩܝܵܡܬܲܢ ܘܒܹܗ ܢܘܼܚܵܡܲܢ. ܘܒܹܗ ܡܸܬ݂ܢܲܚܡܝܼܢ ܥܲܢܝܼ̈ܕܲܝܢ. ܘܠܵܒ݂ܫ̇ܝܼܢ ܫܘܼܒ݂ܚܵܐ ܦܲܓ݂ܪ̈ܲܝܗܘܿܢ.",
         },
       ],
+      english: {
+        stanzas: [
+          {
+            shuraya: "Unto You, MarYah, I lift up my soul.",
+            lines: [
+              "Malka Mshiha our Saviour,",
+              "On your coming, revive me,",
+              "And raise me at your right hand,",
+              "On the day your greatness dawns.",
+            ],
+          },
+          {
+            shuraya: "O my Alaha, I trust in You; let me not be ashamed.",
+            lines: [
+              "Lord, we worship your Sliwa,",
+              "In it we rise and revive,",
+              "And in it our dead awake,",
+              "And their bodies wear glory.",
+            ],
+          },
+        ],
+      },
     },
     recordings: [
       {
@@ -761,7 +796,7 @@ const RETAINED: ReshQala[] = [
             shuraya:
               "All these things have come upon us, yet we have not forgotten You.",
             lines: [
-              "Mshiha, Savior of the world,",
+              "Mshiha, Saviour of the world,",
               "Great and glorified High King,",
               "Sahde loved Him and believed,",
               "They put Satan unto shame.",
