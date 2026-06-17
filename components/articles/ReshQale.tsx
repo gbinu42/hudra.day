@@ -1093,6 +1093,18 @@ const RETAINED: ReshQala[] = [
           body: "ܠܵܟ݂ܘܼ ܩܵܪܹܝܢܲܢ ܐܸܬ݂ܪܲܚܲܡܥܠܲܝܢ ܡܫܝܼܚܵܐ ܦܵܪܘܿܩܲܢ",
         },
       ],
+      english: {
+        stanzas: [
+          {
+            shuraya: "I call You MarYah, each day.",
+            lines: [
+              "To You do we call,",
+              "Have mercy on us,",
+              "Mshiha, our Savior.",
+            ],
+          },
+        ],
+      },
     },
     recordings: [
       {
