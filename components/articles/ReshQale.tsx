@@ -557,18 +557,18 @@ const RETAINED: ReshQala[] = [
     syriacText: {
       stanzas: [
         {
-          shuraya: "ܠܘܵܬ݂ܵܟ݂ ܡܵܪܝܵܐ ܢܲܦ̮ܫܝ ܐܲܪܝܼܡܹ̇ܬ݂.",
+          shuraya: "ܐܹܪܲܡܪܡܵܟ݂ ܡܵܪܝ ܡܲܠܟܵܐ.",
           body: "ܡܼܿܠܟܵܐ ܡܫܝܼܚܵܐ ܦܵܪܘܿܩܲܢ. ܒܝܘܿܡ ܡܹܐܬ݂ܝܼܬ݂ܵܟ݂ ܢܲܚܸܡܲܝܢܝ. ܘܐܲܩܝܼܡܲܝܢܝ ܡ̣ܢ ܝܲܡܝܼܢܵܟ݂. ܒܝܵܘܡܵܐ ܕܕܼܵܢ̇ܚܵܐ ܪܲܒ݁ܘܼܬ݂ܵܟ݂.",
         },
         {
           shuraya: "ܐܲܠܵܗܝ ܒܵܟ݂ ܣܲܒ݁ܪܹܬ݂ ܠܵܐ ܐܸܒ݂ܗܲܬ݂.",
-          body: "ܣܲܓ݂ܕܝܼܢܲܢ ܡܵܪܝ ܠܲܨܠܝܼܒ݂ܵܟ݂. ܕܒܹܗ ܩܝܵܡܬܲܢ ܘܒܹܗ ܢܘܼܚܵܡܲܢ. ܘܒܹܗ ܡܸܬ݂ܢܲܚܡܝܼܢ ܥܲܢܝܼ̈ܕܲܝܢ. ܘܠܵܒ݂ܫ̇ܝܼܢ ܫܘܼܒ݂ܚܵܐ ܦܲܓ݂ܪ̈ܲܝܗܘܿܢ.",
+          body: "ܣܵܓ݂ܕܝܼܢܲܢ ܡܵܪܝ ܠܲܨܠܝܼܒ݂ܵܟ݂. ܕܒܹܗ ܩܝܵܡܬܲܢ ܘܒܹܗ ܢܘܼܚܵܡܲܢ. ܘܒܹܗ ܡܸܬ݂ܢܲܚܡܝܼܢ ܥܲܢܝܼ̈ܕܲܝܢ. ܘܠܵܒ݂ܫܝܼܢ ܫܘܼܒ݂ܚܵܐ ܦܲܓ݂ܪ̈ܲܝܗܘܿܢ.",
         },
       ],
       english: {
         stanzas: [
           {
-            shuraya: "Unto You, MarYah, I lift up my soul.",
+            shuraya: "I will praise You, my Lord the King.",
             lines: [
               "Malka Mshiha our Saviour,",
               "On your coming, revive me,",
@@ -626,6 +626,21 @@ const RETAINED: ReshQala[] = [
           body: "ܐܝܼܬ݂ܝܵܐ ܕܲܒ݂ܪܸܡܙܹܗ: ܬܲܩܸܢ ܟܠ ܒܸܪ̈ܝܵܢ: ܢܲܛܲܪ ܠܲܟ݂ܝܵܢܲܢ. ܨܲܠܡܵܟ ܟܲܢܝܼܬܵܝܗܝ: ܘܒܲܕ݂ܡܘܼܬ݂ܵܟ ܒܪܲܝܬܵܝܗܝ: ܒܪ̈ܲܚܡܲܝܟ ܚܘܼܣ ܥܠܵܘܗܝ܀",
         },
       ],
+      english: {
+        stanzas: [
+          {
+            shuraya: "He who is from before the ages.",
+            lines: [
+              "God, who by His will,",
+              "Fashioned all creatures,",
+              "Preserved our nature.",
+              "Your image you named,",
+              "In your likeness shaped,",
+              "In mercy, spare him.",
+            ],
+          },
+        ],
+      },
     },
     recordings: [
       {
@@ -701,6 +716,31 @@ const RETAINED: ReshQala[] = [
           body: "ܡܵܪܝܵܐ ܗܵܐ ܫܒ݂ܵܢܝ ܒܝܼܫܵܐ ܡ̣ܢ ܡܲܪܥܝܼܬ݂ܵܟ݂ ܘܥܲܒ݂ܕܲܢܝ ܕܝܼܠܹܗ. ܒܝܲܕ ܪܲܦܝܘܼܬ݂ܵܐ ܕܚܘܼ̈ܫܵܒܲܝ. ܘܡܵܐ ܕܐܵܠܹܨ ܠܝܼ ܐܸܬ݂ܩܲܪܒܹܬ݂ ܠܵܟ݂. ܘܡܵܐ ܕܲܦܪܲܩܬܵܢܝ ܦܢܹܝܬ݂ ܥܲܠ ܚܵܘ̈ܒܲܝ ܩܲܕܡܵܝܹ̈ܐ. ܘܗܵܐ ܡܸܫܬܲܢܲܩ ܐ݇ܢܵܐ ܒܣܘܿܓ݂ܵܐܐ ܕܒ݂ܝܼ̈ܫܵܬ݂ܝ ܕܲܣܓ݂ܝܼ ܚܘܼܒܵܠܹܗ ܕܲܩܢܘܿܡܝ. ܘܠܵܐ ܥܵܢܵܐ ܠܝܼ ܟܹܐܢܘܼܬ݂ܵܟ݂. ܕܐܸܢܵܐ ܫܵܛܹܬ݂ ܦܘܼ̈ܩܕܵܢܲܝܟ ܛܵܒ݂ܵܐ ܕܓܲܒ݂ܠܲܢܝ ܡ̣ܢ ܥܲܦܪܵܐ ܣܝܼܡ ܠܵܗܿ ܥܨܵܒ݂ܵܐ ܠܲܟ݂ܪܝܼܗܘܼܬ݂ܝ. ܕܠܵܐ ܐܸܦܸܠ ܒܐܝܼܕܲܝ̈ ܒܝܼܫܵܐ. ܘܲܢܚܲܠܸܨ ܥܘܼܬ݂ܪܵܐ ܕܚܘܼ̈ܫܵܒܲܝ ܡܵܕ݂ܵܢ ܚܘܼܣ ܥܠܲܝ.",
         },
       ],
+      english: {
+        stanzas: [
+          {
+            shuraya: "O Alaha, save me from the hand of the wicked.",
+            lines: [
+              "MarYah, foe took",
+              "Me from Your flock",
+              "Made me his own.",
+              "Through the weakness of my thoughts.",
+              "Oppressed, I drew near unto You.",
+              "When You saved me, I returned to my past sins.",
+              "Now tormented",
+              "By my evils",
+              "Great is my qnoma's ruin.",
+              "Your strict justice answers not.",
+              "For I scorned all Your commands",
+              "Good One who formed me from dust",
+              "Place a salve for my sickness.",
+              "Lest I fall in evil hands.",
+              "Save the richness of my thoughts",
+              "O Maran, spare me.",
+            ],
+          },
+        ],
+      },
     },
     recordings: [
       {
@@ -757,6 +797,21 @@ const RETAINED: ReshQala[] = [
           body: "ܠܐܲܝܟܵܐ ܡܵܪܲܢ ܢܸܥܪܘܿܩ ܡܸܢܵܟ݂. ܘܒܲܐܝܢܵܐ ܐܲܬ݂ܪܵܐ ܢܸܬ݁ܛܫܸܐ ܡ̣ܢ ܩܘܼܕܡܲܝܟ: ܫܡܲܝܵܐ ܟܘܼܪܣܝܵܟ ܘܐܲܪܥܵܐ ܟܘܼܒ݂ܫܵܟ. ܒܝܲܡܵܐ ܐܘܼܪܚܵܟ ܘܒܲܫܝܘܿܠ ܫܘܼܠܛܵܢܵܟ: ܐܸܢܗܘܼ ܡܵܪܝ ܕܚܲܪܬܹܗ ܕܥܵܠܡܵܐ ܡܲܛܝܲܬ݀ ܠܵܗ̇. ܒܪ̈ܲܚܡܹܐ ܢܸܗܘܸܐ ܫܘܼܠܵܡܵܐ܀",
         },
       ],
+      english: {
+        stanzas: [
+          {
+            shuraya: "Where can I go from Your Ruha?",
+            lines: [
+              "Where, Maran, shall I flee from You?",
+              "In what place can I hide from Your presence?",
+              "Heaven Your throne, earth Your footstool.",
+              "Sea Your way, in Sheol Your might.",
+              "If, my Lord, the world's end has now arrived,",
+              "In Your mercy let the end be.",
+            ],
+          },
+        ],
+      },
     },
     recordings: [
       {
@@ -853,6 +908,28 @@ const RETAINED: ReshQala[] = [
           body: "ܚܲܕ݂ܘܼ ܡܵܪܝܵܐ ܚܕ݂ܵܐ ܗܲܝܡܵܢܘܼܬ݂ܵܐ. ܚܕ݂ܵܐ ܡܲܥܡܘܿܕܝܼܬ݂ܵܐ ܠܫܘܼܒ݂ܩܵܢܵܐ ܕܚܵܘܒܹ̈ܐ.",
         },
       ],
+      english: {
+        stanzas: [
+          {
+            shuraya: "He who exists from before the ages.",
+            lines: [
+              "Father in heaven,",
+              "Hallowed be Your name.",
+              "May Your kingdom come,",
+              "Let Your will be done.",
+            ],
+          },
+          {
+            shuraya: "He is One, and there is no other apart from Him.",
+            lines: [
+              "There is but one Lord,",
+              "There is but one faith,",
+              "Only one baptism,",
+              "To forgive our sins.",
+            ],
+          },
+        ],
+      },
     },
     recordings: [
       {
@@ -888,10 +965,25 @@ const RETAINED: ReshQala[] = [
     syriacText: {
       stanzas: [
         {
-          shuraya: "ܚܲܕܵܐ ܢܲܦܫܹܗ ܕܥܲܒ݂ܕܵܟ.",
+          shuraya: "ܚܲܕܵܐ ܢܲܦ̮ܫܹܗ ܕܥܲܒ݂ܕܵܟ.",
           body: "ܥܲܡ ܟܠܗܘܿܢ ܩܲܕܝܼܫܲܝ̈ܟ: ܐܲܢܝܼܚ ܡܲܠܟܵܐ ܡܫܝܼܚܵܐ: ܠܪܘܼܚܹܗ ܕܥܲܒ݂ܕܵܟ ܒܲܫܠܵܡܵܐ. ܐܲܝܟܵܐ ܕܠܵܐ ܡܲܡܠܸـܟ ܚܲܫܵܐ: ܘܠܵܐ ܥܵܩܬ݂ܵܐ ܘܠܵܐ ܟܲܪܝܘܼܬ݂ܵܐ: ܐܸܠܵܐ ܚܲܝܹ̈ܐ ܡܠܝܼܟܹ̈ܐ ܕܲܠܥܵܠܲܡ܀",
         },
       ],
+      english: {
+        stanzas: [
+          {
+            shuraya: "Give joy to your servant's soul.",
+            lines: [
+              "With all of your holy saints:",
+              "Give rest, O Malka Mshiha:",
+              "To your servant's spirit in peace;",
+              "Where pain and anguish reign not:",
+              "And neither distress nor grief:",
+              "But the promised life forevermore.",
+            ],
+          },
+        ],
+      },
     },
     recordings: [
       {
@@ -963,6 +1055,19 @@ const RETAINED: ReshQala[] = [
           body: "ܢܘܼܗܪܵܐ ܘܒܲܪ ܢܘܼܗܪܵܐ: ܫܪܸܐ ܒܢܘܼܗܪܵܐ ܘܥܵܡܲܪ ܒܢܘܼܗܪܵܐ: ܐܲܫܘܵܢܝ ܠܗܵܘ̇ ܢܘܼܗܪܵܐ: ܕܠܵܐ ܡܲܕܪܸܟ݂ ܠܹܗ ܚܸܫܘܿܟ݂ܵܐ.",
         },
       ],
+      english: {
+        stanzas: [
+          {
+            shuraya: "Lighten my eyes, lest I sleep in death.",
+            lines: [
+              "Light and Son of Light,",
+              "Dwells in light and lives in light,",
+              "Make me worth that light,",
+              "Darkness cannot comprehend.",
+            ],
+          },
+        ],
+      },
     },
     recordings: [
       {
