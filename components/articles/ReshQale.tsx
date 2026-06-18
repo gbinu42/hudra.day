@@ -1016,6 +1016,19 @@ const RETAINED: ReshQala[] = [
           body: "ܚܲܢܵܢܵܐ ܕܲܦܬ݂ܝܼܚ ܬܲܪܥܹܗ ܠܬܲܝܵܒܹ̈ܐ. ܘܩܵܪܹܐ ܠܚܲܛܵܝܹ̈ܐ ܕܨܹܐܕ݂ܵܘܗܝ ܢܸܬ݂ܩܲܪܒ݂ܘܼܢ. ܦܬܲܚ ܠܲܢ ܡܵܪܝ ܬܲܪܥܵܐ ܕܪ̈ܲܚܡܹܐ ܕܢܸܥܘܿܠ ܒܹܗ. ܘܢܸܙܡܲܪ ܠܵܟ݂ ܫܘܼܒ݂ܚܵܐ ܒܠܸܠܝܵܐ ܘܒ݂ܐܝܼܡܵܡܵܐ.",
         },
       ],
+      english: {
+        stanzas: [
+          {
+            shuraya: "Open to me the gates of righteousness.",
+            lines: [
+              "O Merciful, whose door is open wide",
+              "To penitents, and calls the sinners near,",
+              "Open to us the door of mercy, Lord,",
+              "To enter, singing glory night and day.",
+            ],
+          },
+        ],
+      },
     },
     recordings: [
       {
@@ -1139,6 +1152,28 @@ const RETAINED: ReshQala[] = [
           body: "ܒܪܝܼܟ݂ܘܼ ܕܥܲܒ݂ܕܹܗ ܠܡܵܘܬܵܐ ܕܠܵܐ ܫܘܼܚܕܵܐ. ܕܛܵܒܹ̈ܐ ܘܒ݂ܝܼܫܹ̈ܐ ܕܵܒܲܪ ܫܲܘܝܵܐܝܼܬ݂.",
         },
       ],
+      english: {
+        stanzas: [
+          {
+            shuraya: "I was glad when they said to me:",
+            lines: [
+              "Our Lord will come,",
+              "And raise up the dead.",
+              "Giving firm hope",
+              "To all who have passed.",
+            ],
+          },
+          {
+            shuraya: "Let us go to the house of the Lord.",
+            lines: [
+              "Blessed is he,",
+              "Who made death unbribed;",
+              "Good folks and bad,",
+              "It treats just the same.",
+            ],
+          },
+        ],
+      },
     },
     recordings: [
       {
@@ -1164,6 +1199,35 @@ const RETAINED: ReshQala[] = [
           body: "ܡܲܒ݁ܘܼܥ ܚܲܝܹ̈ܐ ܕܠܵܐ ܫܘܼܠܵܡܵܐ ܗܘܵ݀ܐ ܝܘܼܠܦܵܢܹܗ ܕܲܡܫܝܼܚܵܐ ܡܵܪܲܢ ܒܓ݂ܵܘ ܥܵܠܡܵܐ. ܘܐܲܝܟ݂ ܕܡ̣ܢ ܡܲܒ݁ܘܼܥ ܦܲܪܕܲܝܣܵܐ ܠܐܲܪܒ݁ܥܵܐ ܪܹ̈ܫܝܼܢ ܦܪܲܫܘ. ܘܟ݂ܠ ܚܲܕ݂ ܡܸܢܗܘܿܢ ܐܸܫܬܲܕܲܪܘ ܠܐܲܬ݂ܪܵܐ ܨܲܗܝܵܐ ܀ ܡܲܬܲܝ ܦܝܼܫܘܿܢ ܠܥܸܒ݂ܪ̈ܵܝܹܐ. ܐܼܿܪܕܝܼ ܚܲܝܹ̈ܐ ܕܠܵܐ ܫܘܼܠܵܡܵܐ: ܘܡܲܪܩܘܿܣ ܕܸܩܠܲܬ݂ ܠܪ̈ܗ݇ܘܿܡܵܝܹܐ. ܐܲܥܬܲܪ ܗ݇ܘ̣ܵܐ ܒܫܸܩܝܵܐ ܕܦܸܬ݂ܓ݂ܵܡܵܘ̈ܗܝ. ܘܠܘܼܩܵܐ ܓܝܼܚܘܿܢ ܠܡܸܨܪ̈ܵܝܹܐ. ܚܲܦܸܛ ܐܸܢܘܿܢ ܠܡܸܬܲܠ ܦܹܐܪܹ̈ܐ. ܘܝܘܿܚܲܢܵܢ ܐܲܝܟ݂ ܢܲܗܪܵܐ ܦܪܵܬ݂. ܠܐܵܦܸܣܵܝܹ̈ܐ ܐܸܫܬܲܕܲܪ ܗ݇ܘ̣ܵܐ ܀ ܘܐܲܟ݂ܪܸܙ ܘܐܲܠܸܦ ܥܲܠ ܡܸܠܬܹܗ ܕܐܲܒ݂ܵܐ. ܕܐܸܬ݂ܓ݁ܠܝܼ ܒܐ݇ܢܵܫܘܼܬܲܢ ܠܹܗ ܬܸܫܒ݁ܘܿܚܬܵܐ",
         },
       ],
+      english: {
+        stanzas: [
+          {
+            shuraya: "Come and hear, I speak unto you.",
+            lines: [
+              "Spring of life without an ending,",
+              "Was the teaching of Mshiha Maran in all the world.",
+              "Just like the spring,",
+              "Of Paradise split in four;",
+              "And each one of them was sent,",
+              "To a parched land.",
+              "",
+              "Mathai, Pishon to Hebrews,",
+              "Flowing with unending true life.",
+              "Markos, Deqlath to Romans,",
+              "Made them rich with his flowing words.",
+              "Luqa, Gihon to Egypt,",
+              "Urging them all to yield good fruit.",
+              "Yohannan the river Prath,",
+              "To Ephesians he was sent forth.",
+              "",
+              "He taught and preached,",
+              "Of the Father's Word,",
+              "Shown in human form,",
+              "To Him be praise!",
+            ],
+          },
+        ],
+      },
     },
     recordings: [
       {
