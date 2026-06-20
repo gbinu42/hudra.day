@@ -2624,14 +2624,14 @@ export default function ReshQale() {
         </h2>
       </div>
       <p>
-        <em>Onyatha</em> (<Syr>ܥܘܿܢܝܵܬ݂ܵܐ</Syr>, singular <em>onitha</em>) are
-        antiphons sung during all liturgical services, most prominently in the
-        Liturgy of the Hours. Each <em>onitha</em> is preceded by a psalm verse
-        called a <em>shuraya</em> (<Syr>ܫܘܼܪܵܝܵܐ</Syr>, lit.
-        &ldquo;beginning&rdquo;). The liturgical text will usually indicate
-        which <em>resh qala</em> each <em>onitha</em> is to be sung to. The
-        melody of the <em>resh qala</em> typically also prescribes a distinct
-        way of singing the <em>shuraya</em> that precedes it.
+        <em>Onyatha</em> (<Syr>ܥܘܿܢܝܵܬ݂ܵܐ</Syr>, sing. <em>onitha</em> -
+        &ldquo;antiphon&rdquo;) are sung during all liturgical services, most
+        prominently in the Liturgy of the Hours. Each <em>onitha</em> is
+        preceded by a psalm verse called a <em>shuraya</em> (<Syr>ܫܘܼܪܵܝܵܐ</Syr>
+        , lit. &ldquo;beginning&rdquo;). The liturgical text will usually
+        indicate which <em>resh qala</em> each <em>onitha</em> is to be sung to.
+        The melody of the <em>resh qala</em> typically also prescribes a
+        distinct way of singing the <em>shuraya</em> that precedes it.
       </p>
       <p>
         Hymns are known by the opening words of the <em>onitha</em> itself, not
@@ -2741,8 +2741,9 @@ export default function ReshQale() {
         But you may ask - where is <em>Thuyay</em>? Where is{" "}
         <em>Brikh Hannana</em>? Why are they not present in these lists? Those
         melodies, though part of the Malabar repertoire, are melodies of{" "}
-        <em>Teshbhatha</em>, and not <em>onyatha</em>; they will be dealt with
-        separately in another article.
+        <em>Teshbhatha</em> (sing. <em>teshbohta</em> - &ldquo;praise&rdquo;),
+        and not <em>onyatha</em>; they will be dealt with separately in another
+        article.
       </p>
       <p>
         The survival of most of these tunes owes a great debt to recordings left
