@@ -2741,7 +2741,7 @@ export default function ReshQale() {
         But you may ask - where is <em>Thuyay</em>? Where is{" "}
         <em>Brikh Hannana</em>? Why are they not present in these lists? Those
         melodies, though part of the Malabar repertoire, are melodies of{" "}
-        <em>Teshbohyatha</em>, and not <em>onyatha</em>; they will be dealt with
+        <em>Teshbhatha</em>, and not <em>onyatha</em>; they will be dealt with
         separately in another article.
       </p>
       <p>
