@@ -677,6 +677,24 @@ const RETAINED: ReshQala[] = [
           body: "ܦܘܼܫ ܒܲܫܠܵܡܵܐ: ܥܘܼܡܪܵܐ ܕܙܲܒ݂ܢܵܐ: ܕܠܵܐ ܡܨܸܐ ܦܵܪܹܩ: ܠܲܕܩܵܢܹܝܢ ܠܹܗ. ܕܐܹܙܲܠ ܘܐܸܚܙܹܝܘܗܝ: ܠܐܲܬ݂ܪܵܐ ܕܢܘܼܗܪܵܐ: ܕܲܡܕܲܝܪܝܼܢ ܒܹܗ: ܟܹܐܢܹ̈ܐ ܕܲܥܡܲܠܘ܀",
         },
       ],
+      english: {
+        stanzas: [
+          {
+            shuraya:
+              "Therefore now I leave you, my brethren, pray for me.",
+            lines: [
+              "Farewell to thee,",
+              "Abode of time,",
+              "Which cannot save",
+              "Those who own it.",
+              "That I go see",
+              "The place of light,",
+              "Wherein abide",
+              "The just who toiled.",
+            ],
+          },
+        ],
+      },
     },
     recordings: [
       {
