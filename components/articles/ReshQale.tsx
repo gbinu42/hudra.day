@@ -17,7 +17,7 @@ interface ReshQala {
   name: string;
   nameSyr: string;
   nameMal: string;
-  alsoKnownAs?: { latin: string; syr: string }[];
+  alsoKnownAs?: { latin: string; syr: string; link?: string }[];
   malayalamCommonName?: { text: string; note?: string };
   structure: string;
   note?: string;
@@ -74,7 +74,13 @@ const RETAINED: ReshQala[] = [
     name: "Mara d'Kolla",
     nameSyr: "ܡܵܪܵܐ ܕܟ݂ܠܵܐ",
     nameMal: "മാറാ ദ്‌കൊല്ലാ",
-    alsoKnownAs: [{ latin: "Shlihe Keppa", syr: "ܫܠܝܼܚܹ̈ܐ ܟܹܐܦܵܐ" }],
+    alsoKnownAs: [
+      {
+        latin: "Shlihe Keppa",
+        syr: "ܫܠܝܼܚܹ̈ܐ ܟܹܐܦܵܐ",
+        link: "/hymns/shlihe-keppa",
+      },
+    ],
     malayalamCommonName: {
       text: "മെത്തോൽ ദ്‌ഹൂയൂ / മറിയം ബ്‌സുൽത്താ",
       note: "named after a popular hymn from Wednesday Ramsha sung to this melody",
@@ -208,7 +214,13 @@ const RETAINED: ReshQala[] = [
     name: "Sahdaw Dawra",
     nameSyr: "ܣܵܗܕܵܘ̈ܗܝ ܕܲܒ݂ܪܵܐ",
     nameMal: "സഹദാവ് ദവ്‌റാ",
-    alsoKnownAs: [{ latin: "B'endan Sapra", syr: "ܒܥܸܕܵܢ ܨܲܦܪܵܐ" }],
+    alsoKnownAs: [
+      {
+        latin: "B'endan Sapra",
+        syr: "ܒܥܸܕܵܢ ܨܲܦܪܵܐ",
+        link: "/hymns/benda-sapra-methpathhin",
+      },
+    ],
     malayalamCommonName: {
       text: "മറിയാ ബ്‌സപ്രാ / ബ്‌എന്ദാൻ സപ്രാ",
       note: "",
@@ -275,7 +287,14 @@ const RETAINED: ReshQala[] = [
     name: "La Bahtinan",
     nameSyr: "ܠܵܐ ܒܵܗܬ݁ܝܼܢܲܢ",
     nameMal: "ലാ ബാഹ്‌ത്തീനൻ",
-    alsoKnownAs: [{ latin: "Dawresh Kthawe / Kthawa Ramba", syr: "" }],
+    alsoKnownAs: [
+      { latin: "Dawresh Kthawe", syr: "" },
+      {
+        latin: "Kthawa Ramba",
+        syr: "ܟܬ݂ܵܒ݂ܵܐ ܪܲܒܵܐ",
+        link: "/hymns/kthawa-ramba",
+      },
+    ],
     malayalamCommonName: {
       text: "ദവ്‌റേശ് ക്സാവേ / ക്സാവാ റമ്പാ",
     },
@@ -548,7 +567,11 @@ const RETAINED: ReshQala[] = [
     nameSyr: "ܛܘܼܒܹܝܗ̇ ܠܪܘܼܚܵܟ݂",
     nameMal: "തൂവേ ല്റൂഹാക്",
     alsoKnownAs: [
-      { latin: "Malka Mshiha Paroqan", syr: "ܡܲܠܟܵܐ ܡܫܝܼܚܵܐ ܦܵܪܘܿܩܲܢ" },
+      {
+        latin: "Malka Mshiha Paroqan",
+        syr: "ܡܲܠܟܵܐ ܡܫܝܼܚܵܐ ܦܵܪܘܿܩܲܢ",
+        link: "/hymns/malka-mshiha-paroqan",
+      },
     ],
     malayalamCommonName: {
       text: "ഏറംറമ്മാക് / മൽക്കാ മ്ശിഹാ പാറോക്കൻ",
@@ -680,8 +703,7 @@ const RETAINED: ReshQala[] = [
       english: {
         stanzas: [
           {
-            shuraya:
-              "Therefore now I leave you, my brethren, pray for me.",
+            shuraya: "Therefore now I leave you, my brethren, pray for me.",
             lines: [
               "Farewell to thee,",
               "Abode of time,",
@@ -909,7 +931,16 @@ const RETAINED: ReshQala[] = [
     nameSyr: "ܐܲܒ݂ܘܼܢ ܕܒܲܫܡܲܝܵܐ",
     nameMal: "ആവൂൻ ദ്‌വശ്‌മയ്യാ",
     alsoKnownAs: [
-      { latin: "Sahde Qandishe Sallaw", syr: "ܣܵܗܕܹ̈ܐ ܩܲܕܝܼܫܹ̈ܐ ܨܲܠܵܘ" },
+      {
+        latin: "Sahde Qandishe Sallaw",
+        syr: "ܣܵܗܕܹ̈ܐ ܩܲܕܝܼܫܹ̈ܐ ܨܲܠܵܘ",
+        link: "/hymns/sahde-qandishe-sallaw-al-shayna",
+      },
+      {
+        latin: "Shlama Nesge Lakh",
+        syr: "ܫܠܵܡܵܐ ܢܸܣܓܸ݁ܐ ܠܵܟ݂",
+        link: "/hymns/shlama-nesge-lakh",
+      },
     ],
     malayalamCommonName: {
       text: "അൽ മദ്‌ബഹ് കുദ്‌ശാ",
@@ -968,6 +999,12 @@ const RETAINED: ReshQala[] = [
         hymnName: "Sahde Qandishe Sallaw",
         hymnLink: "/hymns/sahde-qandishe-sallaw-al-shayna",
       },
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fshlama-nesge-lakh%2Faudio%2F1781293003500.m4a?alt=media&token=d085581c-5f75-4e55-845f-9b3c0ecfa223",
+        performer: "Fr. Emmanuel Thelly CMI",
+        hymnName: "Shlama Nesge Lakh",
+        hymnLink: "/hymns/shlama-nesge-lakh",
+      },
     ],
     link: "/hymns/awun-dwashmayya-qyamta-onitha",
   },
@@ -1019,9 +1056,21 @@ const RETAINED: ReshQala[] = [
     nameSyr: "ܚܲܢܵܢܵܐ ܕܲܦܬ݂ܝܼܚ",
     nameMal: "ഹന്നാനാ ദപ്‌സീഹ്",
     alsoKnownAs: [
-      { latin: "Mshiha Ethiled", syr: "ܡܫܝܼܚܵܐ ܐܸܬ݂ܝܼܠܸܕ" },
-      { latin: "Sliwa Dahwa Lan", syr: "ܨܠܝܼܒ݂ܵܐ ܕܲܗܘ̤ܵܐ ܠܲܢ" },
-      { latin: "Nawsa d'Ruhqudsha", syr: "ܢܵܘܣܵܐ ܕܪܘܼܚܩܘܼܕܫܵܐ" },
+      {
+        latin: "Mshiha Ethiled",
+        syr: "ܡܫܝܼܚܵܐ ܐܸܬ݂ܝܼܠܸܕ",
+        link: "/hymns/mshiha-ethiled",
+      },
+      {
+        latin: "Sliwa Dahwa Lan",
+        syr: "ܨܠܝܼܒ݂ܵܐ ܕܲܗܘ̤ܵܐ ܠܲܢ",
+        link: "/hymns/sliwa-dahwa-lan",
+      },
+      {
+        latin: "Nawsa d'Ruhqudsha",
+        syr: "ܢܵܘܣܵܐ ܕܪܘܼܚܩܘܼܕܫܵܐ",
+        link: "/hymns/nawsa-druhqudsha",
+      },
     ],
     malayalamCommonName: {
       text: "ഉവേഹൂ നെഹ്‌ദേ / സ്ലീവാ ദഹ്‌വാ ലൻ",
@@ -1115,7 +1164,13 @@ const RETAINED: ReshQala[] = [
     name: "Lakhu Qareynan",
     nameSyr: "ܠܵܟ݂ܘܼ ܩܵܪܹܝܢܲ",
     nameMal: "ലാകൂ കാറേനൻ",
-    alsoKnownAs: [{ latin: "Brikhu Ramb Kumre", syr: "ܒܪܝܼܟ݂ܘܼ ܪܲܒ݁ܟ݁ܘܼܡܪܹ̈ܐ" }],
+    alsoKnownAs: [
+      {
+        latin: "Brikhu Ramb Kumre",
+        syr: "ܒܪܝܼܟ݂ܘܼ ܪܲܒ݁ܟ݁ܘܼܡܪܹ̈ܐ",
+        link: "/hymns/brikhu-rabkumre",
+      },
+    ],
     structure: "",
     syriacText: {
       stanzas: [
@@ -1199,6 +1254,24 @@ const RETAINED: ReshQala[] = [
         hymnName: "Maran Athe",
         hymnLink: "/hymns/maran-athe",
         performer: "Fr. Abel Periyappuram CMI",
+      },
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fbsapra-sahde%2Faudio%2F1781288103695.m4a?alt=media&token=8a20aa62-0cf8-46cb-9dc0-de0d6fd125b8",
+        performer: "Fr. Alexander Kattakayam CMI",
+        hymnName: "B'Sapra Sahde",
+        hymnLink: "/hymns/bsapra-sahde",
+      },
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fbsapra-sahde%2Faudio%2F1781292688836.m4a?alt=media&token=f6f5c89a-948b-437a-a349-2be6f9c36d9a",
+        performer: "Fr. Emmanuel Thelly CMI",
+        hymnName: "B'Sapra Sahde",
+        hymnLink: "/hymns/bsapra-sahde",
+      },
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fbsapra-sahde%2Faudio%2F1779124483859.m4a?alt=media&token=19b9b543-6dd1-4def-ab3e-7097b810b3ed",
+        performer: "Binu George",
+        hymnName: "B'Sapra Sahde",
+        hymnLink: "/hymns/bsapra-sahde",
       },
     ],
     link: "/hymns/maran-athe",
@@ -1295,7 +1368,13 @@ const NOT_RETAINED: ReshQala[] = [
     name: "M'ina d'tawatha",
     nameSyr: "ܡܥܝܼܢܵܐ ܕܛܵܒ݂̈ܵܬ݂ܵܐ",
     nameMal: "മ് ഈനാ ദ്‌ താവാസാ",
-    alsoKnownAs: [{ latin: "B'madnahay sapra", syr: "ܒܡܲܕ݂ܢܵܚܲܝ̈ ܨܲܦܪܵܐ" }],
+    alsoKnownAs: [
+      {
+        latin: "B'madnahay sapra",
+        syr: "ܒܡܲܕ݂ܢܵܚܲܝ̈ ܨܲܦܪܵܐ",
+        link: "/hymns/bmadnahay-sapra",
+      },
+    ],
     structure: "",
     syriacText: {
       stanzas: [
@@ -1338,7 +1417,13 @@ const NOT_RETAINED: ReshQala[] = [
     name: "Talmidaw Damshiha",
     nameSyr: "ܬܲܠܡܝܼܕ݂ܵܘ̈ܗܝ ܕܲܡܫܝܼܚܵܐ",
     nameMal: "തൽമീദാവ് ദമ്ശിഹാ",
-    alsoKnownAs: [{ latin: "Awdaw Le", syr: "ܐܵܘܕܵܘ ܠܹܗ" }],
+    alsoKnownAs: [
+      {
+        latin: "Awdaw Le",
+        syr: "ܐܵܘܕܵܘ ܠܹܗ",
+        link: "/hymns/awda-leh",
+      },
+    ],
     structure: "",
     syriacText: {
       stanzas: [
@@ -1387,7 +1472,13 @@ const NOT_RETAINED: ReshQala[] = [
     name: "Haw d'withuthe",
     nameSyr: "ܗܵܘ̇ ܕܒ݂ܐܝܼܬ݂ܘܼܬܹܗ",
     nameMal: "ഹാവ് ദ്‌വീസൂസേ",
-    alsoKnownAs: [{ latin: "Baslotha Damwarakhta", syr: "ܒܨܠܘܬܗ ܕܡܒܪܟܬܐ" }],
+    alsoKnownAs: [
+      {
+        latin: "Baslotha Damwarakhta",
+        syr: "ܒܨܠܘܬܗ ܕܡܒܪܟܬܐ",
+        link: "/hymns/baslotha-damwaraktha",
+      },
+    ],
     structure: "",
     note: "This melody was probably adapted from the Chaldean tradition, as it is quite similar to the Chaldean version.",
     syriacText: {
@@ -1477,6 +1568,7 @@ const NOT_RETAINED: ReshQala[] = [
       {
         latin: "Shlihe Qandishe L'wishay",
         syr: "ܫܠܝܼܚܹ̈ܐ ܩܲܕܝܼܫܹܐ ܠܒ݂ܝܼܫܲܝ̈",
+        link: "/hymns/sahde-qandishe-lwishay-nuhra",
       },
     ],
     structure: "",
@@ -1609,8 +1701,21 @@ const NOT_RETAINED: ReshQala[] = [
     nameSyr: "ܡܲܢܘܼ ܣܵܦܹܩ",
     nameMal: "മന്നൂ സാപേക്ക്",
     alsoKnownAs: [
-      { latin: "Pthahlan Maran", syr: "ܦܬܲܚܠܲܢ ܡܵܪܲܢ" },
-      { latin: "Alaha Meltha", syr: "ܐܲܠܵܗܵܐ ܡܸܠܬ݂ܵܐ" },
+      {
+        latin: "Pthahlan Maran",
+        syr: "ܦܬܲܚܠܲܢ ܡܵܪܲܢ",
+        link: "/hymns/ptahlan-maran",
+      },
+      {
+        latin: "Alaha Meltha",
+        syr: "ܐܲܠܵܗܵܐ ܡܸܠܬ݂ܵܐ",
+        link: "/hymns/alaha-meltha",
+      },
+      {
+        latin: "Lakh Mawdenan",
+        syr: "ܠܵܟ ܡܵܘܕܹܝܢܲܢ",
+        link: "/hymns/lakh-mawdenan",
+      },
     ],
     structure: "",
     syriacText: {
@@ -1704,7 +1809,13 @@ const NOT_RETAINED: ReshQala[] = [
     name: "Hannana Wamle Rahme",
     nameSyr: "ܚܲܢܵܢܵܐ ܘܲܡܠܸܐ ܪ̈ܲܚܡܹܐ",
     nameMal: "ഹന്നാനാ വമ് ലേ റഹ്‌മേ",
-    alsoKnownAs: [{ latin: "Hedyath Maryam", syr: "ܚܸܕܝܲܬ݀ ܡܲܪܝܲܡ" }],
+    alsoKnownAs: [
+      {
+        latin: "Hedyath Maryam",
+        syr: "ܚܸܕܝܲܬ݀ ܡܲܪܝܲܡ",
+        link: "/hymns/hedyath-maryam",
+      },
+    ],
     structure: "",
     syriacText: {
       stanzas: [
@@ -1944,8 +2055,16 @@ const NOT_RETAINED: ReshQala[] = [
     nameSyr: "ܐܲܢ݇ܬ݁ܘܼ ܢܘܼܗܪܵܐ",
     nameMal: "അത്തൂ നുഹ്‌റാ",
     alsoKnownAs: [
-      { latin: "L'kolhon Hattaye", syr: "ܠܟܠܗܘܿܢ ܚܲܛܵܝܹ̈ܐ" },
-      { latin: "Madbhakh Marya", syr: "ܡܲܕܒܚܵܟ݂ ܡܵܪܝܱܵ" },
+      {
+        latin: "L'kolhon Hattaye",
+        syr: "ܠܟܠܗܘܿܢ ܚܲܛܵܝܹ̈ܐ",
+        link: "/hymns/lkolkhon-hattaye",
+      },
+      {
+        latin: "Madbhakh Marya",
+        syr: "ܡܲܕܒܚܵܟ݂ ܡܵܪܝܱܵ",
+        link: "/hymns/madbhakh-marya",
+      },
     ],
     structure: "",
     syriacText: {
@@ -2001,7 +2120,7 @@ const NOT_RETAINED: ReshQala[] = [
     name: "Nettayaw",
     nameSyr: "ܢܸܬ݁ܛܲܝܲܒ݂",
     nameMal: "നെത്തയ്യവ്",
-    alsoKnownAs: [{ latin: "Bra Mshiha", syr: "" }],
+    alsoKnownAs: [{ latin: "Bra Mshiha", syr: "", link: "/hymns/bra-mshiha" }],
     structure: "",
     syriacText: {
       stanzas: [
@@ -2035,30 +2154,6 @@ const NOT_RETAINED: ReshQala[] = [
   },
   {
     num: 19,
-    name: "Shlama Nesge Lakh",
-    nameSyr: "ܫܠܵܡܵܐ ܢܸܣܓܸ݁ܐ ܠܵܟ݂",
-    nameMal: "ശ്‌ലാമാ നെസ്‌ഗെ ലാക്",
-    structure: "",
-    syriacText: {
-      stanzas: [
-        {
-          shuraya: "ܫܲܒܲܚܘ ܠܡܵܪܝܵܐ ܟܠܵܗ̇ ܐܲܪܥܵܐ.",
-          body: "ܫܠܵܡܵܐ ܢܸܣܓܸܐ ܠܵܟ݂ ܥܲܡܹܗ ܕܐܲܠܵܗܵܐ. ܕܲܡܫܝܼܚܵܐ ܐܸܬ݂ܝܼܠܸܕ݂ ܢܘܼܗܪܹܗ ܕܥܵܠܡܵܐ.",
-        },
-      ],
-    },
-    recordings: [
-      {
-        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fshlama-nesge-lakh%2Faudio%2F1781293003500.m4a?alt=media&token=d085581c-5f75-4e55-845f-9b3c0ecfa223",
-        performer: "Fr. Emmanuel Thelly CMI",
-        hymnName: "Shlama Nesge Lakh",
-        hymnLink: "/hymns/shlama-nesge-lakh",
-      },
-    ],
-    link: "/hymns/shlama-nesge-lakh",
-  },
-  {
-    num: 20,
     name: "L'zandiqe La Qrayt",
     nameSyr: "ܠܙܲܕ݁ܝܼܩܹ̈ܐ ܠܵܐ ܩܪܲܝܬ݁",
     nameMal: "ല് സന്ദീക്കേ ലാ ക്രൈത്ത്",
@@ -2082,7 +2177,7 @@ const NOT_RETAINED: ReshQala[] = [
     link: "/hymns/lzandiqe-la-qrayt",
   },
   {
-    num: 21,
+    num: 20,
     name: "Sagdin Lakh Yaldaw D'adam",
     nameSyr: "ܣܵܓ݂ܕܝܼܢ ܠܵܟ݂ ܝܲܠܕܵܘ̈ܗܝ ܕܐܵܕ݂ܵܡ",
     nameMal: "സാഗ്‌ദീൻ ലാക് യൽദാവ് ദാദം",
@@ -2112,7 +2207,7 @@ const NOT_RETAINED: ReshQala[] = [
     link: "/hymns/sagdinan-lakh-yaldaw-dadam",
   },
   {
-    num: 22,
+    num: 21,
     name: "Shlama l'sahde",
     nameSyr: "ܫܠܵܡܵܐ ܠܣܵܗܕܹ̈ܐ",
     nameMal: "ശ്‌ലാമാ ല് സഹദേ",
@@ -2175,10 +2270,10 @@ const NOT_RETAINED: ReshQala[] = [
     link: "/hymns/shlama-lsahde-walgarmayhon-iqara",
   },
   {
-    num: 23,
+    num: 22,
     name: "Resh Haylawatha",
     nameSyr: "ܪܹܫ ܚܲܝܠܵܘ̈ܵܬ݂ܵܐ",
-    nameMal: "റേശ് ഹൕലാവാസാ",
+    nameMal: "റേശ് ഹയ്‌ലാവാസാ",
     structure: "",
     syriacText: {
       stanzas: [
@@ -2205,7 +2300,7 @@ const NOT_RETAINED: ReshQala[] = [
     link: "/hymns/resh-haylawathe",
   },
   {
-    num: 24,
+    num: 23,
     name: "Nawde w'nesgod le",
     nameSyr: "ܢܵܘܕܸܐ ܘܢܸܣܓ݁ܘܿܕ ܠܹܗ",
     nameMal: "നവ്‌ദേ ഉനെസ്ഗോദ് ലേ",
@@ -2221,7 +2316,7 @@ const NOT_RETAINED: ReshQala[] = [
     link: "/hymns/nawde-wnesgod-le",
   },
   {
-    num: 25,
+    num: 24,
     name: "Qala Ramba",
     nameSyr: "ܩܵܠܵܐ ܪܲܒܵܐ",
     nameMal: "കാലാ റമ്പാ",
@@ -2247,7 +2342,7 @@ const NOT_RETAINED: ReshQala[] = [
     link: "/hymns/marya-enhu",
   },
   {
-    num: 26,
+    num: 25,
     name: "Kyanaya mode",
     nameSyr: "",
     nameMal: "ക്യാനായ രീതി",
@@ -2425,7 +2520,16 @@ function ReshQalaList({
                   {r.alsoKnownAs.map((aka, i) => (
                     <span key={i}>
                       {i > 0 && "; "}
-                      {aka.latin}{" "}
+                      {aka.link ? (
+                        <Link
+                          href={aka.link}
+                          className="text-primary hover:underline"
+                        >
+                          {aka.latin}
+                        </Link>
+                      ) : (
+                        aka.latin
+                      )}{" "}
                       {aka.syr && <Syr className="text-base">{aka.syr}</Syr>}
                     </span>
                   ))}
