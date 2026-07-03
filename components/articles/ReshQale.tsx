@@ -113,6 +113,24 @@ const RETAINED: ReshQala[] = [
         hymnName: "Maryam B'thulta Qandishta",
         hymnLink: "/hymns/maryam-bsultha-qandishtha",
       },
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fmshiha-paroqe-dalma%2Faudio%2F1781287988490.m4a?alt=media&token=312e3f37-a720-4057-ae9b-0b87ab9edb30",
+        performer: "Fr. Alexander Kattakayam CMI",
+        hymnName: "Mshiha Paroqe d'Alma",
+        hymnLink: "/hymns/mshiha-paroqe-dalma",
+      },
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fmshiha-paroqe-dalma%2Faudio%2F1781291825883.m4a?alt=media&token=05025e3f-cf3e-4309-91fc-7aedc9b642c7",
+        performer: "Fr. Emmanuel Thelly CMI",
+        hymnName: "Mshiha Paroqe d'Alma",
+        hymnLink: "/hymns/mshiha-paroqe-dalma",
+      },
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fmshiha-paroqe-dalma%2Faudio%2F1779124798989.m4a?alt=media&token=95ab823d-111f-430c-acda-26068f51abab",
+        performer: "Binu George",
+        hymnName: "Mshiha Paroqe d'Alma",
+        hymnLink: "/hymns/mshiha-paroqe-dalma",
+      },
     ],
     syriacText: {
       stanzas: [
