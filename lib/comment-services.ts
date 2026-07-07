@@ -171,6 +171,29 @@ export const commentService = {
   },
 
   /**
+   * Get all approved comments for a resource type (e.g. all unidentified recordings)
+   */
+  async getCommentsByResourceType(
+    resourceType: ResourceType,
+    includeAllStatuses: boolean = false
+  ): Promise<QuerySnapshot<DocumentData>> {
+    const q = includeAllStatuses
+      ? query(
+          collection(db, "comments"),
+          where("resourceType", "==", resourceType),
+          orderBy("createdAt", "desc")
+        )
+      : query(
+          collection(db, "comments"),
+          where("resourceType", "==", resourceType),
+          where("status", "==", "approved"),
+          orderBy("createdAt", "desc")
+        );
+
+    return await getDocs(q);
+  },
+
+  /**
    * Get comments count for a resource
    */
   async getCommentsCount(

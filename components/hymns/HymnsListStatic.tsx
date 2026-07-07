@@ -16,6 +16,7 @@ import {
   ChevronDown,
   Church,
   X,
+  HelpCircle,
 } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
@@ -278,14 +279,22 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
             {totalRecordings === 1 ? "recording" : "recordings"}
           </p>
         </div>
-        {isAdmin && (
-          <Button asChild>
-            <Link href="/hymns/new">
-              <Plus className="h-4 w-4 mr-2" />
-              New Hymn
+        <div className="flex items-center gap-2 shrink-0">
+          <Button asChild variant="outline">
+            <Link href="/hymns/unidentified-recordings">
+              <HelpCircle className="h-4 w-4 mr-2" />
+              Unidentified Recordings
             </Link>
           </Button>
-        )}
+          {isAdmin && (
+            <Button asChild>
+              <Link href="/hymns/new">
+                <Plus className="h-4 w-4 mr-2" />
+                New Hymn
+              </Link>
+            </Button>
+          )}
+        </div>
       </div>
 
       {availableChurches.length > 0 && (

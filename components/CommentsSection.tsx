@@ -25,6 +25,7 @@ interface CommentsSectionProps {
   className?: string;
   hideCommentList?: boolean; // Hide the comment list but keep the form
   initialReplyingTo?: string | null; // Initial comment ID to reply to
+  compact?: boolean;
 }
 
 export default function CommentsSection({
@@ -33,6 +34,7 @@ export default function CommentsSection({
   className = "",
   hideCommentList = false,
   initialReplyingTo = null,
+  compact = false,
 }: CommentsSectionProps) {
   const { userProfile } = useAuth();
   const [comments, setComments] = useState<Comment[]>([]);
@@ -550,7 +552,7 @@ export default function CommentsSection({
   };
 
   return (
-    <div className={`space-y-4 ${className}`}>
+    <div className={`${compact ? "space-y-2" : "space-y-4"} ${className}`}>
       {!hideCommentList && (
         <div className="flex items-center justify-between border-b pb-2">
           <h3 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
@@ -580,7 +582,7 @@ export default function CommentsSection({
         )}
 
         {/* Comment form */}
-        <div className="pt-4 border-t space-y-3">
+        <div className={`border-t ${compact ? "pt-2 space-y-2" : "pt-4 space-y-3"}`}>
           {hideCommentList && replyingTo ? (
             <>
               {/* Show reply form when replying and comment list is hidden */}

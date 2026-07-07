@@ -6,12 +6,21 @@ import CommentsSectionStatic from "@/components/CommentsSectionStatic";
 import CommentsSection from "@/components/CommentsSection";
 import { commentService } from "@/lib/comment-services";
 import { ResourceType } from "@/lib/types/comment";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { MessageSquare } from "lucide-react";
 
 interface CommentsSectionWithStaticProps {
   resourceType: ResourceType;
   resourceId: string;
   initialComments: Comment[];
   className?: string;
+  compact?: boolean;
+  accordion?: boolean;
 }
 
 export default function CommentsSectionWithStatic({
@@ -19,10 +28,17 @@ export default function CommentsSectionWithStatic({
   resourceId,
   initialComments,
   className = "",
+  compact = false,
+  accordion = false,
 }: CommentsSectionWithStaticProps) {
   const [comments, setComments] = useState<Comment[]>(initialComments);
   const [key, setKey] = useState(0); // Force re-render when comments update
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
+  const [accordionOpen, setAccordionOpen] = useState<string | undefined>(
+    undefined
+  );
+
+  const approvedCount = comments.filter((c) => c.status === "approved").length;
 
   // Reload comments after submission
   const reloadComments = useCallback(async () => {
@@ -67,6 +83,9 @@ export default function CommentsSectionWithStatic({
 
   const handleReplyClick = (commentId: string) => {
     setReplyingTo(commentId);
+    if (accordion) {
+      setAccordionOpen("comments");
+    }
     // Store in sessionStorage so CommentsSection can pick it up
     if (typeof window !== 'undefined') {
       sessionStorage.setItem(`replyTo_${resourceId}`, commentId);
@@ -78,22 +97,57 @@ export default function CommentsSectionWithStatic({
     }
   };
 
-  return (
-    <div className={className}>
+  const commentsBody = (
+    <>
       <div key={key}>
-        <CommentsSectionStatic 
-          comments={comments} 
+        <CommentsSectionStatic
+          comments={comments}
           onReplyClick={handleReplyClick}
+          compact={compact}
+          hideHeader={accordion}
         />
       </div>
-      <div className="mt-6">
-        <CommentsSection 
-          resourceType={resourceType} 
-          resourceId={resourceId} 
+      <div className={compact ? "mt-2" : "mt-6"}>
+        <CommentsSection
+          resourceType={resourceType}
+          resourceId={resourceId}
           hideCommentList={true}
           initialReplyingTo={replyingTo}
+          compact={compact}
         />
       </div>
+    </>
+  );
+
+  if (accordion) {
+    return (
+      <div className={className}>
+        <Accordion
+          type="single"
+          collapsible
+          value={accordionOpen}
+          onValueChange={setAccordionOpen}
+        >
+          <AccordionItem value="comments" className="border-none">
+            <AccordionTrigger className="py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground">
+              <span className="flex items-center gap-2">
+                <MessageSquare className="h-4 w-4" />
+                Comments
+                {approvedCount > 0 && (
+                  <span className="text-muted-foreground">({approvedCount})</span>
+                )}
+              </span>
+            </AccordionTrigger>
+            <AccordionContent className="pt-1 pb-0">{commentsBody}</AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      </div>
+    );
+  }
+
+  return (
+    <div className={className}>
+      {commentsBody}
     </div>
   );
 }

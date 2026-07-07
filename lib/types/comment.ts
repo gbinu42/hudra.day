@@ -11,6 +11,7 @@ export type ResourceType =
   | "text"
   | "person"
   | "article"
+  | "unidentified-recording"
   | "other";
 
 export interface Comment {

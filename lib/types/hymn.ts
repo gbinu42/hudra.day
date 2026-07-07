@@ -107,6 +107,44 @@ export interface CreateRecordingData {
   adminAudioUrl?: string; // Admin-only audio file for YouTube videos
 }
 
+export interface UnidentifiedRecording {
+  id: string;
+  type: RecordingType;
+  url: string;
+  originalUrl?: string;
+  title?: string;
+  performers?: Array<{
+    id?: string;
+    name: string;
+  }>;
+  contributorId: string;
+  contributorName: string;
+  year?: number;
+  duration?: string;
+  description?: string;
+  church?: string;
+  suspectedHymnTitle?: string;
+  createdAt: Date;
+}
+
+export interface CreateUnidentifiedRecordingData {
+  type: RecordingType;
+  url: string;
+  originalUrl?: string;
+  title?: string;
+  performers?: Array<{
+    id?: string;
+    name: string;
+  }>;
+  contributorId: string;
+  contributorName: string;
+  year?: number;
+  duration?: string;
+  description?: string;
+  church?: string;
+  suspectedHymnTitle?: string;
+}
+
 // Main Hymn entity
 export interface Hymn {
   id: string;

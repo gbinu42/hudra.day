@@ -160,6 +160,8 @@ export default function CommentsModeration() {
         return `/books/${comment.resourceId}`;
       case "article":
         return `/articles/${comment.resourceId}`;
+      case "unidentified-recording":
+        return `/hymns/unidentified-recordings#recording-${comment.resourceId}`;
       case "text":
         return `/texts/${comment.resourceId}`;
       case "person":

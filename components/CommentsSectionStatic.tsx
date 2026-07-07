@@ -8,6 +8,8 @@ interface CommentsSectionStaticProps {
   comments: Comment[];
   className?: string;
   onReplyClick?: (commentId: string) => void;
+  compact?: boolean;
+  hideHeader?: boolean;
 }
 
 // Build comment tree structure
@@ -51,17 +53,19 @@ function CommentItem({
   comment,
   depth = 0,
   onReplyClick,
+  compact = false,
 }: {
   comment: Comment & { replies?: Comment[] };
   depth?: number;
   onReplyClick?: (commentId: string) => void;
+  compact?: boolean;
 }) {
   const maxDepth = 3;
-  const indent = Math.min(depth, maxDepth) * 40;
+  const indent = Math.min(depth, maxDepth) * (compact ? 24 : 40);
 
   return (
-    <div style={{ marginLeft: `${indent}px` }} className="space-y-3">
-      <div className="space-y-2">
+    <div style={{ marginLeft: `${indent}px` }} className={compact ? "space-y-1.5" : "space-y-3"}>
+      <div className={compact ? "space-y-1" : "space-y-2"}>
         <div className="flex items-start justify-between">
           <div>
             <div className="flex items-center gap-2">
@@ -90,7 +94,7 @@ function CommentItem({
         
         {/* Reply button */}
         {depth < maxDepth && onReplyClick && (
-          <div className="mt-2">
+          <div className={compact ? "mt-0.5" : "mt-2"}>
             <Button
               size="sm"
               variant="ghost"
@@ -112,13 +116,14 @@ function CommentItem({
 
       {/* Render replies */}
       {comment.replies && comment.replies.length > 0 && (
-        <div className="space-y-3">
+        <div className={compact ? "space-y-1.5" : "space-y-3"}>
           {comment.replies.map((reply) => (
             <CommentItem 
               key={reply.id} 
               comment={reply} 
               depth={depth + 1}
               onReplyClick={onReplyClick}
+              compact={compact}
             />
           ))}
         </div>
@@ -131,32 +136,37 @@ export default function CommentsSectionStatic({
   comments,
   className = "",
   onReplyClick,
+  compact = false,
+  hideHeader = false,
 }: CommentsSectionStaticProps) {
   // Filter to only approved comments for static rendering
   const approvedComments = comments.filter((c) => c.status === "approved");
   const commentTree = buildCommentTree(approvedComments);
 
   return (
-    <div className={`space-y-4 ${className}`}>
-      <div className="flex items-center justify-between border-b pb-2">
-        <h3 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-          <MessageSquare className="h-4 w-4" />
-          Comments {approvedComments.length > 0 && `(${approvedComments.length})`}
-        </h3>
-      </div>
-      <div className="space-y-6">
+    <div className={`${compact ? "space-y-2" : "space-y-4"} ${className}`}>
+      {!hideHeader && (
+        <div className={`flex items-center justify-between border-b ${compact ? "pb-1" : "pb-2"}`}>
+          <h3 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+            <MessageSquare className="h-4 w-4" />
+            Comments {approvedComments.length > 0 && `(${approvedComments.length})`}
+          </h3>
+        </div>
+      )}
+      <div className={compact ? "space-y-2" : "space-y-6"}>
         {commentTree.length > 0 ? (
-          <div className="space-y-4">
+          <div className={compact ? "space-y-2" : "space-y-4"}>
             {commentTree.map((comment) => (
               <CommentItem 
                 key={comment.id} 
                 comment={comment}
                 onReplyClick={onReplyClick}
+                compact={compact}
               />
             ))}
           </div>
         ) : (
-          <div className="text-center py-4 text-sm text-muted-foreground">
+          <div className={`text-center text-sm text-muted-foreground ${compact ? "py-1" : "py-4"}`}>
             No comments yet
           </div>
         )}
