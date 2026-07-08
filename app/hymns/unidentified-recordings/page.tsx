@@ -1,7 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import UnidentifiedRecordingCard from "@/components/hymns/UnidentifiedRecordingCard";
-import UnidentifiedRecordingSubmitCard from "@/components/hymns/UnidentifiedRecordingSubmitCard";
+import UnidentifiedRecordingsClient from "@/components/hymns/UnidentifiedRecordingsClient";
 import { unidentifiedRecordingService } from "@/lib/unidentified-recording-services";
 import { commentService } from "@/lib/comment-services";
 import { Comment } from "@/lib/types/comment";
@@ -15,7 +14,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Home, Music, HelpCircle } from "lucide-react";
 
 const pageTitle = "Unidentified Hymn Recordings";
@@ -196,35 +194,10 @@ export default async function UnidentifiedRecordingsPage() {
           </div>
         </div>
 
-        <div className="space-y-4">
-          <Card>
-            <CardHeader className="py-3 px-4">
-              <CardTitle className="text-lg">Recordings</CardTitle>
-            </CardHeader>
-            <CardContent className="px-4 pb-4 pt-0">
-              {recordings.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-4">
-                  No unidentified recordings yet. Be the first to submit one!
-                </p>
-              ) : (
-                <div className="space-y-4">
-                  {recordings.map((recording, index) => (
-                    <UnidentifiedRecordingCard
-                      key={recording.id}
-                      number={recordings.length - index}
-                      recording={recording}
-                      initialComments={
-                        commentsByRecordingId[recording.id] || []
-                      }
-                    />
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          <UnidentifiedRecordingSubmitCard />
-        </div>
+        <UnidentifiedRecordingsClient
+          recordings={recordings}
+          commentsByRecordingId={commentsByRecordingId}
+        />
       </div>
       <Footer />
     </div>

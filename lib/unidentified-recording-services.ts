@@ -89,20 +89,25 @@ export const unidentifiedRecordingService = {
     return await getDownloadURL(uploadResult.ref);
   },
 
-  async delete(recordingId: string, fileUrl?: string): Promise<void> {
-    if (fileUrl?.includes("firebasestorage.googleapis.com")) {
-      try {
-        const url = new URL(fileUrl);
-        const pathMatch = url.pathname.match(/\/o\/(.+)\?/);
-        if (pathMatch) {
-          const filePath = decodeURIComponent(pathMatch[1]);
-          await deleteObject(ref(storage, filePath));
-        }
-      } catch (error) {
-        console.error("Error deleting storage file:", error);
-      }
+  async deleteStorageFile(fileUrl?: string): Promise<void> {
+    if (!fileUrl?.includes("firebasestorage.googleapis.com")) {
+      return;
     }
 
+    try {
+      const url = new URL(fileUrl);
+      const pathMatch = url.pathname.match(/\/o\/(.+)\?/);
+      if (pathMatch) {
+        const filePath = decodeURIComponent(pathMatch[1]);
+        await deleteObject(ref(storage, filePath));
+      }
+    } catch (error) {
+      console.error("Error deleting storage file:", error);
+    }
+  },
+
+  async delete(recordingId: string, fileUrl?: string): Promise<void> {
+    await this.deleteStorageFile(fileUrl);
     await deleteDoc(doc(db, "unidentifiedRecordings", recordingId));
   },
 };

@@ -5,8 +5,9 @@ import { toast } from "sonner";
 import { UnidentifiedRecording } from "@/lib/types/hymn";
 import { unidentifiedRecordingService } from "@/lib/unidentified-recording-services";
 import { useAuth } from "@/lib/hooks/useAuth";
+import { useUnidentifiedRecordingsEdit } from "@/components/hymns/UnidentifiedRecordingsClient";
 import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
+import { Edit, Trash2 } from "lucide-react";
 
 export default function UnidentifiedRecordingAdminActions({
   recording,
@@ -15,6 +16,7 @@ export default function UnidentifiedRecordingAdminActions({
 }) {
   const router = useRouter();
   const { userProfile } = useAuth();
+  const { startEdit } = useUnidentifiedRecordingsEdit();
   const isAdmin = userProfile?.role === "admin";
 
   if (!isAdmin) {
@@ -37,8 +39,18 @@ export default function UnidentifiedRecordingAdminActions({
   };
 
   return (
-    <Button variant="ghost" size="sm" onClick={handleDelete}>
-      <Trash2 className="h-4 w-4 text-red-500" />
-    </Button>
+    <div className="flex gap-1">
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => startEdit(recording)}
+        aria-label="Edit recording"
+      >
+        <Edit className="h-4 w-4 text-blue-500" />
+      </Button>
+      <Button variant="ghost" size="sm" onClick={handleDelete} aria-label="Delete recording">
+        <Trash2 className="h-4 w-4 text-red-500" />
+      </Button>
+    </div>
   );
 }
