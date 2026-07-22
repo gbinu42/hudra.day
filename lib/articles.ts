@@ -15,6 +15,28 @@ export interface Article {
 
 export const articles: Article[] = [
   {
+    slug: "ephrem-bede-recordings",
+    title: "List of Hymns in the Recordings by Archbishop Ephrem Bede",
+    subtitle:
+      "المطران أفرام بدي - Chaldean liturgical melodies on five cassette recordings (Cairo, 1977)",
+    date: "2026-07-22",
+    author: "Binu George",
+    description:
+      "A catalogue of hymns from the cassette recordings of Archbishop Ephrem Bede (المطران أفرام بدي), the Chaldean Catholic liturgist and cantor who preserved traditional Chaldean melodies in Cairo in 1977.",
+    keywords: [
+      "Ephrem Bede",
+      "Afram Beddi",
+      "أفرام بدي",
+      "Chaldean",
+      "East Syriac",
+      "liturgical chant",
+      "cassette",
+      "Alqosh",
+      "Cairo",
+      "Church of the East",
+    ],
+  },
+  {
     slug: "qambel-maran-cd",
     title: "Qambel Maran CD",
     titleSyriac: "ܩܲܒܸܠ ܡܵܪܲܢ",

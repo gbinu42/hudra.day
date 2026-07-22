@@ -13,12 +13,14 @@ import { CalendarDays, ArrowLeft } from "lucide-react";
 import QaleDonyathaDsahde from "@/components/articles/QaleDonyathaDsahde";
 import QambelMaranCD from "@/components/articles/QambelMaranCD";
 import ReshQale from "@/components/articles/ReshQale";
+import EphremBedeRecordings from "@/components/articles/EphremBedeRecordings";
 import { ComponentType } from "react";
 
 const articleContent: Record<string, ComponentType> = {
   "resh-qale": ReshQale,
   "qale-donyatha-dsahde": QaleDonyathaDsahde,
   "qambel-maran-cd": QambelMaranCD,
+  "ephrem-bede-recordings": EphremBedeRecordings,
 };
 
 export const dynamic = "force-static";

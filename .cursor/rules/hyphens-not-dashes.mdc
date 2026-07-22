@@ -1,0 +1,22 @@
+---
+description: Use regular ASCII hyphens instead of em/en dashes in prose and UI copy
+alwaysApply: true
+---
+
+# Hyphens, not long dashes
+
+In user-facing text (articles, UI copy, metadata, comments shown to users), use a regular hyphen `-` only.
+
+- Do **not** use em dashes (`—`) or en dashes (`–`)
+- Use `-` for asides, ranges, list separators, and source attributions
+
+```text
+❌ Work in progress — hymn lists…
+✅ Work in progress - hymn lists…
+
+❌ (1960–1962)
+✅ (1960-1962)
+
+❌ Qaltha — Page ܢܕ — Aykan Masya
+✅ Qaltha - Page ܢܕ - Aykan Masya
+```
