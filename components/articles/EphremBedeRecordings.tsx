@@ -6,7 +6,9 @@
  */
 
 import Link from "next/link";
+import Image from "next/image";
 import type { ReactNode } from "react";
+import RecordingEmbed from "@/components/articles/RecordingEmbed";
 
 interface CassetteHymn {
   /** Liturgical genre / rubric, e.g. Qaltha */
@@ -34,6 +36,9 @@ interface Cassette {
   number: number;
   title: string;
   hymns: CassetteHymn[];
+  /** YouTube nocookie embed URL for this cassette */
+  youtubeEmbedSrc?: string;
+  youtubeTitle?: string;
 }
 
 function Syr({
@@ -58,6 +63,8 @@ const CASSETTES: Cassette[] = [
   {
     number: 1,
     title: "Cassette 1",
+    youtubeEmbedSrc: "https://www.youtube-nocookie.com/embed/oSrE4WX906k",
+    youtubeTitle: "The Chaldean Hymns by Bishop Ephrem Buddy, part 1",
     hymns: [
       {
         type: "Qaltha",
@@ -283,10 +290,327 @@ const CASSETTES: Cassette[] = [
       },
     ],
   },
-  { number: 2, title: "Cassette 2", hymns: [] },
-  { number: 3, title: "Cassette 3", hymns: [] },
-  { number: 4, title: "Cassette 4", hymns: [] },
-  { number: 5, title: "Cassette 5", hymns: [] },
+  {
+    number: 2,
+    title: "Cassette 2",
+    youtubeEmbedSrc: "https://www.youtube-nocookie.com/embed/ZdiM3k_vao0",
+    youtubeTitle: "The Chaldean Hymns by Bishop Ephrem Buddy, part 2",
+    hymns: [
+      {
+        type: "Hymn to Al-adhra Maryam (Virgin Mary)",
+        title: "B'thulta Yaldath",
+        titleSyr: "ܒܬ݂ܘܼܠܬܵܐ ܝܵܠܕܲܬ݂",
+        qala: "Ha Pathora",
+        qalaSyr: "ܗܵܐ ܦܵܬ݂ܘܿܪܵܐ",
+        hudraSlug: "bthulta-yaldath",
+      },
+      {
+        type: "Hymn for Yalda",
+        title: "Malke Bnay Malke",
+        titleSyr: "ܡܲܠܟܹ̈ܐ ܒܢܲܝ ܡܲܠܟܹ̈ܐ",
+        qala: "Tuwa L'yallude",
+        qalaSyr: "ܛܘܼܒ݂ܵܐ ܠܝܲܠܘܼܕܹ̈ܐ",
+        hudraSlug: "malke-bnay-malke",
+      },
+      {
+        type: "Hymn for Yalda",
+        title: "Malke Bnay Malke",
+        titleSyr: "ܡܲܠܟܹ̈ܐ ܒܢܲܝ ܡܲܠܟܹ̈ܐ",
+        qala: "Tuwa L'yallude",
+        qalaSyr: "ܛܘܼܒ݂ܵܐ ܠܝܲܠܘܼܕܹ̈ܐ",
+        note: "Another melody from the Chaldean Eparchy of Turkey.",
+        hudraSlug: "malke-bnay-malke",
+      },
+      {
+        type: "Hymn for Yalda",
+        title: "Malke Bnay Malke",
+        titleSyr: "ܡܲܠܟܹ̈ܐ ܒܢܲܝ ܡܲܠܟܹ̈ܐ",
+        qala: "Tuwa L'yallude",
+        qalaSyr: "ܛܘܼܒ݂ܵܐ ܠܝܲܠܘܼܕܹ̈ܐ",
+        note: "Another melody from the Chaldean Eparchy of Turkey.",
+        hudraSlug: "malke-bnay-malke",
+      },
+      {
+        title: "Unidentified",
+        note:
+          "The fourth hymn is recited during the Ba'utha Fast and the Great Fast (Lent) in some Chaldean villages and monasteries. This hymn is unidentified - if you recognize it, please leave a comment below.",
+      },
+      {
+        type: "Karozoutha",
+        title: "N'qum Shapir",
+        titleSyr: "ܢܩܘܼܡ ܫܲܦܝܼܪ",
+        note:
+          "The fifth hymn is from the Friday of Passion, from the second volume of the Hudra.",
+        hudraSlug: "nqum-shapir-friday-of-passion",
+      },
+      {
+        title: "O Gannana",
+        titleSyr: "ܐܘܿ ܓܲܢܵܢܵܐ",
+        note:
+          "The sixth hymn is for Qyamta from the book of Turgame and Sogyatha.",
+        hudraSlug: "brikh-bar-thawa-o-gannana",
+      },
+      {
+        type: "Teshbohta",
+        title: "Tas Wanheth",
+        titleSyr: "ܛܵܣ ܘܲܢܚܸܬ݂",
+        note: "Dalwakhta of the Sunday of Qyamta.",
+        hudraSlug: "tas-wanheth-resh-malakhe",
+      },
+      {
+        type: "Teshbohta",
+        title: "Tas Wanheth",
+        titleSyr: "ܛܵܣ ܘܲܢܚܸܬ݂",
+        note: "Dalwakhta of the Sunday of Qyamta. Different melody.",
+        hudraSlug: "tas-wanheth-resh-malakhe",
+      },
+      {
+        type: "Hpakhtha",
+        title: "Malkuth Rawma",
+        titleSyr: "ܡܲܠܟܘܼܬ݂ ܪܵܘܡܵܐ",
+        note:
+          "The eighth hymn for the feast of Qyamta, sung before Tawdi l'tawa.",
+        hudraSlug: "malkuth-rawma",
+      },
+      {
+        title: "Tawdi L'tawa",
+        titleSyr: "ܬܵܘܕ̇ܝܼ ܠܛܵܒ̣ܵܐ",
+        note: "For Qyamta.",
+        hudraSlug: "tawdi-lthawa",
+      },
+      {
+        type: "Onitha",
+        title: "Qal Qinatha",
+        titleSyr: "ܩܵܠ ܩܝܼ̈ܢܵܬ݂ܵܐ",
+        note:
+          "For the sixth Sunday of Summer, accompanying (or chanted to) Tawdi l'Tawa.",
+        hudraSlug: "qal-qinatha",
+      },
+      {
+        type: "Madrasha",
+        title: "Malka Mshiha Dal'almin",
+        titleSyr: "ܡܲܠܟܵܐ ܡܫܝܼܚܵܐ ܕܲܠܥܵܠܡܝܼܢ",
+        note: "For the Feast of the Assumption of the Virgin Mary.",
+        hudraSlug: "malka-mshiha-dalalmin",
+      },
+    ],
+  },
+  {
+    number: 3,
+    title: "Cassette 3",
+    youtubeEmbedSrc: "https://www.youtube-nocookie.com/embed/M8XRuSa5I_s",
+    youtubeTitle:
+      "Hymns from the Chaldean liturgy by Bishop Ephram Baddy, part 3",
+    hymns: [
+      {
+        type: "Shambah of Mawtwa",
+        title: "Shrara Galya",
+        titleSyr: "ܫܪܵܪܵܐ ܓܲܠܝܵܐ",
+        qala: "B'dehltha Wawhadutha",
+        qalaSyr: "ܒܕܸܚܠܬ݂ܵܐ ܘܲܒ݂ܚܲܕܘܼܬ݂ܵܐ",
+        hudraSlug: "shrara-galya",
+      },
+      {
+        type: "Madrasha",
+        title: "Shuwha L'haw D'parqan",
+        titleSyr: "ܫܘܼܒ݂ܚܵܐ ܠܗ̇ܘ ܕܦ݂ܲܪܩܲܢ",
+        qala: "Resh Qala",
+        qalaSyr: "ܪܹܫ ܩܵܠܵܐ",
+        qalaLabel: false,
+        hudraSlug: "shuwha-lhaw-parqan",
+      },
+      {
+        type: "Madrasha",
+        title: "Shuwha L'haw Yalda",
+        titleSyr: "ܫܘܼܒ݂ܚܵܐ ܠܗܵܘ ܝܲܠܕܵܐ",
+        qala: "Zel Laqritha / Arba'apenyan",
+        hudraSlug: "shuwha-lhaw-yalda",
+      },
+      {
+        type: "Qanona of Yalda",
+        title: "Brikh Dethgli Bapartha",
+        titleSyr: "ܒܪܝܼܟ݂ ܕܐܸܬ݂ܓ݁ܠܝܼ ܒܐܵܦܲܪܬ݂ܵܐ",
+        hudraSlug: "brikh-dethgli-bapartha",
+      },
+      {
+        type: "Onitha d'Yalda",
+        title: "Malke Bnay Malke",
+        titleSyr: "ܡܲܠܟܹ̈ܐ ܒܢܲܝ ܡܲܠܟܹ̈ܐ",
+        qala: "Tuwa L'yallude",
+        qalaSyr: "ܛܘܼܒ݂ܵܐ ܠܝܲܠܘܼܕܹ̈ܐ",
+        hudraSlug: "malke-bnay-malke",
+      },
+      {
+        type: "Hpakhtha of Yalda",
+        title: "Ew Yalluda",
+        titleSyr: "ܐܹܝܘ ܠܝܲܠܘܼܕܵܐ",
+        hudraSlug: "ew-yallud",
+      },
+      {
+        type: "Karozoutha of Yalda",
+        title: "N'qum Shapir",
+        titleSyr: "ܢܩܘܼܡ ܫܲܦܝܼܪ",
+        hudraSlug: "nqum-shapir-yalda",
+      },
+      {
+        type: "Slotha",
+        title: "Lakh Yalda Gniza",
+        titleSyr: "ܠܵܟ݂ ܝܲܠܕܵܐ ܓܢܝܼܙܵܐ",
+        note: "Of the Yalda Sapra.",
+        hudraSlug: "lakh-yalda-gniza",
+      },
+      {
+        title: "Brashith",
+        titleSyr: "ܒܪܵܫܝܼܬ݂",
+        note: "Of the Yalda Sapra.",
+        hudraSlug: "brashith",
+      },
+      {
+        type: "Shuraya",
+        title: "Gawra Gambara",
+        titleSyr: "ܓܲܒ݂ܪܵܐ ܓܲܢ݇ܒܵܪܵܐ",
+        note: "Of the Christmas Qurbana.",
+        hudraSlug: "gawra-gambara",
+      },
+      {
+        title: "Dhilat Alaha",
+      },
+      {
+        title: "Pagrakh Wadmakh",
+        titleSyr: "ܦܲܓ݂ܪܵܟ݂ ܘܲܕ݂ܡܵܟ݂",
+        note: "For Yalda.",
+        hudraSlug: "pagrakh-wadmakh",
+      },
+      {
+        type: "Teshbohta",
+        title: "Hayyel Maran",
+        titleSyr: "ܚܲܝܸܠ ܡܵܪܲܢ",
+        note: "For Maranaye feasts.",
+        hudraSlug: "hayyel-maran",
+      },
+      {
+        type: "Madrasha",
+        title: "Brikhu Pera",
+        titleSyr: "ܒܪܝܼܟ݂ܘܼ ܦܹܐܪܵܐ",
+        qala: "Lakh Teshbohta",
+        qalaSyr: "ܠܵܟ݂ ܬܸܫܒ݁ܘܿܚܬܵܐ",
+        note: "Of the Dukhrana of Mart Maryam Yaldath Alaha.",
+        hudraSlug: "brikhu-pera",
+      },
+      {
+        type: "Madrasha",
+        title: "Brikhu Dawrew Dukhrankhon Sahde",
+        titleSyr: "ܒܪܝܼܟ݂ܘܼ ܕܐܵܘܪܸܒ݂ ܕܘܼܟ݂ܪܵܢܟ݂ܘܿܢ. ܣܵܗܕܹ̈ܐ",
+        qala: "Mannu Kay",
+        qalaSyr: "ܡܲܢܘܼ ܟܲܝ",
+        note: "For the feast of the Holy Innocents (the Massacre of the Infants).",
+        hudraSlug: "brikhu-dawrew-dukhrankhon-sahde",
+      },
+      {
+        type: "d'Wasaliqe",
+        title: "B'yawma T'minaya",
+        titleSyr: "ܒܝܵܘܡܵܐ ܬܡܝܼܢܵܝܵܐ",
+        qala: "Tuwa L'yallude",
+        qalaSyr: "ܛܘܼܒ݂ܵܐ ܠܝܲܠܘܼܕܹ̈ܐ",
+        note: "Of the Feast of the Circumcision of our Lord.",
+        hudraSlug: "byawma-tminaya",
+      },
+      {
+        type: "Onitha d'Qdam",
+        title: "Ma'modithakh Maran",
+        titleSyr: "ܡܲܥܡܘܿܕܝܼܬ݂ܵܟ݂ ܡܵܪܲܢ",
+        qala: "Lwesh La Methhablanutha",
+        qalaSyr: "ܠܒܸܫܘ ܠܵܐ ܡܸܬ݂ܚܲܒ݁ܠܵܢܘܼܬ݂ܵܐ",
+        note: "Of Denha Ramsha.",
+        hudraSlug: "mamodithakh-maran",
+      },
+      {
+        type: "Onitha d'Wathar",
+        title: "Britha H'data",
+        titleSyr: "ܒܪܝܼܬ݂ܵܐ ܚܕܲܬܵܐ",
+        qala: "Resh Qala",
+        qalaSyr: "ܪܹܫ ܩܵܠܵܐ",
+        qalaLabel: false,
+        note: "Of Denha Ramsha (also of the first Sunday of Lent).",
+        hudraSlug: "britha-hdata",
+      },
+      {
+        type: "Madrasha",
+        title: "Shmayya W'ar'a Shuwha Zmar",
+        titleSyr: "ܫܡܲܝܵܐ ܘܐܲܪܥܵܐ ܫܘܼܒ݂ܚܵܐ ܙܡܲܪܘ",
+        qala: "Menne W'le",
+        qalaSyr: "ܡܸܢܹܗ ܘܠܹܗ",
+        note: "Of Denha (Epiphany).",
+        hudraSlug: "shmayya-wara-shuwha-zmar",
+      },
+      {
+        type: "Madrasha",
+        title: "Brikh Dethrken Wa'mad",
+        titleSyr: "ܒܪܝܼܟ݂ ܕܐܸܬ݂ܪܟܸܢ ܘܲܥܡܲܪ",
+        qala: "Rawme d'marekol",
+        qalaSyr: "ܪܵܘܡܹܗ ܕܡܵܪܹܟܠ",
+        note: "Of Denha (and of the second Sunday of Denha).",
+        hudraSlug: "brikh-dethrken-wamad",
+      },
+      {
+        type: "Qanona",
+        title: "Hus W'hassa",
+        titleSyr: "ܚܘܼܣ ܘܚܲܣܵܐ",
+        qala: "Resh Qala",
+        qalaSyr: "ܪܹܫ ܩܵܠܵܐ",
+        qalaLabel: false,
+        note: "Resh Qala of the Dukhrana of the Malpane Suryaye and Romaye.",
+        hudraSlug: "hus-whassa",
+      },
+      {
+        type: "Qaltha",
+        title: "Hzaw La Tehton",
+        titleSyr: "ܚܙܵܘ ܠܵܐ ܬܸܚܛܘܿܢ",
+        note: "Of the Ba'utha d'Ninwaye (Monday).",
+        hudraSlug: "hzaw-la-tehton",
+      },
+      {
+        type: "Qanona",
+        title: "En Awlan",
+        titleSyr: "ܐܸܢ ܥܵܘ̣ܠܲܢ",
+        qala: "Resh Qala",
+        qalaSyr: "ܪܹܫ ܩܵܠܵܐ",
+        qalaLabel: false,
+        note: "Of the Ba'utha (Monday).",
+        hudraSlug: "en-awlan",
+      },
+      {
+        type: "Teshbohta",
+        title: "B'hasha w'dem'e Wawthahnanta",
+        titleSyr: "ܒܚܲܫܵܐ ܘܕܸܡܥܹ̈ܐ ܘܲܒܬܲܚܢܲܢܬܵܐ",
+        note:
+          "Of the Ba'utha (Monday), and of Fridays (Qadmaye) of Lent; also used for Passion Friday.",
+        hudraSlug: "bhasha-wdime",
+      },
+      {
+        type: "Karozoutha",
+        title: "N'qum Shapir",
+        titleSyr: "ܢܩܘܼܡ ܫܲܦܝܼܪ",
+        note: "Of the Ba'utha (Monday).",
+        hudraSlug: "nqum-shapir-bautha-monday",
+      },
+    ],
+  },
+  {
+    number: 4,
+    title: "Cassette 4",
+    youtubeEmbedSrc: "https://www.youtube-nocookie.com/embed/ruRoLgz-QQQ",
+    youtubeTitle:
+      "الحان الطقس الكلداني بصوت المطران افرام بدي، الجزء الرابع",
+    hymns: [],
+  },
+  {
+    number: 5,
+    title: "Cassette 5",
+    youtubeEmbedSrc: "https://www.youtube-nocookie.com/embed/CSHQ19YK7EQ",
+    youtubeTitle: "The Chaldean Hymns by Bishop Ephrem Buddy, part 5",
+    hymns: [],
+  },
 ];
 
 export default function EphremBedeRecordings() {
@@ -301,10 +625,25 @@ export default function EphremBedeRecordings() {
         </p>
       </div>
 
+      <div className="not-prose mb-8 flex justify-center">
+        <Image
+          src="/images/Bede.png"
+          alt="Archbishop Ephrem Bede (المطران أفرام بدي)"
+          width={320}
+          height={400}
+          className="rounded-lg shadow-md border border-slate-200 w-full max-w-xs h-auto"
+          priority
+        />
+      </div>
+
       <h2>Introduction</h2>
       <p>
         Archbishop Ephrem Bede (
-        <span dir="rtl" lang="ar" className="font-[family-name:var(--font-lora)]">
+        <span
+          dir="rtl"
+          lang="ar"
+          className="font-[family-name:var(--font-lora)]"
+        >
           المطران أفرام بدي
         </span>
         ; also spelled Afram Beddi / Aphrem Bedi) was a Chaldean Catholic
@@ -316,30 +655,46 @@ export default function EphremBedeRecordings() {
         <span dir="rtl" lang="ar">
           ألقوش
         </span>
-        ), Iraq, in 1916, he entered the seminary of Mar Yohannan the Beloved
-        in Mosul in 1929 and was ordained a priest on 15 May 1941, taking the
-        name Ephrem. He served as a parish priest and teacher in Alqosh,
-        founding a charitable society in 1947, before pastoral assignments in
-        Syria (from 1951), study in Paris (1960-1962), ministry in Beirut
-        (1962-1964), and long service in Egypt as patriarchal vicar
-        (1964-1980) and bishop (1980-1984). He died in Cairo in 1984 and was
-        buried, according to his wish, in the Church of the Virgin Mary in
-        Alqosh.
+        ), Iraq, in 1916, he entered the seminary of Mar Yohannan the Beloved in
+        Mosul in 1929 and was ordained a priest on 15 May 1941, taking the name
+        Ephrem. He served as a parish priest and teacher in Alqosh, founding a
+        charitable society in 1947, before pastoral assignments in Syria (from
+        1951), study in Paris (1960-1962), ministry in Beirut (1962-1964), and
+        long service in Egypt as patriarchal vicar (1964-1980) and bishop
+        (1980-1984). He died in Cairo in 1984 and was buried, according to his
+        wish, in the Church of the Virgin Mary in Alqosh.
       </p>
       <p>
         In addition to writings on Chaldean liturgy and spirituality - among
         them a study of the principal authors of the Chaldean rite (Beirut,
         1962) and two volumes of musical notation for the Chaldean Mass (Rome,
-        1967) - he recorded a substantial body of liturgical chant. In Cairo
-        in 1977, in collaboration with the German Institute of Tabor (a
-        research institute devoted to musical recording and heritage), he sang
-        the principal melodies of the Chaldean Church onto a set of cassette
-        tapes. Those recordings remain an important reference for teaching and
-        studying Chaldean liturgical music.
+        1967) - he recorded a substantial body of liturgical chant. In Cairo in
+        1977, in collaboration with the German Institute of Tabor (a research
+        institute devoted to musical recording and heritage), he sang the
+        principal melodies of the Chaldean Church onto a set of cassette tapes.
+        Those recordings remain an important reference for teaching and studying
+        Chaldean liturgical music.
       </p>
       <p>
         What follows is a provisional catalogue of the hymns on five of those
         cassettes. Track lists will be supplied for each cassette below.
+      </p>
+      <p>
+        Courtesy is due to Archbishop Habib Hormiz Jajou (
+        <span dir="rtl" lang="ar">
+          المطران حبيب هرمز ججو
+        </span>
+        ; also Habib Hormiz Jajou Al-Nawfali), Archbishop of Basra and Southern
+        Iraq since 2014 and Apostolic Visitator for Chaldean faithful in Europe,
+        for uploading these cassette recordings to{" "}
+        <a
+          href="https://www.youtube.com/@abhabibjajou3972"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          YouTube
+        </a>
+        , where they remain freely accessible.
       </p>
 
       <h2 className="not-prose text-xl font-semibold font-[family-name:var(--font-lora)] text-slate-700 mt-10 mb-6">
@@ -352,8 +707,17 @@ export default function EphremBedeRecordings() {
             <h3 className="text-base font-semibold font-[family-name:var(--font-lora)] text-slate-600 border-b border-slate-200 pb-2 mb-4">
               {cassette.title}
             </h3>
+            {cassette.youtubeEmbedSrc && (
+              <RecordingEmbed
+                src={cassette.youtubeEmbedSrc}
+                title={
+                  cassette.youtubeTitle ??
+                  `${cassette.title} - Mar Ephrem Bede`
+                }
+              />
+            )}
             {cassette.hymns.length > 0 ? (
-              <ol className="list-decimal list-outside ms-5 space-y-1.5 text-sm text-slate-700 font-[family-name:var(--font-lora)]">
+              <ol className="list-decimal list-outside ms-5 mt-4 space-y-1.5 text-sm text-slate-700 font-[family-name:var(--font-lora)]">
                 {cassette.hymns.map((hymn, i) => (
                   <li key={i}>
                     {hymn.hudraSlug ? (
@@ -407,7 +771,7 @@ export default function EphremBedeRecordings() {
                 ))}
               </ol>
             ) : (
-              <p className="text-sm italic text-muted-foreground m-0 font-[family-name:var(--font-lora)]">
+              <p className="text-sm italic text-muted-foreground mt-4 mb-0 font-[family-name:var(--font-lora)]">
                 Hymn list to be added.
               </p>
             )}
@@ -436,6 +800,26 @@ export default function EphremBedeRecordings() {
             Afram Beddi
           </a>{" "}
           - Syriac Heritage Museum
+        </li>
+        <li>
+          <a
+            href="https://en.wikipedia.org/wiki/Habib_Al-Naufali"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Habib Al-Naufali
+          </a>{" "}
+          - Wikipedia
+        </li>
+        <li>
+          <a
+            href="https://www.youtube.com/@abhabibjajou3972"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            AB Habib Jajou
+          </a>{" "}
+          - YouTube channel (cassette uploads)
         </li>
       </ul>
     </>

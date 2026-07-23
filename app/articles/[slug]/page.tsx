@@ -9,12 +9,20 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
-import { CalendarDays, ArrowLeft } from "lucide-react";
+import { CalendarDays, ArrowLeft, Home, BookOpen } from "lucide-react";
 import QaleDonyathaDsahde from "@/components/articles/QaleDonyathaDsahde";
 import QambelMaranCD from "@/components/articles/QambelMaranCD";
 import ReshQale from "@/components/articles/ReshQale";
 import EphremBedeRecordings from "@/components/articles/EphremBedeRecordings";
 import { ComponentType } from "react";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 const articleContent: Record<string, ComponentType> = {
   "resh-qale": ReshQale,
@@ -43,19 +51,25 @@ export async function generateMetadata({
   const ogImage = article.image
     ? `https://hudra.day${article.image}`
     : "https://hudra.day/images/sliwa.png";
+  const publishedIso = new Date(article.date).toISOString();
 
   return {
-    title: `${fullTitle} – Hudra`,
+    title: `${fullTitle} - Hudra`,
     description: article.description,
     keywords: article.keywords,
     authors: article.author ? [{ name: article.author }] : undefined,
+    category: "Articles",
     openGraph: {
       title: fullTitle,
       description: article.description,
       type: "article",
       url: canonical,
       siteName: "Hudra - East Syriac Liturgical Archive",
-      publishedTime: article.date,
+      publishedTime: publishedIso,
+      modifiedTime: publishedIso,
+      authors: article.author ? [article.author] : undefined,
+      tags: article.keywords,
+      locale: "en_US",
       images: [
         {
           url: ogImage,
@@ -77,6 +91,15 @@ export async function generateMetadata({
     alternates: {
       canonical,
     },
+    other: {
+      "article:published_time": publishedIso,
+      "article:modified_time": publishedIso,
+      ...(article.author && { "article:author": article.author }),
+      "article:section": "Articles",
+      ...(article.keywords.length > 0 && {
+        "article:tag": article.keywords.join(", "),
+      }),
+    },
   };
 }
 
@@ -90,6 +113,11 @@ export default async function ArticlePage({
   if (!article) notFound();
 
   const Content = articleContent[slug];
+  const fullTitle = getArticleFullTitle(article);
+  const canonical = `https://hudra.day/articles/${slug}`;
+  const ogImage = article.image
+    ? `https://hudra.day${article.image}`
+    : "https://hudra.day/images/sliwa.png";
 
   let comments: Comment[] = [];
   try {
@@ -111,11 +139,104 @@ export default async function ArticlePage({
     console.error("Error fetching comments for article:", error);
   }
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Article",
+        headline: fullTitle,
+        description: article.description,
+        url: canonical,
+        mainEntityOfPage: {
+          "@type": "WebPage",
+          "@id": canonical,
+        },
+        datePublished: article.date,
+        dateModified: article.date,
+        inLanguage: "en",
+        keywords: article.keywords.join(", "),
+        image: [ogImage],
+        author: article.author
+          ? {
+              "@type": "Person",
+              name: article.author,
+            }
+          : undefined,
+        publisher: {
+          "@type": "Organization",
+          name: "Hudra - East Syriac Liturgical Archive",
+          url: "https://hudra.day",
+          logo: {
+            "@type": "ImageObject",
+            url: "https://hudra.day/images/logo.png",
+          },
+        },
+        isPartOf: {
+          "@type": "WebSite",
+          name: "Hudra - East Syriac Liturgical Archive",
+          url: "https://hudra.day",
+        },
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Home",
+            item: "https://hudra.day",
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "Articles",
+            item: "https://hudra.day/articles",
+          },
+          {
+            "@type": "ListItem",
+            position: 3,
+            name: fullTitle,
+            item: canonical,
+          },
+        ],
+      },
+    ],
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Navbar />
       <article className="container mx-auto px-4 py-16 max-w-3xl">
-        {/* Back link */}
+        <div className="mb-6">
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink href="/">
+                  <Home className="h-4 w-4" />
+                  Home
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink href="/articles">
+                  <BookOpen className="h-4 w-4" />
+                  Articles
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage className="line-clamp-1 max-w-[16rem] sm:max-w-md">
+                  {fullTitle}
+                </BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
+
         <Link
           href="/articles"
           className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors mb-6"
