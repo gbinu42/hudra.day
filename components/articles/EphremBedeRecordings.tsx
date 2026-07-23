@@ -1,8 +1,6 @@
 /**
- * List of Hymns in the Recordings by Archbishop Ephrem Bede
+ * List of Hymns in the Recordings by Archbishop Mar Ephrem Bede
  * (المطران أفرام بدي)
- *
- * Hymn lists for each cassette will be filled in later.
  */
 
 import Link from "next/link";
@@ -986,7 +984,7 @@ export default function EphremBedeRecordings() {
       <div className="not-prose mb-8 flex justify-center">
         <Image
           src="/images/Bede.png"
-          alt="Archbishop Ephrem Bede (المطران أفرام بدي)"
+          alt="Archbishop Mar Ephrem Bede (المطران أفرام بدي)"
           width={320}
           height={400}
           className="rounded-lg shadow-md border border-slate-200 w-full max-w-xs h-auto"
@@ -996,7 +994,7 @@ export default function EphremBedeRecordings() {
 
       <h2>Introduction</h2>
       <p>
-        Archbishop Ephrem Bede (
+        Archbishop Mar Ephrem Bede (
         <span
           dir="rtl"
           lang="ar"

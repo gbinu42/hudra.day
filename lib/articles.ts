@@ -16,16 +16,18 @@ export interface Article {
 export const articles: Article[] = [
   {
     slug: "ephrem-bede-recordings",
-    title: "List of Hymns in the Recordings by Archbishop Ephrem Bede",
+    title: "List of Hymns in the Recordings by Archbishop Mar Ephrem Bede",
     subtitle:
       "المطران أفرام بدي - Chaldean liturgical melodies on five cassette recordings (Cairo, 1977)",
     date: "2026-07-22",
     author: "Binu George",
     description:
-      "Catalogue of Chaldean liturgical hymns from Archbishop Ephrem Bede (المطران أفرام بدي) cassette recordings (Cairo, 1977), with Syriac titles, qale, and Hudra links.",
+      "Catalogue of Chaldean liturgical hymns from Archbishop Mar Ephrem Bede (المطران أفرام بدي) cassette recordings (Cairo, 1977), with Syriac titles, qale, and links.",
     keywords: [
       "Ephrem Bede",
       "Archbishop Ephrem Bede",
+      "Archbishop Mar Ephrem Bede",
+      "Mar Ephrem Bede",
       "Afram Beddi",
       "Aphrem Bedi",
       "أفرام بدي",
@@ -48,7 +50,7 @@ export const articles: Article[] = [
       "Yalda",
     ],
     image: "/images/Bede.png",
-    imageAlt: "Archbishop Ephrem Bede (المطران أفرام بدي)",
+    imageAlt: "Archbishop Mar Ephrem Bede (المطران أفرام بدي)",
   },
   {
     slug: "qambel-maran-cd",
