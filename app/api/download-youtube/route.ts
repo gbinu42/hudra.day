@@ -149,7 +149,11 @@ async function handleProgressStream(inputUrl: string) {
     );
   }
 
-  const platform = isYouTube ? "youtube" : isInstagram ? "instagram" : "facebook";
+  const platform = isYouTube
+    ? "youtube"
+    : isInstagram
+      ? "instagram"
+      : "facebook";
   const outputFilename = `${platform}_audio_${randomUUID()}`;
   const outputPath = path.join("/tmp", outputFilename);
 
@@ -282,6 +286,7 @@ async function handleProgressStream(inputUrl: string) {
               "wav",
               "aac",
               "flac",
+              "webm",
             ];
             let downloadedFile = "";
 
@@ -454,7 +459,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate unique filename
-    const platform = isYouTube ? "youtube" : isInstagram ? "instagram" : "facebook";
+    const platform = isYouTube
+      ? "youtube"
+      : isInstagram
+        ? "instagram"
+        : "facebook";
     const outputFilename = `${platform}_audio_${randomUUID()}`;
     const outputPath = path.join("/tmp", outputFilename);
 
@@ -529,6 +538,7 @@ export async function POST(request: NextRequest) {
                 "wav",
                 "aac",
                 "flac",
+                "webm",
               ];
               let downloadedFile = "";
 

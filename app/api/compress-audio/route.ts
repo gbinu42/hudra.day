@@ -28,7 +28,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate unique filenames - preserve original format
-    const fileExtension = file.name.split(".").pop() || "mp3";
+    const fileExtension = (
+      file.name.split(".").pop() || "mp3"
+    ).toLowerCase();
     const inputFilename = `input_${randomUUID()}.${fileExtension}`;
     const outputFilename = `compressed_${randomUUID()}.${fileExtension}`;
     const inputPath = path.join("/tmp", inputFilename);
@@ -36,12 +38,12 @@ export async function POST(request: NextRequest) {
 
     // Define MIME types (used later)
     const mimeTypes: { [key: string]: string } = {
-      'mp3': 'audio/mpeg',
-      'm4a': 'audio/mp4',
-      'webm': 'audio/webm',
-      'ogg': 'audio/ogg',
-      'opus': 'audio/opus',
-      'wav': 'audio/wav',
+      mp3: "audio/mpeg",
+      m4a: "audio/mp4",
+      webm: "audio/webm",
+      ogg: "audio/ogg",
+      opus: "audio/opus",
+      wav: "audio/wav",
     };
 
     // Write the uploaded file to disk
@@ -50,13 +52,18 @@ export async function POST(request: NextRequest) {
     await writeFile(inputPath, buffer);
 
     // First, probe the input file to get its current bitrate
-    const probeResult = await new Promise<{ bitrate: number; sampleRate: number }>((resolve, reject) => {
+    const probeResult = await new Promise<{
+      bitrate: number;
+      sampleRate: number;
+    }>((resolve, reject) => {
       const ffprobe = spawn("ffprobe", [
-        "-v", "quiet",
-        "-print_format", "json",
+        "-v",
+        "quiet",
+        "-print_format",
+        "json",
         "-show_format",
         "-show_streams",
-        inputPath
+        inputPath,
       ]);
 
       let output = "";
@@ -68,8 +75,13 @@ export async function POST(request: NextRequest) {
         if (code === 0) {
           try {
             const data = JSON.parse(output);
-            const audioStream = data.streams?.find((s: { codec_type?: string }) => s.codec_type === "audio");
-            const bitrate = parseInt(audioStream?.bit_rate || data.format?.bit_rate || "0") / 1000; // Convert to kbps
+            const audioStream = data.streams?.find(
+              (s: { codec_type?: string }) => s.codec_type === "audio"
+            );
+            const bitrate =
+              parseInt(
+                audioStream?.bit_rate || data.format?.bit_rate || "0"
+              ) / 1000; // Convert to kbps
             const sampleRate = parseInt(audioStream?.sample_rate || "44100");
             resolve({ bitrate, sampleRate });
           } catch {
@@ -105,23 +117,31 @@ export async function POST(request: NextRequest) {
     // Determine codec based on file extension to preserve original format
     let codec = "libmp3lame"; // default to MP3
     let extraArgs: string[] = [];
-    
+
     // Adjust bitrates for more efficient codecs (AAC and Opus need lower bitrates for same quality)
     let adjustedBitrate = audioBitrate;
-    
+
     if (fileExtension === "m4a") {
       codec = "aac";
       extraArgs = ["-movflags", "+faststart"];
       // AAC is ~30% more efficient than MP3, reduce bitrate accordingly
-      adjustedBitrate = quality === "low" ? "48k" : quality === "medium" ? "64k" : "96k";
+      adjustedBitrate =
+        quality === "low" ? "48k" : quality === "medium" ? "64k" : "96k";
     } else if (fileExtension === "opus" || fileExtension === "webm") {
       codec = "libopus";
+      // Opus only supports 8/12/16/24/48 kHz — never use 22050/44100
+      audioSampleRate = quality === "low" ? "24000" : "48000";
       // Opus is extremely efficient, can use much lower bitrates
-      adjustedBitrate = quality === "low" ? "32k" : quality === "medium" ? "48k" : "64k";
+      adjustedBitrate =
+        quality === "low" ? "32k" : quality === "medium" ? "48k" : "64k";
+      if (fileExtension === "webm") {
+        extraArgs = ["-f", "webm"];
+      }
     } else if (fileExtension === "ogg") {
       codec = "libvorbis";
       // Vorbis is similar to AAC efficiency
-      adjustedBitrate = quality === "low" ? "48k" : quality === "medium" ? "80k" : "112k";
+      adjustedBitrate =
+        quality === "low" ? "48k" : quality === "medium" ? "80k" : "112k";
     }
 
     // Check if file is already compressed enough

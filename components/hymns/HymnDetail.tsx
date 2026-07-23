@@ -213,6 +213,8 @@ export default function HymnDetail({
                 className="w-full h-8"
               >
                 <source src={recording.url} type="audio/mpeg" />
+                <source src={recording.url} type="audio/mp4" />
+                <source src={recording.url} type="audio/webm" />
                 <source src={recording.url} type="audio/wav" />
                 <source src={recording.url} type="audio/ogg" />
                 Your browser does not support the audio element.

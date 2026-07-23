@@ -44,6 +44,12 @@ import { MultiSelect, MultiSelectOption } from "@/components/ui/multi-select";
 import { Checkbox } from "@/components/ui/checkbox";
 import AudioTrimmer from "./AudioTrimmer";
 import { ENABLE_EXPERIMENTAL_FEATURES } from "@/lib/config";
+import {
+  AUDIO_UPLOAD_ACCEPT,
+  extractAudioFromVideoFile,
+  isAcceptedRecordingFile,
+  shouldExtractAudioFromVideo,
+} from "@/lib/format-file-size";
 
 const recordingSchema = z
   .object({
@@ -143,6 +149,7 @@ export default function RecordingsManager({
   const [fileToTrim, setFileToTrim] = useState<File | null>(null);
   const [compressAudio, setCompressAudio] = useState(false);
   const [isCompressing, setIsCompressing] = useState(false);
+  const [isExtractingAudio, setIsExtractingAudio] = useState(false);
   const [originalFileSize, setOriginalFileSize] = useState<number>(0);
   const [compressedFileSize, setCompressedFileSize] = useState<number>(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -261,22 +268,60 @@ export default function RecordingsManager({
     }
   }, [selectedPerformers, hymnName, isEditing, titleManuallyEdited, setValue]);
 
+  const applyUploadFile = (file: File) => {
+    setUploadFile(file);
+    setCompressAudio(false);
+    setIsCompressing(false);
+    setOriginalFileSize(0);
+    setCompressedFileSize(0);
+    if (recordingType === "audio" && ENABLE_EXPERIMENTAL_FEATURES) {
+      setFileToTrim(file);
+    } else {
+      setShowTrimmer(false);
+      setFileToTrim(null);
+    }
+  };
+
+  const prepareUploadFile = async (file: File) => {
+    if (
+      recordingType !== "audio" &&
+      recordingType !== "video"
+    ) {
+      return;
+    }
+
+    if (!isAcceptedRecordingFile(file, recordingType)) {
+      toast.error(`Please select a valid ${recordingType} file`);
+      return;
+    }
+
+    if (recordingType === "audio" && shouldExtractAudioFromVideo(file)) {
+      setIsExtractingAudio(true);
+      const toastId = toast.loading("Extracting audio from video...");
+      try {
+        const audioFile = await extractAudioFromVideoFile(file);
+        applyUploadFile(audioFile);
+        toast.success(`Extracted audio: ${audioFile.name}`, { id: toastId });
+      } catch (error) {
+        console.error("Error extracting audio:", error);
+        toast.error(
+          error instanceof Error
+            ? error.message
+            : "Failed to extract audio from video",
+          { id: toastId }
+        );
+      } finally {
+        setIsExtractingAudio(false);
+      }
+      return;
+    }
+
+    applyUploadFile(file);
+  };
+
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      setUploadFile(file);
-      // Reset compression state when new file is selected
-      setCompressAudio(false);
-      setIsCompressing(false);
-      setOriginalFileSize(0);
-      setCompressedFileSize(0);
-      // Allow trimming for directly uploaded audio files too (dev only)
-      if (recordingType === "audio" && ENABLE_EXPERIMENTAL_FEATURES) {
-        setFileToTrim(file);
-      } else {
-        setShowTrimmer(false);
-        setFileToTrim(null);
-      }
+      void prepareUploadFile(e.target.files[0]);
     }
   };
 
@@ -284,28 +329,9 @@ export default function RecordingsManager({
     e.preventDefault();
     e.stopPropagation();
 
-    const files = e.dataTransfer.files;
-    if (files && files[0]) {
-      const file = files[0];
-      const acceptedTypes = recordingType === "audio" ? ["audio/"] : ["video/"];
-
-      if (acceptedTypes.some((type) => file.type.startsWith(type))) {
-        setUploadFile(file);
-        // Reset compression state when new file is dropped
-        setCompressAudio(false);
-        setIsCompressing(false);
-        setOriginalFileSize(0);
-        setCompressedFileSize(0);
-        // Allow trimming for directly dropped audio files too (dev only)
-        if (recordingType === "audio" && ENABLE_EXPERIMENTAL_FEATURES) {
-          setFileToTrim(file);
-        } else {
-          setShowTrimmer(false);
-          setFileToTrim(null);
-        }
-      } else {
-        toast.error(`Please select a valid ${recordingType} file`);
-      }
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      void prepareUploadFile(file);
     }
   };
 
@@ -328,27 +354,8 @@ export default function RecordingsManager({
       if (item.kind === "file") {
         const file = item.getAsFile();
         if (file) {
-          const acceptedTypes =
-            recordingType === "audio" ? ["audio/"] : ["video/"];
-
-          if (acceptedTypes.some((type) => file.type.startsWith(type))) {
-            setUploadFile(file);
-            // Reset compression state when new file is pasted
-            setCompressAudio(false);
-            setIsCompressing(false);
-            setOriginalFileSize(0);
-            setCompressedFileSize(0);
-            // Allow trimming for directly pasted audio files too (dev only)
-            if (recordingType === "audio" && ENABLE_EXPERIMENTAL_FEATURES) {
-              setFileToTrim(file);
-            } else {
-              setShowTrimmer(false);
-              setFileToTrim(null);
-            }
-            break;
-          } else {
-            toast.error(`Please paste a valid ${recordingType} file`);
-          }
+          void prepareUploadFile(file);
+          break;
         }
       }
     }
@@ -395,6 +402,7 @@ export default function RecordingsManager({
     setFileToTrim(null);
     setCompressAudio(false);
     setIsCompressing(false);
+    setIsExtractingAudio(false);
     setOriginalFileSize(0);
     setCompressedFileSize(0);
     setTitleManuallyEdited(false);
@@ -1000,6 +1008,8 @@ export default function RecordingsManager({
                             className="w-full h-8"
                           >
                             <source src={recording.url} type="audio/mpeg" />
+                            <source src={recording.url} type="audio/mp4" />
+                            <source src={recording.url} type="audio/webm" />
                             <source src={recording.url} type="audio/wav" />
                             <source src={recording.url} type="audio/ogg" />
                             Your browser does not support the audio element.
@@ -1158,11 +1168,24 @@ export default function RecordingsManager({
                         Drag and drop your file here, paste from clipboard, or
                         click to browse
                       </p>
+                      {recordingType === "audio" && (
+                        <p className="text-xs text-muted-foreground mb-2">
+                          Video files are accepted - audio will be extracted
+                          automatically
+                        </p>
+                      )}
+                      {isExtractingAudio && (
+                        <p className="text-sm text-blue-600 font-medium mb-2">
+                          Extracting audio from video...
+                        </p>
+                      )}
                       <Input
                         id="file-upload"
                         type="file"
                         accept={
-                          recordingType === "audio" ? "audio/*" : "video/*"
+                          recordingType === "audio"
+                            ? AUDIO_UPLOAD_ACCEPT
+                            : "video/*"
                         }
                         onChange={handleFileSelect}
                         className="hidden"

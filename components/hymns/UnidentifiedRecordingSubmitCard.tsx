@@ -19,10 +19,12 @@ import { useAuth } from "@/lib/hooks/useAuth";
 import { useYoutubeAudioDownload } from "@/lib/hooks/useYoutubeAudioDownload";
 import { ENABLE_EXPERIMENTAL_FEATURES } from "@/lib/config";
 import {
-  AUDIO_FILE_ACCEPT,
+  AUDIO_UPLOAD_ACCEPT,
+  extractAudioFromVideoFile,
   formatFileSize,
   isAcceptedRecordingFile,
   isDownloadableSocialUrl,
+  shouldExtractAudioFromVideo,
 } from "@/lib/format-file-size";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -111,6 +113,7 @@ export default function UnidentifiedRecordingSubmitCard({
   const [uploadFile, setUploadFile] = useState<File | null>(null);
   const [compressAudio, setCompressAudio] = useState(false);
   const [isCompressing, setIsCompressing] = useState(false);
+  const [isExtractingAudio, setIsExtractingAudio] = useState(false);
   const [originalFileSize, setOriginalFileSize] = useState(0);
   const [compressedFileSize, setCompressedFileSize] = useState(0);
   const [showTrimmer, setShowTrimmer] = useState(false);
@@ -262,6 +265,7 @@ export default function UnidentifiedRecordingSubmitCard({
     setUploadFile(null);
     setCompressAudio(false);
     setIsCompressing(false);
+    setIsExtractingAudio(false);
     setOriginalFileSize(0);
     setCompressedFileSize(0);
     setShowTrimmer(false);
@@ -274,7 +278,7 @@ export default function UnidentifiedRecordingSubmitCard({
     clearEditingState();
   };
 
-  const prepareSelectedFile = (file: File) => {
+  const applySelectedFile = (file: File) => {
     setUploadFile(file);
     setCompressAudio(false);
     setIsCompressing(false);
@@ -293,7 +297,7 @@ export default function UnidentifiedRecordingSubmitCard({
     }
   };
 
-  const handleFileSelect = (file: File) => {
+  const handleFileSelect = async (file: File) => {
     if (
       (recordingType === "audio" || recordingType === "video") &&
       !isAcceptedRecordingFile(file, recordingType)
@@ -302,7 +306,28 @@ export default function UnidentifiedRecordingSubmitCard({
       return;
     }
 
-    prepareSelectedFile(file);
+    if (recordingType === "audio" && shouldExtractAudioFromVideo(file)) {
+      setIsExtractingAudio(true);
+      const toastId = toast.loading("Extracting audio from video...");
+      try {
+        const audioFile = await extractAudioFromVideoFile(file);
+        applySelectedFile(audioFile);
+        toast.success(`Extracted audio: ${audioFile.name}`, { id: toastId });
+      } catch (error) {
+        console.error("Error extracting audio:", error);
+        toast.error(
+          error instanceof Error
+            ? error.message
+            : "Failed to extract audio from video",
+          { id: toastId }
+        );
+      } finally {
+        setIsExtractingAudio(false);
+      }
+      return;
+    }
+
+    applySelectedFile(file);
   };
 
   const handleFileDrop = (e: React.DragEvent<HTMLDivElement>) => {
@@ -312,19 +337,11 @@ export default function UnidentifiedRecordingSubmitCard({
     const file = e.dataTransfer.files?.[0];
     if (!file) return;
 
-    if (
-      recordingType !== "audio" &&
-      recordingType !== "video"
-    ) {
+    if (recordingType !== "audio" && recordingType !== "video") {
       return;
     }
 
-    if (!isAcceptedRecordingFile(file, recordingType)) {
-      toast.error(`Please drop a valid ${recordingType} file`);
-      return;
-    }
-
-    handleFileSelect(file);
+    void handleFileSelect(file);
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -350,12 +367,7 @@ export default function UnidentifiedRecordingSubmitCard({
       const file = item.getAsFile();
       if (!file) continue;
 
-      if (!isAcceptedRecordingFile(file, recordingType)) {
-        toast.error(`Please paste a valid ${recordingType} file`);
-        return;
-      }
-
-      handleFileSelect(file);
+      void handleFileSelect(file);
       return;
     }
   };
@@ -641,15 +653,28 @@ export default function UnidentifiedRecordingSubmitCard({
                         Drag and drop your file here, paste from clipboard, or
                         click to browse
                       </p>
+                      {recordingType === "audio" && (
+                        <p className="text-xs text-muted-foreground mb-2">
+                          Video files are accepted - audio will be extracted
+                          automatically
+                        </p>
+                      )}
+                      {isExtractingAudio && (
+                        <p className="text-sm text-blue-600 font-medium mb-2">
+                          Extracting audio from video...
+                        </p>
+                      )}
                       <Input
                         id="file-upload"
                         type="file"
                         accept={
-                          recordingType === "audio" ? AUDIO_FILE_ACCEPT : "video/*"
+                          recordingType === "audio"
+                            ? AUDIO_UPLOAD_ACCEPT
+                            : "video/*"
                         }
                         onChange={(e) => {
                           if (e.target.files?.[0]) {
-                            handleFileSelect(e.target.files[0]);
+                            void handleFileSelect(e.target.files[0]);
                           }
                         }}
                         className="hidden"

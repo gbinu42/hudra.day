@@ -67,6 +67,7 @@ export default function UnidentifiedRecordingPlayer({
       <audio controls preload="none" className="w-full max-w-md mt-1 h-8">
         <source src={recording.url} type="audio/mpeg" />
         <source src={recording.url} type="audio/mp4" />
+        <source src={recording.url} type="audio/webm" />
         <source src={recording.url} type="audio/wav" />
         <source src={recording.url} type="audio/ogg" />
       </audio>
