@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Hymn, CHURCH_DISPLAY_ORDER } from "@/lib/types/hymn";
 import {
   Music,
@@ -17,6 +18,7 @@ import {
   Church,
   X,
   HelpCircle,
+  Search,
 } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
@@ -26,6 +28,7 @@ import {
 } from "@/components/ui/collapsible";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { cn } from "@/lib/utils";
+import { normalizeSyriacForSearch } from "@/lib/utils/syriacText";
 
 const FILTER_CHURCHES = CHURCH_DISPLAY_ORDER.slice(0, 4);
 
@@ -58,6 +61,7 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
     "english",
   );
   const [selectedChurches, setSelectedChurches] = useState<string[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [filterOpen, setFilterOpen] = useState(false);
   const [showScrollToTop, setShowScrollToTop] = useState(false);
 
@@ -74,18 +78,47 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
     return FILTER_CHURCHES.filter((church) => churchSet.has(church));
   }, [hymns]);
 
-  const filteredHymns = useMemo(() => {
-    if (selectedChurches.length === 0) {
-      return hymns;
-    }
+  const hymnMatchesSearch = useCallback((hymn: Hymn, term: string) => {
+    const trimmed = term.trim();
+    if (!trimmed) return true;
 
-    return hymns.filter((hymn) =>
-      getApprovedRecordings(hymn).some(
-        (recording) =>
-          recording.church && selectedChurches.includes(recording.church),
-      ),
+    const englishTerm = trimmed.toLowerCase();
+    const syriacTerm = normalizeSyriacForSearch(trimmed).toLowerCase();
+
+    const englishMatch = (hymn.titles || []).some(
+      (t) =>
+        t.language?.toLowerCase() === "english" &&
+        t.title?.toLowerCase().includes(englishTerm),
     );
-  }, [hymns, selectedChurches]);
+    if (englishMatch) return true;
+
+    if (!syriacTerm) return false;
+
+    return (hymn.titles || []).some((t) => {
+      if (t.language?.toLowerCase() !== "syriac" || !t.title) return false;
+      // Prefer non-vocalized titles; also match vocalized after stripping pointing
+      // so pointed or unpointed queries both work.
+      return normalizeSyriacForSearch(t.title)
+        .toLowerCase()
+        .includes(syriacTerm);
+    });
+  }, []);
+
+  const filteredHymns = useMemo(() => {
+    return hymns.filter((hymn) => {
+      if (
+        selectedChurches.length > 0 &&
+        !getApprovedRecordings(hymn).some(
+          (recording) =>
+            recording.church && selectedChurches.includes(recording.church),
+        )
+      ) {
+        return false;
+      }
+
+      return hymnMatchesSearch(hymn, searchTerm);
+    });
+  }, [hymns, selectedChurches, searchTerm, hymnMatchesSearch]);
 
   // Handle scroll to top button visibility
   useEffect(() => {
@@ -297,6 +330,19 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
         </div>
       </div>
 
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input
+          type="search"
+          placeholder="Search by English or Syriac title..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="pl-10"
+          aria-label="Search hymns by English or Syriac title"
+          dir="auto"
+        />
+      </div>
+
       {availableChurches.length > 0 && (
         <Collapsible
           open={filterOpen}
@@ -411,18 +457,23 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
             <Music className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
             <h3 className="text-lg font-semibold mb-2">No hymns found</h3>
             <p className="text-muted-foreground">
-              {selectedChurches.length > 0
-                ? "No hymns match the selected church filter"
-                : "No hymns have been added yet"}
+              {searchTerm.trim()
+                ? "No hymns match your search"
+                : selectedChurches.length > 0
+                  ? "No hymns match the selected church filter"
+                  : "No hymns have been added yet"}
             </p>
-            {selectedChurches.length > 0 && (
+            {(searchTerm.trim() || selectedChurches.length > 0) && (
               <Button
                 variant="outline"
                 size="sm"
                 className="mt-4"
-                onClick={() => setSelectedChurches([])}
+                onClick={() => {
+                  setSearchTerm("");
+                  setSelectedChurches([]);
+                }}
               >
-                Clear filter
+                Clear filters
               </Button>
             )}
           </CardContent>
