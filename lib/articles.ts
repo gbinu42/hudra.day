@@ -15,30 +15,6 @@ export interface Article {
 
 export const articles: Article[] = [
   {
-    slug: "malayalam-garshuni",
-    title: "Neo Malayalam Garshuni",
-    titleSyriac: "ܣܘܼܪܝܵܢܝܼ ܡܲܠܲܝܵܠܲܡ",
-    subtitle:
-      "Neo Malayalam Garshuni - Malayalam letters with Garshuni vowel forms",
-    date: "2026-07-26",
-    author: "Binu George",
-    description:
-      "Neo Malayalam Garshuni chart: Malayalam letters with Garshuni vowelled forms, plus a sample text.",
-    keywords: [
-      "Garshuni",
-      "Garshuni Malayalam",
-      "Suriyani Malayalam",
-      "Karshon",
-      "Karshoni",
-      "Malayalam alphabet",
-      "Syriac Supplement",
-      "East Syriac",
-      "Saint Thomas Christians",
-      "Nasrani",
-      "Syro-Malabar",
-    ],
-  },
-  {
     slug: "ephrem-bede-recordings",
     title: "List of Hymns in the Recordings by Archbishop Mar Ephrem Bede",
     subtitle:

@@ -14,7 +14,6 @@ import QaleDonyathaDsahde from "@/components/articles/QaleDonyathaDsahde";
 import QambelMaranCD from "@/components/articles/QambelMaranCD";
 import ReshQale from "@/components/articles/ReshQale";
 import EphremBedeRecordings from "@/components/articles/EphremBedeRecordings";
-import MalayalamGarshuni from "@/components/articles/MalayalamGarshuni";
 import { ComponentType } from "react";
 import {
   Breadcrumb,
@@ -30,7 +29,6 @@ const articleContent: Record<string, ComponentType> = {
   "qale-donyatha-dsahde": QaleDonyathaDsahde,
   "qambel-maran-cd": QambelMaranCD,
   "ephrem-bede-recordings": EphremBedeRecordings,
-  "malayalam-garshuni": MalayalamGarshuni,
 };
 
 export const dynamic = "force-static";
