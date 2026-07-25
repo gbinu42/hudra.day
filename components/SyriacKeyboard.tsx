@@ -129,10 +129,9 @@ const keyboardData = {
     { char: "݁", title: "U+0741 - SYRIAC QUSHAYA", display: "ܘ݁" },
     { char: "݂", title: "U+0742 - SYRIAC RUKKAKHA", display: "ܘ݂" },
     { char: "݇", title: "U+0747 - SYRIAC OBLIQUE LINE ABOVE", display: "ܘ݇" },
-    { char: "݈", title: "U+0748 - SYRIAC OBLIQUE LINE BELOW", display: "ܘ݈" },
     { char: "̄", title: "U+0304 - COMBINING MACRON", display: "ܘ̄" },
     { char: "̱", title: "U+0331 - COMBINING MACRON BELOW", display: "ܘ̱" },
-    { char: "̰", title: "U+0330 - COMBINING TILDE BELOW", display: "ܘ̰" },
+    { char: "̃", title: "U+0303 - COMBINING TILDE", display: "ܘ̃" },
     { char: "ـ", title: "U+0640 - ARABIC TATWEEL (EXTENSION)" },
   ],
   punctuation: [
@@ -163,6 +162,11 @@ const keyboardData = {
     { char: "8", title: "DIGIT EIGHT" },
     { char: "9", title: "DIGIT NINE" },
     { char: "0", title: "DIGIT ZERO" },
+    {
+      char: "݈",
+      title: "U+0748 - SYRIAC OBLIQUE LINE BELOW",
+      display: "ܘ݈",
+    },
   ],
 };
 
