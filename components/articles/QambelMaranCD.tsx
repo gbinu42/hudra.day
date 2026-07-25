@@ -192,7 +192,7 @@ const HYMN_DESCRIPTIONS: Record<number, string> = {
   7: "Teshbohta from Lelya on Sunday, sung during sung during Subara and Denha, praising the mystery of the Incarnation.",
   8: "Teshbohta from Lelya on Monday.",
   9: "From Lelya on the feast of virgins.",
-  10: "Onitha d'qanke sung at the opening of the Malabar Raza: the celebrant offers the cross for the people to venerate.",
+  10: "Onyatha d'qanke sung at the opening of the Malabar Raza: the celebrant offers the cross for the people to venerate.",
   11: "Turgama before the biblical reading. The vocable inja at each line-end - absent from the text - fills the metre; a feature common to the Malabar tradition and the Chaldean/Assyrian traditions.",
   12: "Sung during the Gospel procession at Raza; the same text and melody are repeated four times, each with a different incipit.",
   13: "Huttama (concluding prayer) from the liturgy of a Marian feast; celebrant sings verses, congregation responds Amen.",

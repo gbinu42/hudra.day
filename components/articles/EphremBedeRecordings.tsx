@@ -377,7 +377,7 @@ const CASSETTES: Cassette[] = [
         hudraSlug: "tawdi-lthawa",
       },
       {
-        type: "Onitha",
+        type: "Onyatha",
         title: "Qal Qinatha",
         titleSyr: "ܩܵܠ ܩܝܼ̈ܢܵܬ݂ܵܐ",
         note:
@@ -431,7 +431,7 @@ const CASSETTES: Cassette[] = [
         hudraSlug: "brikh-dethgli-bapartha",
       },
       {
-        type: "Onitha d'Yalda",
+        type: "Onyatha d'Yalda",
         title: "Malke Bnay Malke",
         titleSyr: "ܡܲܠܟܹ̈ܐ ܒܢܲܝ ܡܲܠܟܹ̈ܐ",
         qala: "Tuwa L'yallude",
@@ -514,7 +514,7 @@ const CASSETTES: Cassette[] = [
         hudraSlug: "byawma-tminaya",
       },
       {
-        type: "Onitha d'Qdam",
+        type: "Onyatha d'Qdam",
         title: "Ma'modithakh Maran",
         titleSyr: "ܡܲܥܡܘܿܕܝܼܬ݂ܵܟ݂ ܡܵܪܲܢ",
         qala: "Lwesh La Methhablanutha",
@@ -523,7 +523,7 @@ const CASSETTES: Cassette[] = [
         hudraSlug: "mamodithakh-maran",
       },
       {
-        type: "Onitha d'Wathar",
+        type: "Onyatha d'Wathar",
         title: "Britha H'data",
         titleSyr: "ܒܪܝܼܬ݂ܵܐ ܚܕܲܬܵܐ",
         qala: "Resh Qala",

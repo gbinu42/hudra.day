@@ -1,3 +1,5 @@
+import { HymnReshQalaRef } from "./reshQala";
+
 // Person entity - for authors, performers, contributors
 export interface Person {
   id: string;
@@ -34,6 +36,39 @@ export interface HymnTitle {
 export interface HymnAuthor {
   id?: string; // Reference to Person
   name: string; // For display
+}
+
+// One liturgical placement (a hymn may have several distinct ones).
+// Flat seasons/hours/days/weeks/services/occasions on Hymn are derived from these.
+export interface HymnLiturgicalUse {
+  seasonId?: string;
+  week?: number;
+  dayId?: string;
+  hourId?: string;
+  /** For Ramsha: qadmaye (first) or dahraye (other) */
+  hourVariantId?: string;
+  serviceId?: string;
+  anaphoraId?: string;
+  occasionId?: string;
+  /** Onitha slot/kind (d'Qdam, d'Wathar, …) - not a genre */
+  onyathaKindId?: string;
+  note?: string;
+}
+
+// Structured reference to a source book
+export interface HymnSource {
+  book: string;
+  volume?: string;
+  page?: string;
+}
+
+// "Qale d'Udrane" catalogue reference. These ~70 onyatha are numbered within
+// the Qale d'Udrane collection as "Qala N" with an optional "Variant M". This
+// is a separate cataloguing tag, independent of the liturgical placements and
+// genre/resh-qala tags (which still apply to these hymns).
+export interface QaleDUdraneRef {
+  qala: number; // Qala number within the collection (1-28+)
+  variant?: number; // Optional variant number
 }
 
 // Hymn image group - multiple images from the same source
@@ -158,9 +193,25 @@ export interface Hymn {
   originYear?: number; // Year the hymn was composed
 
   // Classification
-  category?: string; // e.g., "Prayer", "Hymn", "Liturgical", "Devotional"
-  occasion?: string; // e.g., "Christmas", "Easter", "Lent", "General"
+  category?: string; // Genre id / label (see HYMN_GENRES); e.g. "onyatha", "madrasha"
+  occasion?: string; // Legacy single occasion (kept for backward compatibility)
   meter?: string; // Poetic meter, if applicable
+
+  // Liturgical tagging
+  // liturgicalUses = the placement rows and single source of truth. A hymn can
+  // have several distinct uses (different hours, services, weeks, seasons...).
+  // Season/hour/etc. are read from these directly; no denormalized copies.
+  liturgicalUses?: HymnLiturgicalUse[];
+  sources?: HymnSource[]; // structured source book references
+
+  // Separate "Qale d'Udrane" catalogue number (only for hymns in that collection)
+  qaleDUdrane?: QaleDUdraneRef;
+
+  // True when this hymn is itself a resh qala (model hymn), not merely sung to one
+  isReshQala?: boolean;
+
+  // Resh qale (tunes) this hymn is sung to; a hymn may use more than one (optional)
+  reshQale?: HymnReshQalaRef[];
 
   // Description and context
   description?: string;
@@ -193,6 +244,11 @@ export interface CreateHymnData {
   category?: string;
   occasion?: string;
   meter?: string;
+  liturgicalUses?: HymnLiturgicalUse[];
+  sources?: HymnSource[];
+  qaleDUdrane?: QaleDUdraneRef;
+  isReshQala?: boolean;
+  reshQale?: HymnReshQalaRef[];
   description?: string;
   context?: string;
   text?: string;
@@ -220,15 +276,80 @@ export const CHURCH_TRADITIONS = [
 
 export type ChurchTradition = (typeof CHURCH_TRADITIONS)[number];
 
-// Common categories
+// Hymn genres (kinds of hymn). All East Syriac liturgical pieces here are sung,
+// so every genre `takesReshQala`; a resh qala is still optional per hymn.
+export interface HymnGenre {
+  id: string;
+  label: string;
+  syriac?: string;
+  takesReshQala: boolean;
+}
+
+export const HYMN_GENRES: HymnGenre[] = [
+  // Onyatha (slot kinds like d'Qdam / d'Wathar live on liturgicalUses.onyathaKindId)
+  { id: "onyatha", label: "Onyatha", syriac: "ܥܘܿܢܝܵܬ݂ܵܐ", takesReshQala: true },
+  // Other sung genres
+  { id: "h'pakhtha", label: "H'pakhtha", syriac: "ܚܦܵܟ݂ܬܵܐ", takesReshQala: true },
+  { id: "l'wakhtha", label: "L'wakhtha", syriac: "ܠܘܵܟ݂ܬܵܐ", takesReshQala: true },
+  { id: "madrasha", label: "Madrasha", syriac: "ܡܲܕ݂ܪܵܫܵܐ", takesReshQala: true },
+  { id: "soghitha", label: "Soghitha", syriac: "ܣܘܿܓ݂ܝܼܬ݂ܵܐ", takesReshQala: true },
+  { id: "bautha", label: "Bautha", syriac: "ܒܵܥܘܼܬ݂ܵܐ", takesReshQala: true },
+  { id: "teshbohta", label: "Teshbohta", syriac: "ܬܸܫܒܘܿܚܬܵܐ", takesReshQala: true },
+  { id: "turgama", label: "Turgama", syriac: "ܬܘܼܪܓܵܡܵܐ", takesReshQala: true },
+  { id: "qala", label: "Qala", syriac: "ܩܵܠܵܐ", takesReshQala: true },
+  { id: "qaltha", label: "Qaltha", syriac: "ܩܵܠܬܵܐ", takesReshQala: true },
+  { id: "qulasa", label: "Qulasa", syriac: "ܩܘܼܠܵܣܵܐ", takesReshQala: true },
+  { id: "memra", label: "Memra", syriac: "ܡܹܐܡܪܵܐ", takesReshQala: true },
+  { id: "qanona", label: "Qanona", syriac: "ܩܵܢܘܿܢܵܐ", takesReshQala: true },
+  { id: "shuraya", label: "Shuraya", syriac: "ܫܘܼܪܵܝܵܐ", takesReshQala: true },
+  { id: "hutama", label: "Hutama", syriac: "ܚܘܼܬܵܡܵܐ", takesReshQala: true },
+  { id: "enyana", label: "Enyana", syriac: "ܥܸܢܝܵܢܵܐ", takesReshQala: true },
+  { id: "zumara", label: "Zumara", syriac: "ܙܘܼܡܵܪܵܐ", takesReshQala: true },
+  { id: "psalm", label: "Psalm", syriac: "ܡܲܙܡܘܿܪܵܐ", takesReshQala: true },
+  { id: "marmitha", label: "Marmitha", syriac: "ܡܲܪܡܝܼܬ݂ܵܐ", takesReshQala: true },
+  { id: "hullala", label: "Hullala", syriac: "ܗܘܼܠܵܠܵܐ", takesReshQala: true },
+  { id: "slotha", label: "Slotha", syriac: "ܨܠܘܿܬ݂ܵܐ", takesReshQala: true },
+  { id: "karozutha", label: "Karozutha", syriac: "ܟܵܪܘܿܙܘܼܬ݂ܵܐ", takesReshQala: true },
+  { id: "pasoqa", label: "Pasoqa", syriac: "ܦܵܣܘܿܩܵܐ", takesReshQala: true },
+  { id: "other", label: "Other", takesReshQala: true },
+];
+
+/** Map legacy onyatha subtype genre ids / labels to the single `onyatha` genre. */
+export function normalizeGenreId(id?: string): string {
+  if (!id) return "";
+  const lower = id.toLowerCase();
+  if (
+    lower === "onyatha" ||
+    lower === "onitha" ||
+    lower.startsWith("onyatha-d-") ||
+    lower.startsWith("onyatha d'") ||
+    lower.startsWith("onyatha d‘") ||
+    lower.startsWith("onitha d'") ||
+    lower.startsWith("onitha d‘")
+  ) {
+    return "onyatha";
+  }
+  return id;
+}
+
+export function getGenreLabel(id?: string): string {
+  if (!id) return "";
+  const normalized = normalizeGenreId(id);
+  return HYMN_GENRES.find((g) => g.id === normalized)?.label || id;
+}
+
+// Legacy category list (kept so existing hymns and any old references keep working).
+// New tagging uses HYMN_GENRES above.
 export const HYMN_CATEGORIES = [
   "Psalm",
   "Onyatha",
-  "Onyatha d'Wasalike",
+  "Onyatha d'Wasaliqe",
   "Onyatha d'Qanke",
   "Onyatha d'Raze",
   "Onyatha d'Sahde",
   "Onyatha d'Annide",
+  "H'pakhtha",
+  "L'wakhtha",
   "Madrasha (ܡܕܪܫܐ)",
   "Theshbohtha",
   "Turgama",

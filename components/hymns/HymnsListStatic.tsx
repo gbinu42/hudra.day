@@ -6,11 +6,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Hymn, CHURCH_DISPLAY_ORDER } from "@/lib/types/hymn";
+import { Hymn, CHURCH_DISPLAY_ORDER, getGenreLabel, normalizeGenreId } from "@/lib/types/hymn";
+import { formatHymnReshQalaLabel } from "@/lib/types/reshQala";
+import {
+  getSeasonLabel,
+  getHourLabel,
+  LITURGICAL_SEASONS,
+  LITURGICAL_HOURS,
+} from "@/lib/types/liturgy";
 import {
   Music,
   User,
-  Book,
   Languages,
   Plus,
   ChevronUp,
@@ -19,6 +25,7 @@ import {
   X,
   HelpCircle,
   Search,
+  SlidersHorizontal,
 } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
@@ -61,8 +68,12 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
     "english",
   );
   const [selectedChurches, setSelectedChurches] = useState<string[]>([]);
+  const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
+  const [selectedSeasons, setSelectedSeasons] = useState<string[]>([]);
+  const [selectedHours, setSelectedHours] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterOpen, setFilterOpen] = useState(false);
+  const [moreFiltersOpen, setMoreFiltersOpen] = useState(false);
   const [showScrollToTop, setShowScrollToTop] = useState(false);
 
   const availableChurches = useMemo(() => {
@@ -78,6 +89,45 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
     return FILTER_CHURCHES.filter((church) => churchSet.has(church));
   }, [hymns]);
 
+  // Facet options present in the current hymn set (only show usable filters)
+  const availableGenres = useMemo(() => {
+    const set = new Set<string>();
+    hymns.forEach((h) => {
+      const id = normalizeGenreId(h.category);
+      if (id) set.add(id);
+    });
+    return set;
+  }, [hymns]);
+
+  const availableSeasons = useMemo(() => {
+    const set = new Set<string>();
+    hymns.forEach((h) =>
+      (h.liturgicalUses || []).forEach((u) => u.seasonId && set.add(u.seasonId)),
+    );
+    return set;
+  }, [hymns]);
+
+  const availableHours = useMemo(() => {
+    const set = new Set<string>();
+    hymns.forEach((h) =>
+      (h.liturgicalUses || []).forEach((u) => u.hourId && set.add(u.hourId)),
+    );
+    return set;
+  }, [hymns]);
+
+  const genreOptions = useMemo(
+    () => [...availableGenres].sort((a, b) => getGenreLabel(a).localeCompare(getGenreLabel(b))),
+    [availableGenres],
+  );
+  const seasonOptions = useMemo(
+    () => LITURGICAL_SEASONS.filter((s) => availableSeasons.has(s.id)),
+    [availableSeasons],
+  );
+  const hourOptions = useMemo(
+    () => LITURGICAL_HOURS.filter((h) => availableHours.has(h.id)),
+    [availableHours],
+  );
+
   const hymnMatchesSearch = useCallback((hymn: Hymn, term: string) => {
     const trimmed = term.trim();
     if (!trimmed) return true;
@@ -91,6 +141,30 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
         t.title?.toLowerCase().includes(englishTerm),
     );
     if (englishMatch) return true;
+
+    // Match resh qala names (both scripts, pointing-insensitive)
+    const reshQalaMatch = (hymn.reshQale || []).some((ref) => {
+      const names = [ref.displayName, ref.nameAsGiven].filter(
+        Boolean,
+      ) as string[];
+      return names.some((n) => {
+        if (n.toLowerCase().includes(englishTerm)) return true;
+        return (
+          !!syriacTerm &&
+          normalizeSyriacForSearch(n).toLowerCase().includes(syriacTerm)
+        );
+      });
+    });
+    if (reshQalaMatch) return true;
+
+    // Match Qale d'Udrane catalogue number, e.g. "qala 18" or "qala 18 variant 4"
+    if (hymn.qaleDUdrane) {
+      const { qala, variant } = hymn.qaleDUdrane;
+      const label = `qala ${qala}${
+        variant != null ? ` variant ${variant}` : ""
+      }`;
+      if (label.includes(englishTerm)) return true;
+    }
 
     if (!syriacTerm) return false;
 
@@ -116,9 +190,45 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
         return false;
       }
 
+      if (
+        selectedGenres.length > 0 &&
+        !(
+          hymn.category &&
+          selectedGenres.includes(normalizeGenreId(hymn.category))
+        )
+      ) {
+        return false;
+      }
+
+      if (
+        selectedSeasons.length > 0 &&
+        !(hymn.liturgicalUses || []).some(
+          (u) => u.seasonId && selectedSeasons.includes(u.seasonId),
+        )
+      ) {
+        return false;
+      }
+
+      if (
+        selectedHours.length > 0 &&
+        !(hymn.liturgicalUses || []).some(
+          (u) => u.hourId && selectedHours.includes(u.hourId),
+        )
+      ) {
+        return false;
+      }
+
       return hymnMatchesSearch(hymn, searchTerm);
     });
-  }, [hymns, selectedChurches, searchTerm, hymnMatchesSearch]);
+  }, [
+    hymns,
+    selectedChurches,
+    selectedGenres,
+    selectedSeasons,
+    selectedHours,
+    searchTerm,
+    hymnMatchesSearch,
+  ]);
 
   // Handle scroll to top button visibility
   useEffect(() => {
@@ -398,6 +508,130 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
         </Collapsible>
       )}
 
+      {(genreOptions.length > 0 ||
+        seasonOptions.length > 0 ||
+        hourOptions.length > 0) && (
+        <Collapsible
+          open={moreFiltersOpen}
+          onOpenChange={setMoreFiltersOpen}
+          className="bg-muted/30 rounded-lg border"
+        >
+          <div className="flex items-center justify-between gap-3 p-3">
+            <CollapsibleTrigger className="flex flex-1 items-center gap-2 text-left cursor-pointer rounded-md hover:bg-muted/50 transition-colors">
+              <SlidersHorizontal className="h-4 w-4 shrink-0 text-muted-foreground" />
+              <span className="text-sm font-medium">
+                Filter by genre, season & hour
+              </span>
+              {selectedGenres.length +
+                selectedSeasons.length +
+                selectedHours.length >
+                0 && (
+                <Badge variant="secondary" className="text-xs">
+                  {selectedGenres.length +
+                    selectedSeasons.length +
+                    selectedHours.length}{" "}
+                  selected
+                </Badge>
+              )}
+              {moreFiltersOpen ? (
+                <ChevronUp className="h-4 w-4 shrink-0 text-muted-foreground ml-auto" />
+              ) : (
+                <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground ml-auto" />
+              )}
+            </CollapsibleTrigger>
+            {selectedGenres.length +
+              selectedSeasons.length +
+              selectedHours.length >
+              0 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setSelectedGenres([]);
+                  setSelectedSeasons([]);
+                  setSelectedHours([]);
+                }}
+                className="h-8 shrink-0 px-2 text-muted-foreground"
+              >
+                <X className="h-3.5 w-3.5 mr-1" />
+                Clear
+              </Button>
+            )}
+          </div>
+          <CollapsibleContent className="px-3 pb-3 space-y-4">
+            {genreOptions.length > 0 && (
+              <div className="space-y-2">
+                <span className="text-xs font-medium text-muted-foreground">
+                  Genre
+                </span>
+                <ToggleGroup
+                  type="multiple"
+                  value={selectedGenres}
+                  onValueChange={setSelectedGenres}
+                  className="flex flex-wrap justify-start gap-2"
+                >
+                  {genreOptions.map((id) => (
+                    <ToggleGroupItem
+                      key={id}
+                      value={id}
+                      className="text-xs sm:text-sm whitespace-normal h-auto min-h-9 px-3 py-1.5"
+                    >
+                      {getGenreLabel(id)}
+                    </ToggleGroupItem>
+                  ))}
+                </ToggleGroup>
+              </div>
+            )}
+            {seasonOptions.length > 0 && (
+              <div className="space-y-2">
+                <span className="text-xs font-medium text-muted-foreground">
+                  Season
+                </span>
+                <ToggleGroup
+                  type="multiple"
+                  value={selectedSeasons}
+                  onValueChange={setSelectedSeasons}
+                  className="flex flex-wrap justify-start gap-2"
+                >
+                  {seasonOptions.map((s) => (
+                    <ToggleGroupItem
+                      key={s.id}
+                      value={s.id}
+                      className="text-xs sm:text-sm whitespace-normal h-auto min-h-9 px-3 py-1.5"
+                    >
+                      {getSeasonLabel(s.id)}
+                    </ToggleGroupItem>
+                  ))}
+                </ToggleGroup>
+              </div>
+            )}
+            {hourOptions.length > 0 && (
+              <div className="space-y-2">
+                <span className="text-xs font-medium text-muted-foreground">
+                  Office hour
+                </span>
+                <ToggleGroup
+                  type="multiple"
+                  value={selectedHours}
+                  onValueChange={setSelectedHours}
+                  className="flex flex-wrap justify-start gap-2"
+                >
+                  {hourOptions.map((h) => (
+                    <ToggleGroupItem
+                      key={h.id}
+                      value={h.id}
+                      className="text-xs sm:text-sm whitespace-normal h-auto min-h-9 px-3 py-1.5"
+                    >
+                      {getHourLabel(h.id)}
+                    </ToggleGroupItem>
+                  ))}
+                </ToggleGroup>
+              </div>
+            )}
+          </CollapsibleContent>
+        </Collapsible>
+      )}
+
       {/* Alphabetical Navigation */}
       {sortedHymns.length > 0 && (
         <div className="bg-muted/30 rounded-lg border p-3">
@@ -459,11 +693,18 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
             <p className="text-muted-foreground">
               {searchTerm.trim()
                 ? "No hymns match your search"
-                : selectedChurches.length > 0
-                  ? "No hymns match the selected church filter"
+                : selectedChurches.length > 0 ||
+                    selectedGenres.length > 0 ||
+                    selectedSeasons.length > 0 ||
+                    selectedHours.length > 0
+                  ? "No hymns match the selected filters"
                   : "No hymns have been added yet"}
             </p>
-            {(searchTerm.trim() || selectedChurches.length > 0) && (
+            {(searchTerm.trim() ||
+              selectedChurches.length > 0 ||
+              selectedGenres.length > 0 ||
+              selectedSeasons.length > 0 ||
+              selectedHours.length > 0) && (
               <Button
                 variant="outline"
                 size="sm"
@@ -471,6 +712,9 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
                 onClick={() => {
                   setSearchTerm("");
                   setSelectedChurches([]);
+                  setSelectedGenres([]);
+                  setSelectedSeasons([]);
+                  setSelectedHours([]);
                 }}
               >
                 Clear filters
@@ -515,10 +759,10 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
                   );
                   return (
                     <Link key={hymn.id} href={`/hymns/${hymn.id}`}>
-                      <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer">
-                        <CardHeader>
+                      <Card className="h-full gap-3 hover:shadow-lg transition-shadow cursor-pointer">
+                        <CardHeader className="gap-2">
                           <CardTitle className="line-clamp-2">
-                            <div className="flex flex-wrap items-center gap-2">
+                            <div className="flex flex-wrap items-center gap-1">
                               <span>{english}</span>
                               {syriacVocalized && (
                                 <>
@@ -548,6 +792,72 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
                               )}
                             </div>
                           </CardTitle>
+                          {(hymn.category ||
+                            hymn.occasion ||
+                            hymn.isReshQala ||
+                            (hymn.reshQale && hymn.reshQale.length > 0) ||
+                            (hymn.tags && hymn.tags.length > 0) ||
+                            hymn.qaleDUdrane) && (
+                            <div className="flex flex-wrap gap-1">
+                              {hymn.category && (
+                                <Badge
+                                  variant="secondary"
+                                  className="text-xs font-normal"
+                                >
+                                  {getGenreLabel(hymn.category)}
+                                </Badge>
+                              )}
+                              {hymn.occasion && (
+                                <Badge
+                                  variant="outline"
+                                  className="text-xs font-normal"
+                                >
+                                  {hymn.occasion}
+                                </Badge>
+                              )}
+                              {hymn.isReshQala ? (
+                                <Badge
+                                  variant="outline"
+                                  className="text-xs font-normal gap-1"
+                                >
+                                  <Music className="h-3 w-3" />
+                                  Resh Qala
+                                </Badge>
+                              ) : (
+                                (hymn.reshQale || []).map((ref, index) => (
+                                  <Badge
+                                    key={ref.id || `${ref.reshQalaId}-${index}`}
+                                    variant="outline"
+                                    className="text-xs font-normal gap-1"
+                                  >
+                                    <Music className="h-3 w-3" />
+                                    {ref.part
+                                      ? `${ref.part}: ${formatHymnReshQalaLabel(ref)}`
+                                      : formatHymnReshQalaLabel(ref)}
+                                  </Badge>
+                                ))
+                              )}
+                              {hymn.qaleDUdrane && (
+                                <Badge
+                                  variant="outline"
+                                  className="text-xs font-normal"
+                                >
+                                  Qala {hymn.qaleDUdrane.qala}
+                                  {hymn.qaleDUdrane.variant != null &&
+                                    ` · V${hymn.qaleDUdrane.variant}`}
+                                </Badge>
+                              )}
+                              {(hymn.tags || []).slice(0, 2).map((tag) => (
+                                <Badge
+                                  key={tag}
+                                  variant="outline"
+                                  className="text-xs font-normal"
+                                >
+                                  {tag}
+                                </Badge>
+                              ))}
+                            </div>
+                          )}
                         </CardHeader>
                         <CardContent className="space-y-3">
                           {hymn.authorName && (
@@ -556,15 +866,6 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
                               <span className="text-muted-foreground">
                                 {hymn.authorName}
                               </span>
-                            </div>
-                          )}
-                          {hymn.category && (
-                            <div className="flex items-center gap-2">
-                              <Book className="h-4 w-4 text-muted-foreground" />
-                              <Badge variant="secondary">{hymn.category}</Badge>
-                              {hymn.occasion && (
-                                <Badge variant="outline">{hymn.occasion}</Badge>
-                              )}
                             </div>
                           )}
                           {hymn.description && (
@@ -601,24 +902,6 @@ export default function HymnsListStatic({ hymns }: HymnsListStaticProps) {
                               )}
                             </div>
                           </div>
-                          {hymn.tags?.length > 0 && (
-                            <div className="flex flex-wrap gap-1 pt-2">
-                              {hymn.tags.slice(0, 3).map((tag) => (
-                                <Badge
-                                  key={tag}
-                                  variant="outline"
-                                  className="text-xs"
-                                >
-                                  {tag}
-                                </Badge>
-                              ))}
-                              {hymn.tags.length > 3 && (
-                                <Badge variant="outline" className="text-xs">
-                                  +{hymn.tags.length - 3}
-                                </Badge>
-                              )}
-                            </div>
-                          )}
                         </CardContent>
                       </Card>
                     </Link>

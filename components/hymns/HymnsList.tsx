@@ -5,8 +5,9 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Hymn } from "@/lib/types/hymn";
-import { Music, User, Book, Languages } from "lucide-react";
+import { Hymn, getGenreLabel } from "@/lib/types/hymn";
+import { formatHymnReshQalaLabel } from "@/lib/types/reshQala";
+import { Music, User, Languages } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 interface HymnsListProps {
@@ -222,10 +223,10 @@ export default function HymnsList({
                     formatTitles(hymn);
                   return (
                     <Link key={hymn.id} href={`/hymns/${hymn.id}`}>
-                      <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer">
-                        <CardHeader>
+                      <Card className="h-full gap-3 hover:shadow-lg transition-shadow cursor-pointer">
+                        <CardHeader className="gap-2">
                           <CardTitle className="line-clamp-2">
-                            <div className="flex flex-wrap items-center gap-2">
+                            <div className="flex flex-wrap items-center gap-1">
                               <span>{english}</span>
                               {syriacVocalized && (
                                 <>
@@ -255,6 +256,72 @@ export default function HymnsList({
                               )}
                             </div>
                           </CardTitle>
+                          {(hymn.category ||
+                            hymn.occasion ||
+                            hymn.isReshQala ||
+                            (hymn.reshQale && hymn.reshQale.length > 0) ||
+                            (hymn.tags && hymn.tags.length > 0) ||
+                            hymn.qaleDUdrane) && (
+                            <div className="flex flex-wrap gap-1">
+                              {hymn.category && (
+                                <Badge
+                                  variant="secondary"
+                                  className="text-xs font-normal"
+                                >
+                                  {getGenreLabel(hymn.category)}
+                                </Badge>
+                              )}
+                              {hymn.occasion && (
+                                <Badge
+                                  variant="outline"
+                                  className="text-xs font-normal"
+                                >
+                                  {hymn.occasion}
+                                </Badge>
+                              )}
+                              {hymn.isReshQala ? (
+                                <Badge
+                                  variant="outline"
+                                  className="text-xs font-normal gap-1"
+                                >
+                                  <Music className="h-3 w-3" />
+                                  Resh Qala
+                                </Badge>
+                              ) : (
+                                (hymn.reshQale || []).map((ref, index) => (
+                                  <Badge
+                                    key={ref.id || `${ref.reshQalaId}-${index}`}
+                                    variant="outline"
+                                    className="text-xs font-normal gap-1"
+                                  >
+                                    <Music className="h-3 w-3" />
+                                    {ref.part
+                                      ? `${ref.part}: ${formatHymnReshQalaLabel(ref)}`
+                                      : formatHymnReshQalaLabel(ref)}
+                                  </Badge>
+                                ))
+                              )}
+                              {hymn.qaleDUdrane && (
+                                <Badge
+                                  variant="outline"
+                                  className="text-xs font-normal"
+                                >
+                                  Qala {hymn.qaleDUdrane.qala}
+                                  {hymn.qaleDUdrane.variant != null &&
+                                    ` · V${hymn.qaleDUdrane.variant}`}
+                                </Badge>
+                              )}
+                              {(hymn.tags || []).slice(0, 2).map((tag) => (
+                                <Badge
+                                  key={tag}
+                                  variant="outline"
+                                  className="text-xs font-normal"
+                                >
+                                  {tag}
+                                </Badge>
+                              ))}
+                            </div>
+                          )}
                         </CardHeader>
                         <CardContent className="space-y-3">
                           {hymn.authorName && (
@@ -263,15 +330,6 @@ export default function HymnsList({
                               <span className="text-muted-foreground">
                                 {hymn.authorName}
                               </span>
-                            </div>
-                          )}
-                          {hymn.category && (
-                            <div className="flex items-center gap-2">
-                              <Book className="h-4 w-4 text-muted-foreground" />
-                              <Badge variant="secondary">{hymn.category}</Badge>
-                              {hymn.occasion && (
-                                <Badge variant="outline">{hymn.occasion}</Badge>
-                              )}
                             </div>
                           )}
                           {hymn.description && (
@@ -308,24 +366,6 @@ export default function HymnsList({
                               )}
                             </div>
                           </div>
-                          {hymn.tags?.length > 0 && (
-                            <div className="flex flex-wrap gap-1 pt-2">
-                              {hymn.tags.slice(0, 3).map((tag) => (
-                                <Badge
-                                  key={tag}
-                                  variant="outline"
-                                  className="text-xs"
-                                >
-                                  {tag}
-                                </Badge>
-                              ))}
-                              {hymn.tags.length > 3 && (
-                                <Badge variant="outline" className="text-xs">
-                                  +{hymn.tags.length - 3}
-                                </Badge>
-                              )}
-                            </div>
-                          )}
                         </CardContent>
                       </Card>
                     </Link>

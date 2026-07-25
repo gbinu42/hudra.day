@@ -10,6 +10,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { renderWithSyriacFont } from "@/components/SyriacMixedText";
 
 export interface SimpleComboboxOption {
   value: string;
@@ -64,7 +65,9 @@ export function SimpleCombobox({
           aria-expanded={open}
           className={cn("w-full justify-between", className)}
         >
-          {selectedOption ? selectedOption.label : placeholder}
+          {selectedOption
+            ? renderWithSyriacFont(selectedOption.label)
+            : placeholder}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -102,7 +105,7 @@ export function SimpleCombobox({
                         value === option.value ? "opacity-100" : "opacity-0"
                       )}
                     />
-                    {option.label}
+                    {renderWithSyriacFont(option.label)}
                   </div>
                 ))}
               </div>

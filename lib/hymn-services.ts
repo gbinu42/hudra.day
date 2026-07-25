@@ -36,7 +36,7 @@ export const personService = {
   async createPerson(
     personData: CreatePersonData,
     userId: string,
-    customPersonId?: string
+    customPersonId?: string,
   ): Promise<string> {
     const newPerson = {
       ...personData,
@@ -61,7 +61,7 @@ export const personService = {
 
   // Get person by ID
   async getPersonById(
-    personId: string
+    personId: string,
   ): Promise<DocumentSnapshot<DocumentData>> {
     return await getDoc(doc(db, "persons", personId));
   },
@@ -69,24 +69,24 @@ export const personService = {
   // Listen to persons changes in real-time
   onPersonsSnapshot(
     callback: (snapshot: QuerySnapshot<DocumentData>) => void,
-    onError?: (error: Error) => void
+    onError?: (error: Error) => void,
   ): Unsubscribe {
     const personsCollection = collection(db, "persons");
     return onSnapshot(
       personsCollection,
       callback,
-      onError || ((error) => console.error("Persons snapshot error:", error))
+      onError || ((error) => console.error("Persons snapshot error:", error)),
     );
   },
 
   // Update person
   async updatePerson(
     personId: string,
-    personData: Partial<CreatePersonData>
+    personData: Partial<CreatePersonData>,
   ): Promise<void> {
     // Filter out undefined values to prevent Firebase errors
     const cleanPersonData = Object.fromEntries(
-      Object.entries(personData).filter(([, value]) => value !== undefined)
+      Object.entries(personData).filter(([, value]) => value !== undefined),
     );
 
     const updateData = {
@@ -103,14 +103,14 @@ export const personService = {
 
   // Search persons by name
   async searchPersons(
-    searchTerm: string
+    searchTerm: string,
   ): Promise<QuerySnapshot<DocumentData>> {
     // Note: This is a simple equals search. For more complex search,
     // you might want to use Algolia or similar service
     const q = query(
       collection(db, "persons"),
       where("name", ">=", searchTerm),
-      where("name", "<=", searchTerm + "\uf8ff")
+      where("name", "<=", searchTerm + "\uf8ff"),
     );
     return await getDocs(q);
   },
@@ -119,7 +119,7 @@ export const personService = {
   async getPersonsByRole(role: string): Promise<QuerySnapshot<DocumentData>> {
     const q = query(
       collection(db, "persons"),
-      where("role", "array-contains", role)
+      where("role", "array-contains", role),
     );
     return await getDocs(q);
   },
@@ -132,7 +132,7 @@ export const hymnService = {
     hymnData: CreateHymnData,
     userId: string,
     userName: string,
-    customHymnId?: string
+    customHymnId?: string,
   ): Promise<string> {
     const newHymn = {
       ...hymnData,
@@ -165,7 +165,7 @@ export const hymnService = {
 
   // Get all hymns filtered by privacy and user role
   async getAllHymnsFiltered(
-    userRole?: string | null
+    userRole?: string | null,
   ): Promise<QuerySnapshot<DocumentData>> {
     const snapshot = await getDocs(collection(db, "hymns"));
 
@@ -203,7 +203,7 @@ export const hymnService = {
   // Check if user can access a hymn
   async canUserAccessHymn(
     hymnId: string,
-    userRole?: string | null
+    userRole?: string | null,
   ): Promise<boolean> {
     try {
       const hymnDoc = await this.getHymnById(hymnId);
@@ -233,13 +233,13 @@ export const hymnService = {
   // Listen to hymns changes in real-time
   onHymnsSnapshot(
     callback: (snapshot: QuerySnapshot<DocumentData>) => void,
-    onError?: (error: Error) => void
+    onError?: (error: Error) => void,
   ): Unsubscribe {
     const hymnsCollection = collection(db, "hymns");
     return onSnapshot(
       hymnsCollection,
       callback,
-      onError || ((error) => console.error("Hymns snapshot error:", error))
+      onError || ((error) => console.error("Hymns snapshot error:", error)),
     );
   },
 
@@ -247,7 +247,7 @@ export const hymnService = {
   onHymnsSnapshotFiltered(
     userRole: string | null,
     callback: (snapshot: QuerySnapshot<DocumentData>) => void,
-    onError?: (error: Error) => void
+    onError?: (error: Error) => void,
   ): Unsubscribe {
     const hymnsCollection = collection(db, "hymns");
 
@@ -278,7 +278,7 @@ export const hymnService = {
     return onSnapshot(
       hymnsCollection,
       wrappedCallback,
-      onError || ((error) => console.error("Hymns snapshot error:", error))
+      onError || ((error) => console.error("Hymns snapshot error:", error)),
     );
   },
 
@@ -286,24 +286,24 @@ export const hymnService = {
   onHymnSnapshot(
     hymnId: string,
     callback: (snapshot: DocumentSnapshot<DocumentData>) => void,
-    onError?: (error: Error) => void
+    onError?: (error: Error) => void,
   ): Unsubscribe {
     const hymnRef = doc(db, "hymns", hymnId);
     return onSnapshot(
       hymnRef,
       callback,
-      onError || ((error) => console.error("Hymn snapshot error:", error))
+      onError || ((error) => console.error("Hymn snapshot error:", error)),
     );
   },
 
   // Update hymn
   async updateHymn(
     hymnId: string,
-    hymnData: Partial<CreateHymnData>
+    hymnData: Partial<CreateHymnData>,
   ): Promise<void> {
     // Filter out undefined values to prevent Firebase errors
     const cleanHymnData = Object.fromEntries(
-      Object.entries(hymnData).filter(([, value]) => value !== undefined)
+      Object.entries(hymnData).filter(([, value]) => value !== undefined),
     );
 
     const updateData = {
@@ -322,7 +322,7 @@ export const hymnService = {
   async addRecording(
     hymnId: string,
     recordingData: CreateRecordingData,
-    userRole?: string
+    userRole?: string,
   ): Promise<void> {
     const hymnDoc = await this.getHymnById(hymnId);
     if (!hymnDoc.exists()) {
@@ -355,7 +355,7 @@ export const hymnService = {
   async updateRecording(
     hymnId: string,
     recordingId: string,
-    recordingData: Partial<CreateRecordingData>
+    recordingData: Partial<CreateRecordingData>,
   ): Promise<void> {
     const hymnDoc = await this.getHymnById(hymnId);
     if (!hymnDoc.exists()) {
@@ -370,8 +370,8 @@ export const hymnService = {
         // Filter out undefined values from recordingData before spreading
         const cleanRecordingData = Object.fromEntries(
           Object.entries(recordingData).filter(
-            ([, value]) => value !== undefined
-          )
+            ([, value]) => value !== undefined,
+          ),
         );
         return { ...rec, ...cleanRecordingData };
       }
@@ -395,7 +395,7 @@ export const hymnService = {
     const currentRecordings = hymnData?.recordings || [];
 
     const updatedRecordings = currentRecordings.filter(
-      (rec: HymnRecording) => rec.id !== recordingId
+      (rec: HymnRecording) => rec.id !== recordingId,
     );
 
     await updateDoc(doc(db, "hymns", hymnId), {
@@ -408,7 +408,7 @@ export const hymnService = {
   async updateRecordingStatus(
     hymnId: string,
     recordingId: string,
-    status: RecordingStatus
+    status: RecordingStatus,
   ): Promise<void> {
     const hymnDoc = await this.getHymnById(hymnId);
     if (!hymnDoc.exists()) {
@@ -435,7 +435,7 @@ export const hymnService = {
   async uploadFile(
     hymnId: string,
     file: File,
-    folder: "images" | "audio" | "video"
+    folder: "images" | "audio" | "video",
   ): Promise<string> {
     const fileExtension = file.name.split(".").pop() || "file";
     const timestamp = Date.now();
@@ -467,7 +467,7 @@ export const hymnService = {
 
   // Search hymns by category
   async getHymnsByCategory(
-    category: string
+    category: string,
   ): Promise<QuerySnapshot<DocumentData>> {
     const q = query(collection(db, "hymns"), where("category", "==", category));
     return await getDocs(q);
@@ -475,7 +475,7 @@ export const hymnService = {
 
   // Search hymns by occasion
   async getHymnsByOccasion(
-    occasion: string
+    occasion: string,
   ): Promise<QuerySnapshot<DocumentData>> {
     const q = query(collection(db, "hymns"), where("occasion", "==", occasion));
     return await getDocs(q);
@@ -485,14 +485,14 @@ export const hymnService = {
   async getHymnsByTag(tag: string): Promise<QuerySnapshot<DocumentData>> {
     const q = query(
       collection(db, "hymns"),
-      where("tags", "array-contains", tag)
+      where("tags", "array-contains", tag),
     );
     return await getDocs(q);
   },
 
   // Get hymns by author
   async getHymnsByAuthor(
-    authorId: string
+    authorId: string,
   ): Promise<QuerySnapshot<DocumentData>> {
     const q = query(collection(db, "hymns"), where("authorId", "==", authorId));
     return await getDocs(q);

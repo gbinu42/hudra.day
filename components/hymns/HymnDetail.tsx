@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,17 +12,37 @@ import {
   sortByChurchPriority,
   CHURCH_DISPLAY_ORDER,
   CHURCH_COLORS,
+  getGenreLabel,
 } from "@/lib/types/hymn";
+import {
+  getSeasonLabel,
+  getOccasionLabel,
+  getHourLabel,
+  getHourVariantLabel,
+  getServiceLabel,
+  getAnaphoraLabel,
+  getWeekdayLabel,
+  getOnyathaKindLabel,
+} from "@/lib/types/liturgy";
+import {
+  getReshQalaDisplaySyriac,
+  type ReshQala,
+} from "@/lib/types/reshQala";
+import { reshQalaService } from "@/lib/reshqala-services";
 import { containsSyriac } from "@/lib/utils/syriacNumerals";
 import {
   Music,
+  Music2,
   User,
   Calendar,
   Book,
   Globe,
   Video,
   ExternalLink,
+  Hash,
 } from "lucide-react";
+
+const RESH_QALA_SYRIAC = "ܪܹܫ ܩܵܠܵܐ";
 
 interface HymnDetailProps {
   hymn: Hymn;
@@ -46,6 +66,38 @@ export default function HymnDetail({
   // Check if hymn text contains Syriac characters (and is not empty/whitespace)
   const hasSyriacText =
     hymn.text && hymn.text.trim() && containsSyriac(hymn.text);
+
+  // Resolve Syriac forms for tagged resh qale (covers older refs without displaySyriac)
+  const [reshQalaById, setReshQalaById] = useState<Record<string, ReshQala>>(
+    {},
+  );
+  useEffect(() => {
+    const ids = (hymn.reshQale || []).map((r) => r.reshQalaId).filter(Boolean);
+    if (!ids.length) return;
+    let cancelled = false;
+    (async () => {
+      const entries = await Promise.all(
+        ids.map(async (id) => {
+          try {
+            const snap = await reshQalaService.getReshQalaById(id);
+            if (!snap.exists()) return null;
+            return [id, { id, ...snap.data() } as ReshQala] as const;
+          } catch {
+            return null;
+          }
+        }),
+      );
+      if (cancelled) return;
+      const map: Record<string, ReshQala> = {};
+      for (const e of entries) {
+        if (e) map[e[0]] = e[1];
+      }
+      setReshQalaById(map);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [hymn.reshQale]);
 
   // Tab state for main text section - default to first translation if no Syriac text
   const [activeMainTab, setActiveMainTab] = useState(
@@ -267,90 +319,221 @@ export default function HymnDetail({
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-start">
-        <div className="space-y-3">
-          <h1 className="text-3xl font-bold">
-            <div className="flex flex-wrap items-center gap-3">
-              <span>{englishTitle}</span>
-              {syriacVocalizedTitle && (
-                <>
-                  <span className="text-muted-foreground font-normal">|</span>
-                  <span
-                    className="font-['East_Syriac_Adiabene'] text-4xl font-normal"
-                    dir="rtl"
-                  >
-                    {syriacVocalizedTitle.title}
-                  </span>
-                </>
-              )}
-              {syriacNonVocalizedTitle && (
-                <>
-                  <span className="text-muted-foreground font-normal">|</span>
-                  <span className="text-2xl font-normal" dir="rtl">
-                    {syriacNonVocalizedTitle.title}
-                  </span>
-                </>
-              )}
-            </div>
-          </h1>
+      {/* Title + metadata (tight spacing) */}
+      <div className="space-y-2">
+        {/* Header */}
+        <div className="flex justify-between items-start">
+          <div className="space-y-1">
+            <h1 className="text-3xl font-bold">
+              <div className="flex flex-wrap items-center gap-3">
+                <span>{englishTitle}</span>
+                {syriacVocalizedTitle && (
+                  <>
+                    <span className="text-muted-foreground font-normal">|</span>
+                    <span
+                      className="font-['East_Syriac_Adiabene'] text-4xl font-normal"
+                      dir="rtl"
+                    >
+                      {syriacVocalizedTitle.title}
+                    </span>
+                  </>
+                )}
+                {syriacNonVocalizedTitle && (
+                  <>
+                    <span className="text-muted-foreground font-normal">|</span>
+                    <span className="text-2xl font-normal" dir="rtl">
+                      {syriacNonVocalizedTitle.title}
+                    </span>
+                  </>
+                )}
+              </div>
+            </h1>
 
-          {/* Alternate titles */}
-          {alternateTitles.length > 0 && (
-            <div className="text-lg text-muted-foreground">
-              {alternateTitles.map((title, index) => (
-                <span key={index}>
-                  {index > 0 && " • "}
-                  {title.title}
-                </span>
-              ))}
-            </div>
+            {/* Alternate titles */}
+            {alternateTitles.length > 0 && (
+              <div className="text-lg text-muted-foreground">
+                {alternateTitles.map((title, index) => (
+                  <span key={index}>
+                    {index > 0 && " • "}
+                    {title.title}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+          {showEditButton && onEdit && (
+            <Button onClick={onEdit}>Edit Hymn</Button>
           )}
         </div>
-        {showEditButton && onEdit && (
-          <Button onClick={onEdit}>Edit Hymn</Button>
-        )}
-      </div>
 
-      {/* Information - compact */}
-      <div className="flex flex-wrap gap-2 text-sm">
-        {hymn.authors &&
-          hymn.authors.length > 0 &&
-          hymn.authors.map((author, idx) => (
-            <Badge key={idx} variant="outline" className="gap-1">
-              <User className="h-3 w-3" />
-              {author.name}
+        {/* Information - compact */}
+        <div className="flex flex-wrap gap-2 text-sm">
+          {hymn.authors &&
+            hymn.authors.length > 0 &&
+            hymn.authors.map((author, idx) => (
+              <Badge key={idx} variant="outline" className="gap-1">
+                <User className="h-3 w-3" />
+                {author.name}
+              </Badge>
+            ))}
+          {hymn.originYear && (
+            <Badge variant="outline" className="gap-1">
+              <Calendar className="h-3 w-3" />
+              {hymn.originYear}
             </Badge>
-          ))}
-        {hymn.originYear && (
-          <Badge variant="outline" className="gap-1">
-            <Calendar className="h-3 w-3" />
-            {hymn.originYear}
-          </Badge>
-        )}
-        {hymn.category && (
-          <Badge variant="secondary" className="gap-1">
-            <Book className="h-3 w-3" />
-            {hymn.category}
-          </Badge>
-        )}
-        {hymn.occasion && (
-          <Badge variant="outline" className="gap-1">
-            {hymn.occasion}
-          </Badge>
-        )}
-        {hymn.meter && (
-          <Badge variant="outline" className="gap-1">
-            <Music className="h-3 w-3" />
-            {hymn.meter}
-          </Badge>
-        )}
-        {hymn.tags &&
-          hymn.tags.map((tag) => (
-            <Badge key={tag} variant="secondary">
-              {tag}
+          )}
+          {hymn.category && (
+            <Badge variant="secondary" className="gap-1">
+              <Book className="h-3 w-3" />
+              {getGenreLabel(hymn.category)}
             </Badge>
-          ))}
+          )}
+          {hymn.meter && (
+            <Badge variant="outline" className="gap-1">
+              <Music className="h-3 w-3" />
+              {hymn.meter}
+            </Badge>
+          )}
+          {hymn.tags &&
+            hymn.tags.map((tag) => (
+              <Badge key={tag} variant="secondary">
+                {tag}
+              </Badge>
+            ))}
+        </div>
+
+        {/* Resh qala (tune) */}
+        {(hymn.isReshQala || (hymn.reshQale && hymn.reshQale.length > 0)) && (
+          <div className="flex flex-wrap items-center gap-2 text-sm">
+            <span className="flex items-center gap-1 text-muted-foreground">
+              <Music2 className="h-4 w-4" />
+              Qala:
+            </span>
+            {hymn.isReshQala && (
+              <Badge variant="secondary" className="gap-1.5">
+                Resh Qala
+                <span
+                  className="font-east-syriac-adiabene text-2xl leading-none"
+                  dir="rtl"
+                >
+                  {RESH_QALA_SYRIAC}
+                </span>
+              </Badge>
+            )}
+            {!hymn.isReshQala &&
+              hymn.reshQale!.map((ref, index) => {
+                const rq = reshQalaById[ref.reshQalaId];
+                const chosenName =
+                  ref.nameAsGiven || ref.displayName || ref.reshQalaId;
+                const showCanonical =
+                  !!(
+                    ref.nameAsGiven &&
+                    ref.displayName &&
+                    ref.nameAsGiven !== ref.displayName
+                  );
+                const syriac = rq
+                  ? ref.nameAsGiven
+                    ? rq.names?.find((n) => n.name === ref.nameAsGiven)?.syriac
+                    : ref.displaySyriac || getReshQalaDisplaySyriac(rq)
+                  : ref.displaySyriac;
+                return (
+                  <Badge
+                    key={ref.id || `${ref.reshQalaId}-${index}`}
+                    variant="secondary"
+                    className="gap-1.5"
+                  >
+                    {ref.part && (
+                      <span className="text-xs text-muted-foreground">
+                        {ref.part}:
+                      </span>
+                    )}
+                    {chosenName}
+                    {syriac && (
+                      <span
+                        className="font-east-syriac-adiabene text-2xl leading-none"
+                        dir="rtl"
+                      >
+                        {syriac}
+                      </span>
+                    )}
+                    {showCanonical && (
+                      <span className="text-xs text-muted-foreground">
+                        ({ref.displayName})
+                      </span>
+                    )}
+                  </Badge>
+                );
+              })}
+          </div>
+        )}
+
+        {/* Liturgical placements (distinct uses) */}
+        {hymn.liturgicalUses && hymn.liturgicalUses.length > 0 && (
+          <div className="flex flex-wrap items-start gap-x-2 gap-y-1 text-sm">
+            {hymn.liturgicalUses.map((use, idx) => {
+              const parts = [
+                use.seasonId ? getSeasonLabel(use.seasonId) : null,
+                use.week != null ? `Week ${use.week}` : null,
+                use.dayId ? getWeekdayLabel(use.dayId) : null,
+              use.hourId ? getHourLabel(use.hourId) : null,
+              use.hourVariantId
+                ? getHourVariantLabel(use.hourVariantId)
+                : null,
+              use.serviceId ? getServiceLabel(use.serviceId) : null,
+                use.anaphoraId ? getAnaphoraLabel(use.anaphoraId) : null,
+                use.occasionId ? getOccasionLabel(use.occasionId) : null,
+                use.onyathaKindId
+                  ? getOnyathaKindLabel(use.onyathaKindId)
+                  : null,
+              ].filter(Boolean);
+              if (parts.length === 0 && !use.note) return null;
+              return (
+                <Badge
+                  key={`use-${idx}`}
+                  variant="secondary"
+                  className="font-normal"
+                  title={use.note || undefined}
+                >
+                  {parts.join(" · ")}
+                  {use.note && parts.length === 0 ? use.note : ""}
+                </Badge>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Qale d'Udrane catalogue number */}
+        {hymn.qaleDUdrane && (
+          <div className="flex flex-wrap items-center gap-2 text-sm">
+            <span className="flex items-center gap-1 text-muted-foreground">
+              <Hash className="h-4 w-4" />
+              Qale d&apos;Udrane:
+            </span>
+            <Badge variant="secondary">
+              Qala {hymn.qaleDUdrane.qala}
+              {hymn.qaleDUdrane.variant != null &&
+                `, Variant ${hymn.qaleDUdrane.variant}`}
+            </Badge>
+          </div>
+        )}
+
+        {/* Sources */}
+        {hymn.sources && hymn.sources.length > 0 && (
+          <div className="flex flex-wrap items-center gap-2 text-sm">
+            <span className="text-muted-foreground">Sources:</span>
+            {hymn.sources.map((source, idx) => (
+              <Badge key={idx} variant="outline">
+                {[
+                  source.book,
+                  source.volume,
+                  source.page && `p. ${source.page}`,
+                ]
+                  .filter(Boolean)
+                  .join(", ")}
+              </Badge>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Description */}

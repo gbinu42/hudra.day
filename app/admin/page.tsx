@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MessageSquare, Users, Music, Disc } from "lucide-react";
+import { MessageSquare, Users, Music, Disc, Music2 } from "lucide-react";
 
 export default function AdminPage() {
   return (
@@ -26,6 +26,23 @@ export default function AdminPage() {
 
           {/* Quick Actions */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Music2 className="h-5 w-5" />
+                  Resh Qale
+                </CardTitle>
+                <CardDescription>
+                  Manage tune models and their names
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Link href="/admin/resh-qale">
+                  <Button className="w-full">Manage Resh Qale</Button>
+                </Link>
+              </CardContent>
+            </Card>
+
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">

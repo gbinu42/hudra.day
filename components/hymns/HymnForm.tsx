@@ -29,20 +29,46 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import {
   CreateHymnData,
-  HYMN_CATEGORIES,
-  HYMN_OCCASIONS,
   CHURCH_TRADITIONS,
+  HYMN_GENRES,
   HymnTitle,
   ChurchTextVersion,
   TextTranslation,
   HymnAuthor,
   HymnImageGroup,
-  HymnCategory,
-  HymnOccasion,
+  HymnLiturgicalUse,
+  HymnSource,
 } from "@/lib/types/hymn";
+import { HymnReshQalaRef } from "@/lib/types/reshQala";
+import {
+  LITURGICAL_SEASONS,
+  LITURGICAL_OCCASIONS,
+  LITURGICAL_HOURS,
+  LITURGICAL_SERVICES,
+  ONYATHA_KINDS,
+  HOUR_VARIANTS,
+  HOURS_WITH_VARIANTS,
+  ANAPHORAS,
+  WEEKDAYS,
+} from "@/lib/types/liturgy";
 import { hymnService, personService } from "@/lib/hymn-services";
 import { X, Plus } from "lucide-react";
 import SyriacEditor from "@/components/SyriacEditor";
+import ReshQalaPicker from "@/components/hymns/ReshQalaPicker";
+import { Checkbox } from "@/components/ui/checkbox";
+
+const WEEK_NUMBERS = [1, 2, 3, 4, 5, 6, 7, 8];
+
+function cleanLiturgicalUse(
+  use: HymnLiturgicalUse
+): HymnLiturgicalUse | null {
+  const cleaned = Object.fromEntries(
+    Object.entries(use).filter(
+      ([, v]) => v !== undefined && v !== "" && v !== null
+    )
+  ) as HymnLiturgicalUse;
+  return Object.keys(cleaned).length > 0 ? cleaned : null;
+}
 
 // Function to generate a URL-safe slug from title
 const generateSlug = (title: string): string => {
@@ -98,8 +124,34 @@ export default function HymnForm({
   );
   const [alternateTitle, setAlternateTitle] = useState("");
   const [alternateTitles, setAlternateTitles] = useState<string[]>([]);
-  const [customCategory, setCustomCategory] = useState("");
-  const [customOccasion, setCustomOccasion] = useState("");
+
+  // Liturgical placements (each row is one distinct use)
+  const [liturgicalUses, setLiturgicalUses] = useState<HymnLiturgicalUse[]>(
+    initialData?.liturgicalUses?.length
+      ? initialData.liturgicalUses
+      : []
+  );
+  const [sources, setSources] = useState<HymnSource[]>(
+    initialData?.sources || []
+  );
+  const [reshQale, setReshQale] = useState<HymnReshQalaRef[]>(
+    initialData?.reshQale || []
+  );
+  const [isReshQala, setIsReshQala] = useState(
+    initialData?.isReshQala ?? false
+  );
+
+  // Qale d'Udrane catalogue number (separate from other tags)
+  const [udraneQala, setUdraneQala] = useState<string>(
+    initialData?.qaleDUdrane?.qala != null
+      ? String(initialData.qaleDUdrane.qala)
+      : ""
+  );
+  const [udraneVariant, setUdraneVariant] = useState<string>(
+    initialData?.qaleDUdrane?.variant != null
+      ? String(initialData.qaleDUdrane.variant)
+      : ""
+  );
 
   const [authors, setAuthors] = useState<HymnAuthor[]>(
     initialData?.authors || []
@@ -172,22 +224,6 @@ export default function HymnForm({
   useEffect(() => {
     if (initialTitles.alternateEnglishTitles) {
       setAlternateTitles(initialTitles.alternateEnglishTitles);
-    }
-
-    // Check if category is custom (not in predefined list)
-    if (
-      initialData?.category &&
-      !HYMN_CATEGORIES.includes(initialData.category as HymnCategory)
-    ) {
-      setCustomCategory(initialData.category);
-    }
-
-    // Check if occasion is custom (not in predefined list)
-    if (
-      initialData?.occasion &&
-      !HYMN_OCCASIONS.includes(initialData.occasion as HymnOccasion)
-    ) {
-      setCustomOccasion(initialData.occasion);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -267,11 +303,35 @@ export default function HymnForm({
       // Only add optional fields if they have values
       if (data.originYear) hymnData.originYear = data.originYear;
       if (data.category) hymnData.category = data.category;
-      if (data.occasion) hymnData.occasion = data.occasion;
+      // Preserve any legacy single occasion value untouched
+      if (initialData?.occasion) hymnData.occasion = initialData.occasion;
       if (data.meter) hymnData.meter = data.meter;
       if (data.description) hymnData.description = data.description;
       if (data.context) hymnData.context = data.context;
       if (mainTextHtml) hymnData.text = mainTextHtml;
+
+      // Liturgical placements are the single source of truth
+      const cleanedUses = liturgicalUses
+        .map(cleanLiturgicalUse)
+        .filter((u): u is HymnLiturgicalUse => u !== null);
+      if (cleanedUses.length) {
+        hymnData.liturgicalUses = cleanedUses;
+      }
+      if (sources.length) {
+        const cleaned = sources.filter((s) => s.book && s.book.trim());
+        if (cleaned.length) hymnData.sources = cleaned;
+      }
+      if (reshQale.length) hymnData.reshQale = reshQale;
+      hymnData.isReshQala = isReshQala;
+
+      const udraneQalaNum = parseInt(udraneQala, 10);
+      if (!isNaN(udraneQalaNum)) {
+        const udraneVariantNum = parseInt(udraneVariant, 10);
+        hymnData.qaleDUdrane = {
+          qala: udraneQalaNum,
+          ...(isNaN(udraneVariantNum) ? {} : { variant: udraneVariantNum }),
+        };
+      }
 
       if (hymnId) {
         await hymnService.updateHymn(hymnId, hymnData);
@@ -389,6 +449,70 @@ export default function HymnForm({
 
   const removeAuthor = (index: number) => {
     setAuthors(authors.filter((_, i) => i !== index));
+  };
+
+  const addLiturgicalUse = () => {
+    setLiturgicalUses([...liturgicalUses, {}]);
+  };
+
+  const updateLiturgicalUse = (
+    index: number,
+    field: keyof HymnLiturgicalUse,
+    value: string
+  ) => {
+    const updated = [...liturgicalUses];
+    const next: HymnLiturgicalUse = { ...updated[index] };
+    if (field === "week") {
+      next.week = value ? Number(value) : undefined;
+    } else if (field === "note") {
+      next.note = value || undefined;
+    } else if (field === "onyathaKindId") {
+      next.onyathaKindId = value || undefined;
+    } else if (field === "hourVariantId") {
+      next.hourVariantId = value || undefined;
+    } else if (
+      field === "seasonId" ||
+      field === "dayId" ||
+      field === "hourId" ||
+      field === "serviceId" ||
+      field === "anaphoraId" ||
+      field === "occasionId"
+    ) {
+      next[field] = value || undefined;
+    }
+    // Clear anaphora when service is not qurbana
+    if (field === "serviceId" && value !== "qurbana") {
+      next.anaphoraId = undefined;
+    }
+    // Clear Ramsha variant when hour is not one that uses Qadmaye/Dahraye
+    if (field === "hourId" && !HOURS_WITH_VARIANTS.has(value)) {
+      next.hourVariantId = undefined;
+    }
+    updated[index] = next;
+    setLiturgicalUses(updated);
+  };
+
+  const removeLiturgicalUse = (index: number) => {
+    setLiturgicalUses(liturgicalUses.filter((_, i) => i !== index));
+  };
+
+  // Source rows
+  const addSource = () => {
+    setSources([...sources, { book: "" }]);
+  };
+
+  const updateSource = (
+    index: number,
+    field: keyof HymnSource,
+    value: string
+  ) => {
+    const updated = [...sources];
+    updated[index] = { ...updated[index], [field]: value };
+    setSources(updated);
+  };
+
+  const removeSource = (index: number) => {
+    setSources(sources.filter((_, i) => i !== index));
   };
 
   return (
@@ -564,95 +688,31 @@ export default function HymnForm({
               )}
             />
 
-            {/* Category */}
+            {/* Genre */}
             <FormField
               control={control}
               name="category"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Category</FormLabel>
-                  {field.value === "Other" ? (
+                  <FormLabel>Genre</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl>
-                      <Input
-                        placeholder="Enter custom category"
-                        value={customCategory}
-                        onChange={(e) => {
-                          setCustomCategory(e.target.value);
-                          field.onChange(e.target.value);
-                        }}
-                      />
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select genre" />
+                      </SelectTrigger>
                     </FormControl>
-                  ) : (
-                    <Select
-                      onValueChange={(value) => {
-                        if (value === "Other") {
-                          setCustomCategory("");
-                        }
-                        field.onChange(value);
-                      }}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select category" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {HYMN_CATEGORIES.map((cat) => (
-                          <SelectItem key={cat} value={cat}>
-                            {cat}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Occasion */}
-            <FormField
-              control={control}
-              name="occasion"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Occasion</FormLabel>
-                  {field.value === "Other" ? (
-                    <FormControl>
-                      <Input
-                        placeholder="Enter custom occasion"
-                        value={customOccasion}
-                        onChange={(e) => {
-                          setCustomOccasion(e.target.value);
-                          field.onChange(e.target.value);
-                        }}
-                      />
-                    </FormControl>
-                  ) : (
-                    <Select
-                      onValueChange={(value) => {
-                        if (value === "Other") {
-                          setCustomOccasion("");
-                        }
-                        field.onChange(value);
-                      }}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select occasion" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {HYMN_OCCASIONS.map((occ) => (
-                          <SelectItem key={occ} value={occ}>
-                            {occ}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
+                    <SelectContent>
+                      {HYMN_GENRES.map((genre) => (
+                        <SelectItem key={genre.id} value={genre.id}>
+                          {genre.label}
+                          {genre.syriac ? ` (${genre.syriac})` : ""}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
@@ -715,6 +775,332 @@ export default function HymnForm({
               )}
             </div>
           </div>
+
+          {/* Liturgical Tagging */}
+          <Card>
+            <CardHeader className="pb-2 px-8">
+              <CardTitle>Liturgical Tagging</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0 px-8 space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Add one row per distinct use. The same hymn can appear at
+                different hours, services, weeks, or seasons.
+              </p>
+              {liturgicalUses.map((use, index) => (
+                <div
+                  key={index}
+                  className="rounded-md border p-3 space-y-2"
+                >
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
+                    <select
+                      value={use.seasonId || ""}
+                      onChange={(e) =>
+                        updateLiturgicalUse(index, "seasonId", e.target.value)
+                      }
+                      className="h-9 rounded-md border bg-background px-2 text-sm"
+                    >
+                      <option value="">Season</option>
+                      {LITURGICAL_SEASONS.map((s) => (
+                        <option key={s.id} value={s.id}>
+                          {s.english}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={use.week ?? ""}
+                      onChange={(e) =>
+                        updateLiturgicalUse(index, "week", e.target.value)
+                      }
+                      className="h-9 rounded-md border bg-background px-2 text-sm"
+                    >
+                      <option value="">Week</option>
+                      {WEEK_NUMBERS.map((n) => (
+                        <option key={n} value={n}>
+                          Week {n}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={use.dayId || ""}
+                      onChange={(e) =>
+                        updateLiturgicalUse(index, "dayId", e.target.value)
+                      }
+                      className="h-9 rounded-md border bg-background px-2 text-sm"
+                    >
+                      <option value="">Weekday</option>
+                      {WEEKDAYS.map((d) => (
+                        <option key={d.id} value={d.id}>
+                          {d.english}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={use.hourId || ""}
+                      onChange={(e) =>
+                        updateLiturgicalUse(index, "hourId", e.target.value)
+                      }
+                      className="h-9 rounded-md border bg-background px-2 text-sm"
+                    >
+                      <option value="">Office hour</option>
+                      {LITURGICAL_HOURS.map((h) => (
+                        <option key={h.id} value={h.id}>
+                          {h.english}
+                        </option>
+                      ))}
+                    </select>
+                    {use.hourId && HOURS_WITH_VARIANTS.has(use.hourId) && (
+                      <select
+                        value={use.hourVariantId || ""}
+                        onChange={(e) =>
+                          updateLiturgicalUse(
+                            index,
+                            "hourVariantId",
+                            e.target.value
+                          )
+                        }
+                        className="h-9 rounded-md border bg-background px-2 text-sm"
+                      >
+                        <option value="">Ramsha set</option>
+                        {HOUR_VARIANTS.map((v) => (
+                          <option key={v.id} value={v.id}>
+                            {v.english}
+                            {v.syriac ? ` (${v.syriac})` : ""}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                    <select
+                      value={use.onyathaKindId || ""}
+                      onChange={(e) =>
+                        updateLiturgicalUse(
+                          index,
+                          "onyathaKindId",
+                          e.target.value
+                        )
+                      }
+                      className="h-9 rounded-md border bg-background px-2 text-sm"
+                    >
+                      <option value="">Onitha kind</option>
+                      {ONYATHA_KINDS.map((k) => (
+                        <option key={k.id} value={k.id}>
+                          {k.english}
+                          {k.syriac ? ` (${k.syriac})` : ""}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={use.serviceId || ""}
+                      onChange={(e) =>
+                        updateLiturgicalUse(index, "serviceId", e.target.value)
+                      }
+                      className="h-9 rounded-md border bg-background px-2 text-sm"
+                    >
+                      <option value="">Service / rite</option>
+                      {LITURGICAL_SERVICES.map((s) => (
+                        <option key={s.id} value={s.id}>
+                          {s.english}
+                        </option>
+                      ))}
+                    </select>
+                    {use.serviceId === "qurbana" && (
+                      <select
+                        value={use.anaphoraId || ""}
+                        onChange={(e) =>
+                          updateLiturgicalUse(
+                            index,
+                            "anaphoraId",
+                            e.target.value
+                          )
+                        }
+                        className="h-9 rounded-md border bg-background px-2 text-sm"
+                      >
+                        <option value="">Anaphora</option>
+                        {ANAPHORAS.map((a) => (
+                          <option key={a.id} value={a.id}>
+                            {a.english}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                    <select
+                      value={use.occasionId || ""}
+                      onChange={(e) =>
+                        updateLiturgicalUse(index, "occasionId", e.target.value)
+                      }
+                      className="h-9 rounded-md border bg-background px-2 text-sm"
+                    >
+                      <option value="">Feast / occasion</option>
+                      {LITURGICAL_OCCASIONS.map((o) => (
+                        <option key={o.id} value={o.id}>
+                          {o.english}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="flex gap-2 sm:col-span-2 lg:col-span-1">
+                      <Input
+                        value={use.note || ""}
+                        onChange={(e) =>
+                          updateLiturgicalUse(index, "note", e.target.value)
+                        }
+                        placeholder="Note (optional)"
+                        className="h-9"
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeLiturgicalUse(index)}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addLiturgicalUse}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add Placement
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Resh Qala */}
+          <Card>
+            <CardHeader className="pb-2 px-8">
+              <CardTitle>Resh Qala (Tune)</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0 px-8 space-y-4">
+              <div className="flex items-start gap-2">
+                <Checkbox
+                  id="isReshQala"
+                  checked={isReshQala}
+                  onCheckedChange={(checked) =>
+                    setIsReshQala(checked === true)
+                  }
+                />
+                <div className="grid gap-1.5 leading-none">
+                  <label
+                    htmlFor="isReshQala"
+                    className="text-sm font-medium cursor-pointer"
+                  >
+                    This hymn is a Resh Qala
+                  </label>
+                  <p className="text-sm text-muted-foreground">
+                    Mark when this hymn is itself a model tune, not only sung to
+                    another.
+                  </p>
+                </div>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground mb-3">
+                  Add one or more model tunes this hymn is sung to. Use a separate
+                  entry per part when sections use different qale. Optional - not
+                  every hymn has a resh qala. Search by any attested name.
+                </p>
+                <ReshQalaPicker value={reshQale} onChange={setReshQale} />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Qale d'Udrane */}
+          <Card>
+            <CardHeader className="pb-2 px-8">
+              <CardTitle>Qale d&apos;Udrane</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0 px-8">
+              <p className="text-sm text-muted-foreground mb-3">
+                Catalogue number within the Qale d&apos;Udrane collection.
+                Optional - only for the ~70 onyatha in that collection. Separate
+                from the other tags.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-md">
+                <div>
+                  <label className="text-sm font-medium mb-1 block">Qala</label>
+                  <Input
+                    type="number"
+                    min={1}
+                    value={udraneQala}
+                    onChange={(e) => setUdraneQala(e.target.value)}
+                    placeholder="e.g. 18"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium mb-1 block">
+                    Variant (optional)
+                  </label>
+                  <Input
+                    type="number"
+                    min={1}
+                    value={udraneVariant}
+                    onChange={(e) => setUdraneVariant(e.target.value)}
+                    placeholder="e.g. 4"
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Sources */}
+          <Card>
+            <CardHeader className="pb-2 px-8">
+              <CardTitle>Sources</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0 px-8 space-y-3">
+              {sources.map((source, index) => (
+                <div
+                  key={index}
+                  className="grid grid-cols-1 md:grid-cols-4 gap-2 items-center"
+                >
+                  <Input
+                    value={source.book}
+                    onChange={(e) =>
+                      updateSource(index, "book", e.target.value)
+                    }
+                    placeholder="Book"
+                    className="md:col-span-2"
+                  />
+                  <Input
+                    value={source.volume || ""}
+                    onChange={(e) =>
+                      updateSource(index, "volume", e.target.value)
+                    }
+                    placeholder="Volume (optional)"
+                  />
+                  <div className="flex gap-2">
+                    <Input
+                      value={source.page || ""}
+                      onChange={(e) =>
+                        updateSource(index, "page", e.target.value)
+                      }
+                      placeholder="Page"
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => removeSource(index)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addSource}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add Source
+              </Button>
+            </CardContent>
+          </Card>
 
           {/* Description */}
           <Card>

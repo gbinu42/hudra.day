@@ -1725,11 +1725,6 @@ const NOT_RETAINED: ReshQala[] = [
         link: "/hymns/ptahlan-maran",
       },
       {
-        latin: "Alaha Meltha",
-        syr: "ܐܲܠܵܗܵܐ ܡܸܠܬ݂ܵܐ",
-        link: "/hymns/alaha-meltha",
-      },
-      {
         latin: "Lakh Mawdenan",
         syr: "ܠܵܟ ܡܵܘܕܹܝܢܲܢ",
         link: "/hymns/lakh-mawdenan",
@@ -2389,6 +2384,67 @@ const NOT_RETAINED: ReshQala[] = [
       },
     ],
     link: "/hymns/bkursay-dinakh",
+  },
+  {
+    num: 26,
+    name: "Adla Tayten",
+    nameSyr: "ܐܲܕܠܵܐ ܬܲܝܬܹܝܢ",
+    nameMal: "അദ്‌ലാ തൈത്തേൻ",
+    structure: "",
+    syriacText: {
+      stanzas: [
+        {
+          shuraya: "ܡܵܪܝܵܐ ܒܨܲܝܼܬܵܢܝ ܘܝܼܕܲܥܼܬܵܢܝ.",
+          body: "ܥܲܕ݂ܠܵܐ ܬܲܝܬܹ݁ܝܢ ܠܥܵܠܡܵܐ ܗܵܢܵܐ ܡܦܵܣܲܬ݁ ܒܲܓ݂ܒ݂ܝܼܠܬܲܢ ܕܲܠܣܲܢܝܵܬ݂̈ܵܐ ܡܲܚܸܒ݂ ܝܲܨܪܲܢ ܒܝܼܫܵܐ. ܥܘܼܡܪܵܐ ܕܲܡܠܸܐ ܢܸܣܝܘܿܢܹ̈ܐ ܠܘܼܩܕ݂ܵܡ ܝܲܗ݇ܒ݂ܬ݁ ܠܲܢ. ܕܒܹܗ ܬܸܬ݂ܡܲܟܲܟ݂ ܪܵܡܘܼܬܲܢ ܒܥܲܡ̈ܠܹܐ ܘܲܒ݂ܟܹܐܒܹ̈ܐ ܕܦܵܓ݂ܥܝܼܢ ܒܲܢ ܟܠܝܘܿܡ. ܢܸܕ݂ܚܲܠ ܘܢܸܣܢܸܐ ܠܲܚܛܝܼܬ݂ܵܐ ܒܲܡܥܝܼܩܵܢ̈ܝܵܬ݂ܵܐ ܕܫܵܚ̈ܩܵܢ ܠܲܟ݂ܝܵܢܲܢ. ܘܡܵܐ ܕܲܪܕܲܝܬܵܢ ܐܲܝܟ݂ ܐܲܒ݂ܵܐ. ܠܗܵܘ ܬܘܼܩܵܢܵܐ ܕܲܦܐܸܐ ܠܲܒ݂̈ܢܲܝܵܐ. ܡܲܫܘܸܐ ܐܲܢ݇ܬ݁ ܠܲܢ ܕܒܹܗ ܢܵܘܕܸܐ ܠܵܟ݂.",
+        },
+      ],
+    },
+    recordings: [
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fma-ddayyana-yathew%2Faudio%2F1781289318193.m4a?alt=media&token=3ab59e6a-b613-45b7-b8a2-fa12e4723fd8",
+        performer: "Fr. Emmanuel Thelly CMI",
+        hymnName: "Ma D'dayyana Yathew",
+        hymnLink: "/hymns/ma-ddayyana-yathew",
+      },
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fma-ddayyana-yathew%2Faudio%2F1781296570295.m4a?alt=media&token=779bd537-f84e-4579-8574-0778818a83ef",
+        performer: "Fr. Emmanuel Thelly CMI",
+        hymnName: "Ma D'dayyana Yathew",
+        hymnLink: "/hymns/ma-ddayyana-yathew",
+      },
+    ],
+    link: "/hymns/adla-tayten",
+  },
+  {
+    num: 27,
+    name: "Alaha Meltha",
+    nameSyr: "ܐܲܠܵܗܵܐ ܡܸܠܬ݂ܵܐ",
+    nameMal: "ആലാഹാ മെൽസാ",
+    structure: "",
+    note: "This tune is special - it's basically a repeating set of verse pairs, with a concluding statement, so different examples might have different number of verses. The simplest version with two verse pairs and one concluding statement (the resh qala) can also be sung to the tune of Mannu Sapeq.",
+    syriacText: {
+      stanzas: [
+        {
+          shuraya: "ܪܥܝܹܗ ܕܝܼܣܪܝܹܠ ܨܘܼܬ.",
+          body: "ܐܲܠܵܗܵܐ ܡܸܠܬ݂ܵܐ ܕܡ̣ܢ ܐܲܒܵܐ. ܠܵܘ ܡ̣ܢ ܡܲܠܲܐܟܹ̈ܐ ܢܸܣܲܒ݂ ܕܡܘܼܬ݂ܵܐ ܕܥܲܒ݂ܕܵܐ. ܐܸܠܵܐ ܡ̣ܢ ܙܲܪܥܹܗ ܕܐܲܒ݂ܪܵܗܵܐ. ܘܲܒ݂ܐ݇ܢܵܫܘܼܬ݂ܵܐ ܕܝܼܠܲܢ ܐܸܬܵ݀ܐ ܒܛܲܝܒ݁ܘܼܬܹܗ. ܕܢܸܦܪܘܿܩ ܠܓܸܢܣܲܢ ܡ̣ܢ ܛܘܼܥܝܲܝ.",
+        },
+      ],
+    },
+    recordings: [
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Falma-bargigathe%2Faudio%2F1781288537830.m4a?alt=media&token=536fbbf5-2f9f-4062-ac76-07f2485a5756",
+        performer: "Fr. Emmanuel Thelly CMI",
+        hymnName: "Alma Bargigathe",
+        hymnLink: "/hymns/alma-bargigathe",
+      },
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Falma-bargigathe%2Faudio%2F1781296515063.m4a?alt=media&token=0b8e6a0e-8887-4259-baa3-fbee08607395",
+        performer: "Fr. Emmanuel Thelly CMI",
+        hymnName: "Alma Bargigathe",
+        hymnLink: "/hymns/alma-bargigathe",
+      },
+    ],
+    link: "/hymns/alaha-meltha",
   },
 ];
 

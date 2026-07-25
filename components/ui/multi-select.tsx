@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SimpleCombobox } from "@/components/ui/simple-combobox";
+import { renderWithSyriacFont } from "@/components/SyriacMixedText";
 
 export interface MultiSelectOption {
   id?: string;
@@ -78,7 +79,7 @@ export function MultiSelect({
                 variant="secondary"
                 className="flex items-center gap-1"
               >
-                {item.name}
+                {renderWithSyriacFont(item.name)}
                 <Button
                   type="button"
                   variant="ghost"
