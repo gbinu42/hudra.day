@@ -111,6 +111,7 @@ const keyboardData = {
     { char: "ࡨ", title: "U+0868 - SYRIAC LETTER MALAYALAM LLA" },
     { char: "ࡩ", title: "U+0869 - SYRIAC LETTER MALAYALAM LLLA" },
     { char: "ࡪ", title: "U+086A - SYRIAC LETTER MALAYALAM SSA" },
+    { char: "ܖ", title: "U+0716 - SYRIAC LETTER DOTLESS DALATH RISH" },
   ],
   vowels: [
     { char: "ܲ", title: "U+0732 - SYRIAC PTHAHA DOTTED", display: "ܘܲ" },
