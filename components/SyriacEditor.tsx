@@ -217,9 +217,7 @@ export default function SyriacEditor({
   showLineNumbers = false,
 }: SyriacEditorProps) {
   const isRTL = textDirection === "rtl";
-  const [selectedFont, setSelectedFont] = useState(
-    "East Syriac Malankara Classical"
-  );
+  const [selectedFont, setSelectedFont] = useState("East Syriac Adiabene");
   const [fontSize, setFontSize] = useState("");
   const [fontSizeInput, setFontSizeInput] = useState("");
   const [fontColor, setFontColor] = useState("#000000");

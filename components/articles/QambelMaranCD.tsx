@@ -286,7 +286,7 @@ function SyriacBlock({
   const segmentGroups = groups ?? (segments ? [segments] : []);
   return (
     <p
-      className="leading-loose [font-family:'Idiqlat',serif] text-base text-justify m-0"
+      className="leading-loose font-idiqlat text-base text-justify m-0"
       dir="rtl"
       style={{ fontWeight: 400, fontSynthesis: "none" }}
     >

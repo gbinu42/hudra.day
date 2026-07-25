@@ -24,7 +24,7 @@
 
 @font-face {
   font-family: "East Syriac Adiabene";
-  src: url("/fonts/SyrCOMAdiabene.ttf") format("truetype");
+  src: url("/fonts/SyrCOMAdiabene.ttf?v=2") format("truetype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -57,6 +57,16 @@
 @font-face {
   font-family: "Noto Sans Malayalam";
   src: url("/fonts/NotoSansMalayalam.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Idiqlat";
+  src:
+    url("/fonts/Idiqlat-Regular.woff2") format("woff2"),
+    url("/fonts/Idiqlat-Regular.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -217,7 +227,7 @@
   }
 
   .font-syriac {
-    font-family: "Karshon", serif;
+    font-family: "East Syriac Adiabene", serif;
     font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1, "locl" 1,
       "mark" 1, "mkmk" 1;
     font-variant-ligatures: common-ligatures contextual;
@@ -266,6 +276,18 @@
 
   .font-east-syriac-adiabene {
     font-family: "East Syriac Adiabene", serif;
+    font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1, "locl" 1,
+      "mark" 1, "mkmk" 1;
+    font-variant-ligatures: common-ligatures contextual;
+    text-rendering: optimizeLegibility;
+    -webkit-font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1,
+      "locl" 1, "mark" 1, "mkmk" 1;
+    -moz-font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1, "locl" 1,
+      "mark" 1, "mkmk" 1;
+  }
+
+  .font-idiqlat {
+    font-family: "Idiqlat", serif;
     font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1, "locl" 1,
       "mark" 1, "mkmk" 1;
     font-variant-ligatures: common-ligatures contextual;

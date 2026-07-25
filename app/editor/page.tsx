@@ -4,13 +4,13 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "East Syriac Text Editor - Online Syriac & Karshon Editor",
+  title: "East Syriac Text Editor - Online Syriac & Garshuni Editor",
   description:
-    "Free online East Syriac and Karshon (Garshuni Malayalam) text editor with full Unicode support, on-screen keyboard, and liturgical text formatting tools. Perfect for scholars, students, and clergy.",
+    "Free online East Syriac and Garshuni Malayalam text editor with full Unicode support, on-screen keyboard, and liturgical text formatting tools. Perfect for scholars, students, and clergy.",
   keywords: [
     "East Syriac editor",
     "Syriac text editor",
-    "Karshon editor",
+    "Garshuni editor",
     "Garshuni Malayalam",
     "online Syriac typing",
     "Syriac keyboard",
@@ -22,9 +22,9 @@ export const metadata: Metadata = {
     "Syriac fonts",
   ],
   openGraph: {
-    title: "East Syriac Text Editor - Online Syriac & Karshon Editor | Hudra",
+    title: "East Syriac Text Editor - Online Syriac & Garshuni Editor | Hudra",
     description:
-      "Free online text editor for East Syriac and Karshon with full Unicode support, on-screen keyboard, and liturgical formatting tools.",
+      "Free online text editor for East Syriac and Garshuni Malayalam with full Unicode support, on-screen keyboard, and liturgical formatting tools.",
     url: "https://hudra.day/editor",
     images: [
       {
@@ -37,9 +37,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "East Syriac Text Editor - Online Syriac & Karshon Editor",
+    title: "East Syriac Text Editor - Online Syriac & Garshuni Editor",
     description:
-      "Free online text editor for East Syriac and Karshon with full Unicode support and on-screen keyboard.",
+      "Free online text editor for East Syriac and Garshuni Malayalam with full Unicode support and on-screen keyboard.",
     images: ["https://hudra.day/images/sliwa.png"],
   },
   alternates: {
@@ -54,7 +54,7 @@ export default function EditorPage() {
       <div className="container mx-auto px-4 py-16">
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold text-foreground mb-2">
-            East Syriac + Karshon Rich Text Editor
+            East Syriac Rich Text Editor
           </h1>
         </div>
         <SyriacEditor />

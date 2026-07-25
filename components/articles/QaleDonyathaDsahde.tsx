@@ -671,7 +671,7 @@ function SundaySapraSpecialCases() {
 function SyriacText({ children }: { children: ReactNode }) {
   return (
     <span
-      className="[font-family:'Idiqlat',serif]"
+      className="font-idiqlat"
       dir="rtl"
       style={{ fontWeight: 400, fontSynthesis: "none" }}
     >
@@ -807,7 +807,7 @@ export default function QaleDonyathaDsahde() {
                 {/* Syriac text */}
                 <div className="mb-4 rounded-lg border border-slate-200 bg-slate-50 px-4 pt-2 pb-3">
                   <div
-                    className="leading-loose [font-family:'Idiqlat',serif] text-base text-justify"
+                    className="leading-loose font-idiqlat text-base text-justify"
                     dir="rtl"
                     style={{ fontWeight: 400, fontSynthesis: "none" }}
                   >
@@ -832,7 +832,7 @@ export default function QaleDonyathaDsahde() {
                   </div>
                   {a.stanzas.some((s) => s.psalmEn) && (
                     <div
-                      className="mt-2 pt-2 border-t border-slate-200 leading-normal [font-family:'Idiqlat',serif] text-sm"
+                      className="mt-2 pt-2 border-t border-slate-200 leading-normal font-idiqlat text-sm"
                       style={{ fontWeight: 400, fontSynthesis: "none" }}
                     >
                       {a.stanzas.map(

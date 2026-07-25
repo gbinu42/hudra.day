@@ -133,23 +133,23 @@ export default function TipTapRenderer({
     // Add fallbacks for each Syriac font
     switch (fontType) {
       case "Karshon":
-        return 'Karshon, "East Syriac Malankara", serif';
+        return 'Karshon, "East Syriac Adiabene", "East Syriac Malankara", serif';
       case "East Syriac Adiabene":
-        return '"East Syriac Adiabene", Karshon, serif';
+        return '"East Syriac Adiabene", "East Syriac Malankara", serif';
       case "East Syriac Malankara":
-        return '"East Syriac Malankara", Karshon, serif';
+        return '"East Syriac Malankara", "East Syriac Adiabene", serif';
       case "East Syriac Malankara Classical":
-        return '"East Syriac Malankara Classical", "East Syriac Malankara", Karshon, serif';
+        return '"East Syriac Malankara Classical", "East Syriac Malankara", "East Syriac Adiabene", serif';
       case "East Syriac Ctesiphon":
-        return '"East Syriac Ctesiphon", Karshon, serif';
+        return '"East Syriac Ctesiphon", "East Syriac Adiabene", serif';
       case "Estrangelo Edessa":
-        return '"Estrangelo Edessa", Karshon, serif';
+        return '"Estrangelo Edessa", "East Syriac Adiabene", serif';
       case "Estrangelo Qenneshrin":
-        return '"Estrangelo Qenneshrin", "Estrangelo Edessa", Karshon, serif';
+        return '"Estrangelo Qenneshrin", "Estrangelo Edessa", "East Syriac Adiabene", serif';
       case "Noto Sans Malayalam":
-        return '"Noto Sans Malayalam", Karshon, serif';
+        return '"Noto Sans Malayalam", "East Syriac Adiabene", serif';
       default:
-        return 'Karshon, "East Syriac Malankara", serif';
+        return '"East Syriac Adiabene", "East Syriac Malankara", serif';
     }
   };
 

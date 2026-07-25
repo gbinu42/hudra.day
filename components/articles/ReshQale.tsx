@@ -46,7 +46,7 @@ const Syr = ({
   className?: string;
 }) => (
   <span
-    className={`[font-family:'Idiqlat',serif] ${className}`}
+    className={`font-idiqlat ${className}`}
     dir="rtl"
     style={{ fontWeight: 400, fontSynthesis: "none" }}
   >
@@ -2525,7 +2525,7 @@ function ReshQalaList({
                   {r.syriacText.stanzas.map((stanza, si) => (
                     <p
                       key={si}
-                      className="leading-loose [font-family:'Idiqlat',serif] text-base m-0"
+                      className="leading-loose font-idiqlat text-base m-0"
                       dir="rtl"
                       style={{ fontWeight: 400, fontSynthesis: "none" }}
                     >
@@ -2548,7 +2548,7 @@ function ReshQalaList({
                   ))}
                   {r.syriacText.teni && (
                     <p
-                      className="leading-loose [font-family:'Idiqlat',serif] text-base m-0 text-red-700"
+                      className="leading-loose font-idiqlat text-base m-0 text-red-700"
                       dir="rtl"
                       style={{ fontWeight: 400, fontSynthesis: "none" }}
                     >
@@ -2557,7 +2557,7 @@ function ReshQalaList({
                   )}
                   {r.syriacText.english && (
                     <div
-                      className="mt-2 pt-2 border-t border-slate-200 leading-normal [font-family:'Idiqlat',serif] text-sm"
+                      className="mt-2 pt-2 border-t border-slate-200 leading-normal font-idiqlat text-sm"
                       style={{ fontWeight: 400, fontSynthesis: "none" }}
                     >
                       {r.syriacText.english.stanzas.map((stanza, si, arr) => (
@@ -2812,7 +2812,7 @@ export default function ReshQale() {
         <h2 className="text-xl font-semibold font-[family-name:var(--font-lora)] text-slate-700 m-0">
           Resh Qale d&apos;Onyatha{" "}
           <span
-            className="text-base font-normal [font-family:'Idiqlat',serif]"
+            className="text-base font-normal font-idiqlat"
             dir="rtl"
           >
             ܪܹܫ ܩܵܠܹ̈ܐ ܕܥܘܿܢܝܵܬ݂ܵܐ
@@ -2955,7 +2955,7 @@ export default function ReshQale() {
       </p>
 
       <p
-        className="not-prose text-center mt-12 mb-8 [font-family:'Idiqlat',serif] text-2xl text-slate-700 m-0"
+        className="not-prose text-center mt-12 mb-8 font-idiqlat text-2xl text-slate-700 m-0"
         dir="rtl"
         style={{ fontWeight: 400, fontSynthesis: "none" }}
       >

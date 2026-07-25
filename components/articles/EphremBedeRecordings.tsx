@@ -49,7 +49,7 @@ function Syr({
   return (
     <span
       dir="rtl"
-      className={`[font-family:'Idiqlat',serif] inline-block ${className}`}
+      className={`font-idiqlat inline-block ${className}`}
       style={{ fontWeight: 400, fontSynthesis: "none" }}
     >
       {children}

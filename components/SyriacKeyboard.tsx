@@ -132,6 +132,7 @@ const keyboardData = {
     { char: "݈", title: "U+0748 - SYRIAC OBLIQUE LINE BELOW", display: "ܘ݈" },
     { char: "̄", title: "U+0304 - COMBINING MACRON", display: "ܘ̄" },
     { char: "̱", title: "U+0331 - COMBINING MACRON BELOW", display: "ܘ̱" },
+    { char: "̰", title: "U+0330 - COMBINING TILDE BELOW", display: "ܘ̰" },
     { char: "ـ", title: "U+0640 - ARABIC TATWEEL (EXTENSION)" },
   ],
   punctuation: [
@@ -309,7 +310,7 @@ export default function SyriacKeyboard({
             ${isSpecial ? "text-sm bg-gray-100" : ""}
           `}
           style={{
-            fontFamily: "Karshon, East Syriac Adiabene, East Syriac Malankara",
+            fontFamily: "East Syriac Adiabene, East Syriac Malankara, Karshon",
             padding: "1px 0",
             margin: 0,
             minWidth: 0,
@@ -330,7 +331,7 @@ export default function SyriacKeyboard({
         onMouseDown={handleMousePress}
         title={title}
         style={{
-          fontFamily: "Karshon, East Syriac Adiabene, East Syriac Malankara",
+          fontFamily: "East Syriac Adiabene, East Syriac Malankara, Karshon",
         }}
       >
         {display || char}

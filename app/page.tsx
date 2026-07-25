@@ -228,8 +228,8 @@ export default function HomePage() {
               </CardHeader>
               <CardContent className="text-center space-y-4">
                 <CardDescription className="text-base">
-                  Type and edit East Syriac and Karshon texts online with full
-                  Unicode support and an on-screen keyboard
+                  Type and edit East Syriac and Garshuni Malayalam texts online
+                  with full Unicode support and an on-screen keyboard
                 </CardDescription>
                 <Button size="lg" className="w-full" asChild>
                   <Link href="/editor">
@@ -323,13 +323,14 @@ export default function HomePage() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-3xl md:text-4xl font-bold mb-6">
-                Online East Syriac + Karshon Editor
+                Online East Syriac Editor
               </h2>
               <p className="text-lg text-muted-foreground mb-6">
-                Our advanced East Syriac + Karshon(Garshuni Malayalam) online
-                text editor makes it easy to work with East Syriac and Karshon
-                texts, supporting the East Syriac script with comprehensive
-                typographical features for accurate transcription and study.
+                Our advanced East Syriac online text editor (with Garshuni
+                Malayalam support via East Syriac Adiabene) makes it easy to work
+                with East Syriac texts, supporting the East Syriac script with
+                comprehensive typographical features for accurate transcription
+                and study.
               </p>
 
               <div className="space-y-4 mb-8">
@@ -339,7 +340,7 @@ export default function HomePage() {
                 </div>
                 <div className="flex items-center space-x-3">
                   <div className="w-2 h-2 bg-primary rounded-full"></div>
-                  <span>Full Unicode Karshon(Garshuni Malayalam) support</span>
+                  <span>Garshuni Malayalam support (East Syriac Adiabene)</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <div className="w-2 h-2 bg-primary rounded-full"></div>

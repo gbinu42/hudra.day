@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     "liturgical archive",
     "Hendo Academy",
     "East Syriac editor",
-    "Karshon",
+    "East Syriac Adiabene",
     "Garshuni Malayalam",
     "East Syriac",
     "Breviary",

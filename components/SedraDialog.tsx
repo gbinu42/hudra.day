@@ -430,7 +430,7 @@ export default function SedraDialog({
                       className=" flex items-center gap-2 text-lg text-gray-800 hover:text-blue-600 transition-colors no-underline flex-shrink-0"
                       onMouseDown={(e) => e.stopPropagation()}
                       style={{
-                        fontFamily: '"East Syriac Adiabene", Karshon, serif',
+                        fontFamily: '"East Syriac Adiabene", "East Syriac Malankara", serif',
                         fontSize: "24px",
                         fontFeatureSettings:
                           '"liga" 1, "clig" 1, "calt" 1, "ccmp" 1, "locl" 1, "mark" 1, "mkmk" 1',
@@ -597,7 +597,7 @@ export default function SedraDialog({
 
         /* Style for Syriac text only */
         .sedra-content .syriac-text {
-          font-family: "East Syriac Adiabene", Karshon, serif;
+          font-family: "East Syriac Adiabene", "East Syriac Malankara", serif;
           font-size: 24px;
           font-feature-settings: "liga" 1, "clig" 1, "calt" 1, "ccmp" 1,
             "locl" 1, "mark" 1, "mkmk" 1;

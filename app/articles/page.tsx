@@ -86,7 +86,7 @@ export default function ArticlesPage() {
                 <h2 className="text-2xl font-semibold text-foreground group-hover:text-primary transition-colors mb-1 font-[family-name:var(--font-eb-garamond)]">
                   <ArticleTitle
                     article={article}
-                    syriacClassName="text-xl font-normal [font-family:'Idiqlat',serif]"
+                    syriacClassName="text-xl font-normal font-idiqlat"
                   />
                 </h2>
                 {article.subtitle && (
