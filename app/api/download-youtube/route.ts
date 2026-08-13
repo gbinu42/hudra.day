@@ -1,46 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { spawn } from "child_process";
-import { unlink, chmod, readFile, readdir } from "fs/promises";
+import { unlink, readFile, readdir } from "fs/promises";
 import { existsSync } from "fs";
 import path from "path";
 import { randomUUID } from "crypto";
 import { promisify } from "util";
 import { exec } from "child_process";
+import {
+  resolveYtDlpPath,
+  ytDlpVersion,
+} from "@/lib/dev/video-download";
 
 const execAsync = promisify(exec);
-
-async function getYtDlpVersion(ytDlpPath: string): Promise<string | null> {
-  return await new Promise((resolve) => {
-    try {
-      const proc = spawn(ytDlpPath, ["--version"]);
-      let out = "";
-      let err = "";
-
-      const timeout = setTimeout(() => {
-        try {
-          proc.kill("SIGKILL");
-        } catch {
-          // ignore
-        }
-        resolve(null);
-      }, 3000);
-
-      proc.stdout.on("data", (d) => (out += d.toString()));
-      proc.stderr.on("data", (d) => (err += d.toString()));
-      proc.on("close", () => {
-        clearTimeout(timeout);
-        const v = (out || err).trim();
-        resolve(v.length > 0 ? v : null);
-      });
-      proc.on("error", () => {
-        clearTimeout(timeout);
-        resolve(null);
-      });
-    } catch {
-      resolve(null);
-    }
-  });
-}
 
 function parseYtDlpProgress(line: string): {
   percent?: number;
@@ -109,23 +80,16 @@ async function getAudioMetadata(
 }
 
 async function handleProgressStream(inputUrl: string) {
-  const projectRoot = process.cwd();
-  const ytDlpPath = path.join(projectRoot, "bin", "yt-dlp");
-
-  if (!existsSync(ytDlpPath)) {
-    return NextResponse.json(
-      { error: "yt-dlp binary not found at bin/yt-dlp" },
-      { status: 400 },
-    );
-  }
-
+  let ytDlpPath: string;
   try {
-    await chmod(ytDlpPath, 0o755);
+    ytDlpPath = await resolveYtDlpPath();
   } catch (error) {
-    console.error("Failed to set execute permissions:", error);
     return NextResponse.json(
-      { error: "Failed to set execute permissions on yt-dlp binary" },
-      { status: 500 },
+      {
+        error:
+          error instanceof Error ? error.message : "yt-dlp binary not found",
+      },
+      { status: 400 },
     );
   }
 
@@ -435,26 +399,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Use yt-dlp from bin/yt-dlp in project directory
-    const projectRoot = process.cwd();
-    const ytDlpPath = path.join(projectRoot, "bin", "yt-dlp");
-
-    // Verify yt-dlp binary exists
-    if (!existsSync(ytDlpPath)) {
-      return NextResponse.json(
-        { error: "yt-dlp binary not found at bin/yt-dlp" },
-        { status: 400 },
-      );
-    }
-
-    // Ensure the binary has execute permissions
+    // Use system yt-dlp (PATH / YTDLP_PATH), with bin/yt-dlp as fallback
+    let ytDlpPath: string;
     try {
-      await chmod(ytDlpPath, 0o755);
+      ytDlpPath = await resolveYtDlpPath();
     } catch (error) {
-      console.error("Failed to set execute permissions:", error);
       return NextResponse.json(
-        { error: "Failed to set execute permissions on yt-dlp binary" },
-        { status: 500 },
+        {
+          error:
+            error instanceof Error ? error.message : "yt-dlp binary not found",
+        },
+        { status: 400 },
       );
     }
 
@@ -628,15 +583,13 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error downloading audio:", error);
-    const version = await getYtDlpVersion(
-      path.join(process.cwd(), "bin", "yt-dlp"),
-    );
+    const version = await ytDlpVersion().catch(() => null);
     return NextResponse.json(
       {
         error: "Failed to download audio",
         details: error instanceof Error ? error.message : String(error),
-        hint: "If this is a Facebook or Instagram URL, it may require cookies. You can set YTDLP_COOKIES_PATH to a Netscape cookies.txt file. Also make sure yt-dlp is up to date (bin/yt-dlp -U or replace the binary).",
-        ytDlpVersion: version ?? undefined,
+        hint: "If this is a Facebook or Instagram URL, it may require cookies. You can set YTDLP_COOKIES_PATH to a Netscape cookies.txt file. Also make sure yt-dlp is up to date (`yt-dlp -U`).",
+        ytDlpVersion: version && version !== "unknown" ? version : undefined,
       },
       { status: 500 },
     );
