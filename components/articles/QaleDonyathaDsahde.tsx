@@ -671,7 +671,7 @@ function SundaySapraSpecialCases() {
 function SyriacText({ children }: { children: ReactNode }) {
   return (
     <span
-      className="font-east-syriac-adiabene text-2xl text-slate-800 leading-none"
+      className="font-east-syriac-adiabene text-3xl text-slate-800 leading-none"
       dir="rtl"
       style={{ fontWeight: 400, fontSynthesis: "none" }}
     >

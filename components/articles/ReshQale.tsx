@@ -46,7 +46,7 @@ const Syr = ({
   className?: string;
 }) => (
   <span
-    className={`font-east-syriac-adiabene text-2xl text-slate-800 leading-none ${className}`}
+    className={`font-east-syriac-adiabene text-3xl text-slate-800 leading-none ${className}`}
     dir="rtl"
     style={{ fontWeight: 400, fontSynthesis: "none" }}
   >
@@ -2581,7 +2581,7 @@ function ReshQalaList({
                         aka.latin
                       )}{" "}
                       {aka.syr && (
-                        <Syr className="text-2xl">{aka.syr}</Syr>
+                        <Syr>{aka.syr}</Syr>
                       )}
                     </span>
                   ))}
@@ -2790,7 +2790,7 @@ export default function ReshQale() {
         <h2 className="text-xl font-semibold font-[family-name:var(--font-lora)] text-slate-700 m-0">
           Resh Qale d&apos;Onyatha{" "}
           <span
-            className="text-2xl font-normal font-east-syriac-adiabene text-slate-800"
+            className="text-3xl font-normal font-east-syriac-adiabene text-slate-800"
             dir="rtl"
           >
             ܪܹܫ ܩܵܠܹ̈ܐ ܕܥܘܿܢܝܵܬ݂ܵܐ
