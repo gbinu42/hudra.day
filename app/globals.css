@@ -8,7 +8,7 @@
 
 @font-face {
   font-family: "East Syriac Malankara";
-  src: url("/fonts/EastSyriacMalankara.ttf") format("truetype");
+  src: url("/fonts/EastSyriacMalankara.ttf?v=2") format("truetype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -16,7 +16,7 @@
 
 @font-face {
   font-family: "East Syriac Malankara Classical";
-  src: url("/fonts/EastSyriacMalankaraClassical.ttf") format("truetype");
+  src: url("/fonts/EastSyriacMalankaraClassical.ttf?v=2") format("truetype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -24,7 +24,7 @@
 
 @font-face {
   font-family: "East Syriac Adiabene";
-  src: url("/fonts/SyrCOMAdiabene.ttf?v=8") format("truetype");
+  src: url("/fonts/SyrCOMAdiabene.ttf?v=12") format("truetype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
