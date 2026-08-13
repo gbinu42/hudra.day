@@ -46,7 +46,7 @@ const Syr = ({
   className?: string;
 }) => (
   <span
-    className={`font-east-syriac-adiabene text-slate-800 ${className}`}
+    className={`font-east-syriac-adiabene text-2xl text-slate-800 leading-none ${className}`}
     dir="rtl"
     style={{ fontWeight: 400, fontSynthesis: "none" }}
   >
@@ -2488,7 +2488,7 @@ function ReshQalaList({
                 </Mal>
               </span>
               {r.nameSyr && (
-                <Syr className="text-3xl text-slate-800 text-right self-end w-full sm:w-auto sm:shrink-0">
+                <Syr className="!text-3xl text-slate-800 text-right self-end w-full sm:w-auto sm:shrink-0">
                   {r.nameSyr}
                 </Syr>
               )}
@@ -2581,7 +2581,7 @@ function ReshQalaList({
                         aka.latin
                       )}{" "}
                       {aka.syr && (
-                        <Syr className="text-xl">{aka.syr}</Syr>
+                        <Syr className="text-2xl">{aka.syr}</Syr>
                       )}
                     </span>
                   ))}

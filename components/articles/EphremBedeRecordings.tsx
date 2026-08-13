@@ -49,7 +49,7 @@ function Syr({
   return (
     <span
       dir="rtl"
-      className={`font-east-syriac-adiabene text-xl text-slate-800 inline-block ${className}`}
+      className={`font-east-syriac-adiabene text-2xl text-slate-800 inline-block leading-none ${className}`}
       style={{ fontWeight: 400, fontSynthesis: "none" }}
     >
       {children}
