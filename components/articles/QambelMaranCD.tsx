@@ -223,7 +223,7 @@ function HymnResourceLinks({ num }: { num: number }) {
   if (!links) return null;
 
   return (
-    <div className="not-prose mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm font-[family-name:var(--font-lora)]">
+    <div className="not-prose flex flex-wrap gap-x-4 gap-y-1 text-sm font-[family-name:var(--font-lora)]">
       <a
         href={`${CMS_ENCYCLOPEDIA_BASE}/${links.cmsPath}`}
         target="_blank"
@@ -285,7 +285,7 @@ function SyriacBlock({
 }) {
   const segmentGroups = groups ?? (segments ? [segments] : []);
   return (
-    <div className="syriac-block flex flex-col gap-1" dir="rtl">
+    <div className="syriac-block flex flex-col gap-2" dir="rtl">
       {segmentGroups.map((group, gi) => (
         <div
           key={gi}
@@ -323,7 +323,7 @@ function SkippedNote({ text }: { text: string }) {
 function HymnBlocks({ hymn }: { hymn: Hymn }) {
   if (!LINE_BREAK_HYMNS.has(hymn.num)) {
     return (
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-2">
         {hymn.blocks.flatMap((block, i) => {
           if ("skipped" in block) {
             return [<SkippedNote key={i} text={block.skipped} />];
@@ -359,7 +359,7 @@ function HymnBlocks({ hymn }: { hymn: Hymn }) {
   flushSyriac();
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-2">
       {items}
     </div>
   );
@@ -1777,12 +1777,12 @@ export default function QambelMaranCD() {
                   {hymn.num}. {hymn.title}
                 </h3>
                 {HYMN_DESCRIPTIONS[hymn.num] && (
-                  <p className="text-sm text-muted-foreground mb-2 font-[family-name:var(--font-lora)] leading-relaxed">
+                  <p className="text-sm text-muted-foreground mb-4 font-[family-name:var(--font-lora)] leading-relaxed">
                     {HYMN_DESCRIPTIONS[hymn.num]}
                   </p>
                 )}
-                <div className="ml-4">
-                  <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-5 space-y-0.5">
+                <div className="ml-4 flex flex-col gap-4">
+                  <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-5 space-y-4">
                     {hymn.blocks.length === 0 ? (
                       <p className="text-sm italic text-muted-foreground m-0 font-[family-name:var(--font-lora)]">
                         Text to be added.
@@ -1805,6 +1805,7 @@ export default function QambelMaranCD() {
                         getYoutubeTitle(hymn.youtubeEmbedSrc) ??
                         `${hymn.num}. ${hymn.title}`
                       }
+                      className="mt-0"
                     />
                   )}
                   <HymnResourceLinks num={hymn.num} />

@@ -803,11 +803,11 @@ export default function QaleDonyathaDsahde() {
                   </span>
                 </span>
               </AccordionTrigger>
-              <AccordionContent className="mt-1 ml-4">
+              <AccordionContent className="mt-3 ml-4">
                 {/* Syriac text */}
                 <div className="mb-4 rounded-lg border border-slate-200 bg-slate-50 px-4 py-5">
                   <div
-                    className="flex flex-col gap-1 leading-snug font-east-syriac-adiabene text-3xl text-slate-800 text-justify"
+                    className="flex flex-col gap-2 leading-snug font-east-syriac-adiabene text-3xl text-slate-800 text-justify"
                     dir="rtl"
                     style={{ fontWeight: 400, fontSynthesis: "none" }}
                   >
@@ -837,7 +837,7 @@ export default function QaleDonyathaDsahde() {
                           s.psalmEn && (
                             <div
                               key={i}
-                              className={i < a.stanzas.length - 1 ? "mb-3" : ""}
+                              className={i < a.stanzas.length - 1 ? "mb-2" : ""}
                             >
                               <p className="m-0 leading-normal whitespace-pre-line">
                                 <span className="text-red-700">
@@ -880,7 +880,7 @@ export default function QaleDonyathaDsahde() {
                         </p>
                       )}
                       {t.recordings && t.recordings.length > 0 ? (
-                        <div className="ml-3 space-y-3 mt-2">
+                        <div className="ml-3 space-y-4 mt-3">
                           {t.recordings.map((rec, i) => (
                             <div key={i}>
                               {(rec.hymnName || rec.performer) && (

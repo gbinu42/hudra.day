@@ -186,15 +186,6 @@
   --sidebar-ring: oklch(0.55 0.18 10); /* Lighter version for dark mode */
 }
 
-/* Article body typography */
-.article-body p {
-  margin-top: 1.25em;
-}
-
-.article-body .not-prose p {
-  margin-top: 0;
-}
-
 .article-body h2,
 .article-body h4 {
   margin-top: 2em;
@@ -228,6 +219,14 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+
+  .article-body p {
+    margin-top: 1.25em;
+  }
+
+  .article-body .not-prose p {
+    margin-top: 0;
   }
 
   .font-syriac {

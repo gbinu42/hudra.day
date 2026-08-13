@@ -2495,9 +2495,9 @@ function ReshQalaList({
             </span>
           </AccordionTrigger>
           <AccordionContent className="mt-3 ml-6 pb-2">
-            <div className="space-y-2 text-sm font-[family-name:var(--font-lora)] text-slate-600">
+            <div className="space-y-4 text-sm font-[family-name:var(--font-lora)] text-slate-600">
               {r.syriacText && (
-                <div className="mb-3 rounded-lg border border-slate-200 bg-slate-50 px-4 py-5 flex flex-col gap-1">
+                <div className="mb-3 rounded-lg border border-slate-200 bg-slate-50 px-4 py-5 flex flex-col gap-2">
                   {r.syriacText.stanzas.map((stanza, si) => (
                     <div
                       key={si}
@@ -2539,7 +2539,7 @@ function ReshQalaList({
                       {r.syriacText.english.stanzas.map((stanza, si, arr) => (
                         <div
                           key={si}
-                          className={si < arr.length - 1 ? "mb-3" : ""}
+                          className={si < arr.length - 1 ? "mb-2" : ""}
                         >
                           <p className="m-0 leading-normal whitespace-pre-line">
                             {stanza.shuraya && (
@@ -2615,7 +2615,7 @@ function ReshQalaList({
               <Accordion
                 type="single"
                 collapsible
-                className="pt-2 border-t border-slate-100"
+                className="pt-4 border-t border-slate-100"
               >
                 <AccordionItem value="recordings" className="border-none">
                   <AccordionTrigger className="py-1 items-center [&>span:first-child]:mt-0">
@@ -2644,9 +2644,9 @@ function ReshQalaList({
                     </span>
                   </AccordionTrigger>
                   <AccordionContent className="mt-3">
-                    <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3">
+                    <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-4">
                       {r.recordings && r.recordings.length > 0 ? (
-                        <div className="space-y-0">
+                        <div className="space-y-4">
                           {groupRecordingsByHymn(
                             r.recordings,
                             r.name,
@@ -2656,11 +2656,11 @@ function ReshQalaList({
                               key={gi}
                               className={
                                 gi > 0
-                                  ? "pt-2 mt-2 border-t border-slate-200"
+                                  ? "pt-4 border-t border-slate-200"
                                   : undefined
                               }
                             >
-                              <p className="text-xs font-medium text-slate-600 m-0 mb-1">
+                              <p className="text-xs font-medium text-slate-600 m-0 mb-2">
                                 {group.hymnLink ? (
                                   <Link
                                     href={
@@ -2678,11 +2678,11 @@ function ReshQalaList({
                                   </span>
                                 )}
                               </p>
-                              <div className="space-y-1.5">
+                              <div className="space-y-3">
                                 {group.items.map((rec, i) => (
                                   <div key={i}>
                                     {rec.performer && (
-                                      <p className="text-xs text-slate-500 m-0 mb-0.5">
+                                      <p className="text-xs text-slate-500 m-0 mb-1.5">
                                         {rec.performer}
                                       </p>
                                     )}

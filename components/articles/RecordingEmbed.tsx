@@ -28,7 +28,7 @@ export default function RecordingEmbed({
       type="single"
       collapsible
       className={cn(
-        "not-prose mt-2 overflow-hidden rounded-lg border border-slate-300 bg-white shadow-sm",
+        "not-prose mt-4 overflow-hidden rounded-lg border border-slate-300 bg-white shadow-sm",
         className,
       )}
       onValueChange={(value) => setOpen(value === "recording")}
