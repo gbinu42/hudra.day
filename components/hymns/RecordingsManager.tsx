@@ -50,6 +50,8 @@ import {
   isAcceptedRecordingFile,
   shouldExtractAudioFromVideo,
 } from "@/lib/format-file-size";
+import { getYoutubeEmbedSrc } from "@/lib/youtube";
+import RecordingEmbed from "@/components/articles/RecordingEmbed";
 
 const recordingSchema = z
   .object({
@@ -921,7 +923,12 @@ export default function RecordingsManager({
           </p>
         ) : (
           <div className="space-y-4">
-            {visibleRecordings.map((recording) => (
+            {visibleRecordings.map((recording) => {
+              const youtubeEmbedSrc =
+                recording.type === "youtube"
+                  ? getYoutubeEmbedSrc(recording.url)
+                  : undefined;
+              return (
               <div
                 key={recording.id}
                 className="flex items-start justify-between p-4 border rounded"
@@ -996,7 +1003,7 @@ export default function RecordingsManager({
                           </div>
                         )}
                     </div>
-                    {/* Audio/Video Player */}
+                    {/* Audio/Video/YouTube Player */}
                     {(recording.type === "audio" ||
                       recording.type === "video") && (
                       <div className="mt-3">
@@ -1029,6 +1036,15 @@ export default function RecordingsManager({
                         )}
                       </div>
                     )}
+                    {youtubeEmbedSrc && (
+                      <RecordingEmbed
+                        src={youtubeEmbedSrc}
+                        title={
+                          recording.title || `${recording.type} recording`
+                        }
+                        className="mt-3"
+                      />
+                    )}
 
                     {isAdmin && recording.adminAudioUrl && (
                       <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded">
@@ -1047,14 +1063,22 @@ export default function RecordingsManager({
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  {(recording.type === "youtube" ||
-                    recording.type === "link") && (
+                  {recording.type === "youtube" && !youtubeEmbedSrc && (
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() => window.open(recording.url, "_blank")}
                     >
-                      {recording.type === "youtube" ? "Watch" : "Visit"}
+                      Watch
+                    </Button>
+                  )}
+                  {recording.type === "link" && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => window.open(recording.url, "_blank")}
+                    >
+                      Visit
                     </Button>
                   )}
                   {(recording.type === "audio" || recording.type === "video") &&
@@ -1092,7 +1116,8 @@ export default function RecordingsManager({
                   )}
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
         )}
 

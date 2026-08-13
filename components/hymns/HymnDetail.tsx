@@ -30,6 +30,8 @@ import {
 } from "@/lib/types/reshQala";
 import { reshQalaService } from "@/lib/reshqala-services";
 import { containsSyriac } from "@/lib/utils/syriacNumerals";
+import { getYoutubeEmbedSrc } from "@/lib/youtube";
+import RecordingEmbed from "@/components/articles/RecordingEmbed";
 import {
   Music,
   Music2,
@@ -189,18 +191,22 @@ export default function HymnDetail({
       metadata.push(recording.duration);
     }
 
+    const youtubeEmbedSrc =
+      recording.type === "youtube"
+        ? getYoutubeEmbedSrc(recording.url)
+        : undefined;
+    const recordingTitle =
+      recording.title ||
+      `${
+        recording.type.charAt(0).toUpperCase() + recording.type.slice(1)
+      } Recording`;
+
     return (
       <div key={recording.id} className="py-3">
         <div className="flex items-center gap-3 mb-3">
           <div className="text-muted-foreground flex-shrink-0">{getIcon()}</div>
           <div className="flex-1 min-w-0">
-            <div className="font-medium text-base">
-              {recording.title ||
-                `${
-                  recording.type.charAt(0).toUpperCase() +
-                  recording.type.slice(1)
-                } Recording`}
-            </div>
+            <div className="font-medium text-base">{recordingTitle}</div>
             {metadata.length > 0 && (
               <div className="text-sm text-muted-foreground">
                 {metadata.join(" • ")}
@@ -218,7 +224,7 @@ export default function HymnDetail({
             )}
           </div>
           <div className="flex gap-2 flex-shrink-0">
-            {recording.type === "youtube" && (
+            {recording.type === "youtube" && !youtubeEmbedSrc && (
               <Button
                 size="sm"
                 variant="outline"
@@ -254,7 +260,7 @@ export default function HymnDetail({
           </div>
         </div>
 
-        {/* Audio/Video Player - Below the details */}
+        {/* Audio/Video/YouTube Player - Below the details */}
         {(recording.type === "audio" || recording.type === "video") && (
           <div className="ml-8">
             {recording.type === "audio" ? (
@@ -284,6 +290,15 @@ export default function HymnDetail({
                 Your browser does not support the video element.
               </video>
             )}
+          </div>
+        )}
+        {youtubeEmbedSrc && (
+          <div className="ml-8">
+            <RecordingEmbed
+              src={youtubeEmbedSrc}
+              title={recordingTitle}
+              className="mt-0"
+            />
           </div>
         )}
       </div>
