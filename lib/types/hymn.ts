@@ -298,6 +298,7 @@ export const HYMN_GENRES: HymnGenre[] = [
   { id: "turgama", label: "Turgama", syriac: "ܬܘܼܪܓܵܡܵܐ", takesReshQala: true },
   { id: "qala", label: "Qala", syriac: "ܩܵܠܵܐ", takesReshQala: true },
   { id: "qaltha", label: "Qaltha", syriac: "ܩܵܠܬܵܐ", takesReshQala: true },
+  { id: "qeryana", label: "Qeryana", syriac: "ܩܸܪܝܵܢܵܐ", takesReshQala: true },
   { id: "qulasa", label: "Qulasa", syriac: "ܩܘܼܠܵܣܵܐ", takesReshQala: true },
   { id: "memra", label: "Memra", syriac: "ܡܹܐܡܪܵܐ", takesReshQala: true },
   { id: "qanona", label: "Qanona", syriac: "ܩܵܢܘܿܢܵܐ", takesReshQala: true },
