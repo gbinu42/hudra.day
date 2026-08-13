@@ -2,7 +2,7 @@ import { Article } from "@/lib/articles";
 
 export default function ArticleTitle({
   article,
-  syriacClassName = "text-2xl font-normal font-idiqlat",
+  syriacClassName = "text-4xl font-normal font-east-syriac-adiabene text-slate-800",
 }: {
   article: Article;
   syriacClassName?: string;

@@ -671,7 +671,7 @@ function SundaySapraSpecialCases() {
 function SyriacText({ children }: { children: ReactNode }) {
   return (
     <span
-      className="font-idiqlat"
+      className="font-east-syriac-adiabene text-slate-800"
       dir="rtl"
       style={{ fontWeight: 400, fontSynthesis: "none" }}
     >
@@ -791,12 +791,12 @@ export default function QaleDonyathaDsahde() {
                   </span>
                   <span className="text-right self-end w-full sm:w-auto">
                     <SyriacText>
-                      <span className="text-lg font-normal text-slate-600 block mb-1">
+                      <span className="text-3xl font-normal text-slate-800 block mb-1">
                         {a.titleSyr}
                       </span>
                     </SyriacText>
                     <SyriacText>
-                      <span className="text-sm text-gray-500 block">
+                      <span className="text-xl text-slate-800 block">
                         {a.subtitleSyr}
                       </span>
                     </SyriacText>
@@ -805,30 +805,27 @@ export default function QaleDonyathaDsahde() {
               </AccordionTrigger>
               <AccordionContent className="mt-1 ml-4">
                 {/* Syriac text */}
-                <div className="mb-4 rounded-lg border border-slate-200 bg-slate-50 px-4 pt-2 pb-3">
+                <div className="mb-4 rounded-lg border border-slate-200 bg-slate-50 px-4 py-5">
                   <div
-                    className="leading-loose font-idiqlat text-base text-justify"
+                    className="flex flex-col gap-1 leading-snug font-east-syriac-adiabene text-3xl text-slate-800 text-justify"
                     dir="rtl"
                     style={{ fontWeight: 400, fontSynthesis: "none" }}
                   >
-                    <p className="m-0">
-                      {a.stanzas.map((s, i) => (
-                        <span key={i}>
-                          {i > 0 && <br />}
-                          <span className="text-red-700">{s.psalm}</span>
-                          {s.dzuwrta && <> ܕܨܘܼܪܬܵܐ.</>}
-                          {s.antiphonRedPart && (
-                            <>
-                              {" "}
-                              <span className="text-red-700">
-                                {s.antiphonRedPart}
-                              </span>
-                            </>
-                          )}{" "}
-                          <span className="text-slate-600">{s.antiphon}</span>
-                        </span>
-                      ))}
-                    </p>
+                    {a.stanzas.map((s, i) => (
+                      <div key={i}>
+                        <span className="text-red-700">{s.psalm}</span>
+                        {s.dzuwrta && <> ܕܨܘܼܪܬܵܐ.</>}
+                        {s.antiphonRedPart && (
+                          <>
+                            {" "}
+                            <span className="text-red-700">
+                              {s.antiphonRedPart}
+                            </span>
+                          </>
+                        )}{" "}
+                        <span className="text-slate-800">{s.antiphon}</span>
+                      </div>
+                    ))}
                   </div>
                   {a.stanzas.some((s) => s.psalmEn) && (
                     <div

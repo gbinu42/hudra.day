@@ -266,7 +266,7 @@ function FootnoteItem({ text }: { text: string }) {
       dir="auto"
       className="text-sm text-slate-600 leading-relaxed m-0"
       style={{
-        fontFamily: "var(--font-lora), 'Idiqlat', serif",
+        fontFamily: "var(--font-lora), 'East Syriac Adiabene', serif",
         fontWeight: 400,
         fontSynthesis: "none",
       }}
@@ -285,14 +285,13 @@ function SyriacBlock({
 }) {
   const segmentGroups = groups ?? (segments ? [segments] : []);
   return (
-    <p
-      className="leading-loose font-idiqlat text-base text-justify m-0"
-      dir="rtl"
-      style={{ fontWeight: 400, fontSynthesis: "none" }}
-    >
+    <div className="syriac-block flex flex-col gap-1" dir="rtl">
       {segmentGroups.map((group, gi) => (
-        <Fragment key={gi}>
-          {gi > 0 && <br />}
+        <div
+          key={gi}
+          className="leading-snug font-east-syriac-adiabene text-3xl text-slate-800 text-justify"
+          style={{ fontWeight: 400, fontSynthesis: "none" }}
+        >
           {group.map((seg, i) => {
             const needsBreak = i > 0 && seg.role;
             return (
@@ -302,9 +301,9 @@ function SyriacBlock({
               </Fragment>
             );
           })}
-        </Fragment>
+        </div>
       ))}
-    </p>
+    </div>
   );
 }
 
@@ -323,15 +322,19 @@ function SkippedNote({ text }: { text: string }) {
 
 function HymnBlocks({ hymn }: { hymn: Hymn }) {
   if (!LINE_BREAK_HYMNS.has(hymn.num)) {
-    return hymn.blocks.flatMap((block, i) => {
-      if ("skipped" in block) {
-        return [<SkippedNote key={i} text={block.skipped} />];
-      }
-      if ("paragraphBreak" in block) {
-        return [];
-      }
-      return [<SyriacBlock key={i} segments={block.segments} />];
-    });
+    return (
+      <div className="flex flex-col gap-1">
+        {hymn.blocks.flatMap((block, i) => {
+          if ("skipped" in block) {
+            return [<SkippedNote key={i} text={block.skipped} />];
+          }
+          if ("paragraphBreak" in block) {
+            return [];
+          }
+          return [<SyriacBlock key={i} segments={block.segments} />];
+        })}
+      </div>
+    );
   }
 
   const items: React.ReactNode[] = [];
@@ -355,7 +358,11 @@ function HymnBlocks({ hymn }: { hymn: Hymn }) {
   }
   flushSyriac();
 
-  return items;
+  return (
+    <div className="flex flex-col gap-1">
+      {items}
+    </div>
+  );
 }
 
 const HYMNS: Hymn[] = [
@@ -1775,7 +1782,7 @@ export default function QambelMaranCD() {
                   </p>
                 )}
                 <div className="ml-4">
-                  <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 space-y-0.5">
+                  <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-5 space-y-0.5">
                     {hymn.blocks.length === 0 ? (
                       <p className="text-sm italic text-muted-foreground m-0 font-[family-name:var(--font-lora)]">
                         Text to be added.

@@ -191,6 +191,10 @@
   margin-top: 1.25em;
 }
 
+.article-body .not-prose p {
+  margin-top: 0;
+}
+
 .article-body h2,
 .article-body h4 {
   margin-top: 2em;

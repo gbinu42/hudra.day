@@ -46,7 +46,7 @@ const Syr = ({
   className?: string;
 }) => (
   <span
-    className={`font-idiqlat ${className}`}
+    className={`font-east-syriac-adiabene text-slate-800 ${className}`}
     dir="rtl"
     style={{ fontWeight: 400, fontSynthesis: "none" }}
   >
@@ -80,6 +80,11 @@ const RETAINED: ReshQala[] = [
         syr: "ܫܠܝܼܚܹ̈ܐ ܟܹܐܦܵܐ",
         link: "/hymns/shlihe-keppa",
       },
+      {
+        latin: "Mshiha Paroqe d'Alma",
+        syr: "ܡܫܝܼܚܵܐ ܦܵܪܘܿܩܹܐ ܕܥܵܠܡܵܐ",
+        link: "/hymns/mshiha-paroqe-dalma",
+      },
     ],
     malayalamCommonName: {
       text: "മെത്തോൽ ദ്‌ഹൂയൂ / മറിയം ബ്‌സുൽത്താ",
@@ -87,6 +92,7 @@ const RETAINED: ReshQala[] = [
     },
     structure:
       "Each onitha has two stanzas of four lines each; seven syllables per line.",
+    note: "Mshiha Paroqe d'Alma is a variant of this qala, but is sung to a different melody from the usual one.",
     link: "/hymns/mara-dkolla",
     recordings: [
       {
@@ -348,6 +354,12 @@ const RETAINED: ReshQala[] = [
       },
     },
     recordings: [
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fla-bahtinan%2Faudio%2F1786644965150.m4a?alt=media&token=77b2ed3c-52ab-432e-bc9f-4ef313d42022",
+        performer: "Binu George",
+        hymnName: "La Bahtinan",
+        hymnLink: "/hymns/la-bahtinan",
+      },
       {
         youtubeEmbedSrc: "https://www.youtube-nocookie.com/embed/xLMmQNVpk4I",
         hymnName: "Kthawa Ramba",
@@ -802,6 +814,12 @@ const RETAINED: ReshQala[] = [
     },
     recordings: [
       {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fha-shwan%2Faudio%2F1786645122579.m4a?alt=media&token=3a3ec40d-1d82-43c0-8d9b-ca429c225cf3",
+        performer: "Binu George",
+        hymnName: "Ha Shwan",
+        hymnLink: "/hymns/ha-shwan",
+      },
+      {
         youtubeEmbedSrc: "https://www.youtube-nocookie.com/embed/oyhRWnSbYYY",
         hymnName: "Marya Kolhon Hawbay",
         hymnLink: "/hymns/marya-kolhon-hawbay",
@@ -889,62 +907,6 @@ const RETAINED: ReshQala[] = [
   },
   {
     num: 13,
-    name: "Mshiha Paroqe d'Alma",
-    nameSyr: "ܡܫܝܼܚܵܐ ܦܵܪܘܿܩܹܐ ܕܥܵܠܡܵܐ",
-    nameMal: "മ്ശിഹാ പാറോക്കേ ദ്‌അൽമാ",
-    malayalamCommonName: {
-      text: "ഹാലേൻ കൊലഹേൻ / മ്ശിഹാ പാറോക്കേ",
-    },
-    structure: "Two stanzas, four lines each; seven syllables per line.",
-    syriacText: {
-      stanzas: [
-        {
-          shuraya: "ܗܵܠܹܝܢ ܟܠܗܹܝܢ ܓܕܲܫ̈ ܠܲܢ ܘܠܵܐ ܛܥܲܝܢܵܟܼ.",
-          body: "ܡܫܝܼܚܵܐ ܦܵܪܘܿܩܹܗ ܕܥܵܠܡܵܐ: ܡܲܠܟܵܐ ܪܲܒܵܐ ܕܬܸܫܒ̇ܘܿܚܬܵܐ: ܣܵܗܕܹ̈ܐ ܕܪܲܚܡܘܼܗܝ ܘܗܲܝܡܸܢܘ ܒܹܗ: ܠܐܵܟܹܠܩܲܪܨܵܐ ܐܲܒ݂ܗܸܬ݂ܘ ܗ݇ܘ̣ܵܘ. ܘܥܲܡ ܡܲܠܲܐܟܹ̈ܐ ܚܵܕܹܝܢ ܒܲܡܪ̈ܵܘܡܹܐ: ܘܲܩܕ݂ܵܡ ܐܲܠܵܗܵܐ ܩܵܝܡܝܼܢ: ܘܲܠܒ݂ܥܸܠܕܲܪܵܐ ܘܲܠܚܲܝܠܹܗ: ܬܚܘܿܬ݂ ܪܸ̈ܓ݂ܠܲܝܗܘܿܢ ܫܲܥܒܸܕ݂ܘ ܗ݇ܘ̣ܵܘ.",
-        },
-      ],
-      english: {
-        stanzas: [
-          {
-            shuraya:
-              "All these things have come upon us, yet we have not forgotten You.",
-            lines: [
-              "Mshiha, Saviour of the world,",
-              "Great and glorified High King,",
-              "Sahde loved Him and believed,",
-              "They put Satan unto shame.",
-              "With the angels they rejoice,",
-              "Standing before Alaha;",
-              "They subdued the enemy",
-              "And his power 'neath their feet.",
-            ],
-          },
-        ],
-      },
-    },
-    recordings: [
-      {
-        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fmshiha-paroqe-dalma%2Faudio%2F1781287988490.m4a?alt=media&token=312e3f37-a720-4057-ae9b-0b87ab9edb30",
-        performer: "Fr. Alexander Kattakayam CMI",
-        hymnName: "Mshiha Paroqe d'Alma",
-        hymnLink: "/hymns/mshiha-paroqe-dalma",
-      },
-      {
-        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fmshiha-paroqe-dalma%2Faudio%2F1781291825883.m4a?alt=media&token=05025e3f-cf3e-4309-91fc-7aedc9b642c7",
-        performer: "Fr. Emmanuel Thelly CMI",
-        hymnName: "Mshiha Paroqe d'Alma",
-        hymnLink: "/hymns/mshiha-paroqe-dalma",
-      },
-      {
-        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fmshiha-paroqe-dalma%2Faudio%2F1779124798989.m4a?alt=media&token=95ab823d-111f-430c-acda-26068f51abab",
-        performer: "Binu George",
-        hymnLink: "/hymns/mshiha-paroqe-dalma",
-      },
-    ],
-    link: "/hymns/mshiha-paroqe-dalma",
-  },
-  {
-    num: 14,
     name: "Awun d'washmayya",
     nameSyr: "ܐܲܒ݂ܘܼܢ ܕܒܲܫܡܲܝܵܐ",
     nameMal: "ആവൂൻ ദ്‌വശ്‌മയ്യാ",
@@ -1027,7 +989,7 @@ const RETAINED: ReshQala[] = [
     link: "/hymns/awun-dwashmayya-qyamta-onitha",
   },
   {
-    num: 15,
+    num: 14,
     name: "Am Kolhon",
     nameSyr: "ܥܲܡ ܟܠܗܘܿܢ",
     nameMal: "അം കൊലഹോൻ",
@@ -1069,7 +1031,7 @@ const RETAINED: ReshQala[] = [
     link: "/hymns/am-kolhon-qandishayk",
   },
   {
-    num: 16,
+    num: 15,
     name: "Hannana Dapthih",
     nameSyr: "ܚܲܢܵܢܵܐ ܕܲܦܬ݂ܝܼܚ",
     nameMal: "ഹന്നാനാ ദപ്‌സീഹ്",
@@ -1138,7 +1100,7 @@ const RETAINED: ReshQala[] = [
     link: "/hymns/hannana-dapthih",
   },
   {
-    num: 17,
+    num: 16,
     name: "Nuhra w'war Nuhra",
     nameSyr: "ܢܘܼܗܪܵܐ ܘܒܲܪ ܢܘܼܗܪܵܐ",
     nameMal: "നുഹ്‌റാ ഉവർ നുഹ്‌റാ",
@@ -1178,7 +1140,7 @@ const RETAINED: ReshQala[] = [
     link: "/hymns/nuhra-wwar-nuhra",
   },
   {
-    num: 18,
+    num: 17,
     name: "Lakhu Qareynan",
     nameSyr: "ܠܵܟ݂ܘܼ ܩܵܪܹܝܢܲ",
     nameMal: "ലാകൂ കാറേനൻ",
@@ -1227,7 +1189,7 @@ const RETAINED: ReshQala[] = [
     link: "/hymns/lakhu-qareynan",
   },
   {
-    num: 19,
+    num: 18,
     name: "Maran Athe",
     nameSyr: "ܡܵܪܲܢ ܐܵܬܹܐ",
     nameMal: "മാറൻ ആസേ",
@@ -1295,7 +1257,7 @@ const RETAINED: ReshQala[] = [
     link: "/hymns/maran-athe",
   },
   {
-    num: 20,
+    num: 19,
     name: "Mambu Hayye",
     nameSyr: "ܡܲܒ݁ܘܼܥ ܚܲܝܹ̈ܐ",
     nameMal: "മമ്പൂ ഹയ്യേ",
@@ -1340,7 +1302,7 @@ const RETAINED: ReshQala[] = [
     },
     recordings: [
       {
-        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fmambua-hayye%2Faudio%2F1769168953155.mp3?alt=media&token=dde98d54-2b1c-4282-b924-7d74fa76876f",
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fmambua-hayye%2Faudio%2F1786645546003.m4a?alt=media&token=3e8dfc0d-f93b-469f-af96-eed5dc880792",
         performer: "Binu George",
         hymnName: "Mambu Hayye",
         hymnLink: "/hymns/mambua-hayye",
@@ -1749,6 +1711,12 @@ const NOT_RETAINED: ReshQala[] = [
       {
         url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fmannu-sapeq%2Faudio%2F1781290099288.m4a?alt=media&token=36241934-cd81-49ef-9d9c-4ed70cedb984",
         performer: "Fr. Emmanuel Thelly CMI",
+        hymnName: "Mannu Sapeq",
+        hymnLink: "/hymns/mannu-sapeq",
+      },
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fmannu-sapeq%2Faudio%2F1786642055698.m4a?alt=media&token=ef8638c3-fd6c-45cb-a991-59649fd7bae6",
+        performer: "Binu George",
         hymnName: "Mannu Sapeq",
         hymnLink: "/hymns/mannu-sapeq",
       },
@@ -2326,6 +2294,14 @@ const NOT_RETAINED: ReshQala[] = [
         },
       ],
     },
+    recordings: [
+      {
+        url: "https://firebasestorage.googleapis.com/v0/b/hudra-d80ee.firebasestorage.app/o/hymns%2Fnawde-wnesgod-le%2Faudio%2F1786561468408.m4a?alt=media&token=97ecf115-26bb-4790-a6ac-058f994e606f",
+        performer: "Binu George",
+        hymnName: "Nawde w'nesgod le",
+        hymnLink: "/hymns/nawde-wnesgod-le",
+      },
+    ],
     link: "/hymns/nawde-wnesgod-le",
   },
   {
@@ -2512,7 +2488,7 @@ function ReshQalaList({
                 </Mal>
               </span>
               {r.nameSyr && (
-                <Syr className="text-lg text-slate-600 text-right self-end w-full sm:w-auto sm:shrink-0">
+                <Syr className="text-3xl text-slate-800 text-right self-end w-full sm:w-auto sm:shrink-0">
                   {r.nameSyr}
                 </Syr>
               )}
@@ -2521,11 +2497,11 @@ function ReshQalaList({
           <AccordionContent className="mt-3 ml-6 pb-2">
             <div className="space-y-2 text-sm font-[family-name:var(--font-lora)] text-slate-600">
               {r.syriacText && (
-                <div className="mb-3 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 space-y-3">
+                <div className="mb-3 rounded-lg border border-slate-200 bg-slate-50 px-4 py-5 flex flex-col gap-1">
                   {r.syriacText.stanzas.map((stanza, si) => (
-                    <p
+                    <div
                       key={si}
-                      className="leading-loose font-idiqlat text-base m-0"
+                      className="leading-snug font-east-syriac-adiabene text-3xl text-slate-800"
                       dir="rtl"
                       style={{ fontWeight: 400, fontSynthesis: "none" }}
                     >
@@ -2544,16 +2520,16 @@ function ReshQalaList({
                           )}
                         </span>
                       ))}
-                    </p>
+                    </div>
                   ))}
                   {r.syriacText.teni && (
-                    <p
-                      className="leading-loose font-idiqlat text-base m-0 text-red-700"
+                    <div
+                      className="leading-snug font-east-syriac-adiabene text-3xl text-red-700"
                       dir="rtl"
                       style={{ fontWeight: 400, fontSynthesis: "none" }}
                     >
                       {r.syriacText.teni}
-                    </p>
+                    </div>
                   )}
                   {r.syriacText.english && (
                     <div
@@ -2604,7 +2580,9 @@ function ReshQalaList({
                       ) : (
                         aka.latin
                       )}{" "}
-                      {aka.syr && <Syr className="text-base">{aka.syr}</Syr>}
+                      {aka.syr && (
+                        <Syr className="text-xl">{aka.syr}</Syr>
+                      )}
                     </span>
                   ))}
                 </div>
@@ -2812,7 +2790,7 @@ export default function ReshQale() {
         <h2 className="text-xl font-semibold font-[family-name:var(--font-lora)] text-slate-700 m-0">
           Resh Qale d&apos;Onyatha{" "}
           <span
-            className="text-base font-normal font-idiqlat"
+            className="text-2xl font-normal font-east-syriac-adiabene text-slate-800"
             dir="rtl"
           >
             ܪܹܫ ܩܵܠܹ̈ܐ ܕܥܘܿܢܝܵܬ݂ܵܐ
@@ -2955,7 +2933,7 @@ export default function ReshQale() {
       </p>
 
       <p
-        className="not-prose text-center mt-12 mb-8 font-idiqlat text-2xl text-slate-700 m-0"
+        className="not-prose text-center mt-12 mb-8 font-east-syriac-adiabene text-4xl text-slate-800 m-0"
         dir="rtl"
         style={{ fontWeight: 400, fontSynthesis: "none" }}
       >
